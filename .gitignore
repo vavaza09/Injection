@@ -1,0 +1,41 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+SysInfo/
+*.booproj
+*.pidb
+*.suo
+*.user
+*.userprefs
+*.csproj
+*.unityproj
+*.sln
+*.svd
+*.pdb
+*.mdb
+
+# Rider / VS / JetBrains
+.vs/
+.idea/
+*.DotSettings.user
+
+# Gradle / Android / Xcode
+.gradle/
+ExportedObj/
+*.apk
+*.aab
+*.keystore
+*.xcworkspace
+*.xcuserstate
+*.xcuserdatad/
+DerivedData/
+
+# Other
+.DS_Store
+Thumbs.db
