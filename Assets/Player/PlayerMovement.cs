@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     float move;
     Rigidbody2D rb;
 
+    private bool isFacingRight = true;
+
     [Header("Dash / Slingshot")]
     public float pushForce = 15f; 
     public float dashControlLossTime = 0.3f; 
@@ -23,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundLayer;
     bool isGrounded;
 
+    //animation
+    Animator animator;
+
     void Awake()
     {
         actions = new InputSystem_Actions();
@@ -31,7 +36,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        mainCam = Camera.main; 
+        mainCam = Camera.main;
+        animator = GetComponent<Animator>();
     }
 
     void OnEnable()
@@ -81,12 +87,32 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(direction * pushForce, ForceMode2D.Impulse);
 
         dashTimer = dashControlLossTime;
+
+        animator.Play("Attack");
+
+        if(direction.x >0 && !isFacingRight)
+        {
+            flip();
+
+        }
+        else if(direction.x < 0 && isFacingRight)
+        {
+            flip();
+        }
+    }
+
+    private void flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1;
+        transform.localScale = localScale;
     }
 
     void Update()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheckTransform.position, groundCheckRadius, groundLayer);
-
+        animator.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
         if (dashTimer > 0)
         {
             dashTimer -= Time.deltaTime;
@@ -94,6 +120,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.linearVelocityX = move * speed;
+
+        if(move > 0 && !isFacingRight)
+        {
+            flip();
+        }
+        else if (move < 0 && isFacingRight)
+        {
+            flip();
+        }
     }
 
     void OnDrawGizmosSelected()
