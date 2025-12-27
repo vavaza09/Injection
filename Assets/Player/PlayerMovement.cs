@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
+//we will sperate all the script later for sure 
+//script for player controller, jumping and dashing/slingshotting , UI
 public class PlayerMovement : MonoBehaviour
 {
     public InputSystem_Actions actions;
@@ -15,13 +18,24 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
 
     [Header("Dash / Slingshot")]
-    public float pushForce = 15f; 
-    public float dashControlLossTime = 0.3f; 
-    private float dashTimer; 
+    public float minPushForce = 15f;
+    public float maxPushForce = 25f;
+    public float chargeTime = 1.0f;
+    public float minChargeThredhold = 0.7f;
+    public float dashControlLossTime = 0.3f;
+    
+    private float dashTimer;
+    private float currentCharge;
+    private bool isCharging;
+
+    [Header("UI & Feedback")]
+    public Slider chargeBar;
+    public Color chargingColor = Color.white;
+    public Color readyColor = Color.green;
 
     [Header("Ground Check")]
     public Transform groundCheckTransform;
-    public float groundCheckRadius;
+    public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
     bool isGrounded;
 
@@ -38,6 +52,11 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         mainCam = Camera.main;
         animator = GetComponent<Animator>();
+
+        if (chargeBar)
+        {
+            chargeBar.gameObject.SetActive(false);
+        }
     }
 
     void OnEnable()
@@ -48,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
         actions.Player.Jump.performed += Jumping;
         actions.Player.Jump.canceled += Jumping;
 
+        actions.Player.Dash.started += ctx => { StartCharging(); };
         actions.Player.Dash.canceled += OnDashRelease;
     }
 
@@ -75,16 +95,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void StartCharging()
+    {
+        isCharging = true;
+        currentCharge = 0f;
+
+        if (chargeBar)
+        {
+            chargeBar.value = 0;
+            chargeBar.gameObject.SetActive(true);
+        }
+    }
+
     void OnDashRelease(InputAction.CallbackContext ctx)
     {
-        Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-        Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
+        isCharging = false;
+        if (chargeBar)
+        {
+            chargeBar.gameObject.SetActive(false);
+        }
 
+        if (currentCharge < minChargeThredhold)
+        {
+            currentCharge = 0f;
+            return;
+        }
+        float chargePercent = Mathf.Clamp01(currentCharge / chargeTime);
+        float finalForce = Mathf.Lerp(minPushForce, maxPushForce, chargePercent);
+
+        Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         // Calculate direction: (Target - Current)
         Vector2 direction = (mouseWorldPosition - (Vector2)transform.position).normalized;
 
+        
+
         rb.linearVelocity = Vector2.zero;
-        rb.AddForce(direction * pushForce, ForceMode2D.Impulse);
+        rb.AddForce(direction * finalForce, ForceMode2D.Impulse);
 
         dashTimer = dashControlLossTime;
 
@@ -104,15 +150,27 @@ public class PlayerMovement : MonoBehaviour
     private void flip()
     {
         isFacingRight = !isFacingRight;
-        Vector3 localScale = transform.localScale;
-        localScale.x *= -1;
-        transform.localScale = localScale;
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+        // Counter-flip the UI 
+        if (chargeBar != null)
+        {
+            Vector3 uiScale = chargeBar.transform.localScale;
+            uiScale.x *= -1;
+            chargeBar.transform.localScale = uiScale;
+        }
     }
 
     void Update()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheckTransform.position, groundCheckRadius, groundLayer);
         animator.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
+
+        if (isCharging)
+        {
+            currentCharge += Time.deltaTime;
+            UpdateUI();
+        }
         if (dashTimer > 0)
         {
             dashTimer -= Time.deltaTime;
@@ -128,6 +186,18 @@ public class PlayerMovement : MonoBehaviour
         else if (move < 0 && isFacingRight)
         {
             flip();
+        }
+    }
+
+    void UpdateUI()
+    {
+        if(!chargeBar) return;
+
+        chargeBar.value = currentCharge / chargeTime;
+        Image fillImage = chargeBar.fillRect.GetComponent<Image>();
+        if (fillImage != null)
+        {
+            fillImage.color = (currentCharge >= minChargeThredhold) ? readyColor : chargingColor;
         }
     }
 
