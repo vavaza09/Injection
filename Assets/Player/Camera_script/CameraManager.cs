@@ -10,6 +10,19 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CinemachineCamera[] _allVirtualCameras;
     [SerializeField] private Rigidbody2D _playerRb;
 
+    [Header("Room Lock")]
+    [SerializeField] private Transform cameraTarget;
+    private Transform _cachedFollowTarget;
+    private Transform _cachedLookAtTarget;
+    private bool _isRoomLocked;
+
+    [Header("Zoom Time")]
+    [SerializeField] private float _zoomInTime = 0.35f;
+    [SerializeField] private float _zoomOutTime = 0.45f;
+
+    private float _defaultOrthoSize;
+    private Coroutine _zoomRoutine;
+
     [Header("Fall Detection")]
     [SerializeField] private float _fallVelocityThreshold = -5f;   // start considering fall (increased threshold)
     [SerializeField] private float _commitDelay = 0.1f;            // slightly longer delay for smoother feel
@@ -25,6 +38,7 @@ public class CameraManager : MonoBehaviour
     [Header("Transition Times")]
     [SerializeField] private float _downTime = 0.2f;               // slightly slower transition down
     [SerializeField] private float _upTime = 0.5f;                 // slower recovery for comfort
+
 
     private CinemachineCamera _currentCam;
     private CinemachinePositionComposer _composer;
@@ -52,6 +66,13 @@ public class CameraManager : MonoBehaviour
     {
         ResolveCurrentCamera();
         ApplyInstant(_normalOffsetY, _normalYDamping);
+
+        if (_currentCam != null)
+        {
+            _defaultOrthoSize = _currentCam.Lens.OrthographicSize;
+        }
+
+
     }
 
     private void Update()
@@ -110,7 +131,7 @@ public class CameraManager : MonoBehaviour
 
         // Get CinemachinePositionComposer (new API - replaces FramingTransposer)
         _composer = _currentCam.GetComponent<CinemachinePositionComposer>();
-        
+
         if (_composer == null)
         {
             Debug.LogError("CameraManager: CinemachinePositionComposer not found on current vcam. Make sure your Cinemachine Camera has Position Composer component.");
@@ -144,7 +165,7 @@ public class CameraManager : MonoBehaviour
                 Mathf.Lerp(startOffset.y, targetOffsetY, alpha),
                 startOffset.z
             );
-            
+
             // Update Y damping only (keep X and Z the same)
             _composer.Damping = new Vector3(
                 startDamping.x,
@@ -165,7 +186,7 @@ public class CameraManager : MonoBehaviour
     private void ApplyInstant(float offsetY, float yDamping)
     {
         if (_composer == null) return;
-        
+
         _composer.TargetOffset = new Vector3(_composer.TargetOffset.x, offsetY, _composer.TargetOffset.z);
         _composer.Damping = new Vector3(_composer.Damping.x, yDamping, _composer.Damping.z);
     }
@@ -189,4 +210,81 @@ public class CameraManager : MonoBehaviour
             }
         }
     }
+
+    public void EnterRoomLock(Transform roomAnchor)
+    {
+        if (_currentCam == null || roomAnchor == null || _isRoomLocked)
+        {
+            return;
+        }
+
+        // Cache current follow targets
+        _cachedFollowTarget = _currentCam.Follow;
+        _cachedLookAtTarget = _currentCam.LookAt;
+
+        // Lock camera to room
+        _currentCam.Follow = roomAnchor;
+        _currentCam.LookAt = roomAnchor;
+
+        _isRoomLocked = true;
+    }
+    public void ExitRoomLock()
+    {
+        if (_currentCam == null || !_isRoomLocked)
+        {
+            return;
+        }
+
+        // Restore follow targets
+        _currentCam.Follow = cameraTarget;
+        _currentCam.LookAt = cameraTarget;
+
+        _isRoomLocked = false;
+    }
+
+
+    private void CacheDefaultOrtho()
+    {
+        if (_currentCam != null)
+            _defaultOrthoSize = _currentCam.Lens.OrthographicSize;
+    }
+
+    public void SetRoomOrthoSize(float newSize)
+    {
+        if (_currentCam == null) return;
+        StartZoom(newSize, _zoomInTime);
+    }
+
+    public void ResetRoomOrthoSize()
+    {
+        if (_currentCam == null) return;
+        StartZoom(_defaultOrthoSize, _zoomOutTime);
+    }
+
+    private void StartZoom(float targetSize, float duration)
+    {
+        if (_zoomRoutine != null)
+        {
+            StopCoroutine(_zoomRoutine);
+        }
+        _zoomRoutine = StartCoroutine(ZoomCoroutine(targetSize, duration));
+    }
+
+    private IEnumerator ZoomCoroutine(float targetSize, float duration)
+    {
+        if (_currentCam == null) yield break;
+        float startSize = _currentCam.Lens.OrthographicSize;
+        float t = 0f;
+        duration = Mathf.Max(0.001f, duration);
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float alpha = t / duration;
+            _currentCam.Lens.OrthographicSize = Mathf.Lerp(startSize, targetSize, alpha);
+            yield return null;
+        }
+        _currentCam.Lens.OrthographicSize = targetSize;
+        _zoomRoutine = null;
+    }
+
 }
