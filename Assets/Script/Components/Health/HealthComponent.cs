@@ -7,7 +7,8 @@ namespace Game.Components.Health
 
         public void Initialize(float max)
         {
-
+            maxHealth = max;
+            currentHealth = maxHealth;
         }
 
         public void TakeDamage(float amount)

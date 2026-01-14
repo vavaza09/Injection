@@ -3,28 +3,23 @@ using UnityEngine.XR;
 
 public class EnemyAI : MonoBehaviour
 {
-    private Enemy enemy;
-
-
+    [SerializeField] private Enemy enemy;
     [SerializeField] private EnemyState currentState = EnemyState.Idle;
     private float stateTimer;
 
     private void Awake()
     {
-        enemy = GetComponent<Enemy>();
+        if(enemy == null)
+        {
+            enemy = GetComponent<Enemy>();
+        }
+        
         stateTimer = 0f;
     }
 
     private void Update()
     {
-        if (enemy == null)
-        {
-            return;
-        }
-        if (enemy.GetState() == EnemyState.Dead)
-        {
-            return;
-        }
+        UpdateAI();
     }
 
     public void UpdateAI()
