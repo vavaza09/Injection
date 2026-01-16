@@ -13,7 +13,6 @@ public class Player : character
     private PlayerAudioController _audioController;
 
     [Header("Player Movement")]
-    [SerializeField] private float jumpForce = 12f;
     [SerializeField] private int maxJumps = 2;
     private int jumpsRemaining;
 
@@ -143,21 +142,7 @@ public class Player : character
             _logger?.LogError("Cannot jump: MovementComponent is null");
             return;
         }
-
-        // Reset Y velocity for consistent jump height
-        Vector2 velocity = movementComponent.GetVelocity();
-        movementComponent.SetVelocity(new Vector2(velocity.x, 0));
-
-        // Add jump force
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
-        jumpsRemaining--;
-
-        // Animation & Audio
-        _animationController?.PlayJumpAnimation();
-        _audioController?.PlayJumpSound();
-
-        _logger?.Log($"Player jumped (jumps remaining: {jumpsRemaining})");
+        movementComponent.Jump();
     }
 
     public void AddScore(int points)

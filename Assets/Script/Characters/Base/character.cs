@@ -21,23 +21,23 @@ public abstract class character : MonoBehaviour
 
     //Components
     protected HealthComponent healthComponent;
-    protected MovementComponent movementComponent;
+    [SerializeField] protected MovementComponent movementComponent;
     protected AttackComponent attackComponent;
 
     protected virtual void Awake()
     {
         characterTransform = transform;
         rb = GetComponent<Rigidbody2D>();
+        movementComponent = GetComponent<MovementComponent>();
     }
 
     [Inject]
     protected virtual void InitializeComponent( 
-        HealthComponent health, 
-        MovementComponent movement
+        HealthComponent health
         )
     {
         healthComponent = health;
-        movementComponent = movement;
+        
     }
     
     protected virtual void Start()
@@ -108,7 +108,7 @@ public abstract class character : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // Draw ground check gizmo
-        movementComponent?.DrawGroundCheckGizmo();
+        movementComponent?.OnDrawGizmosSelected();
     }
 }
 
