@@ -2,48 +2,75 @@ using UnityEngine;
 
 public class MeleeEnemy : Enemy
 {
-    [SerializeField] private float meleeRange = 1.2f;
+    // Components
+    private MeleeEnemyMovement enemyMovement;
+    private MeleeEnemyAttack enemyAttack;
 
-    [SerializeField] private float attackCooldown = 0.8f;
-    private float lastAttackTime;
-    private int facing = 1;
-
-    public override void Attack()
+    protected override void Start()
     {
-        if (playerTransform == null) return;
+        base.Start();
 
-        UpdateFacing();
+        // Get components
+        enemyMovement = GetComponent<MeleeEnemyMovement>();
+        enemyAttack = GetComponent<MeleeEnemyAttack>();
 
-        float dist = Vector2.Distance(transform.position, playerTransform.position);
-
-        if (dist <= meleeRange && Time.time >= lastAttackTime + attackCooldown)
+        // Validate components
+        if (enemyMovement == null)
         {
-            PerformMeleeAttack();
-            lastAttackTime = Time.time;
+            Debug.LogError($"MeleeEnemy '{gameObject.name}' is missing MeleeEnemyMovement component!");
+        }
+
+        if (enemyAttack == null)
+        {
+            Debug.LogError($"MeleeEnemy '{gameObject.name}' is missing MeleeEnemyAttack component!");
         }
     }
 
-    private void PerformMeleeAttack()
+    private void Update()
     {
-        //if (attackComponent != null)
-        //{
-        //    attackComponent.PerformAttack();
-        //}
-            
+        // Update attack state machine
+        if (enemyAttack != null)
+        {
+            enemyAttack.UpdateAttack();
+        }
     }
 
-    private void UpdateFacing()
+    public override void Move(Vector2 direction)
     {
-        float dir = playerTransform.position.x - transform.position.x;
+        // This method is kept for base class compatibility
+        // but actual movement is handled by MeleeEnemyMovement
+        if (enemyMovement != null && !enemyAttack.IsAttacking)
+        {
+            enemyMovement.MoveInDirection(direction);
+        }
+    }
 
-        if (dir > 0)
-            facing = 1;
-        else if (dir < 0)
-            facing = -1;
+    public override void PatrolArea()
+    {
+        if (enemyMovement != null && !enemyAttack.IsAttacking)
+        {
+            enemyMovement.Patrol();
+        }
+    }
 
-        // Optional: flip sprite by scale
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * facing;
-        transform.localScale = scale;
+    public override void ChasePlayer()
+    {
+        if (playerTransform == null) return;
+
+        if (enemyMovement != null && !enemyAttack.IsAttacking)
+        {
+            enemyMovement.ChaseTarget(playerTransform.position);
+        }
+    }
+
+    public override void Attack()
+    {
+        if (playerTransform == null || enemyAttack == null) return;
+
+        // Try jump attack first (if enabled and conditions are met)
+        enemyAttack.TryJumpAttack(playerTransform);
+
+        // Try regular attack
+        enemyAttack.TryAttack(playerTransform);
     }
 }
