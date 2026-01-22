@@ -2,75 +2,54 @@ using UnityEngine;
 
 public class MeleeEnemy : Enemy
 {
-    // Components
-    private MeleeEnemyMovement enemyMovement;
-    private MeleeEnemyAttack enemyAttack;
+    private MeleeEnemyMovement movement;
+    private MeleeEnemyAttack attack;
 
     protected override void Start()
     {
         base.Start();
-
-        // Get components
-        enemyMovement = GetComponent<MeleeEnemyMovement>();
-        enemyAttack = GetComponent<MeleeEnemyAttack>();
-
-        // Validate components
-        if (enemyMovement == null)
-        {
-            Debug.LogError($"MeleeEnemy '{gameObject.name}' is missing MeleeEnemyMovement component!");
-        }
-
-        if (enemyAttack == null)
-        {
-            Debug.LogError($"MeleeEnemy '{gameObject.name}' is missing MeleeEnemyAttack component!");
-        }
+        movement = GetComponent<MeleeEnemyMovement>();
+        attack = GetComponent<MeleeEnemyAttack>();
     }
 
     private void Update()
     {
-        // Update attack state machine
-        if (enemyAttack != null)
+        if (attack != null)
         {
-            enemyAttack.UpdateAttack();
+            attack.UpdateAttack();
         }
     }
 
     public override void Move(Vector2 direction)
     {
-        // This method is kept for base class compatibility
-        // but actual movement is handled by MeleeEnemyMovement
-        if (enemyMovement != null && !enemyAttack.IsAttacking)
-        {
-            enemyMovement.MoveInDirection(direction);
-        }
+        // Not used
     }
 
     public override void PatrolArea()
     {
-        if (enemyMovement != null && !enemyAttack.IsAttacking)
+        if (movement != null)
         {
-            enemyMovement.Patrol();
+            movement.Patrol();
         }
     }
 
     public override void ChasePlayer()
     {
-        if (playerTransform == null) return;
-
-        if (enemyMovement != null && !enemyAttack.IsAttacking)
+        if (playerTransform != null && movement != null)
         {
-            enemyMovement.ChaseTarget(playerTransform.position);
+            movement.ChaseTarget(playerTransform.position);
         }
     }
 
     public override void Attack()
     {
-        if (playerTransform == null || enemyAttack == null) return;
-
-        // Try jump attack first (if enabled and conditions are met)
-        enemyAttack.TryJumpAttack(playerTransform);
-
-        // Try regular attack
-        enemyAttack.TryAttack(playerTransform);
+        if (playerTransform != null && attack != null)
+        {
+            if (movement != null)
+            {
+                movement.StopMovement();
+            }
+            attack.TryAttack(playerTransform);
+        }
     }
 }
