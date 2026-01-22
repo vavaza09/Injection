@@ -19,13 +19,7 @@ public class Enemy : character
 
     protected override void Start()
     {
-        transform = base.transform;
         rigidbody2D = GetComponent<Rigidbody2D>();
-
-
-        healthComponent = GetComponent<HealthComponent>();
-        movementComponent = GetComponent<MovementComponent>();
-        attackComponent = GetComponent<AttackComponent>();
 
         //if (playerTransform == null)
         //{
@@ -86,7 +80,23 @@ public class Enemy : character
 
     public virtual void DetectPlayer()
     {
-        if (playerTransform == null) return;
+        if (playerTransform == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                playerTransform = playerObj.transform;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (playerTransform == null)
+        {
+            return;
+        }
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
 
@@ -98,7 +108,7 @@ public class Enemy : character
         {
             currentState = EnemyState.Chase;
         }
-        else
+        else if (currentState != EnemyState.Idle && currentState != EnemyState.Patrol)
         {
             currentState = EnemyState.Patrol;
         }
