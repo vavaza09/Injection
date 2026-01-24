@@ -108,7 +108,7 @@ public abstract class character : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // Draw ground check gizmo
-        movementComponent?.OnDrawGizmosSelected();
+        //movementComponent?.OnDrawGizmosSelected();
     }
 }
 
