@@ -1,7 +1,8 @@
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 using Core.Logging;
 using UnityEngine;
 using System;
+
 namespace Game.Characters.Player
 {
     /// <summary>
@@ -17,7 +18,9 @@ namespace Game.Characters.Player
 
         // Events
         public event Action OnJumpPressed;
+        public event Action OnJumpReleased;
         public event Action OnAttackPressed;
+        public event Action OnRightClickPressed;  // ⬅️ เพิ่ม Event สำหรับคลิกขวา
 
         // Constructor - DI via VContainer
         public PlayerInputHandler(LoggerFactory loggerFactory)
@@ -38,9 +41,13 @@ namespace Game.Characters.Player
 
             // Jump
             _actions.Player.Jump.performed += OnJump;
+            _actions.Player.Jump.canceled += OnJumpCancel;
 
             // Attack
             _actions.Player.Attack.performed += OnAttack;
+
+            // Right Click (Slow Motion) - ⬅️ เพิ่มการ Subscribe
+            _actions.Player.Aim.performed += OnRightClick;
 
             _logger?.Log("Input system enabled");
         }
@@ -50,7 +57,9 @@ namespace Game.Characters.Player
             _actions.Player.Move.performed -= OnMove;
             _actions.Player.Move.canceled -= OnMove;
             _actions.Player.Jump.performed -= OnJump;
+            _actions.Player.Jump.canceled -= OnJumpCancel;
             _actions.Player.Attack.performed -= OnAttack;
+            _actions.Player.Aim.performed -= OnRightClick;  // ⬅️ เพิ่ม Unsubscribe
 
             _actions.Player.Disable();
 
@@ -74,10 +83,23 @@ namespace Game.Characters.Player
             _logger?.Log("Jump pressed");
         }
 
+        private void OnJumpCancel(InputAction.CallbackContext context)
+        {
+            OnJumpReleased?.Invoke();
+            _logger?.Log("Jump released");
+        }
+
         private void OnAttack(InputAction.CallbackContext context)
         {
             OnAttackPressed?.Invoke();
             _logger?.Log("Attack pressed");
+        }
+
+        // ⬅️ เพิ่มเมธอดสำหรับ Right Click
+        private void OnRightClick(InputAction.CallbackContext context)
+        {
+            OnRightClickPressed?.Invoke();
+            _logger?.Log("Right Click pressed - Slow Motion activated");
         }
     }
 }

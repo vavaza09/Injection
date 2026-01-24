@@ -166,7 +166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 163289074}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Movement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,12 +181,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163289073}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.07, y: 3.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 784217776}
+  m_Father: {fileID: 372754831}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &204884907
 GameObject:
@@ -367,7 +367,8 @@ GameObject:
   - component: {fileID: 372754828}
   - component: {fileID: 372754827}
   - component: {fileID: 372754825}
-  m_Layer: 0
+  - component: {fileID: 372754832}
+  m_Layer: 6
   m_Name: ====PLAYER====
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -390,6 +391,7 @@ MonoBehaviour:
   maxHealth: 0
   moveSpeed: 8
   attackDamage: 0
+  movementComponent: {fileID: 372754832}
   maxJumps: 2
   score: 0
   animator: {fileID: 372754829}
@@ -408,10 +410,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 2
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -420,8 +422,8 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &372754828
 CapsuleCollider2D:
@@ -525,7 +527,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -8804577451312863447, guid: af13a060c97d01244877394727a08cd3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -546,14 +548,49 @@ Transform:
   m_GameObject: {fileID: 372754824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07, y: -3.47, z: 0}
+  m_LocalPosition: {x: -1.48, y: -3.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 488568846}
   - {fileID: 1130992141}
+  - {fileID: 163289074}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &372754832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372754824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34cd7907d1691a847b63cb34ee235aeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 8
+  acceleration: 40
+  deceleration: 50
+  airAcceleration: 30
+  airDeceleration: 30
+  airControlMultiplier: 0.8
+  jumpSpeed: 10
+  jumpHBoost: 40
+  varJumpTime: 0.2
+  jumpGraceTime: 0.1
+  gravity: 10
+  maxFall: 160
+  fastMaxFall: 240
+  halfGravThreshold: 40
+  fallGravityMultiplier: 2
+  lowJumpGravityMultiplier: 3
+  fallAirControlMultiplier: 0.75
+  groundCheckSize: {x: 0.4, y: 0.1}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  canMove: 1
 --- !u!1 &432769942
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,7 +737,7 @@ GameObject:
   - component: {fileID: 488568849}
   - component: {fileID: 488568848}
   - component: {fileID: 488568847}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: ====UI====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,7 +971,7 @@ GameObject:
   m_Component:
   - component: {fileID: 693020410}
   - component: {fileID: 693020411}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: ChargeBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1043,7 +1080,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 205211810}
-  - {fileID: 163289074}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &819639399
@@ -1190,7 +1226,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1130992141}
   - component: {fileID: 1130992142}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CameraTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,7 +1543,7 @@ GameObject:
   - component: {fileID: 1235201891}
   - component: {fileID: 1235201893}
   - component: {fileID: 1235201892}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1807,7 +1843,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1640780881}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1894,7 +1930,7 @@ GameObject:
   - component: {fileID: 1857704856}
   - component: {fileID: 1857704858}
   - component: {fileID: 1857704857}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

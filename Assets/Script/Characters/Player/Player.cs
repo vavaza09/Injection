@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
@@ -18,6 +18,11 @@ public class Player : character
 
     [Header("Player Stats")]
     [SerializeField] private int score = 0;
+
+    [Header("Slow Motion Settings")]
+    [SerializeField] private float slowMotionTimeScale = 0.3f;  // ⬅️ ความช้าของเวลา (30%)
+    [SerializeField] private float slowMotionDuration = 2f;     // ⬅️ ระยะเวลา Slow Motion (2 วินาที)
+    [SerializeField] private bool useSmoothSlowMotion = true;   // ⬅️ ใช้ Smooth Transition หรือไม่
 
     [Header("References for DI")]
     [SerializeField] private Animator animator;
@@ -60,17 +65,17 @@ public class Player : character
         base.Start();
         jumpsRemaining = maxJumps;
 
-        // Pass MovementComponent to AnimationController
         if (_animationController != null && movementComponent != null)
         {
             _animationController.SetMovementComponent(movementComponent);
         }
 
-        // Subscribe to input events
         if (_inputHandler != null)
         {
             _inputHandler.OnJumpPressed += Jump;
+            _inputHandler.OnJumpReleased += CancelJump;
             _inputHandler.OnAttackPressed += Attack;
+            _inputHandler.OnRightClickPressed += ActivateSlowMotion;  // ⬅️ Subscribe Right Click Event
             _inputHandler.Enable();
         }
         else
@@ -135,14 +140,56 @@ public class Player : character
 
     public void Jump()
     {
-        if (!isAlive || jumpsRemaining <= 0) return;
+        Debug.Log($"Jump() called - isAlive: {isAlive}, jumpsRemaining: {jumpsRemaining}");
+        
+        if (!isAlive || jumpsRemaining <= 0)
+        {
+            Debug.LogWarning($"Jump blocked! isAlive: {isAlive}, jumpsRemaining: {jumpsRemaining}");
+            return;
+        }
 
         if (movementComponent == null)
         {
             _logger?.LogError("Cannot jump: MovementComponent is null");
+            Debug.LogError("MovementComponent is NULL!");
             return;
         }
-        movementComponent.Jump();
+        
+        Debug.Log($"Calling movementComponent.Jump()");
+        movementComponent.Jump(particles: true, playSfx: true);
+        jumpsRemaining--;
+        Debug.Log($"Jump executed! jumpsRemaining now: {jumpsRemaining}");
+    }
+
+    public void CancelJump()
+    {
+        if (!isAlive) return;
+        movementComponent?.CancelJump();
+    }
+
+    // ⬅️ เพิ่มเมธอดสำหรับเปิด Slow Motion
+    private void ActivateSlowMotion()
+    {
+        if (!isAlive) return;
+
+        if (useSmoothSlowMotion)
+        {
+            SlowMotion.Instance.StartSlowMotionSmooth(
+                slowMotionTimeScale,
+                slowMotionDuration,
+                easeInDuration: 0.1f,
+                easeOutDuration: 0.3f
+            );
+        }
+        else
+        {
+            SlowMotion.Instance.StartSlowMotion(
+                slowMotionTimeScale,
+                slowMotionDuration
+            );
+        }
+
+        _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
     }
 
     public void AddScore(int points)
@@ -188,11 +235,12 @@ public class Player : character
     {
         base.OnDestroy();
 
-        // Cleanup
         if (_inputHandler != null)
         {
             _inputHandler.OnJumpPressed -= Jump;
+            _inputHandler.OnJumpReleased -= CancelJump;
             _inputHandler.OnAttackPressed -= Attack;
+            _inputHandler.OnRightClickPressed -= ActivateSlowMotion;  // ⬅️ Unsubscribe
             _inputHandler.Dispose();
         }
     }

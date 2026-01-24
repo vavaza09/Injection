@@ -10,29 +10,48 @@ namespace Game.Components.Movement
         private ILogger _logger; 
         
         // Movement Settings
+        [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 8f;
         [SerializeField] private float acceleration = 40f;
         [SerializeField] private float deceleration = 50f;
 
         // Air Control
+        [Header("Air Control")]
         [SerializeField] private float airAcceleration = 30f;
         [SerializeField] private float airDeceleration = 30f;
         [SerializeField] private float airControlMultiplier = 0.8f;
 
-        // Jump Settings
-        [SerializeField] private float jumpInitialSpeed = 12f;
-        [SerializeField] private float jumpHangTime = 0.25f;
-        [SerializeField] private float fallTerminalVelocity = -100f;
-        [SerializeField] private float fallGravityMultiplier = 2.5f;
-        [SerializeField] private float lowJumpGravityMultiplier = 3f;
+        // Jump Settings (Celeste-inspired)
+        [Header("Jump Settings (Celeste-inspired)")]
+        [SerializeField] private float jumpSpeed = -105f;              // Celeste: JumpSpeed = -105f
+        [SerializeField] private float jumpHBoost = 40f;               // Celeste: ความเร็วแนวนอนเพิ่มตอนกระโดด
+        [SerializeField] private float varJumpTime = 0.2f;             // Celeste: VarJumpTime = .2f
+        [SerializeField] private float jumpGraceTime = 0.1f;           // Celeste: JumpGraceTime = 0.1f (Coyote Time)
+        
+        [Header("Gravity Settings")]
+        [SerializeField] private float gravity = 900f;                 // Celeste: Gravity = 900f
+        [SerializeField] private float maxFall = 160f;                 // Celeste: MaxFall = 160f
+        [SerializeField] private float fastMaxFall = 240f;             // Celeste: FastMaxFall = 240f
+        [SerializeField] private float halfGravThreshold = 40f;        // Celeste: HalfGravThreshold = 40f
+        
+        [Header("Advanced Jump")]
+        [SerializeField] private float fallGravityMultiplier = 2.5f;   // เพิ่มแรงโน้มถ่วงตอนตก
+        [SerializeField] private float lowJumpGravityMultiplier = 3f;  // แรงโน้มถ่วงตอนปล่อยปุ่มกระโดด
         [SerializeField] private float fallAirControlMultiplier = 0.75f;
         
         // Jump State
         private bool isJumping;
         private float jumpTimer;
         private bool isFalling;
-
+        private float varJumpSpeed;                                    // Celeste: varJumpSpeed
+        private float varJumpTimer;                                    // Celeste: varJumpTimer
+        private float jumpGraceTimer;                                  // Celeste: jumpGraceTimer (Coyote Time)
+        private bool autoJump;                                         // Celeste: AutoJump
+        private float autoJumpTimer;                                   // Celeste: AutoJumpTimer
+        private const float bounceAutoJumpTime = 0.1f;                 // Celeste: BounceAutoJumpTime
+        
         // Ground Check
+        [Header("Ground Check")]
         [SerializeField] private Vector2 groundCheckSize = new Vector2(0.4f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
 
@@ -40,6 +59,7 @@ namespace Game.Components.Movement
         private Transform characterTransform;
         private Transform groundCheck;
         private bool isGrounded;
+        private bool wasOnGround;                                      // Celeste: wasOnGround
         [SerializeField] private bool canMove = true;
 
         // ⭐ ใช้ VContainer Inject แทน Constructor
@@ -53,13 +73,11 @@ namespace Game.Components.Movement
         // ⭐ ใช้ Awake แทน Constructor
         private void Awake()
         {
-            // ตั้งค่า LayerMask ถ้ายังไม่ได้ตั้ง
             if (groundLayer == 0)
             {
                 groundLayer = LayerMask.GetMask("Ground");
             }
 
-            // ถ้าไม่มี Logger (ไม่ได้ Inject)
             if (_logger == null)
             {
                 Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
@@ -73,6 +91,23 @@ namespace Game.Components.Movement
         {
             rb = rigidbody;
             characterTransform = transform;
+            canMove = true;
+            
+            // ⬅️ เพิ่ม: บังคับให้ gravityScale = 0
+            if (rb != null)
+            {
+                if (rb.gravityScale != 0)
+                {
+                    Debug.LogWarning($"[MovementComponent] Rigidbody2D.gravityScale was {rb.gravityScale}, forcing to 0");
+                    rb.gravityScale = 0;
+                }
+                
+                Debug.Log($"✅ Rigidbody2D Settings:");
+                Debug.Log($"   - Gravity Scale: {rb.gravityScale}");
+                Debug.Log($"   - Body Type: {rb.bodyType}");
+                Debug.Log($"   - Mass: {rb.mass}");
+            }
+            
             SetupGroundCheck();
             
             _logger?.Log($"MovementComponent initialized for {transform.name}");
@@ -136,7 +171,7 @@ namespace Game.Components.Movement
             }
 
             float speedDiff = targetSpeed - currentSpeed;
-            float movement = speedDiff * accelRate;
+            float movement = speedDiff * accelRate; 
 
             rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
@@ -146,67 +181,232 @@ namespace Game.Components.Movement
             }
         }
 
-        public void Jump()
+        /// <summary>
+        /// Jump แบบ Celeste - มี Variable Jump Height + Jump Grace Time
+        /// </summary>
+        public void Jump(bool particles = true, bool playSfx = true)
         {
-            if (!isGrounded || !canMove || rb == null) return;
+            Debug.Log($"🎯 Jump() START - Current velocity: {rb?.linearVelocity}");
+            
+            if (jumpGraceTimer <= 0 && !isGrounded)
+            {
+                Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
+                return;
+            }
 
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpInitialSpeed);
+            if (!canMove || rb == null)
+            {
+                Debug.LogWarning($"❌ Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
+                return;
+            }
+
+            Debug.Log($"✅ Jump SUCCESS! Applying velocity...");
+            
+            // Reset timers
+            jumpGraceTimer = 0;
+            varJumpTimer = varJumpTime;
+            autoJump = true;
+            
+            // ⭐ แก้ไข: รักษาความเร็วแนวนอนเดิม + เพิ่ม jumpHBoost แบบจำกัด
+            float currentSpeedX = rb.linearVelocity.x;
+            float moveDirection = Mathf.Sign(currentSpeedX);
+            
+            // ถ้ากำลังวิ่งอยู่ในทิศทางเดียวกัน -> เพิ่ม jumpHBoost เล็กน้อย
+            // ถ้าหยุดนิ่ง -> ไม่เพิ่ม
+            float jumpBoostAmount = 0;
+            if (Mathf.Abs(currentSpeedX) > 0.5f) // ถ้าวิ่งอยู่
+            {
+                // จำกัด jumpHBoost ไม่ให้เกิน moveSpeed
+                float maxBoost = Mathf.Min(jumpHBoost, moveSpeed - Mathf.Abs(currentSpeedX));
+                jumpBoostAmount = maxBoost * moveDirection;
+            }
+            
+            // ตั้งค่า velocity แบบรักษาความเร็ว X เดิม
+            Vector2 newVelocity = new Vector2(
+                currentSpeedX + jumpBoostAmount,  // รักษาความเร็ว X + boost เล็กน้อย
+                jumpSpeed  // ตั้ง Y เป็นความเร็วกระโดด
+            );
+            
+            Debug.Log($"   - Current Speed X: {currentSpeedX:F2}");
+            Debug.Log($"   - Jump Boost: {jumpBoostAmount:F2}");
+            Debug.Log($"   - New Velocity: {newVelocity}");
+            
+            rb.linearVelocity = newVelocity;
+            
+            varJumpSpeed = rb.linearVelocity.y;
             isJumping = true;
             jumpTimer = 0f;
             isFalling = false;
 
-            _logger?.Log("Jump started");
+            Debug.Log($"✅ Jump applied! Final velocity: {rb.linearVelocity}");
+            Debug.Log($"   - varJumpSpeed: {varJumpSpeed}");
+            Debug.Log($"   - autoJump: {autoJump}");
         }
 
+        /// <summary>
+        /// อัพเดทสถานะการกระโดด - Celeste Style
+        /// </summary>
         private void UpdateJumpState()
         {
             if (rb == null) return;
 
+            // บันทึกสถานะพื้นก่อนหน้า
+            wasOnGround = isGrounded;
+
+            // รีเซ็ตสถานะเมื่อลงพื้น
             if (isGrounded)
             {
                 isJumping = false;
                 isFalling = false;
                 jumpTimer = 0f;
+                jumpGraceTimer = jumpGraceTime;
+                autoJump = false;
                 return;
             }
 
-            if (isJumping)
+            // ลด Jump Grace Timer (Coyote Time)
+            if (jumpGraceTimer > 0)
             {
-                jumpTimer += Time.deltaTime;
+                jumpGraceTimer -= Time.deltaTime;
+            }
 
-                if (jumpTimer >= jumpHangTime && rb.linearVelocity.y <= 0)
+            // ลด Auto Jump Timer
+            if (autoJumpTimer > 0)
+            {
+                if (autoJump)
                 {
-                    isJumping = false;
-                    isFalling = true;
+                    autoJumpTimer -= Time.deltaTime;
+                    if (autoJumpTimer <= 0)
+                        autoJump = false;
+                }
+                else
+                {
+                    autoJumpTimer = 0;
                 }
             }
 
-            if (rb.linearVelocity.y < 0)
+            // Variable Jump - ถ้ายังกดปุ่มอยู่ให้กระโดดสูงขึ้น
+            if (varJumpTimer > 0)
+            {
+                if (autoJump)
+                {
+                    rb.linearVelocity = new Vector2(
+                        rb.linearVelocity.x, 
+                        Mathf.Min(rb.linearVelocity.y, varJumpSpeed)
+                    );
+                    varJumpTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    varJumpTimer = 0;
+                }
+            }
+
+            // Apply Gravity with Half Gravity Threshold
+            if (!isGrounded)
+            {
+                float gravityMultiplier = 1f;
+
+                // Celeste: Half gravity when rising slowly
+                if (Mathf.Abs(rb.linearVelocity.y) < halfGravThreshold && (autoJump || varJumpTimer > 0))
+                {
+                    gravityMultiplier = 0.5f;
+                    Debug.Log($"🔵 Half Gravity: {gravityMultiplier}");
+                }
+                // Fast fall multiplier
+                else if (rb.linearVelocity.y > 0)  // ⬅️ เปลี่ยนจาก < 0 เป็น > 0 (Unity Y+ = ลง)
+                {
+                    gravityMultiplier = fallGravityMultiplier;
+                    Debug.Log($"🔴 Fast Fall: {gravityMultiplier}");
+                }
+                // Low jump multiplier (ถ้าปล่อยปุ่มกระโดด)
+                else if (rb.linearVelocity.y < 0 && varJumpTimer <= 0)  // ⬅️ เปลี่ยนจาก > 0 เป็น < 0
+                {
+                    gravityMultiplier = lowJumpGravityMultiplier;
+                    Debug.Log($"🟡 Low Jump: {gravityMultiplier}");
+                }
+
+                // ⭐ แก้สูตร Gravity (เพิ่มเลขลบ)
+                float gravityForce = gravity * gravityMultiplier * Time.deltaTime;
+                
+                // ⬅️ เปลี่ยนจาก + เป็น - (เพราะ gravity เป็นเลขบวก แต่ต้องดึงลง)
+                rb.linearVelocity = new Vector2(
+                    rb.linearVelocity.x,
+                    rb.linearVelocity.y - gravityForce  // ⬅️ เปลี่ยนเป็น ลบ (-)
+                );
+
+                Debug.Log($"⬇️ Applying Gravity: {gravityForce:F2}, Current Y: {rb.linearVelocity.y:F2}");
+
+                // Cap fall speed (Unity Y+ = ลง, ดังนั้นใช้ >)
+                float maxFallSpeed = maxFall;
+                if (rb.linearVelocity.y > maxFallSpeed)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, maxFallSpeed);
+                    Debug.Log($"🛑 Capped fall speed to: {maxFallSpeed}");
+                }
+            }
+
+            // Update falling state (Unity Y+ = ลง)
+            if (rb.linearVelocity.y > 0)
             {
                 isFalling = true;
-                
-                float extraGravity = Physics2D.gravity.y * (fallGravityMultiplier - 1) * Time.deltaTime;
-                rb.linearVelocity += new Vector2(0, extraGravity);
-                
-                if (rb.linearVelocity.y < fallTerminalVelocity)
-                {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, fallTerminalVelocity);
-                }
-            }
-            else if (rb.linearVelocity.y > 0 && !isJumping)
-            {
-                float extraGravity = Physics2D.gravity.y * (lowJumpGravityMultiplier - 1) * Time.deltaTime;
-                rb.linearVelocity += new Vector2(0, extraGravity);
+                isJumping = false;
             }
         }
 
+        /// <summary>
+        /// ยกเลิกการกระโดด (เมื่อปล่อยปุ่ม) - Celeste Style
+        /// </summary>
         public void CancelJump()
         {
-            if (isJumping && rb != null && rb.linearVelocity.y > 0)
+            if (varJumpTimer > 0)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-                isJumping = false;
-                isFalling = true;
+                varJumpTimer = 0;
+                _logger?.Log("Jump cancelled (released button)");
+            }
+        }
+
+        /// <summary>
+        /// Bounce - Celeste Style (ใช้กับ Spring, Bouncer)
+        /// </summary>
+        public void Bounce(float fromY, float bounceSpeed = -140f)
+        {
+            if (rb == null) return;
+
+            // Move to bounce position
+            float bottomY = characterTransform.position.y - (groundCheckSize.y / 2);
+            MoveVExact((int)(fromY - bottomY));
+
+            // Reset state
+            isJumping = false;
+            isFalling = false;
+            jumpGraceTimer = 0;
+            varJumpTimer = 0.2f; // Celeste: BounceVarJumpTime
+            autoJump = true;
+            autoJumpTimer = bounceAutoJumpTime;
+
+            // Set velocity
+            varJumpSpeed = bounceSpeed;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceSpeed);
+
+            _logger?.Log($"Bounced! Speed: {bounceSpeed}");
+        }
+
+        /// <summary>
+        /// Start Jump Grace Time - เรียกเมื่อเดินออกจากขอบแพลตฟอร์ม
+        /// </summary>
+        public void StartJumpGraceTime()
+        {
+            jumpGraceTimer = jumpGraceTime;
+        }
+
+        private void MoveVExact(int amount)
+        {
+            if (rb != null)
+            {
+                Vector2 pos = rb.position;
+                pos.y += amount;
+                rb.position = pos;
             }
         }
 
@@ -256,29 +456,38 @@ namespace Game.Components.Movement
             }
         }
 
-        public void SetJumpSettings(float initialSpeed, float hangTime, float terminalVelocity, float fallControl)
+        /// <summary>
+        /// Getters สำหรับ Auto Jump (ใช้กับ Spring, Bouncer)
+        /// </summary>
+        public bool AutoJump
         {
-            jumpInitialSpeed = initialSpeed;
-            jumpHangTime = hangTime;
-            fallTerminalVelocity = terminalVelocity;
-            fallAirControlMultiplier = fallControl;
-        }
-
-        public void SetGravityMultipliers(float fallMultiplier, float lowJumpMultiplier)
-        {
-            fallGravityMultiplier = fallMultiplier;
-            lowJumpGravityMultiplier = lowJumpMultiplier;
+            get => autoJump;
+            set => autoJump = value;
         }
 
         private void CheckGroundStatus()
         {
+            bool previousGrounded = isGrounded;
+            
             if (groundCheck != null)
             {
                 isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
             }
+
+            // ⬅️ เพิ่ม Debug
+            if (previousGrounded != isGrounded)
+            {
+                Debug.Log($"Ground State Changed: {previousGrounded} → {isGrounded}");
+            }
+
+            if (previousGrounded && !isGrounded && rb != null && rb.linearVelocity.y >= 0)
+            {
+                StartJumpGraceTime();
+                Debug.Log("🕐 Started Jump Grace Time (Coyote Time)");  // ⬅️ เพิ่ม
+            }
         }
 
-        public void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             if (groundCheck == null) return;
             Gizmos.color = isGrounded ? Color.green : Color.red;
