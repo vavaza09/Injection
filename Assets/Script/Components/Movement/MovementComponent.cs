@@ -7,8 +7,10 @@ namespace Game.Components.Movement
 {
     public class MovementComponent : MonoBehaviour
     {
-        private ILogger _logger; 
-        
+        private ILogger _logger;
+
+        [Header("Dependencies")]
+        private DashComponent _dashComponent;
         // Movement Settings
         [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 8f;
@@ -64,9 +66,10 @@ namespace Game.Components.Movement
 
         // ⭐ ใช้ VContainer Inject แทน Constructor
         [Inject]
-        public void Construct(LoggerFactory loggerFactory)
+        public void Construct(LoggerFactory loggerFactory, DashComponent dashComponent)
         {
             _logger = loggerFactory?.CreateLogger<MovementComponent>();
+            _dashComponent = dashComponent;
             _logger?.Log("MovementComponent injected via VContainer");
         }
 
@@ -92,7 +95,7 @@ namespace Game.Components.Movement
             rb = rigidbody;
             characterTransform = transform;
             canMove = true;
-            
+
             // ⬅️ เพิ่ม: บังคับให้ gravityScale = 0
             if (rb != null)
             {
@@ -179,6 +182,11 @@ namespace Game.Components.Movement
             {
                 rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * moveSpeed, rb.linearVelocity.y);
             }
+        }
+
+        public void Dash(Vector2 direction)
+        {
+            _dashComponent?.StartDash(direction, isGrounded);
         }
 
         /// <summary>
@@ -464,6 +472,7 @@ namespace Game.Components.Movement
             get => autoJump;
             set => autoJump = value;
         }
+
 
         private void CheckGroundStatus()
         {

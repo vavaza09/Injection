@@ -2,6 +2,7 @@
 using Core.Logging;
 using UnityEngine;
 using System;
+using Game.Components.Movement;
 
 namespace Game.Characters.Player
 {
@@ -20,7 +21,8 @@ namespace Game.Characters.Player
         public event Action OnJumpPressed;
         public event Action OnJumpReleased;
         public event Action OnAttackPressed;
-        public event Action OnRightClickPressed;  // ⬅️ เพิ่ม Event สำหรับคลิกขวา
+        public event Action OnRightClickPressed; // ⬅️ เพิ่ม Event สำหรับคลิกขวา
+        public event Action OnDashPressed;
 
         // Constructor - DI via VContainer
         public PlayerInputHandler(LoggerFactory loggerFactory)
@@ -49,6 +51,9 @@ namespace Game.Characters.Player
             // Right Click (Slow Motion) - ⬅️ เพิ่มการ Subscribe
             _actions.Player.Aim.performed += OnRightClick;
 
+            //Dash 
+            _actions.Player.Dash.performed += OnDash;
+
             _logger?.Log("Input system enabled");
         }
 
@@ -60,6 +65,7 @@ namespace Game.Characters.Player
             _actions.Player.Jump.canceled -= OnJumpCancel;
             _actions.Player.Attack.performed -= OnAttack;
             _actions.Player.Aim.performed -= OnRightClick;  // ⬅️ เพิ่ม Unsubscribe
+            _actions.Player.Dash.performed -= OnDash;
 
             _actions.Player.Disable();
 
@@ -100,6 +106,12 @@ namespace Game.Characters.Player
         {
             OnRightClickPressed?.Invoke();
             _logger?.Log("Right Click pressed - Slow Motion activated");
+        }
+
+        private void OnDash(InputAction.CallbackContext context)
+        {
+            OnDashPressed?.Invoke();
+            _logger?.Log("Dash pressed");
         }
     }
 }

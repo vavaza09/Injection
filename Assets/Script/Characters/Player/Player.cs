@@ -2,6 +2,8 @@
 using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
+using UnityEngine.InputSystem;
+using Game.Components.Movement;
 
 public class Player : character
 {
@@ -11,13 +13,17 @@ public class Player : character
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
+    private DashComponent _dashComponent;
 
     [Header("Player Movement")]
     [SerializeField] private int maxJumps = 2;
-    private int jumpsRemaining;
+    [SerializeField]private int jumpsRemaining;
 
-    [Header("Player Stats")]
-    [SerializeField] private int score = 0;
+    [Header("Dependency")]
+    [SerializeField] private Camera mainCamera;
+
+    [Header("Direction")]
+    private Vector2 lastAimDirection;
 
     [Header("Slow Motion Settings")]
     [SerializeField] private float slowMotionTimeScale = 0.3f;  // ⬅️ ความช้าของเวลา (30%)
@@ -44,7 +50,6 @@ public class Player : character
         _inputHandler = inputHandler;
         _animationController = animationController;
         _audioController = audioController;
-
         _logger?.Log("Player components injected via DI");
     }
 
@@ -52,7 +57,7 @@ public class Player : character
     {
         base.Awake();
 
-        // Validate Animator
+        
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
@@ -75,7 +80,9 @@ public class Player : character
             _inputHandler.OnJumpPressed += Jump;
             _inputHandler.OnJumpReleased += CancelJump;
             _inputHandler.OnAttackPressed += Attack;
-            _inputHandler.OnRightClickPressed += ActivateSlowMotion;  // ⬅️ Subscribe Right Click Event
+            _inputHandler.OnRightClickPressed += ActivateSlowMotion;
+            _inputHandler.OnDashPressed += Dash;
+
             _inputHandler.Enable();
         }
         else
@@ -126,6 +133,38 @@ public class Player : character
                 1
             );
         }
+    }
+
+    private void Dash()
+    {
+        movementComponent?.Dash(lastAimDirection);
+    }
+
+    private void UpdateAimDirection()
+    {
+        Vector2 aim = Vector2.zero;
+
+        if (Mouse.current != null && mainCamera != null)
+        {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
+            Vector2 direction = ((Vector2)worldPos - (Vector2)transform.position).normalized;
+
+            if (direction.magnitude > 0.1f)
+            {
+                aim = direction;
+            }
+        }
+
+        if (aim != Vector2.zero)
+        {
+            lastAimDirection = aim;
+        }
+    }
+
+    private Vector2 GetDashDirection()
+    {
+        return lastAimDirection;
     }
 
     public override void Attack()
@@ -192,14 +231,6 @@ public class Player : character
         _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
     }
 
-    public void AddScore(int points)
-    {
-        score += points;
-        _logger?.Log($"Score updated: {score}");
-    }
-
-    public int GetScore() => score;
-
     protected override void OnDeath()
     {
         movementComponent?.SetCanMove(false);
@@ -212,23 +243,6 @@ public class Player : character
         }
 
         _logger?.LogWarning("Player died! Game Over!");
-    }
-
-    protected override void OnTakeDamage()
-    {
-        StartCoroutine(DamageFlash());
-        _audioController?.PlayHurtSound();
-    }
-
-    private System.Collections.IEnumerator DamageFlash()
-    {
-        SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
-        if (sprite != null)
-        {
-            sprite.color = Color.red;
-            yield return new WaitForSeconds(0.1f);
-            sprite.color = Color.white;
-        }
     }
 
     protected override void OnDestroy()

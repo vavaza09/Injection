@@ -394,6 +394,9 @@ MonoBehaviour:
   movementComponent: {fileID: 372754832}
   maxJumps: 2
   score: 0
+  slowMotionTimeScale: 0.2
+  slowMotionDuration: 0.5
+  useSmoothSlowMotion: 1
   animator: {fileID: 372754829}
   jumpSound: {fileID: 0}
   attackSound: {fileID: 0}
