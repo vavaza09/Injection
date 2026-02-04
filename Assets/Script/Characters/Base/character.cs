@@ -14,7 +14,6 @@ using UnityEngine;
         protected float currentHealth;
         protected bool isAlive = true;
 
-        protected Transform transform;
         protected Rigidbody2D rigidbody2D;
         protected HealthComponent healthComponent;
         protected MovementComponent movementComponent;
