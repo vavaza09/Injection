@@ -12,26 +12,28 @@ public class Enemy : character
     [SerializeField] protected float attackRange = 1.5f;
 
     [Header("Target")]
-    [SerializeField] protected Transform playerTransform;
+    [SerializeField] public Transform playerTransform; // Changed from protected to public
 
     [Header("State")]
     [SerializeField] protected EnemyState currentState = EnemyState.Idle;
 
     protected override void Start()
     {
-        transform = base.transform;
         rigidbody2D = GetComponent<Rigidbody2D>();
 
-
-        healthComponent = GetComponent<HealthComponent>();
-        movementComponent = GetComponent<MovementComponent>();
-        attackComponent = GetComponent<AttackComponent>();
-
-        //if (playerTransform == null)
-        //{
-        //    GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        //    if (playerObj != null) playerTransform = playerObj.transform;
-        //}
+        // Auto-find player if not assigned
+        if (playerTransform == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                playerTransform = playerObj.transform;
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name}: Player not found! Make sure player has 'Player' tag.");
+            }
+        }
 
         base.Start();
     }
@@ -48,13 +50,27 @@ public class Enemy : character
         {
             transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
         }
+    }
 
-
+    /// <summary>
+    /// Patrol movement with custom speed.
+    /// </summary>
+    public virtual void Patrol(Vector2 direction, float speed)
+    {
+        if (movementComponent != null)
+        {
+            // Use custom patrol speed
+            Vector2 movement = direction.normalized * speed * Time.deltaTime;
+            transform.position += (Vector3)movement;
+        }
+        else
+        {
+            transform.position += (Vector3)(direction.normalized * speed * Time.deltaTime);
+        }
     }
 
     public override void Attack()
     {
-
         //if (attackComponent != null)
         //{
         //    attackComponent.PerformAttack();
@@ -75,18 +91,36 @@ public class Enemy : character
 
     protected override void OnTakeDamage()
     {
-
         if (currentState == EnemyState.Idle || currentState == EnemyState.Patrol)
         {
             currentState = EnemyState.Chase;
         }
-            
     }
 
 
     public virtual void DetectPlayer()
     {
-        if (playerTransform == null) return;
+        // Early return if player not found
+        if (playerTransform == null)
+        {
+            // Try to find player again (in case it spawned later)
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                playerTransform = playerObj.transform;
+            }
+            else
+            {
+                // Player still not found, stay in current state
+                return;
+            }
+        }
+
+        // Check if player transform is still valid (player might have been destroyed)
+        if (playerTransform == null)
+        {
+            return;
+        }
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
 
@@ -98,7 +132,7 @@ public class Enemy : character
         {
             currentState = EnemyState.Chase;
         }
-        else
+        else if (currentState != EnemyState.Idle && currentState != EnemyState.Patrol)
         {
             currentState = EnemyState.Patrol;
         }
@@ -106,9 +140,11 @@ public class Enemy : character
 
     public virtual void ChasePlayer()
     {
-        if (playerTransform == null) return;
+        if (playerTransform == null)
+        {
+            return;
+        }
 
- 
         Vector2 dir = playerTransform.position - transform.position;
         dir.y = 0f;
 
@@ -117,7 +153,7 @@ public class Enemy : character
 
     public virtual void PatrolArea()
     {
-
+        // Stop movement (called when waiting at patrol point)
         Move(Vector2.zero);
     }
 
@@ -130,6 +166,4 @@ public class Enemy : character
     {
         return currentState;
     }
-   
-
 }

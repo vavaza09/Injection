@@ -2,48 +2,54 @@ using UnityEngine;
 
 public class MeleeEnemy : Enemy
 {
-    [SerializeField] private float meleeRange = 1.2f;
+    private MeleeEnemyMovement movement;
+    private MeleeEnemyAttack attack;
 
-    [SerializeField] private float attackCooldown = 0.8f;
-    private float lastAttackTime;
-    private int facing = 1;
-
-    public override void Attack()
+    protected override void Start()
     {
-        if (playerTransform == null) return;
+        base.Start();
+        movement = GetComponent<MeleeEnemyMovement>();
+        attack = GetComponent<MeleeEnemyAttack>();
+    }
 
-        UpdateFacing();
-
-        float dist = Vector2.Distance(transform.position, playerTransform.position);
-
-        if (dist <= meleeRange && Time.time >= lastAttackTime + attackCooldown)
+    private void Update()
+    {
+        if (attack != null)
         {
-            PerformMeleeAttack();
-            lastAttackTime = Time.time;
+            attack.UpdateAttack();
         }
     }
 
-    private void PerformMeleeAttack()
+    public override void Move(Vector2 direction)
     {
-        //if (attackComponent != null)
-        //{
-        //    attackComponent.PerformAttack();
-        //}
-            
+        // Not used
     }
 
-    private void UpdateFacing()
+    public override void PatrolArea()
     {
-        float dir = playerTransform.position.x - transform.position.x;
+        if (movement != null)
+        {
+            movement.Patrol();
+        }
+    }
 
-        if (dir > 0)
-            facing = 1;
-        else if (dir < 0)
-            facing = -1;
+    public override void ChasePlayer()
+    {
+        if (playerTransform != null && movement != null)
+        {
+            movement.ChaseTarget(playerTransform.position);
+        }
+    }
 
-        // Optional: flip sprite by scale
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * facing;
-        transform.localScale = scale;
+    public override void Attack()
+    {
+        if (playerTransform != null && attack != null)
+        {
+            if (movement != null)
+            {
+                movement.StopMovement();
+            }
+            attack.TryAttack(playerTransform);
+        }
     }
 }
