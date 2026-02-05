@@ -13,7 +13,7 @@ public class Player : character
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
-    private DashComponent _dashComponent;
+    [SerializeField] private DashComponent _dashComponent;
 
     [Header("Player Movement")]
     [SerializeField] private int maxJumps = 2;
@@ -26,9 +26,9 @@ public class Player : character
     private Vector2 lastAimDirection;
 
     [Header("Slow Motion Settings")]
-    [SerializeField] private float slowMotionTimeScale = 0.3f;  // ⬅️ ความช้าของเวลา (30%)
-    [SerializeField] private float slowMotionDuration = 2f;     // ⬅️ ระยะเวลา Slow Motion (2 วินาที)
-    [SerializeField] private bool useSmoothSlowMotion = true;   // ⬅️ ใช้ Smooth Transition หรือไม่
+    [SerializeField] private float slowMotionTimeScale = 0.3f; 
+    [SerializeField] private float slowMotionDuration = 2f;     
+    [SerializeField] private bool useSmoothSlowMotion = true;   
 
     [Header("References for DI")]
     [SerializeField] private Animator animator;
@@ -38,7 +38,6 @@ public class Player : character
     [SerializeField] private AudioClip attackSound;
     [SerializeField] private AudioClip hurtSound;
 
-    // Constructor Injection via VContainer
     [Inject]
     public void Construct(
         LoggerFactory loggerFactory,
@@ -99,21 +98,28 @@ public class Player : character
 
         if (!isAlive) return;
 
-        // Update animation
+        
         _animationController?.UpdateMovementAnimation();
 
-        // Reset jumps when grounded
+        
         if (movementComponent != null && movementComponent.IsGrounded())
         {
             jumpsRemaining = maxJumps;
         }
+
+        if (_dashComponent.IsDashing)
+        {
+            SlowMotion.Instance.StopSlowMotion();
+        }
+       
+        UpdateAimDirection();
     }
 
     private void FixedUpdate()
     {
         if (!isAlive) return;
 
-        // Use input from InputHandler
+        
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
         Move(moveInput);
     }
@@ -124,7 +130,7 @@ public class Player : character
 
         movementComponent?.Move(direction);
 
-        // Flip sprite based on direction
+        
         if (direction.x != 0)
         {
             characterTransform.localScale = new Vector3(
@@ -136,7 +142,8 @@ public class Player : character
     }
 
     private void Dash()
-    {
+    {   
+        _logger?.Log("Dash initiated");
         movementComponent?.Dash(lastAimDirection);
     }
 
@@ -147,12 +154,14 @@ public class Player : character
         if (Mouse.current != null && mainCamera != null)
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
-            Vector2 direction = ((Vector2)worldPos - (Vector2)transform.position).normalized;
+            Vector3 worldPos = mainCamera.ScreenToWorldPoint(
+                new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane)
+            );
+            Vector2 direction = (Vector2)worldPos - (Vector2)transform.position;
 
-            if (direction.magnitude > 0.1f)
+            if (direction.magnitude > 0.1f) 
             {
-                aim = direction;
+                aim = direction.normalized; 
             }
         }
 
@@ -160,11 +169,6 @@ public class Player : character
         {
             lastAimDirection = aim;
         }
-    }
-
-    private Vector2 GetDashDirection()
-    {
-        return lastAimDirection;
     }
 
     public override void Attack()
@@ -206,7 +210,6 @@ public class Player : character
         movementComponent?.CancelJump();
     }
 
-    // ⬅️ เพิ่มเมธอดสำหรับเปิด Slow Motion
     private void ActivateSlowMotion()
     {
         if (!isAlive) return;
@@ -254,7 +257,7 @@ public class Player : character
             _inputHandler.OnJumpPressed -= Jump;
             _inputHandler.OnJumpReleased -= CancelJump;
             _inputHandler.OnAttackPressed -= Attack;
-            _inputHandler.OnRightClickPressed -= ActivateSlowMotion;  // ⬅️ Unsubscribe
+            _inputHandler.OnRightClickPressed -= ActivateSlowMotion; 
             _inputHandler.Dispose();
         }
     }

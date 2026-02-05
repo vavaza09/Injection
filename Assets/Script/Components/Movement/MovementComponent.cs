@@ -10,7 +10,7 @@ namespace Game.Components.Movement
         private ILogger _logger;
 
         [Header("Dependencies")]
-        private DashComponent _dashComponent;
+        [SerializeField]private DashComponent _dashComponent;
         // Movement Settings
         [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 8f;
@@ -69,7 +69,7 @@ namespace Game.Components.Movement
         public void Construct(LoggerFactory loggerFactory, DashComponent dashComponent)
         {
             _logger = loggerFactory?.CreateLogger<MovementComponent>();
-            _dashComponent = dashComponent;
+            //_dashComponent = dashComponent;
             _logger?.Log("MovementComponent injected via VContainer");
         }
 
@@ -140,11 +140,22 @@ namespace Game.Components.Movement
         public void Update()
         {
             CheckGroundStatus();
+            if (_dashComponent != null)
+            {
+                _dashComponent.UpdateTimers();
+
+                if (isGrounded)
+                {
+                    _dashComponent.RefillDash();
+                }
+            }
+            if (_dashComponent != null && _dashComponent.IsDashing) return;
             UpdateJumpState();
         }
 
         public void Move(Vector2 direction)
         {
+            if (_dashComponent != null && _dashComponent.IsDashing) return;
             if (!canMove || rb == null) return;
 
             float targetSpeed = direction.x * moveSpeed;

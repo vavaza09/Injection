@@ -368,6 +368,7 @@ GameObject:
   - component: {fileID: 372754827}
   - component: {fileID: 372754825}
   - component: {fileID: 372754832}
+  - component: {fileID: 372754833}
   m_Layer: 6
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -393,7 +394,8 @@ MonoBehaviour:
   attackDamage: 0
   movementComponent: {fileID: 372754832}
   maxJumps: 2
-  score: 0
+  jumpsRemaining: 0
+  mainCamera: {fileID: 1179237803}
   slowMotionTimeScale: 0.2
   slowMotionDuration: 0.5
   useSmoothSlowMotion: 1
@@ -572,6 +574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34cd7907d1691a847b63cb34ee235aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dashComponent: {fileID: 372754833}
   moveSpeed: 8
   acceleration: 40
   deceleration: 50
@@ -594,6 +597,30 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   canMove: 1
+--- !u!114 &372754833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372754824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7723a58a93c5f468937fe74d3bdef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashSpeed: 50
+  endDashSpeed: 25
+  endDashUpMult: 0.75
+  dashTime: 0.15
+  dashCooldown: 0.2
+  dashRefillCooldown: 0.1
+  dashAttackTime: 0.3
+  dashCornerCorrection: 4
+  dashVFloorSnapDist: 3
+  maxDashes: 1
+  rb: {fileID: 372754827}
+  characterTransform: {fileID: 372754831}
 --- !u!1 &432769942
 GameObject:
   m_ObjectHideFlags: 0

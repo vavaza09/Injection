@@ -21,14 +21,14 @@ namespace Game.Components.Movement
         [SerializeField] private int dashVFloorSnapDist = 3;       // Celeste: DashVFloorSnapDist = 3
         
         [Header("Dash Count")]
-        [SerializeField] private int maxDashes = 1;                // จำนวน Dash สูงสุด
+        [SerializeField] private int maxDashes;                // จำนวน Dash สูงสุด
         
         [Header("References")]
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private Transform characterTransform;
         
         #endregion
-        
+
         #region Private Fields
         
         private int currentDashes;
@@ -51,11 +51,33 @@ namespace Game.Components.Movement
         public int MaxDashes => maxDashes;
         
         public bool CanDash => dashCooldownTimer <= 0 && currentDashes > 0;
-        
+
         #endregion
-        
+
         #region Initialization
+        private void Awake()
+        {
+            // Auto-find references
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                {
+                    Debug.LogError("[DashComponent] Rigidbody2D not found!");
+                }
+            }
+
+            if (characterTransform == null)
+            {
+                characterTransform = transform;
+            }
+
+            currentDashes = maxDashes;
+            Debug.Log($"[DashComponent] Auto-initialized with {maxDashes} dashes");
+        }
+
         
+
         public void Initialize(Rigidbody2D rigidbody, Transform transform)
         {
             rb = rigidbody;
@@ -161,9 +183,8 @@ namespace Game.Components.Movement
             dashCooldownTimer = dashCooldown;
             dashRefillCooldownTimer = dashRefillCooldown;
             dashAttackTimer = dashAttackTime;
-            
+            Debug.Log($"[DashComponent] lastDirection {direction}");
             dashDir = direction.normalized;
-            
             Debug.Log($"[DashComponent] Dash started! Direction: {dashDir}, Dashes left: {currentDashes}");
             
             // Stop current velocity
