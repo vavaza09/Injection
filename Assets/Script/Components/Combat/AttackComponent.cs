@@ -1,21 +1,28 @@
+using System.Xml.Linq;
+using UnityEngine;
+
 public class AttackComponent
 {
-    public float AttackDamage { get; private set; }
-    public float AttackCooldown { get; private set; }
-    public float LastAttackTime { get; private set; }
+    [SerializeField] private float attackDamage = 1f;
+    [SerializeField] private float attackCooldown = 0.5f;
+
+    private float lastAttackTime = -999f;
 
     public void PerformAttack()
-    { 
-        // Implement attack logic here (e.g., deal damage to target)
+    {
+        if (!CanAttack()) return;
+
+        lastAttackTime = Time.time;
+        Debug.Log($"PerformAttack dmg={attackDamage}");
     }
 
     public bool CanAttack()
     {
-        return false;
+        return Time.time >= lastAttackTime + attackCooldown;
     }
 
     public void SetDamage(float damage)
     {
-
+        attackDamage = damage;
     }
 }
