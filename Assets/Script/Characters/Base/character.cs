@@ -66,13 +66,18 @@ public abstract class character : MonoBehaviour
     {
         // Update movement component
         movementComponent?.Update();
+
+        // Tick invincibility timer
+        healthComponent?.UpdateInvincibility(Time.deltaTime);
     }
 
     public virtual void TakeDamage(float damage)
     {
         if (!isAlive) return;
 
-        healthComponent.TakeDamage(damage);
+        bool damageApplied = healthComponent.TakeDamage(damage);
+        if (!damageApplied) return;
+
         OnTakeDamage();
 
         if (healthComponent.IsDead())
