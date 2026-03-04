@@ -46,21 +46,6 @@ public abstract class character : MonoBehaviour
 
         // Setup components
         if (healthComponent != null)
-        [Header("Character Stats")]
-        [SerializeField] protected string characterName;
-        [SerializeField] protected float maxHealth;
-        [SerializeField] protected float moveSpeed;
-        [SerializeField] protected float attackDamage;
-
-        protected float currentHealth;
-        protected bool isAlive = true;
-
-        protected Rigidbody2D rigidbody2D;
-        protected HealthComponent healthComponent;
-        protected MovementComponent movementComponent;
-        protected AttackComponent attackComponent;
-
-        protected virtual void Start()
         {
             healthComponent.Initialize(maxHealth);
         }

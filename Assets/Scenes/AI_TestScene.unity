@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 239740367}
   - component: {fileID: 239740366}
   - component: {fileID: 239740368}
+  - component: {fileID: 239740369}
   m_Layer: 6
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -226,7 +227,7 @@ MonoBehaviour:
   groundCheckRadius: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!114 &239740359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,13 +479,37 @@ MonoBehaviour:
   moveSpeed: 0
   attackDamage: 0
   movementComponent: {fileID: 0}
-  _dashComponent: {fileID: 0}
+  _dashComponent: {fileID: 239740369}
   mainCamera: {fileID: 519420031}
   slowMotionTimeScale: 0.3
   slowMotionDuration: 2
   useSmoothSlowMotion: 1
   animator: {fileID: 239740364}
   invincibilityDuration: 2
+--- !u!114 &239740369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239740357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7723a58a93c5f468937fe74d3bdef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Components.Movement.DashComponent
+  dashSpeed: 240
+  endDashSpeed: 160
+  endDashUpMult: 0.75
+  dashTime: 0.15
+  dashCooldown: 0.2
+  dashRefillCooldown: 0.1
+  dashAttackTime: 0.3
+  dashCornerCorrection: 4
+  dashVFloorSnapDist: 3
+  maxDashes: 2
+  rb: {fileID: 239740360}
+  characterTransform: {fileID: 239740363}
 --- !u!1 &274742797
 GameObject:
   m_ObjectHideFlags: 0
