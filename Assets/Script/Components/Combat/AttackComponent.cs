@@ -23,6 +23,7 @@ public class AttackComponent
 
     public void SetDamage(float damage)
     {
+
         attackDamage = damage;
     }
 }
