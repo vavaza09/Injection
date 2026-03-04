@@ -64,6 +64,11 @@ namespace Game.Components.Movement
         private bool wasOnGround;                                      // Celeste: wasOnGround
         [SerializeField] private bool canMove = true;
 
+        // Multi-jump
+        [Header("Multi-Jump")]
+        [SerializeField] private int maxJumps = 2;
+        private int jumpsRemaining;
+
         // ⭐ ใช้ VContainer Inject แทน Constructor
         [Inject]
         public void Construct(LoggerFactory loggerFactory, DashComponent dashComponent)
@@ -95,6 +100,7 @@ namespace Game.Components.Movement
             rb = rigidbody;
             characterTransform = transform;
             canMove = true;
+            jumpsRemaining = maxJumps;
 
             // ⬅️ เพิ่ม: บังคับให้ gravityScale = 0
             if (rb != null)
@@ -149,6 +155,12 @@ namespace Game.Components.Movement
                     _dashComponent.RefillDash();
                 }
             }
+
+            if (isGrounded)
+            {
+                jumpsRemaining = maxJumps;
+            }
+
             if (_dashComponent != null && _dashComponent.IsDashing) return;
             UpdateJumpState();
         }
@@ -198,6 +210,34 @@ namespace Game.Components.Movement
         public void Dash(Vector2 direction)
         {
             _dashComponent?.StartDash(direction, isGrounded);
+        }
+
+        /// <summary>
+        /// Updates the character's facing direction based on horizontal movement.
+        /// Flips the localScale.x to face the direction of movement.
+        /// </summary>
+        public void UpdateFacing(Vector2 direction)
+        {
+            if (characterTransform == null) return;
+            if (direction.x == 0) return;
+
+            characterTransform.localScale = new Vector3(
+                Mathf.Sign(direction.x),
+                1,
+                1
+            );
+        }
+
+        /// <summary>
+        /// Attempts a multi-jump. Returns true if the jump was performed.
+        /// </summary>
+        public bool TryJump(bool particles = true, bool playSfx = true)
+        {
+            if (jumpsRemaining <= 0) return false;
+
+            Jump(particles, playSfx);
+            jumpsRemaining--;
+            return true;
         }
 
         /// <summary>
@@ -512,6 +552,17 @@ namespace Game.Components.Movement
             if (groundCheck == null) return;
             Gizmos.color = isGrounded ? Color.green : Color.red;
             Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+        }
+
+        public int GetJumpsRemaining()
+        {
+            return jumpsRemaining;
+        }
+
+        public void SetMaxJumps(int max)
+        {
+            maxJumps = max;
+            jumpsRemaining = max;
         }
     }
 }

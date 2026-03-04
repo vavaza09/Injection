@@ -14,8 +14,11 @@ namespace Game.Characters.Player
         private readonly Core.Logging.ILogger _logger;
         private readonly InputSystem_Actions _actions;
         private Vector2 _moveInput;
+        private Vector2 _aimDirection;
+        private Camera _mainCamera;
 
         public Vector2 MoveInput => _moveInput;
+        public Vector2 AimDirection => _aimDirection;
 
         // Events
         public event Action OnJumpPressed;
@@ -76,6 +79,28 @@ namespace Game.Characters.Player
         {
             Disable();
             _actions?.Dispose();
+        }
+
+        public void SetCamera(Camera camera)
+        {
+            _mainCamera = camera;
+        }
+
+        public void UpdateAimDirection(Transform playerTransform)
+        {
+            if (Mouse.current == null || _mainCamera == null || playerTransform == null)
+                return;
+
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            Vector3 worldPos = _mainCamera.ScreenToWorldPoint(
+                new Vector3(mousePos.x, mousePos.y, _mainCamera.nearClipPlane)
+            );
+            Vector2 direction = (Vector2)worldPos - (Vector2)playerTransform.position;
+
+            if (direction.magnitude > 0.1f)
+            {
+                _aimDirection = direction.normalized;
+            }
         }
 
         private void OnMove(InputAction.CallbackContext context)
