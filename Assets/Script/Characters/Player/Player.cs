@@ -106,7 +106,7 @@ public class Player : character
             SlowMotion.Instance.StopSlowMotion();
         }
 
-        UpdateAimDirection();
+        _inputHandler?.UpdateAimDirection(transform);
     }
 
     private void FixedUpdate()
@@ -161,7 +161,7 @@ public class Player : character
             return;
         }
 
-        movementComponent.TryJump(particles: true, playSfx: true);
+        movementComponent.Jump(particles: true, playSfx: true);
     }
 
     public void CancelJump()
