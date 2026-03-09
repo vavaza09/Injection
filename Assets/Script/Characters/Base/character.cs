@@ -65,14 +65,19 @@ public abstract class character : MonoBehaviour
     protected virtual void Update()
     {
         // Update movement component
-        movementComponent?.UpdateMovement();
+        movementComponent?.Update();
+
+        // Tick invincibility timer
+        healthComponent?.UpdateInvincibility(Time.deltaTime);
     }
 
     public virtual void TakeDamage(float damage)
     {
         if (!isAlive) return;
 
-        healthComponent.TakeDamage(damage);
+        bool damageApplied = healthComponent.TakeDamage(damage);
+        if (!damageApplied) return;
+
         OnTakeDamage();
 
         if (healthComponent.IsDead())

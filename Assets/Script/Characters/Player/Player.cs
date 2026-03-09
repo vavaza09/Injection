@@ -2,14 +2,13 @@
 using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
-using UnityEngine.InputSystem;
 using Game.Components.Movement;
 
 public class Player : character
 {
     private Core.Logging.ILogger _logger;
 
-    [Header("Player Components (Injected via DI)")]
+    [Header("Player Components")]
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
@@ -21,9 +20,6 @@ public class Player : character
     [Header("Dependency")]
     [SerializeField] private Camera mainCamera;
 
-    [Header("Direction")]
-    private Vector2 lastAimDirection;
-
     [Header("Slow Motion Settings")]
     [SerializeField] private float slowMotionTimeScale = 0.3f; 
     [SerializeField] private float slowMotionDuration = 2f;     
@@ -32,10 +28,8 @@ public class Player : character
     [Header("References for DI")]
     [SerializeField] private Animator animator;
 
-    [Header("Audio Clips")]
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField] private AudioClip attackSound;
-    [SerializeField] private AudioClip hurtSound;
+    [Header("Health Settings")]
+    [SerializeField] private float invincibilityDuration = 2f;
 
     [Inject]
     public void Construct(
@@ -65,7 +59,11 @@ public class Player : character
     protected override void Start()
     {
         base.Start();
-        jumpsRemaining = maxJumps;
+
+        if (_inputHandler != null)
+        {
+            _inputHandler.SetCamera(mainCamera);
+        }
 
         if (_animationController != null && movementComponent != null)
         {
@@ -138,31 +136,9 @@ public class Player : character
     private void Dash()
     {   
         _logger?.Log("Dash initiated");
-        movementComponent?.Dash(lastAimDirection);
-    }
-
-    private void UpdateAimDirection()
-    {
-        Vector2 aim = Vector2.zero;
-
-        if (Mouse.current != null && mainCamera != null)
-        {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(
-                new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane)
-            );
-            Vector2 direction = (Vector2)worldPos - (Vector2)transform.position;
-
-            if (direction.magnitude > 0.1f) 
-            {
-                aim = direction.normalized; 
-            }
-        }
-
-        if (aim != Vector2.zero)
-        {
-            lastAimDirection = aim;
-        }
+        Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+        movementComponent?.Dash(aimDir);
+        _audioController?.PlayDashSound();
     }
 
     public override void Attack()
@@ -177,25 +153,15 @@ public class Player : character
 
     public void Jump()
     {
-        Debug.Log($"Jump() called - isAlive: {isAlive}, jumpsRemaining: {jumpsRemaining}");
-        
-        if (!isAlive || jumpsRemaining <= 0)
-        {
-            Debug.LogWarning($"Jump blocked! isAlive: {isAlive}, jumpsRemaining: {jumpsRemaining}");
-            return;
-        }
+        if (!isAlive) return;
 
         if (movementComponent == null)
         {
             _logger?.LogError("Cannot jump: MovementComponent is null");
-            Debug.LogError("MovementComponent is NULL!");
             return;
         }
-        
-        Debug.Log($"Calling movementComponent.Jump()");
-        movementComponent.Jump(particles: true, playSfx: true);
-        jumpsRemaining--;
-        Debug.Log($"Jump executed! jumpsRemaining now: {jumpsRemaining}");
+
+        movementComponent.TryJump(particles: true, playSfx: true);
     }
 
     public void CancelJump()
@@ -226,6 +192,17 @@ public class Player : character
         }
 
         _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
+    }
+
+    protected override void OnTakeDamage()
+    {
+        healthComponent?.StartInvincibility(invincibilityDuration);
+        _audioController?.PlayHurtSound();
+        OnInvincibilityVisual();
+    }
+
+    private void OnInvincibilityVisual()
+    {
     }
 
     protected override void OnDeath()
