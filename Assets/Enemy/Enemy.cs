@@ -17,9 +17,10 @@ public class Enemy : character
     [Header("State")]
     [SerializeField] protected EnemyState currentState = EnemyState.Idle;
 
+
     protected override void Start()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
 
         // Auto-find player if not assigned
         if (playerTransform == null)

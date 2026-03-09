@@ -27,7 +27,6 @@ public class GameLifetime : LifetimeScope
         // Register plain C# components
         builder.Register<HealthComponent>(Lifetime.Transient);
         builder.Register<MovementComponent>(Lifetime.Transient);
-        builder.Register<DashComponent>(Lifetime.Transient);
 
         // Register Player Controllers (Plain C# - No MonoBehaviour)
         builder.Register<PlayerInputHandler>(Lifetime.Singleton);
@@ -41,21 +40,8 @@ public class GameLifetime : LifetimeScope
             return new PlayerAnimationController(animator, loggerFactory);
         }, Lifetime.Singleton);
 
-        // PlayerAudioController requires Transform and AudioClips
-        builder.Register<PlayerAudioController>(resolver =>
-        {
-            var player = FindAnyObjectByType<Player>();
-            var loggerFactory = resolver.Resolve<LoggerFactory>();
-            
-            // Get AudioClips via SerializedField reflection (simplified for demo)
-            return new PlayerAudioController(
-                player?.transform,
-                null, // jumpSound - assign via Inspector or load from Resources
-                null, // attackSound
-                null, // hurtSound
-                loggerFactory
-            );
-        }, Lifetime.Singleton);
+        // PlayerAudioController uses SoundManager (no AudioClip dependencies)
+        builder.Register<PlayerAudioController>(Lifetime.Singleton);
 
         // Register MonoBehaviour components in hierarchy
         builder.RegisterComponentInHierarchy<character>();

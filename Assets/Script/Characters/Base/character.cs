@@ -46,21 +46,6 @@ public abstract class character : MonoBehaviour
 
         // Setup components
         if (healthComponent != null)
-        [Header("Character Stats")]
-        [SerializeField] protected string characterName;
-        [SerializeField] protected float maxHealth;
-        [SerializeField] protected float moveSpeed;
-        [SerializeField] protected float attackDamage;
-
-        protected float currentHealth;
-        protected bool isAlive = true;
-
-        protected Rigidbody2D rigidbody2D;
-        protected HealthComponent healthComponent;
-        protected MovementComponent movementComponent;
-        protected AttackComponent attackComponent;
-
-        protected virtual void Start()
         {
             healthComponent.Initialize(maxHealth);
         }
@@ -80,14 +65,19 @@ public abstract class character : MonoBehaviour
     protected virtual void Update()
     {
         // Update movement component
-        movementComponent?.Update();
+        movementComponent?.UpdateMovement();
+
+        // Tick invincibility timer
+        healthComponent?.UpdateInvincibility(Time.deltaTime);
     }
 
     public virtual void TakeDamage(float damage)
     {
         if (!isAlive) return;
 
-        healthComponent.TakeDamage(damage);
+        bool damageApplied = healthComponent.TakeDamage(damage);
+        if (!damageApplied) return;
+
         OnTakeDamage();
 
         if (healthComponent.IsDead())
