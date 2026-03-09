@@ -2,7 +2,6 @@
 using Core.Logging;
 using UnityEngine;
 using System;
-using Game.Components.Movement;
 
 namespace Game.Characters.Player
 {

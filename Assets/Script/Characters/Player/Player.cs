@@ -13,11 +13,10 @@ public class Player : character
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
-    [SerializeField] private DashComponent _dashComponent;
 
     [Header("Player Movement")]
     [SerializeField] private int maxJumps = 2;
-    [SerializeField]private int jumpsRemaining;
+    [SerializeField] private int jumpsRemaining;
 
     [Header("Dependency")]
     [SerializeField] private Camera mainCamera;
@@ -56,7 +55,6 @@ public class Player : character
     {
         base.Awake();
 
-        
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
@@ -98,20 +96,18 @@ public class Player : character
 
         if (!isAlive) return;
 
-        
         _animationController?.UpdateMovementAnimation();
 
-        
         if (movementComponent != null && movementComponent.IsGrounded())
         {
             jumpsRemaining = maxJumps;
         }
 
-        if (_dashComponent.IsDashing)
+        if (movementComponent != null && movementComponent.IsDashing)
         {
             SlowMotion.Instance.StopSlowMotion();
         }
-       
+
         UpdateAimDirection();
     }
 
@@ -119,7 +115,6 @@ public class Player : character
     {
         if (!isAlive) return;
 
-        
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
         Move(moveInput);
     }
@@ -130,7 +125,6 @@ public class Player : character
 
         movementComponent?.Move(direction);
 
-        
         if (direction.x != 0)
         {
             characterTransform.localScale = new Vector3(

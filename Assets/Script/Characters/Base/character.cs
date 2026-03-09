@@ -65,7 +65,7 @@ public abstract class character : MonoBehaviour
     protected virtual void Update()
     {
         // Update movement component
-        movementComponent?.Update();
+        movementComponent?.UpdateMovement();
     }
 
     public virtual void TakeDamage(float damage)
