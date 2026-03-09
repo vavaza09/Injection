@@ -120,7 +120,7 @@ namespace Game.Components.Movement
             rb = rigidbody;
             characterTransform = transform;
             canMove = true;
-            jumpsRemaining = maxJumps;
+            
 
             if (rb != null)
             {
