@@ -27,7 +27,6 @@ public class GameLifetime : LifetimeScope
         // Register plain C# components
         builder.Register<HealthComponent>(Lifetime.Transient);
         builder.Register<MovementComponent>(Lifetime.Transient);
-        builder.Register<DashComponent>(Lifetime.Transient);
 
         // Register Player Controllers (Plain C# - No MonoBehaviour)
         builder.Register<PlayerInputHandler>(Lifetime.Singleton);

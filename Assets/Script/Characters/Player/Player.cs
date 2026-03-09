@@ -12,7 +12,10 @@ public class Player : character
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
-    [SerializeField] private DashComponent _dashComponent;
+
+    [Header("Player Movement")]
+    [SerializeField] private int maxJumps = 2;
+    [SerializeField] private int jumpsRemaining;
 
     [Header("Dependency")]
     [SerializeField] private Camera mainCamera;
@@ -92,12 +95,18 @@ public class Player : character
         if (!isAlive) return;
 
         _animationController?.UpdateMovementAnimation();
-        _inputHandler?.UpdateAimDirection(characterTransform);
 
-        if (_dashComponent.IsDashing)
+        if (movementComponent != null && movementComponent.IsGrounded())
+        {
+            jumpsRemaining = maxJumps;
+        }
+
+        if (movementComponent != null && movementComponent.IsDashing)
         {
             SlowMotion.Instance.StopSlowMotion();
         }
+
+        UpdateAimDirection();
     }
 
     private void FixedUpdate()
@@ -113,7 +122,15 @@ public class Player : character
         if (!isAlive) return;
 
         movementComponent?.Move(direction);
-        movementComponent?.UpdateFacing(direction);
+
+        if (direction.x != 0)
+        {
+            characterTransform.localScale = new Vector3(
+                Mathf.Sign(direction.x),
+                1,
+                1
+            );
+        }
     }
 
     private void Dash()
