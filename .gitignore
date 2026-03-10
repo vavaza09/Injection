@@ -6,8 +6,9 @@
 [Bb]uilds/
 [Ll]ogs/
 [Mm]emoryCaptures/
-UserSettings/
+[Uu]ser[Ss]ettings/
 SysInfo/
+
 Assets/VContainerPractice/
 *.booproj
 *.pidb
@@ -24,6 +25,11 @@ Assets/VContainerPractice/
 # Rider / VS / JetBrains
 .vs/
 .idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
 *.DotSettings.user
 
 # Gradle / Android / Xcode
@@ -36,6 +42,16 @@ ExportedObj/
 *.xcuserstate
 *.xcuserdatad/
 DerivedData/
+
+# Unity Specific
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# CRITICAL: Always commit these
+!/*.meta
+!/Assets/**/*.meta
+!/ProjectSettings/**/*.meta
 
 # Other
 .DS_Store
