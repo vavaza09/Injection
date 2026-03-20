@@ -16,9 +16,11 @@ namespace Game.Characters.Player
         // Animation parameter hashes
         private readonly int _animMoveSpeed;
         private readonly int _animIsGrounded;
+        private readonly int _animIsClimbing;
         private readonly int _animAttack;
         private readonly int _animJump;
         private readonly int _animDeath;
+        private readonly bool _hasClimbParameter;
 
         // Constructor - DI via VContainer
         public PlayerAnimationController(Animator animator, LoggerFactory loggerFactory)
@@ -29,9 +31,11 @@ namespace Game.Characters.Player
             // Cache animation parameters
             _animMoveSpeed = Animator.StringToHash("MoveSpeed");
             _animIsGrounded = Animator.StringToHash("IsGrounded");
+            _animIsClimbing = Animator.StringToHash("IsClimbing");
             _animAttack = Animator.StringToHash("Attack");
             _animJump = Animator.StringToHash("Jump");
             _animDeath = Animator.StringToHash("Death");
+            _hasClimbParameter = HasBoolParameter(_animator, "IsClimbing");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -49,6 +53,26 @@ namespace Game.Characters.Player
             float moveSpeed = Mathf.Abs(_movementComponent.GetVelocity().x);
             _animator.SetFloat(_animMoveSpeed, moveSpeed);
             _animator.SetBool(_animIsGrounded, _movementComponent.IsGrounded());
+
+            if (_hasClimbParameter)
+            {
+                _animator.SetBool(_animIsClimbing, _movementComponent.IsClimbing());
+            }
+        }
+
+        private static bool HasBoolParameter(Animator animator, string parameterName)
+        {
+            if (animator == null) return false;
+
+            foreach (AnimatorControllerParameter parameter in animator.parameters)
+            {
+                if (parameter.type == AnimatorControllerParameterType.Bool && parameter.name == parameterName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void PlayJumpAnimation()
