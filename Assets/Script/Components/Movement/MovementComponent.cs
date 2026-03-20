@@ -39,12 +39,28 @@ namespace Game.Components.Movement
         [SerializeField] private float lowJumpGravityMultiplier = 3f;
         [SerializeField] private float fallAirControlMultiplier = 0.75f;
 
+        [Header("Wall Stick")]
+        [SerializeField] private float wallStickGravityMultiplier = 0.35f;
+        [SerializeField] private float wallSlideMaxFallSpeed = 90f;
+        [SerializeField] private float wallInputThreshold = 0.1f;
+
         [Header("Dash Settings")]
         [SerializeField] private DashSettings dashSettings = new DashSettings();
 
         [Header("Ground Check")]
         [SerializeField] private Vector2 groundCheckSize = new Vector2(0.4f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
+
+        [Header("Climb Settings")]
+        [SerializeField] private float climbSpeed = 8f;
+        [SerializeField] private float wallJumpHorizontalSpeed = 80f;
+        [SerializeField] private float wallJumpVerticalSpeed = -105f;
+        [SerializeField] private float climbInputThreshold = 0.1f;
+
+        [Header("Wall Check")]
+        [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
+        [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
+        [SerializeField] private LayerMask climbableLayer;
 
         #endregion
 
@@ -68,6 +84,10 @@ namespace Game.Components.Movement
         private bool isGrounded;
         private bool wasOnGround;
         [SerializeField] private bool canMove = true;
+        private bool isTouchingWall;
+        private bool isClimbing;
+        private int wallSideSign;
+        private Vector2 moveInput;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
@@ -81,6 +101,7 @@ namespace Game.Components.Movement
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
+        public bool IsClimbingState => isClimbing;
 
         public bool AutoJump
         {
@@ -106,6 +127,11 @@ namespace Game.Components.Movement
                 groundLayer = LayerMask.GetMask("Ground");
             }
 
+            if (climbableLayer == 0)
+            {
+                climbableLayer = LayerMask.GetMask("Climbable");
+            }
+
             if (_logger == null)
             {
                 Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
@@ -120,6 +146,10 @@ namespace Game.Components.Movement
             rb = rigidbody;
             characterTransform = transform;
             canMove = true;
+            isClimbing = false;
+            isTouchingWall = false;
+            wallSideSign = 0;
+            moveInput = Vector2.zero;
             
 
             if (rb != null)
@@ -155,7 +185,6 @@ namespace Game.Components.Movement
                 groundCheckObj.transform.SetParent(characterTransform);
                 groundCheckObj.transform.localPosition = new Vector3(0, -0.5f, 0);
                 groundCheck = groundCheckObj.transform;
-
                 Debug.Log($"[MovementComponent] Auto-created GroundCheck for {characterTransform.name}");
             }
         }
@@ -170,7 +199,8 @@ namespace Game.Components.Movement
         public void UpdateMovement()
         {
             CheckGroundStatus();
-
+            CheckWallStatus();
+            
             if (_dashHandler != null)
             {
                 _dashHandler.UpdateTimers();
@@ -181,7 +211,14 @@ namespace Game.Components.Movement
                 }
             }
 
-            if (IsDashing) return;
+            if (IsDashing)
+            {
+                StopClimb();
+                return;
+            }
+
+            UpdateClimbState();
+            if (isClimbing) return;
 
             UpdateJumpState();
         }
@@ -192,10 +229,34 @@ namespace Game.Components.Movement
 
         public void Move(Vector2 direction)
         {
+            moveInput = direction;
+
             if (IsDashing) return;
             if (!canMove || rb == null) return;
 
+            if (isClimbing)
+            {
+                float climbVelocity = Mathf.Abs(direction.y) >= climbInputThreshold
+                    ? direction.y * climbSpeed
+                    : 0f;
+                rb.linearVelocity = new Vector2(0f, climbVelocity);
+                return;
+            }
+
             float targetSpeed = direction.x * moveSpeed;
+            bool isPushingIntoWall = !isGrounded
+                                     && isTouchingWall
+                                     && !isClimbing
+                                     && wallSideSign != 0
+                                     && Mathf.Abs(direction.x) >= wallInputThreshold
+                                     && Mathf.Sign(direction.x) == wallSideSign;
+
+            if (isPushingIntoWall)
+            {
+                // Do not let horizontal input "glue" the player against the wall.
+                targetSpeed = 0f;
+            }
+
             float currentSpeed = rb.linearVelocity.x;
 
             float accelRate;
@@ -278,15 +339,21 @@ namespace Game.Components.Movement
         {
             Debug.Log($"🎯 Jump() START - Current velocity: {rb?.linearVelocity}");
 
-            if (jumpGraceTimer <= 0 && !isGrounded)
-            {
-                Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
-                return;
-            }
-
             if (!canMove || rb == null)
             {
                 Debug.LogWarning($"❌ Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
+                return;
+            }
+
+            if (isClimbing)
+            {
+                PerformWallJump();
+                return;
+            }
+
+            if (jumpGraceTimer <= 0 && !isGrounded)
+            {
+                Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
                 return;
             }
 
@@ -364,6 +431,29 @@ namespace Game.Components.Movement
             jumpGraceTimer = jumpGraceTime;
         }
 
+        private void PerformWallJump()
+        {
+            int jumpAwayDirection = wallSideSign != 0
+                ? -wallSideSign
+                : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
+
+            StopClimb();
+
+            jumpGraceTimer = 0;
+            varJumpTimer = varJumpTime;
+            autoJump = true;
+
+            rb.linearVelocity = new Vector2(
+                jumpAwayDirection * wallJumpHorizontalSpeed,
+                wallJumpVerticalSpeed
+            );
+
+            varJumpSpeed = rb.linearVelocity.y;
+            isJumping = true;
+            jumpTimer = 0f;
+            isFalling = false;
+        }
+
         #endregion
 
         #region Jump State
@@ -371,6 +461,13 @@ namespace Game.Components.Movement
         private void UpdateJumpState()
         {
             if (rb == null) return;
+
+            if (isClimbing)
+            {
+                isJumping = false;
+                isFalling = false;
+                return;
+            }
 
             wasOnGround = isGrounded;
 
@@ -423,6 +520,11 @@ namespace Game.Components.Movement
             if (!isGrounded)
             {
                 float gravityMultiplier = 1f;
+                bool isPushingIntoWall = wallSideSign != 0
+                                         && Mathf.Abs(moveInput.x) >= wallInputThreshold
+                                         && Mathf.Sign(moveInput.x) == wallSideSign;
+                bool wallStickActive = isTouchingWall
+                                       && !isClimbing;
 
                 if (Mathf.Abs(rb.linearVelocity.y) < halfGravThreshold && (autoJump || varJumpTimer > 0))
                 {
@@ -437,6 +539,11 @@ namespace Game.Components.Movement
                     gravityMultiplier = lowJumpGravityMultiplier;
                 }
 
+                if (wallStickActive)
+                {
+                    gravityMultiplier *= wallStickGravityMultiplier;
+                }
+
                 float gravityForce = gravity * gravityMultiplier * Time.deltaTime;
 
                 rb.linearVelocity = new Vector2(
@@ -445,6 +552,11 @@ namespace Game.Components.Movement
                 );
 
                 float maxFallSpeed = maxFall;
+                if (wallStickActive)
+                {
+                    maxFallSpeed = Mathf.Min(maxFallSpeed, wallSlideMaxFallSpeed);
+                }
+
                 if (rb.linearVelocity.y > maxFallSpeed)
                 {
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, maxFallSpeed);
@@ -483,6 +595,76 @@ namespace Game.Components.Movement
             }
         }
 
+        private void CheckWallStatus()
+        {
+            if (characterTransform == null)
+            {
+                isTouchingWall = false;
+                wallSideSign = 0;
+                return;
+            }
+
+            Vector2 center = characterTransform.position;
+            float offsetX = Mathf.Abs(wallCheckOffset.x);
+
+            Vector2 leftCheckPos = center + new Vector2(-offsetX, wallCheckOffset.y);
+            Vector2 rightCheckPos = center + new Vector2(offsetX, wallCheckOffset.y);
+
+            bool leftHit = Physics2D.OverlapBox(leftCheckPos, wallCheckSize, 0f, climbableLayer);
+            bool rightHit = Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
+
+            isTouchingWall = !isGrounded && (leftHit || rightHit);
+            Debug.Log($"Wall Check - Left: {leftHit}, Right: {rightHit}, IsTouchingWall: {isTouchingWall}");
+            if (rightHit)
+            {
+                wallSideSign = 1;
+            }
+            else if (leftHit)
+            {
+                wallSideSign = -1;
+            }
+            else
+            {
+                wallSideSign = 0;
+            }
+        }
+
+        private void UpdateClimbState()
+        {
+            if (!canMove || rb == null)
+            {
+                StopClimb();
+                return;
+            }
+
+            bool wantsToClimb = Mathf.Abs(moveInput.y) >= climbInputThreshold;
+            bool canClimbNow = !isGrounded && isTouchingWall;
+
+            if (canClimbNow && wantsToClimb)
+            {
+                if (!isClimbing)
+                {
+                    isClimbing = true;
+                    isJumping = false;
+                    isFalling = false;
+                    jumpGraceTimer = 0;
+                    varJumpTimer = 0;
+                    autoJump = false;
+                    rb.linearVelocity = Vector2.zero;
+                }
+
+                return;
+            }
+
+            StopClimb();
+        }
+
+        private void StopClimb()
+        {
+            if (!isClimbing) return;
+            isClimbing = false;
+        }
+
         #endregion
 
         #region Utility
@@ -505,6 +687,10 @@ namespace Game.Components.Movement
         public void SetCanMove(bool value)
         {
             canMove = value;
+            if (!canMove)
+            {
+                StopClimb();
+            }
         }
 
         public bool IsGrounded()
@@ -520,6 +706,11 @@ namespace Game.Components.Movement
         public bool IsFalling()
         {
             return isFalling;
+        }
+
+        public bool IsClimbing()
+        {
+            return isClimbing;
         }
 
         public Vector2 GetVelocity()
@@ -541,9 +732,20 @@ namespace Game.Components.Movement
 
         private void OnDrawGizmosSelected()
         {
-            if (groundCheck == null) return;
-            Gizmos.color = isGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+            if (groundCheck != null)
+            {
+                Gizmos.color = isGrounded ? Color.green : Color.red;
+                Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+            }
+
+            Vector3 worldCenter = transform.position;
+            float offsetX = Mathf.Abs(wallCheckOffset.x);
+            Vector3 leftCheckPos = worldCenter + new Vector3(-offsetX, wallCheckOffset.y, 0f);
+            Vector3 rightCheckPos = worldCenter + new Vector3(offsetX, wallCheckOffset.y, 0f);
+
+            Gizmos.color = isTouchingWall ? Color.cyan : Color.yellow;
+            Gizmos.DrawWireCube(leftCheckPos, wallCheckSize);
+            Gizmos.DrawWireCube(rightCheckPos, wallCheckSize);
         }
 
         #endregion
