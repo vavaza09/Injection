@@ -24,6 +24,8 @@ Assets/VContainerPractice/
 
 # Rider / VS / JetBrains
 .vs/
+.vscode/
+.github/
 .idea/
 *.csproj
 *.sln
