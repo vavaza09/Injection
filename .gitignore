@@ -10,6 +10,8 @@
 SysInfo/
 
 Assets/VContainerPractice/
+.AGENTS
+skills-lock.json
 *.booproj
 *.pidb
 *.suo
