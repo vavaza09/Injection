@@ -21,6 +21,10 @@ namespace Game.Components.Movement
 
         [Header("Dash Count")]
         public int maxDashes = 1;
+
+        [Header("Dash Behavior")]
+        public bool forceHorizontalDash = false;
+        public bool stopAtDashEnd = true;
     }
 
     public class DashHandler : IDashHandler
@@ -35,6 +39,7 @@ namespace Game.Components.Movement
         private Vector2 _dashDir;
         private bool _isDashing;
         private bool _dashStartedOnGround;
+        private float _dashSpeedMultiplier = 1f;
 
         public bool IsDashing => _isDashing;
         public bool DashAttacking => _dashAttackTimer > 0;
@@ -56,7 +61,7 @@ namespace Game.Components.Movement
             Debug.Log($"[DashHandler] Initialized with {_settings.maxDashes} dashes");
         }
 
-        public bool StartDash(Vector2 direction, bool isGrounded)
+        public bool StartDash(Vector2 direction, bool isGrounded, float speedMultiplier = 1f)
         {
             if (!CanDash || direction == Vector2.zero)
             {
@@ -71,22 +76,30 @@ namespace Game.Components.Movement
             _dashCooldownTimer = _settings.dashCooldown;
             _dashRefillCooldownTimer = _settings.dashRefillCooldown;
             _dashAttackTimer = _settings.dashAttackTime;
-            _dashDir = direction.normalized;
+            Vector2 dashDirection = direction;
+            if (_settings.forceHorizontalDash)
+            {
+                float x = Mathf.Abs(direction.x) > 0.01f ? direction.x : 1f;
+                dashDirection = new Vector2(Mathf.Sign(x), 0f);
+            }
 
-            Debug.Log($"[DashHandler] Dash started! Direction: {_dashDir}, Dashes left: {_currentDashes}");
+            _dashDir = dashDirection.normalized;
+            _dashSpeedMultiplier = Mathf.Max(0.1f, speedMultiplier);
+
+            Debug.Log($"[DashHandler] Dash started! Direction: {_dashDir}, Dashes left: {_currentDashes}, Multiplier: {_dashSpeedMultiplier:F2}");
             return true;
         }
 
-        public IEnumerator DashCoroutine(Vector2 direction, bool isGrounded)
+        public IEnumerator DashCoroutine(Vector2 direction, bool isGrounded, float speedMultiplier = 1f)
         {
-            if (!StartDash(direction, isGrounded))
+            if (!StartDash(direction, isGrounded, speedMultiplier))
                 yield break;
 
             _rb.linearVelocity = Vector2.zero;
 
             yield return null;
 
-            Vector2 dashVelocity = _dashDir * _settings.dashSpeed;
+            Vector2 dashVelocity = _dashDir * (_settings.dashSpeed * _dashSpeedMultiplier);
             _rb.linearVelocity = dashVelocity;
 
             Debug.Log($"[DashHandler] Dash velocity: {dashVelocity}");
@@ -95,7 +108,14 @@ namespace Game.Components.Movement
 
             _isDashing = false;
 
-            Vector2 endVelocity = _dashDir * _settings.endDashSpeed;
+            if (_settings.stopAtDashEnd)
+            {
+                _rb.linearVelocity = Vector2.zero;
+                Debug.Log("[DashHandler] Dash ended and velocity stopped.");
+                yield break;
+            }
+
+            Vector2 endVelocity = _dashDir * (_settings.endDashSpeed * _dashSpeedMultiplier);
 
             if (endVelocity.y < 0)
             {
