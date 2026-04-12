@@ -678,6 +678,11 @@ MonoBehaviour:
   useSmoothSlowMotion: 1
   animator: {fileID: 372754829}
   invincibilityDuration: 2
+  dashImpactBaseDamage: 15
+  dashImpactCooldown: 0.15
+  dashDamageLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!50 &372754827
 Rigidbody2D:
   serializedVersion: 5
@@ -856,10 +861,21 @@ MonoBehaviour:
   moveSpeed: 8
   acceleration: 2
   deceleration: 5
+  minSpeedMultiplier: 0.55
+  momentumBuildRate: 1.6
+  momentumDecayRate: 2.2
+  momentumLossOnHit: 0.3
+  momentumLossOnWallCrash: 0.2
+  jumpMomentumBoostMultiplier: 1.25
+  climbMomentumBoostMultiplier: 1.35
+  dashMomentumMultiplier: 1.4
+  wallSlideMaxFallAtMaxMomentumMultiplier: 1.35
+  jumpAtMaxSpeedMultiplier: 5
+  dashAtMaxSpeedMultiplier: 5
   airAcceleration: 30
   airDeceleration: 30
   airControlMultiplier: 0.8
-  jumpSpeed: 10
+  jumpSpeed: 2
   jumpHBoost: 40
   varJumpTime: 0.2
   jumpGraceTime: 0.1
@@ -874,7 +890,7 @@ MonoBehaviour:
   wallSlideMaxFallSpeed: 0.5
   wallInputThreshold: 0.1
   dashSettings:
-    dashSpeed: 240
+    dashSpeed: 10
     endDashSpeed: 160
     endDashUpMult: 0.75
     dashTime: 0.15
@@ -884,6 +900,8 @@ MonoBehaviour:
     dashCornerCorrection: 4
     dashVFloorSnapDist: 3
     maxDashes: 1
+    forceHorizontalDash: 0
+    stopAtDashEnd: 1
   groundCheckSize: {x: 0.4, y: 0.1}
   groundLayer:
     serializedVersion: 2
@@ -897,6 +915,7 @@ MonoBehaviour:
   climbableLayer:
     serializedVersion: 2
     m_Bits: 64
+  enableVerboseLogs: 0
   canMove: 1
 --- !u!1 &432769942
 GameObject:

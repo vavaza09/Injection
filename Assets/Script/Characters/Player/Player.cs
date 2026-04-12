@@ -3,9 +3,12 @@ using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
 using Game.Components.Movement;
+using System.Collections.Generic;
 
 public class Player : character
 {
+    #region Fields
+
     private Core.Logging.ILogger _logger;
 
     [Header("Player Components")]
@@ -31,6 +34,19 @@ public class Player : character
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
 
+    [Header("Movement Combat")]
+    [SerializeField] private float dashImpactBaseDamage = 15f;
+    [SerializeField] private float dashImpactCooldown = 0.15f;
+    [SerializeField] private LayerMask dashDamageLayer = ~0;
+
+    private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
+    private bool _wasDashing;
+    private float _lastDashHitTime;
+
+    #endregion
+
+    #region Dependency Injection
+
     [Inject]
     public void Construct(
         LoggerFactory loggerFactory,
@@ -44,6 +60,10 @@ public class Player : character
         _audioController = audioController;
         _logger?.Log("Player components injected via DI");
     }
+
+    #endregion
+
+    #region Unity Lifecycle
 
     protected override void Awake()
     {
@@ -106,8 +126,20 @@ public class Player : character
             SlowMotion.Instance.StopSlowMotion();
         }
 
+        // Reset dash-hit registry whenever a new dash starts.
+        bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
+        if (isDashingNow && !_wasDashing)
+        {
+            _dashHitTargets.Clear();
+        }
+        _wasDashing = isDashingNow;
+
         _inputHandler?.UpdateAimDirection(transform);
     }
+
+    #endregion
+
+    #region Physics Update
 
     private void FixedUpdate()
     {
@@ -116,6 +148,10 @@ public class Player : character
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
         Move(moveInput);
     }
+
+    #endregion
+
+    #region Movement And Actions
 
     public override void Move(Vector2 direction)
     {
@@ -137,18 +173,15 @@ public class Player : character
     {   
         _logger?.Log("Dash initiated");
         Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+
+        if (aimDir == Vector2.zero)
+        {
+            float facing = characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f;
+            aimDir = new Vector2(facing, 0f);
+        }
+
         movementComponent?.Dash(aimDir);
         _audioController?.PlayDashSound();
-    }
-
-    public override void Attack()
-    {
-        if (!isAlive) return;
-
-        _animationController?.PlayAttackAnimation();
-        _audioController?.PlayAttackSound();
-
-        _logger?.Log("Player attacked");
     }
 
     public void Jump()
@@ -194,8 +227,81 @@ public class Player : character
         _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
     }
 
+    #endregion
+
+    #region Combat
+
+    public override void Attack()
+    {
+        if (!isAlive) return;
+
+        _animationController?.PlayAttackAnimation();
+        _audioController?.PlayAttackSound();
+
+        _logger?.Log("Player attacked");
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        TryDealDashImpactDamage(collision.collider);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        TryDealDashImpactDamage(other);
+    }
+
+    private void TryDealDashImpactDamage(Collider2D targetCollider)
+    {
+        if (!isAlive || movementComponent == null || targetCollider == null)
+        {
+            return;
+        }
+
+        if (!movementComponent.DashAttacking)
+        {
+            return;
+        }
+
+        if ((dashDamageLayer.value & (1 << targetCollider.gameObject.layer)) == 0)
+        {
+            return;
+        }
+
+        if (Time.time - _lastDashHitTime < dashImpactCooldown)
+        {
+            return;
+        }
+
+        character targetCharacter = targetCollider.GetComponentInParent<character>();
+        if (targetCharacter == null || targetCharacter == this)
+        {
+            return;
+        }
+
+        int targetId = targetCharacter.GetInstanceID();
+        if (_dashHitTargets.Contains(targetId))
+        {
+            return;
+        }
+
+        float damageMultiplier = movementComponent.MovementAttackMultiplier;
+        float finalDamage = dashImpactBaseDamage * damageMultiplier;
+
+        targetCharacter.TakeDamage(finalDamage);
+        _dashHitTargets.Add(targetId);
+        _lastDashHitTime = Time.time;
+
+        _logger?.Log($"Dash impact hit {targetCharacter.name} for {finalDamage:F1} damage (x{damageMultiplier:F2})");
+    }
+
+    #endregion
+
+    #region Health And Death
+
     protected override void OnTakeDamage()
     {
+        movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
         OnInvincibilityVisual();
@@ -219,6 +325,10 @@ public class Player : character
         _logger?.LogWarning("Player died! Game Over!");
     }
 
+    #endregion
+
+    #region Cleanup
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -229,7 +339,12 @@ public class Player : character
             _inputHandler.OnJumpReleased -= CancelJump;
             _inputHandler.OnAttackPressed -= Attack;
             _inputHandler.OnRightClickPressed -= ActivateSlowMotion; 
+            _inputHandler.OnDashPressed -= Dash;
             _inputHandler.Dispose();
         }
+
+        _dashHitTargets.Clear();
     }
+
+    #endregion
 }
