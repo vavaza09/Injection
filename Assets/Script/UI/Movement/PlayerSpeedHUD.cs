@@ -15,7 +15,6 @@ namespace Game.UI.Movement
     {
         [Header("Data Source")]
         [SerializeField] private MovementComponent movementComponent;
-        [SerializeField] private float maxMoveSpeedUnits = 8f;
 
         [Header("Displays (add any ISpeedDisplay components here)")]
         [SerializeField] private SpeedTextDisplay textDisplay;
@@ -33,15 +32,15 @@ namespace Game.UI.Movement
         private void Start()
         {
             if (movementComponent != null)
-                Initialize(movementComponent, maxMoveSpeedUnits);
+                Initialize(movementComponent);
         }
 
         /// <summary>
         /// Programmatic initialization (call from Player or DI if needed).
         /// </summary>
-        public void Initialize(MovementComponent movement, float maxSpeedUnits)
+        public void Initialize(MovementComponent movement)
         {
-            _provider = new MovementSpeedProvider(movement, maxSpeedUnits);
+            _provider = new MovementSpeedProvider(movement);
         }
 
         /// <summary>
