@@ -3,5 +3,6 @@ public enum EnemyType
     Melee,
     Ranged,
     Flying,
-    Boss
+    Boss,
+    Tank
 }
