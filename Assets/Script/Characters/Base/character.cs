@@ -23,6 +23,7 @@ public abstract class character : MonoBehaviour
     protected HealthComponent healthComponent;
     [SerializeField] protected MovementComponent movementComponent;
     protected AttackComponent attackComponent;
+    private bool isHealthInitialized;
 
     protected virtual void Awake()
     {
@@ -37,19 +38,15 @@ public abstract class character : MonoBehaviour
         )
     {
         healthComponent = health;
-        
+        isHealthInitialized = false;
     }
     
     protected virtual void Start()
     {
         currentHealth = maxHealth;
+        EnsureHealthComponent();
 
         // Setup components
-        if (healthComponent != null)
-        {
-            healthComponent.Initialize(maxHealth);
-        }
-
         if (movementComponent != null)
         {
             movementComponent.Initialize(rb, characterTransform);
@@ -73,10 +70,18 @@ public abstract class character : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
-        if (!isAlive) return;
+        EnsureHealthComponent();
+
+        if (!isAlive)
+        {
+            return;
+        }
 
         bool damageApplied = healthComponent.TakeDamage(damage);
-        if (!damageApplied) return;
+        if (!damageApplied)
+        {
+            return;
+        }
 
         OnTakeDamage();
 
@@ -114,6 +119,22 @@ public abstract class character : MonoBehaviour
     {
         // Draw ground check gizmo
         //movementComponent?.OnDrawGizmosSelected();
+    }
+
+    private void EnsureHealthComponent()
+    {
+        if (healthComponent == null)
+        {
+            healthComponent = new HealthComponent();
+            isHealthInitialized = false;
+        }
+
+        if (!isHealthInitialized)
+        {
+            healthComponent.Initialize(maxHealth);
+            currentHealth = maxHealth;
+            isHealthInitialized = true;
+        }
     }
 }
 
