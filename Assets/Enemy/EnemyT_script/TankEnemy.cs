@@ -12,6 +12,7 @@ public class TankEnemy : Enemy
     [Header("Tank State")]
     [SerializeField] private bool rotatePivotWhenIdle = true;
     [SerializeField] private float stopMoveThreshold = 0.1f;
+    [SerializeField] private float backOffRange = 1.25f;
 
     private float lastShootTime = -999f;
 
@@ -58,7 +59,6 @@ public class TankEnemy : Enemy
 
             if (distanceToPlayer <= attackRange)
             {
-                Move(Vector2.zero);
                 Attack();
             }
             return;
@@ -97,8 +97,15 @@ public class TankEnemy : Enemy
 
         Vector2 direction = playerTransform.position - transform.position;
         direction.y = 0f;
+        float horizontalDistance = Mathf.Abs(direction.x);
 
-        if (Mathf.Abs(direction.x) <= stopMoveThreshold)
+        if (horizontalDistance <= backOffRange)
+        {
+            Move((-direction).normalized);
+            return;
+        }
+
+        if (horizontalDistance <= stopMoveThreshold)
         {
             Move(Vector2.zero);
             return;
@@ -169,6 +176,9 @@ public class TankEnemy : Enemy
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        Gizmos.color = new Color(1f, 0.5f, 0f);
+        Gizmos.DrawWireSphere(transform.position, backOffRange);
 
         if (attackPoint != null)
         {

@@ -26,19 +26,34 @@ public class TankBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (owner != null && other.gameObject == owner)
+        HandleHit(other);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        HandleHit(collision.collider);
+    }
+
+    private void HandleHit(Collider2D other)
+    {
+        if (other == null)
         {
             return;
         }
 
-        if (other.CompareTag("Player"))
+        if (owner != null)
         {
-            character target = other.GetComponentInParent<character>();
-            if (target != null)
+            Transform ownerRoot = owner.transform.root;
+            if (other.gameObject == owner || other.transform.root == ownerRoot)
             {
-                target.TakeDamage(damage);
+                return;
             }
+        }
 
+        Player player = other.GetComponentInParent<Player>();
+        if (player != null)
+        {
+            player.TakeDamage(damage);
             Destroy(gameObject);
             return;
         }
