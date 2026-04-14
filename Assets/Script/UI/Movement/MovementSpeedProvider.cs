@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Game.UI.Movement
 {
     /// <summary>
-    /// Reads current movement speed from MovementComponent and exposes it as km/h.
+    /// Reads actual horizontal movement speed from MovementComponent and exposes it as km/h.
     /// Conversion factor maps game units/sec to a legible km/h range (SRP).
     /// </summary>
     public class MovementSpeedProvider : ISpeedDataProvider
@@ -31,7 +31,7 @@ namespace Game.UI.Movement
             RecalculateMaxSpeed();
 
             float rawSpeed = _movement != null
-                ? Mathf.Max(0f, _movement.CurrentMoveSpeed)
+                ? Mathf.Abs(_movement.GetVelocity().x)
                 : 0f;
 
             CurrentSpeedKmh = rawSpeed * UnitsPerSecToKmh;

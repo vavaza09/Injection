@@ -19,6 +19,13 @@ namespace Game.Components.Movement
         [SerializeField] private float acceleration = 48f;
         [SerializeField] private float deceleration = 44f;
 
+        [Header("Direction Change Physics")]
+        [SerializeField] private float reverseGroundBrake = 120f;
+        [SerializeField] private float reverseAirBrake = 70f;
+        [SerializeField, Range(0f, 1f)] private float reverseMomentumLoss = 0.2f;
+        [SerializeField] private float reverseMomentumDecayMultiplier = 2.5f;
+        [SerializeField] private float reverseSpeedThreshold = 0.25f;
+
         [Header("Momentum Settings")]
         [SerializeField, Range(0.1f, 1f)] private float minSpeedMultiplier = 0.6f;
         [SerializeField] private float momentumBuildRate = 2.1f;
@@ -37,6 +44,14 @@ namespace Game.Components.Movement
         [SerializeField] private float airAcceleration = 30f;
         [SerializeField] private float airDeceleration = 30f;
         [SerializeField] private float airControlMultiplier = 0.8f;
+
+        [Header("Post Dash Air Control")]
+        [SerializeField] private float postDashAirControlTime = 0.2f;
+        [SerializeField] private float postDashAirAccelerationOverride = 45f;
+        [SerializeField, Range(0.1f, 2f)] private float postDashAirControlBoost = 1.15f;
+        [SerializeField] private float postDashAirBrakeTime = 0.25f;
+        [SerializeField] private float postDashAirBrakeStrength = 120f;
+        [SerializeField, Range(0.5f, 2f)] private float postDashMaxAirSpeedMultiplier = 1.15f;
 
         [Header("Jump Settings (Celeste-inspired)")]
         [SerializeField] private float jumpSpeed = -105f;
@@ -109,6 +124,7 @@ namespace Game.Components.Movement
         private int wallSideSign;
         private bool _wasWallSliding;
         private float _currentWallSlideSpeed;
+        private bool _wasReversingDirection;
         private Vector2 moveInput;
         private float _momentumNormalized;
         private float _currentMoveSpeed;
@@ -116,6 +132,9 @@ namespace Game.Components.Movement
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
         private Coroutine _dashCoroutine;
+        private float _postDashAirControlTimer;
+        private float _postDashAirBrakeTimer;
+        private bool _wasDashingLastFrame;
 
         #endregion
 
@@ -179,9 +198,13 @@ namespace Game.Components.Movement
             wallSideSign = 0;
             _wasWallSliding = false;
             _currentWallSlideSpeed = 0f;
+            _wasReversingDirection = false;
             moveInput = Vector2.zero;
             _momentumNormalized = 0f;
             _currentMoveSpeed = 0f;
+            _postDashAirControlTimer = 0f;
+            _postDashAirBrakeTimer = 0f;
+            _wasDashingLastFrame = false;
             
 
             if (rb != null)
@@ -250,7 +273,26 @@ namespace Game.Components.Movement
                 }
             }
 
-            if (IsDashing)
+            bool isDashingNow = IsDashing;
+            if (_wasDashingLastFrame && !isDashingNow && !isGrounded)
+            {
+                _postDashAirControlTimer = postDashAirControlTime;
+                _postDashAirBrakeTimer = postDashAirBrakeTime;
+            }
+
+            _wasDashingLastFrame = isDashingNow;
+
+            if (_postDashAirControlTimer > 0f)
+            {
+                _postDashAirControlTimer = Mathf.Max(0f, _postDashAirControlTimer - Time.deltaTime);
+            }
+
+            if (_postDashAirBrakeTimer > 0f)
+            {
+                _postDashAirBrakeTimer = Mathf.Max(0f, _postDashAirBrakeTimer - Time.deltaTime);
+            }
+
+            if (isDashingNow)
             {
                 StopClimb();
                 ResetWallSlideState();
@@ -283,6 +325,30 @@ namespace Game.Components.Movement
                 return;
             }
 
+            float currentSpeed = rb.linearVelocity.x;
+
+            if (!isGrounded && _postDashAirBrakeTimer > 0f)
+            {
+                ApplyPostDashAirBrake();
+                currentSpeed = rb.linearVelocity.x;
+            }
+
+            bool isReversingDirection = IsReversingDirection(direction.x, currentSpeed);
+            if (isReversingDirection)
+            {
+                ApplyReverseBrake();
+
+                if (!_wasReversingDirection)
+                {
+                    ReduceMomentum(reverseMomentumLoss);
+                }
+
+                _wasReversingDirection = true;
+                return;
+            }
+
+            _wasReversingDirection = false;
+
             float effectiveMoveSpeed = GetCurrentHorizontalSpeedLimit();
             float targetSpeed = direction.x * effectiveMoveSpeed;
             bool isPushingIntoWall = !isGrounded
@@ -297,8 +363,6 @@ namespace Game.Components.Movement
                 // Do not let horizontal input "glue" the player against the wall.
                 targetSpeed = 0f;
             }
-
-            float currentSpeed = rb.linearVelocity.x;
 
             float accelRate;
             float controlMultiplier = 1f;
@@ -321,6 +385,31 @@ namespace Game.Components.Movement
                 }
 
                 targetSpeed *= controlMultiplier;
+
+                if (_postDashAirControlTimer > 0f)
+                {
+                    accelRate = Mathf.Max(accelRate, postDashAirAccelerationOverride);
+
+                    // Rebuild target speed from the horizontal intent so control still works
+                    // even if scene overrides set air control multipliers near zero.
+                    if (Mathf.Abs(direction.x) > 0.01f)
+                    {
+                        float assistedTargetSpeed = direction.x * effectiveMoveSpeed * postDashAirControlBoost;
+                        if (Mathf.Abs(assistedTargetSpeed) > Mathf.Abs(targetSpeed))
+                        {
+                            targetSpeed = assistedTargetSpeed;
+                        }
+                    }
+                }
+
+                // Keep airborne momentum when holding the same direction; do not auto-brake in mid-air.
+                bool isHoldingSameAirDirection = Mathf.Abs(direction.x) > 0.01f
+                                                && Mathf.Abs(currentSpeed) > 0.01f
+                                                && Mathf.Sign(direction.x) == Mathf.Sign(currentSpeed);
+                if (isHoldingSameAirDirection)
+                {
+                    targetSpeed = Mathf.Sign(direction.x) * Mathf.Max(Mathf.Abs(targetSpeed), Mathf.Abs(currentSpeed));
+                }
             }
 
             float speedDiff = targetSpeed - currentSpeed;
@@ -328,7 +417,7 @@ namespace Game.Components.Movement
 
             rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
-            if (Mathf.Abs(rb.linearVelocity.x) > effectiveMoveSpeed)
+            if (isGrounded && Mathf.Abs(rb.linearVelocity.x) > effectiveMoveSpeed)
             {
                 rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * effectiveMoveSpeed, rb.linearVelocity.y);
             }
@@ -886,6 +975,10 @@ namespace Game.Components.Movement
                 StopClimb();
                 _momentumNormalized = 0f;
                 _currentMoveSpeed = 0f;
+                _wasReversingDirection = false;
+                _postDashAirControlTimer = 0f;
+                _postDashAirBrakeTimer = 0f;
+                _wasDashingLastFrame = false;
             }
         }
 
@@ -942,7 +1035,8 @@ namespace Game.Components.Movement
             }
 
             bool hasHorizontalInput = Mathf.Abs(moveInput.x) > 0.1f;
-            bool isBuildingMomentum = isGrounded && !IsDashing && hasHorizontalInput;
+            bool isReversingDirection = rb != null && IsReversingDirection(moveInput.x, rb.linearVelocity.x);
+            bool isBuildingMomentum = isGrounded && !IsDashing && hasHorizontalInput && !isReversingDirection;
 
             if (isBuildingMomentum)
             {
@@ -950,7 +1044,8 @@ namespace Game.Components.Movement
             }
             else
             {
-                _momentumNormalized -= momentumDecayRate * Time.deltaTime;
+                float decayMultiplier = isReversingDirection ? reverseMomentumDecayMultiplier : 1f;
+                _momentumNormalized -= momentumDecayRate * decayMultiplier * Time.deltaTime;
             }
 
             _momentumNormalized = Mathf.Clamp01(_momentumNormalized);
@@ -999,6 +1094,48 @@ namespace Game.Components.Movement
         private float GetCurrentClimbSpeed()
         {
             return climbSpeed * Mathf.Lerp(1f, climbMomentumBoostMultiplier, _momentumNormalized);
+        }
+
+        private bool IsReversingDirection(float inputX, float currentSpeed)
+        {
+            if (Mathf.Abs(inputX) <= 0.1f)
+            {
+                return false;
+            }
+
+            if (Mathf.Abs(currentSpeed) <= reverseSpeedThreshold)
+            {
+                return false;
+            }
+
+            return Mathf.Sign(inputX) != Mathf.Sign(currentSpeed);
+        }
+
+        private void ApplyReverseBrake()
+        {
+            float brakeRate = isGrounded ? reverseGroundBrake : reverseAirBrake;
+            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, 0f, brakeRate * Time.deltaTime);
+            rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
+        }
+
+        private void ApplyPostDashAirBrake()
+        {
+            if (rb == null || isGrounded)
+            {
+                return;
+            }
+
+            float maxAllowedSpeed = Mathf.Max(0.01f, maxSpeed * postDashMaxAirSpeedMultiplier);
+            float currentSpeedX = rb.linearVelocity.x;
+
+            if (Mathf.Abs(currentSpeedX) <= maxAllowedSpeed)
+            {
+                return;
+            }
+
+            float clampedTargetX = Mathf.Sign(currentSpeedX) * maxAllowedSpeed;
+            float newSpeedX = Mathf.MoveTowards(currentSpeedX, clampedTargetX, postDashAirBrakeStrength * Time.deltaTime);
+            rb.linearVelocity = new Vector2(newSpeedX, rb.linearVelocity.y);
         }
 
         private void RecalculateCurrentMoveSpeed()
