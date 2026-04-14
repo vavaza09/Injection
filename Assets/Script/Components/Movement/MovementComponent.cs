@@ -1,5 +1,6 @@
 ﻿using ILogger = Core.Logging.ILogger;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Core.Logging;
 using VContainer;
 using System.Collections;
@@ -13,9 +14,17 @@ namespace Game.Components.Movement
         #region Movement Settings
 
         [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = 8f;
+        [FormerlySerializedAs("moveSpeed")]
+        [SerializeField] private float maxSpeed = 8f;
         [SerializeField] private float acceleration = 48f;
         [SerializeField] private float deceleration = 44f;
+
+        [Header("Direction Change Physics")]
+        [SerializeField] private float reverseGroundBrake = 120f;
+        [SerializeField] private float reverseAirBrake = 70f;
+        [SerializeField, Range(0f, 1f)] private float reverseMomentumLoss = 0.2f;
+        [SerializeField] private float reverseMomentumDecayMultiplier = 2.5f;
+        [SerializeField] private float reverseSpeedThreshold = 0.25f;
 
         [Header("Momentum Settings")]
         [SerializeField, Range(0.1f, 1f)] private float minSpeedMultiplier = 0.6f;
@@ -23,7 +32,6 @@ namespace Game.Components.Movement
         [SerializeField] private float momentumDecayRate = 1.4f;
         [SerializeField] private float momentumLossOnHit = 0.3f;
         [SerializeField] private float momentumLossOnWallCrash = 0.2f;
-        [SerializeField] private float jumpMomentumBoostMultiplier = 1.15f;
         [SerializeField] private float climbMomentumBoostMultiplier = 1.2f;
         [SerializeField] private float dashMomentumMultiplier = 1.5f;
         [SerializeField] private float wallSlideMaxFallAtMaxMomentumMultiplier = 1.2f;
@@ -37,6 +45,14 @@ namespace Game.Components.Movement
         [SerializeField] private float airDeceleration = 30f;
         [SerializeField] private float airControlMultiplier = 0.8f;
 
+        [Header("Post Dash Air Control")]
+        [SerializeField] private float postDashAirControlTime = 0.2f;
+        [SerializeField] private float postDashAirAccelerationOverride = 45f;
+        [SerializeField, Range(0.1f, 2f)] private float postDashAirControlBoost = 1.15f;
+        [SerializeField] private float postDashAirBrakeTime = 0.25f;
+        [SerializeField] private float postDashAirBrakeStrength = 120f;
+        [SerializeField, Range(0.5f, 2f)] private float postDashMaxAirSpeedMultiplier = 1.15f;
+
         [Header("Jump Settings (Celeste-inspired)")]
         [SerializeField] private float jumpSpeed = -105f;
         [SerializeField] private float jumpHBoost = 40f;
@@ -46,7 +62,6 @@ namespace Game.Components.Movement
         [Header("Gravity Settings")]
         [SerializeField] private float gravity = 900f;
         [SerializeField] private float maxFall = 160f;
-        [SerializeField] private float fastMaxFall = 240f;
         [SerializeField] private float halfGravThreshold = 40f;
 
         [Header("Advanced Jump")]
@@ -55,8 +70,9 @@ namespace Game.Components.Movement
         [SerializeField] private float fallAirControlMultiplier = 0.75f;
 
         [Header("Wall Stick")]
-        [SerializeField] private float wallStickGravityMultiplier = 0.35f;
         [SerializeField] private float wallSlideMaxFallSpeed = 90f;
+        [SerializeField] private float wallSlideAcceleration = 160f;
+        [SerializeField] private float wallStickHorizontalBrake = 120f;
         [SerializeField] private float wallInputThreshold = 0.1f;
 
         [Header("Dash Settings")]
@@ -86,7 +102,6 @@ namespace Game.Components.Movement
 
         // Jump State
         private bool isJumping;
-        private float jumpTimer;
         private bool isFalling;
         private float varJumpSpeed;
         private float varJumpTimer;
@@ -94,17 +109,22 @@ namespace Game.Components.Movement
         private bool autoJump;
         private float autoJumpTimer;
         private const float bounceAutoJumpTime = 0.1f;
+        private const float jumpDirectionThreshold = 0.01f;
+        private const float jumpBoostMinHorizontalSpeed = 0.5f;
+        private const float bounceVarJumpTime = 0.2f;
 
         // Core References
         private Rigidbody2D rb;
         private Transform characterTransform;
         private Transform groundCheck;
         private bool isGrounded;
-        private bool wasOnGround;
         [SerializeField] private bool canMove = true;
         private bool isTouchingWall;
         private bool isClimbing;
         private int wallSideSign;
+        private bool _wasWallSliding;
+        private float _currentWallSlideSpeed;
+        private bool _wasReversingDirection;
         private Vector2 moveInput;
         private float _momentumNormalized;
         private float _currentMoveSpeed;
@@ -112,6 +132,9 @@ namespace Game.Components.Movement
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
         private Coroutine _dashCoroutine;
+        private float _postDashAirControlTimer;
+        private float _postDashAirBrakeTimer;
+        private bool _wasDashingLastFrame;
 
         #endregion
 
@@ -124,6 +147,7 @@ namespace Game.Components.Movement
         public bool IsClimbingState => isClimbing;
         public float MomentumNormalized => _momentumNormalized;
         public float CurrentMoveSpeed => _currentMoveSpeed;
+        public float MaxSpeed => maxSpeed;
         public float MovementAttackMultiplier => Mathf.Lerp(1f, dashMomentumMultiplier, _momentumNormalized);
 
         public bool AutoJump
@@ -172,9 +196,15 @@ namespace Game.Components.Movement
             isClimbing = false;
             isTouchingWall = false;
             wallSideSign = 0;
+            _wasWallSliding = false;
+            _currentWallSlideSpeed = 0f;
+            _wasReversingDirection = false;
             moveInput = Vector2.zero;
             _momentumNormalized = 0f;
-            _currentMoveSpeed = moveSpeed * minSpeedMultiplier;
+            _currentMoveSpeed = 0f;
+            _postDashAirControlTimer = 0f;
+            _postDashAirBrakeTimer = 0f;
+            _wasDashingLastFrame = false;
             
 
             if (rb != null)
@@ -243,9 +273,29 @@ namespace Game.Components.Movement
                 }
             }
 
-            if (IsDashing)
+            bool isDashingNow = IsDashing;
+            if (_wasDashingLastFrame && !isDashingNow && !isGrounded)
+            {
+                _postDashAirControlTimer = postDashAirControlTime;
+                _postDashAirBrakeTimer = postDashAirBrakeTime;
+            }
+
+            _wasDashingLastFrame = isDashingNow;
+
+            if (_postDashAirControlTimer > 0f)
+            {
+                _postDashAirControlTimer = Mathf.Max(0f, _postDashAirControlTimer - Time.deltaTime);
+            }
+
+            if (_postDashAirBrakeTimer > 0f)
+            {
+                _postDashAirBrakeTimer = Mathf.Max(0f, _postDashAirBrakeTimer - Time.deltaTime);
+            }
+
+            if (isDashingNow)
             {
                 StopClimb();
+                ResetWallSlideState();
                 return;
             }
 
@@ -275,6 +325,30 @@ namespace Game.Components.Movement
                 return;
             }
 
+            float currentSpeed = rb.linearVelocity.x;
+
+            if (!isGrounded && _postDashAirBrakeTimer > 0f)
+            {
+                ApplyPostDashAirBrake();
+                currentSpeed = rb.linearVelocity.x;
+            }
+
+            bool isReversingDirection = IsReversingDirection(direction.x, currentSpeed);
+            if (isReversingDirection)
+            {
+                ApplyReverseBrake();
+
+                if (!_wasReversingDirection)
+                {
+                    ReduceMomentum(reverseMomentumLoss);
+                }
+
+                _wasReversingDirection = true;
+                return;
+            }
+
+            _wasReversingDirection = false;
+
             float effectiveMoveSpeed = GetCurrentHorizontalSpeedLimit();
             float targetSpeed = direction.x * effectiveMoveSpeed;
             bool isPushingIntoWall = !isGrounded
@@ -289,8 +363,6 @@ namespace Game.Components.Movement
                 // Do not let horizontal input "glue" the player against the wall.
                 targetSpeed = 0f;
             }
-
-            float currentSpeed = rb.linearVelocity.x;
 
             float accelRate;
             float controlMultiplier = 1f;
@@ -313,6 +385,31 @@ namespace Game.Components.Movement
                 }
 
                 targetSpeed *= controlMultiplier;
+
+                if (_postDashAirControlTimer > 0f)
+                {
+                    accelRate = Mathf.Max(accelRate, postDashAirAccelerationOverride);
+
+                    // Rebuild target speed from the horizontal intent so control still works
+                    // even if scene overrides set air control multipliers near zero.
+                    if (Mathf.Abs(direction.x) > 0.01f)
+                    {
+                        float assistedTargetSpeed = direction.x * effectiveMoveSpeed * postDashAirControlBoost;
+                        if (Mathf.Abs(assistedTargetSpeed) > Mathf.Abs(targetSpeed))
+                        {
+                            targetSpeed = assistedTargetSpeed;
+                        }
+                    }
+                }
+
+                // Keep airborne momentum when holding the same direction; do not auto-brake in mid-air.
+                bool isHoldingSameAirDirection = Mathf.Abs(direction.x) > 0.01f
+                                                && Mathf.Abs(currentSpeed) > 0.01f
+                                                && Mathf.Sign(direction.x) == Mathf.Sign(currentSpeed);
+                if (isHoldingSameAirDirection)
+                {
+                    targetSpeed = Mathf.Sign(direction.x) * Mathf.Max(Mathf.Abs(targetSpeed), Mathf.Abs(currentSpeed));
+                }
             }
 
             float speedDiff = targetSpeed - currentSpeed;
@@ -320,7 +417,7 @@ namespace Game.Components.Movement
 
             rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
-            if (Mathf.Abs(rb.linearVelocity.x) > effectiveMoveSpeed)
+            if (isGrounded && Mathf.Abs(rb.linearVelocity.x) > effectiveMoveSpeed)
             {
                 rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * effectiveMoveSpeed, rb.linearVelocity.y);
             }
@@ -377,12 +474,8 @@ namespace Game.Components.Movement
                 Debug.Log($"🎯 Jump() START - Current velocity: {rb?.linearVelocity}");
             }
 
-            if (!canMove || rb == null)
+            if (!CanExecuteJump())
             {
-                if (enableVerboseLogs)
-                {
-                    Debug.LogWarning($"❌ Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
-                }
                 return;
             }
 
@@ -392,69 +485,7 @@ namespace Game.Components.Movement
                 return;
             }
 
-            if (jumpGraceTimer <= 0 && !isGrounded)
-            {
-                if (enableVerboseLogs)
-                {
-                    Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
-                }
-                return;
-            }
-
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"✅ Jump SUCCESS! Applying velocity...");
-            }
-
-            jumpGraceTimer = 0;
-            varJumpTimer = varJumpTime;
-            autoJump = true;
-
-            float currentSpeedX = rb.linearVelocity.x;
-            float moveDirection = Mathf.Abs(currentSpeedX) > 0.01f
-                ? Mathf.Sign(currentSpeedX)
-                : (Mathf.Abs(moveInput.x) > 0.01f ? Mathf.Sign(moveInput.x) : (characterTransform.localScale.x >= 0 ? 1f : -1f));
-
-            float speedFactor = GetCurrentSpeedFactorFromVelocity();
-
-            float jumpBoostAmount = 0;
-            if (Mathf.Abs(currentSpeedX) > 0.5f)
-            {
-                float currentMaxHorizontalSpeed = GetCurrentHorizontalSpeedLimit();
-                float speedBasedJumpBoost = jumpHBoost * Mathf.Lerp(1f, jumpAtMaxSpeedMultiplier, speedFactor);
-                float maxBoost = Mathf.Min(speedBasedJumpBoost, currentMaxHorizontalSpeed - Mathf.Abs(currentSpeedX));
-                jumpBoostAmount = maxBoost * moveDirection;
-            }
-
-            float jumpVerticalSpeed = jumpSpeed * Mathf.Lerp(1f, jumpAtMaxSpeedMultiplier, speedFactor);
-
-            Vector2 newVelocity = new Vector2(
-                currentSpeedX + jumpBoostAmount,
-                jumpVerticalSpeed
-            );
-
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"   - Current Speed X: {currentSpeedX:F2}");
-                Debug.Log($"   - Speed Factor: {speedFactor:F2}");
-                Debug.Log($"   - Jump Boost: {jumpBoostAmount:F2}");
-                Debug.Log($"   - Jump Vertical Speed: {jumpVerticalSpeed:F2}");
-                Debug.Log($"   - New Velocity: {newVelocity}");
-            }
-
-            rb.linearVelocity = newVelocity;
-
-            varJumpSpeed = rb.linearVelocity.y;
-            isJumping = true;
-            jumpTimer = 0f;
-            isFalling = false;
-
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"✅ Jump applied! Final velocity: {rb.linearVelocity}");
-                Debug.Log($"   - varJumpSpeed: {varJumpSpeed}");
-                Debug.Log($"   - autoJump: {autoJump}");
-            }
+            ExecuteGroundJump();
         }
 
         public void CancelJump()
@@ -479,7 +510,7 @@ namespace Game.Components.Movement
             isJumping = false;
             isFalling = false;
             jumpGraceTimer = 0;
-            varJumpTimer = 0.2f;
+            varJumpTimer = bounceVarJumpTime;
             autoJump = true;
             autoJumpTimer = bounceAutoJumpTime;
 
@@ -502,18 +533,115 @@ namespace Game.Components.Movement
 
             StopClimb();
 
-            jumpGraceTimer = 0;
-            varJumpTimer = varJumpTime;
-            autoJump = true;
+            BeginJumpWindow(varJumpTime);
 
             rb.linearVelocity = new Vector2(
                 jumpAwayDirection * wallJumpHorizontalSpeed,
                 wallJumpVerticalSpeed
             );
 
-            varJumpSpeed = rb.linearVelocity.y;
+            ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
+        }
+
+        private bool CanExecuteJump()
+        {
+            if (!canMove || rb == null)
+            {
+                if (enableVerboseLogs)
+                {
+                    Debug.LogWarning($"❌ Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
+                }
+                return false;
+            }
+
+            if (isClimbing)
+            {
+                return true;
+            }
+
+            if (jumpGraceTimer <= 0f && !isGrounded)
+            {
+                if (enableVerboseLogs)
+                {
+                    Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        private void ExecuteGroundJump()
+        {
+            if (enableVerboseLogs)
+            {
+                Debug.Log($"✅ Jump SUCCESS! Applying velocity...");
+            }
+
+            BeginJumpWindow(varJumpTime);
+
+            float currentSpeedX = rb.linearVelocity.x;
+            float moveDirection = ResolveJumpDirection(currentSpeedX);
+            float speedFactor = GetCurrentSpeedFactorFromVelocity();
+            float jumpBoostAmount = CalculateJumpBoostAmount(currentSpeedX, moveDirection, speedFactor);
+            float jumpVerticalSpeed = jumpSpeed * Mathf.Lerp(1f, jumpAtMaxSpeedMultiplier, speedFactor);
+
+            Vector2 jumpVelocity = new Vector2(currentSpeedX + jumpBoostAmount, jumpVerticalSpeed);
+            rb.linearVelocity = jumpVelocity;
+            ApplyJumpStateAfterLaunch(jumpVelocity.y);
+
+            if (enableVerboseLogs)
+            {
+                Debug.Log($"   - Current Speed X: {currentSpeedX:F2}");
+                Debug.Log($"   - Speed Factor: {speedFactor:F2}");
+                Debug.Log($"   - Jump Boost: {jumpBoostAmount:F2}");
+                Debug.Log($"   - Jump Vertical Speed: {jumpVerticalSpeed:F2}");
+                Debug.Log($"   - New Velocity: {jumpVelocity}");
+                Debug.Log($"✅ Jump applied! Final velocity: {rb.linearVelocity}");
+                Debug.Log($"   - varJumpSpeed: {varJumpSpeed}");
+                Debug.Log($"   - autoJump: {autoJump}");
+            }
+        }
+
+        private void BeginJumpWindow(float duration)
+        {
+            jumpGraceTimer = 0f;
+            varJumpTimer = duration;
+            autoJump = true;
+        }
+
+        private float ResolveJumpDirection(float currentSpeedX)
+        {
+            if (Mathf.Abs(currentSpeedX) > jumpDirectionThreshold)
+            {
+                return Mathf.Sign(currentSpeedX);
+            }
+
+            if (Mathf.Abs(moveInput.x) > jumpDirectionThreshold)
+            {
+                return Mathf.Sign(moveInput.x);
+            }
+
+            return characterTransform != null && characterTransform.localScale.x >= 0f ? 1f : -1f;
+        }
+
+        private float CalculateJumpBoostAmount(float currentSpeedX, float moveDirection, float speedFactor)
+        {
+            if (Mathf.Abs(currentSpeedX) <= jumpBoostMinHorizontalSpeed)
+            {
+                return 0f;
+            }
+
+            float currentMaxHorizontalSpeed = GetCurrentHorizontalSpeedLimit();
+            float speedBasedJumpBoost = jumpHBoost * Mathf.Lerp(1f, jumpAtMaxSpeedMultiplier, speedFactor);
+            float maxBoost = Mathf.Min(speedBasedJumpBoost, currentMaxHorizontalSpeed - Mathf.Abs(currentSpeedX));
+            return maxBoost * moveDirection;
+        }
+
+        private void ApplyJumpStateAfterLaunch(float verticalSpeed)
+        {
+            varJumpSpeed = verticalSpeed;
             isJumping = true;
-            jumpTimer = 0f;
             isFalling = false;
         }
 
@@ -525,109 +653,144 @@ namespace Game.Components.Movement
         {
             if (rb == null) return;
 
-            if (isClimbing)
+            if (HandleClimbJumpState()) return;
+            if (HandleWallSlideJumpState()) return;
+
+            ResetWallSlideState();
+
+            if (HandleGroundedJumpState()) return;
+
+            float deltaTime = Time.deltaTime;
+            UpdateJumpTimers(deltaTime);
+            ApplyVariableJumpHold(deltaTime);
+            ApplyJumpGravity(deltaTime);
+            UpdateAirborneJumpFlags();
+        }
+
+        private bool HandleClimbJumpState()
+        {
+            if (!isClimbing)
             {
-                isJumping = false;
-                isFalling = false;
-                return;
+                return false;
             }
 
-            wasOnGround = isGrounded;
+            ResetWallSlideState();
+            isJumping = false;
+            isFalling = false;
+            return true;
+        }
 
-            if (isGrounded)
+        private bool HandleWallSlideJumpState()
+        {
+            bool wallSlideActive = isTouchingWall && !isGrounded;
+            if (!wallSlideActive)
             {
-                isJumping = false;
-                isFalling = false;
-                jumpTimer = 0f;
-                jumpGraceTimer = jumpGraceTime;
-                autoJump = false;
-                return;
+                return false;
             }
 
-            if (jumpGraceTimer > 0)
-            {
-                jumpGraceTimer -= Time.deltaTime;
-            }
+            UpdateWallSlideVelocity();
+            float gravityDirection = gravity >= 0f ? -1f : 1f;
+            isFalling = rb.linearVelocity.y * gravityDirection > 0f;
+            isJumping = false;
+            return true;
+        }
 
-            if (autoJumpTimer > 0)
-            {
-                if (autoJump)
-                {
-                    autoJumpTimer -= Time.deltaTime;
-                    if (autoJumpTimer <= 0)
-                        autoJump = false;
-                }
-                else
-                {
-                    autoJumpTimer = 0;
-                }
-            }
-
-            if (varJumpTimer > 0)
-            {
-                if (autoJump)
-                {
-                    rb.linearVelocity = new Vector2(
-                        rb.linearVelocity.x,
-                        Mathf.Min(rb.linearVelocity.y, varJumpSpeed)
-                    );
-                    varJumpTimer -= Time.deltaTime;
-                }
-                else
-                {
-                    varJumpTimer = 0;
-                }
-            }
-
-            // Apply Gravity with Half Gravity Threshold
+        private bool HandleGroundedJumpState()
+        {
             if (!isGrounded)
             {
-                float gravityMultiplier = 1f;
-                bool isPushingIntoWall = wallSideSign != 0
-                                         && Mathf.Abs(moveInput.x) >= wallInputThreshold
-                                         && Mathf.Sign(moveInput.x) == wallSideSign;
-                bool wallStickActive = isTouchingWall
-                                       && !isClimbing;
-
-                if (Mathf.Abs(rb.linearVelocity.y) < halfGravThreshold && (autoJump || varJumpTimer > 0))
-                {
-                    gravityMultiplier = 0.5f;
-                }
-                else if (rb.linearVelocity.y > 0)
-                {
-                    gravityMultiplier = fallGravityMultiplier;
-                }
-                else if (rb.linearVelocity.y < 0 && varJumpTimer <= 0)
-                {
-                    gravityMultiplier = lowJumpGravityMultiplier;
-                }
-
-                if (wallStickActive)
-                {
-                    gravityMultiplier *= wallStickGravityMultiplier;
-                }
-
-                float gravityForce = gravity * gravityMultiplier * Time.deltaTime;
-
-                rb.linearVelocity = new Vector2(
-                    rb.linearVelocity.x,
-                    rb.linearVelocity.y - gravityForce
-                );
-
-                float maxFallSpeed = maxFall;
-                if (wallStickActive)
-                {
-                    float momentumWallSlideMaxFall = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxMomentumMultiplier, _momentumNormalized);
-                    maxFallSpeed = Mathf.Min(maxFallSpeed, momentumWallSlideMaxFall);
-                }
-
-                if (rb.linearVelocity.y > maxFallSpeed)
-                {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, maxFallSpeed);
-                }
+                return false;
             }
 
-            if (rb.linearVelocity.y > 0)
+            isJumping = false;
+            isFalling = false;
+            jumpGraceTimer = jumpGraceTime;
+            autoJump = false;
+            return true;
+        }
+
+        private void UpdateJumpTimers(float deltaTime)
+        {
+            if (jumpGraceTimer > 0f)
+            {
+                jumpGraceTimer -= deltaTime;
+            }
+
+            if (autoJumpTimer <= 0f)
+            {
+                return;
+            }
+
+            if (!autoJump)
+            {
+                autoJumpTimer = 0f;
+                return;
+            }
+
+            autoJumpTimer -= deltaTime;
+            if (autoJumpTimer <= 0f)
+            {
+                autoJump = false;
+            }
+        }
+
+        private void ApplyVariableJumpHold(float deltaTime)
+        {
+            if (varJumpTimer <= 0f)
+            {
+                return;
+            }
+
+            if (!autoJump)
+            {
+                varJumpTimer = 0f;
+                return;
+            }
+
+            Vector2 velocity = rb.linearVelocity;
+            velocity.y = Mathf.Min(velocity.y, varJumpSpeed);
+            rb.linearVelocity = velocity;
+            varJumpTimer -= deltaTime;
+        }
+
+        private void ApplyJumpGravity(float deltaTime)
+        {
+            float gravityMultiplier = ResolveJumpGravityMultiplier();
+            Vector2 velocity = rb.linearVelocity;
+            velocity.y -= gravity * gravityMultiplier * deltaTime;
+
+            if (velocity.y > maxFall)
+            {
+                velocity.y = maxFall;
+            }
+
+            rb.linearVelocity = velocity;
+        }
+
+        private float ResolveJumpGravityMultiplier()
+        {
+            float verticalSpeed = rb.linearVelocity.y;
+            if (Mathf.Abs(verticalSpeed) < halfGravThreshold && (autoJump || varJumpTimer > 0f))
+            {
+                return 0.5f;
+            }
+
+            if (verticalSpeed > 0f)
+            {
+                return fallGravityMultiplier;
+            }
+
+            if (verticalSpeed < 0f && varJumpTimer <= 0f)
+            {
+                return lowJumpGravityMultiplier;
+            }
+
+            return 1f;
+        }
+
+        private void UpdateAirborneJumpFlags()
+        {
+            if (rb.linearVelocity.y > 0f)
             {
                 isFalling = true;
                 isJumping = false;
@@ -738,6 +901,40 @@ namespace Game.Components.Movement
             isClimbing = false;
         }
 
+        private void UpdateWallSlideVelocity()
+        {
+            if (rb == null)
+            {
+                return;
+            }
+
+            float gravityDirection = gravity >= 0f ? -1f : 1f;
+            float maxSlideSpeed = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxMomentumMultiplier, _momentumNormalized);
+            float currentGravityAlignedSpeed = rb.linearVelocity.y * gravityDirection;
+
+            if (!_wasWallSliding)
+            {
+                // Use the same movement speed source as Player/UI instead of a separate wall-slide start value.
+                _currentWallSlideSpeed = Mathf.Max(Mathf.Max(0f, currentGravityAlignedSpeed), _currentMoveSpeed);
+            }
+            else
+            {
+                _currentWallSlideSpeed += wallSlideAcceleration * Time.deltaTime;
+            }
+
+            _currentWallSlideSpeed = Mathf.Min(_currentWallSlideSpeed, maxSlideSpeed);
+
+            float clampedX = Mathf.MoveTowards(rb.linearVelocity.x, 0f, wallStickHorizontalBrake * Time.deltaTime);
+            rb.linearVelocity = new Vector2(clampedX, gravityDirection * _currentWallSlideSpeed);
+            _wasWallSliding = true;
+        }
+
+        private void ResetWallSlideState()
+        {
+            _wasWallSliding = false;
+            _currentWallSlideSpeed = 0f;
+        }
+
         #endregion
 
         #region Utility
@@ -754,14 +951,20 @@ namespace Game.Components.Movement
 
         public void SetSpeed(float speed)
         {
-            moveSpeed = speed;
-            _currentMoveSpeed = moveSpeed * minSpeedMultiplier;
+            maxSpeed = Mathf.Max(0f, speed);
+            if (Mathf.Abs(moveInput.x) > 0.1f)
+            {
+                RecalculateCurrentMoveSpeed();
+            }
         }
 
         public void ReduceMomentum(float amount)
         {
             _momentumNormalized = Mathf.Clamp01(_momentumNormalized - Mathf.Abs(amount));
-            _currentMoveSpeed = Mathf.Lerp(moveSpeed * minSpeedMultiplier, moveSpeed, _momentumNormalized);
+            if (Mathf.Abs(moveInput.x) > 0.1f)
+            {
+                RecalculateCurrentMoveSpeed();
+            }
         }
 
         public void SetCanMove(bool value)
@@ -771,7 +974,11 @@ namespace Game.Components.Movement
             {
                 StopClimb();
                 _momentumNormalized = 0f;
-                _currentMoveSpeed = moveSpeed * minSpeedMultiplier;
+                _currentMoveSpeed = 0f;
+                _wasReversingDirection = false;
+                _postDashAirControlTimer = 0f;
+                _postDashAirBrakeTimer = 0f;
+                _wasDashingLastFrame = false;
             }
         }
 
@@ -823,11 +1030,13 @@ namespace Game.Components.Movement
             if (!canMove)
             {
                 _momentumNormalized = 0f;
-                _currentMoveSpeed = moveSpeed * minSpeedMultiplier;
+                _currentMoveSpeed = 0f;
                 return;
             }
 
-            bool isBuildingMomentum = isGrounded && !IsDashing && Mathf.Abs(moveInput.x) > 0.1f;
+            bool hasHorizontalInput = Mathf.Abs(moveInput.x) > 0.1f;
+            bool isReversingDirection = rb != null && IsReversingDirection(moveInput.x, rb.linearVelocity.x);
+            bool isBuildingMomentum = isGrounded && !IsDashing && hasHorizontalInput && !isReversingDirection;
 
             if (isBuildingMomentum)
             {
@@ -835,16 +1044,38 @@ namespace Game.Components.Movement
             }
             else
             {
-                _momentumNormalized -= momentumDecayRate * Time.deltaTime;
+                float decayMultiplier = isReversingDirection ? reverseMomentumDecayMultiplier : 1f;
+                _momentumNormalized -= momentumDecayRate * decayMultiplier * Time.deltaTime;
             }
 
             _momentumNormalized = Mathf.Clamp01(_momentumNormalized);
-            _currentMoveSpeed = Mathf.Lerp(moveSpeed * minSpeedMultiplier, moveSpeed, _momentumNormalized);
+
+            if (hasHorizontalInput)
+            {
+                RecalculateCurrentMoveSpeed();
+                return;
+            }
+
+            // No move input: follow real horizontal speed so UI and player motion stay in sync.
+            if (rb != null)
+            {
+                _currentMoveSpeed = Mathf.Abs(rb.linearVelocity.x);
+                return;
+            }
+
+            float speedDecayRate = isGrounded ? deceleration : airDeceleration;
+            _currentMoveSpeed = Mathf.MoveTowards(_currentMoveSpeed, 0f, speedDecayRate * Time.deltaTime);
         }
 
         private float GetCurrentHorizontalSpeedLimit()
         {
-            return Mathf.Max(0.01f, _currentMoveSpeed);
+            float speedLimit = _currentMoveSpeed;
+            if (Mathf.Abs(moveInput.x) > 0.1f && speedLimit <= 0f)
+            {
+                speedLimit = maxSpeed * minSpeedMultiplier;
+            }
+
+            return Mathf.Max(0.01f, speedLimit);
         }
 
         private float GetCurrentSpeedFactorFromVelocity()
@@ -855,18 +1086,67 @@ namespace Game.Components.Movement
             }
 
             float speedNow = Mathf.Abs(rb.linearVelocity.x);
-            float referenceSpeed = GetCurrentHorizontalSpeedLimit();
-            if (referenceSpeed <= 0.01f)
-            {
-                return 0f;
-            }
-
+            // Normalize by character max speed, not current cap, to avoid false 1.0 factor while coasting.
+            float referenceSpeed = Mathf.Max(0.01f, maxSpeed);
             return Mathf.Clamp01(speedNow / referenceSpeed);
         }
 
         private float GetCurrentClimbSpeed()
         {
             return climbSpeed * Mathf.Lerp(1f, climbMomentumBoostMultiplier, _momentumNormalized);
+        }
+
+        private bool IsReversingDirection(float inputX, float currentSpeed)
+        {
+            if (Mathf.Abs(inputX) <= 0.1f)
+            {
+                return false;
+            }
+
+            if (Mathf.Abs(currentSpeed) <= reverseSpeedThreshold)
+            {
+                return false;
+            }
+
+            return Mathf.Sign(inputX) != Mathf.Sign(currentSpeed);
+        }
+
+        private void ApplyReverseBrake()
+        {
+            float brakeRate = isGrounded ? reverseGroundBrake : reverseAirBrake;
+            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, 0f, brakeRate * Time.deltaTime);
+            rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
+        }
+
+        private void ApplyPostDashAirBrake()
+        {
+            if (rb == null || isGrounded)
+            {
+                return;
+            }
+
+            float maxAllowedSpeed = Mathf.Max(0.01f, maxSpeed * postDashMaxAirSpeedMultiplier);
+            float currentSpeedX = rb.linearVelocity.x;
+
+            if (Mathf.Abs(currentSpeedX) <= maxAllowedSpeed)
+            {
+                return;
+            }
+
+            float clampedTargetX = Mathf.Sign(currentSpeedX) * maxAllowedSpeed;
+            float newSpeedX = Mathf.MoveTowards(currentSpeedX, clampedTargetX, postDashAirBrakeStrength * Time.deltaTime);
+            rb.linearVelocity = new Vector2(newSpeedX, rb.linearVelocity.y);
+        }
+
+        private void RecalculateCurrentMoveSpeed()
+        {
+            if (!canMove)
+            {
+                _currentMoveSpeed = 0f;
+                return;
+            }
+
+            _currentMoveSpeed = Mathf.Lerp(maxSpeed * minSpeedMultiplier, maxSpeed, _momentumNormalized);
         }
 
         #endregion
