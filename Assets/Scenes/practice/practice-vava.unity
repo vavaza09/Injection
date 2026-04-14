@@ -2311,6 +2311,10 @@ PrefabInstance:
       value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: reverseAirBrake
+      value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: momentumDecayRate
       value: 1.2
       objectReference: {fileID: 0}
@@ -2323,16 +2327,16 @@ PrefabInstance:
       value: 95
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: reverseAirBrake
-      value: 85
-      objectReference: {fileID: 0}
-    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallSlideStartSpeed
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: airControlMultiplier
       value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: postDashAirBrakeTime
+      value: 0.22
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: fallGravityMultiplier
@@ -2352,7 +2356,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashSettings.dashSpeed
-      value: 12
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: postDashAirControlTime
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: postDashAirControlBoost
+      value: 1.05
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallJumpHorizontalSpeed
@@ -2364,7 +2376,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpAtMaxSpeedMultiplier
-      value: 1.35
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: postDashAirBrakeStrength
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallStickHorizontalBrake
@@ -2375,32 +2391,16 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: dashSettings.airEndDashCarryMultiplier
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: postDashAirControlTime
-      value: 0.18
+      propertyPath: postDashMaxAirSpeedMultiplier
+      value: 1.05
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: postDashAirAccelerationOverride
       value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: postDashAirControlBoost
-      value: 1.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: postDashAirBrakeTime
-      value: 0.22
-      objectReference: {fileID: 0}
-    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: postDashAirBrakeStrength
-      value: 140
-      objectReference: {fileID: 0}
-    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: postDashMaxAirSpeedMultiplier
-      value: 1.05
+      propertyPath: dashSettings.airEndDashCarryMultiplier
+      value: 0.55
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

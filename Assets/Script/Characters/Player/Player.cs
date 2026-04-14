@@ -4,6 +4,7 @@ using Core.Logging;
 using VContainer;
 using Game.Components.Movement;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class Player : character
 {
@@ -33,6 +34,15 @@ public class Player : character
 
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
+
+    [Header("Health Cheat (Debug)")]
+    [SerializeField] private bool enableHealthCheats = true;
+    [SerializeField] private Key cheatTakeHitKey = Key.F1;
+    [SerializeField] private Key cheatHealHitKey = Key.F2;
+    [SerializeField] private Key cheatFullHealKey = Key.F3;
+    [SerializeField] private Key cheatInvincibleKey = Key.F4;
+    [SerializeField] private Key cheatReviveKey = Key.F5;
+    [SerializeField] private float cheatInvincibilityDuration = 5f;
 
     [Header("Movement Combat")]
     [SerializeField] private float dashImpactBaseDamage = 15f;
@@ -112,6 +122,8 @@ public class Player : character
     {
         base.Update();
 
+        HandleHealthCheatInput();
+
         if (!isAlive) return;
 
         _animationController?.UpdateMovementAnimation();
@@ -135,6 +147,74 @@ public class Player : character
         _wasDashing = isDashingNow;
 
         _inputHandler?.UpdateAimDirection(transform);
+    }
+
+    private void HandleHealthCheatInput()
+    {
+        if (!enableHealthCheats || healthComponent == null)
+        {
+            return;
+        }
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            return;
+        }
+
+        if (keyboard[cheatTakeHitKey].wasPressedThisFrame)
+        {
+            int beforeHitCount = GetHitCount();
+            TakeDamage(1f);
+            int afterHitCount = GetHitCount();
+
+            if (afterHitCount == beforeHitCount)
+            {
+                _logger?.Log("Cheat hit was blocked (invincible or already dead).");
+            }
+            else
+            {
+                _logger?.Log($"Cheat hit applied. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+            }
+        }
+
+        if (keyboard[cheatHealHitKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(1f);
+            _logger?.Log($"Cheat heal +1 hit. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
+
+        if (keyboard[cheatFullHealKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(healthComponent.maxHealth);
+            _logger?.Log($"Cheat full heal. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
+
+        if (keyboard[cheatInvincibleKey].wasPressedThisFrame)
+        {
+            healthComponent.StartInvincibility(cheatInvincibilityDuration);
+            _logger?.Log($"Cheat invincibility started for {cheatInvincibilityDuration:F1}s");
+        }
+
+        if (keyboard[cheatReviveKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(healthComponent.maxHealth);
+            if (!isAlive)
+            {
+                isAlive = true;
+                movementComponent?.SetCanMove(true);
+
+                Collider2D col = GetComponent<Collider2D>();
+                if (col != null)
+                {
+                    col.enabled = true;
+                }
+
+                _logger?.LogWarning("Cheat revive applied.");
+            }
+
+            _logger?.Log($"Cheat revive/full reset. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
     }
 
     #endregion
@@ -285,19 +365,34 @@ public class Player : character
             return;
         }
 
-        float damageMultiplier = movementComponent.MovementAttackMultiplier;
-        float finalDamage = dashImpactBaseDamage * damageMultiplier;
+        float impactMultiplier = movementComponent.MovementAttackMultiplier;
+        float impactPower = dashImpactBaseDamage * impactMultiplier;
 
-        targetCharacter.TakeDamage(finalDamage);
+        targetCharacter.TakeDamage(1f);
         _dashHitTargets.Add(targetId);
         _lastDashHitTime = Time.time;
 
-        _logger?.Log($"Dash impact hit {targetCharacter.name} for {finalDamage:F1} damage (x{damageMultiplier:F2})");
+        _logger?.Log($"Dash impact hit {targetCharacter.name}, applied 1 hit (impact power {impactPower:F1}, x{impactMultiplier:F2})");
     }
 
     #endregion
 
     #region Health And Death
+
+    public int GetRemainingHits()
+    {
+        return healthComponent != null ? healthComponent.GetRemainingHitCount() : 0;
+    }
+
+    public int GetHitCount()
+    {
+        return healthComponent != null ? healthComponent.GetHitCount() : 0;
+    }
+
+    public int GetMaxHits()
+    {
+        return healthComponent != null ? Mathf.CeilToInt(healthComponent.maxHealth) : Mathf.CeilToInt(maxHealth);
+    }
 
     protected override void OnTakeDamage()
     {
