@@ -25,6 +25,7 @@ namespace Game.Components.Movement
         [Header("Dash Behavior")]
         public bool forceHorizontalDash = false;
         public bool stopAtDashEnd = true;
+        [Range(0.1f, 1f)] public float airEndDashCarryMultiplier = 0.65f;
     }
 
     public class DashHandler : IDashHandler
@@ -108,23 +109,47 @@ namespace Game.Components.Movement
 
             _isDashing = false;
 
+            Vector2 endVelocity = BuildEndVelocity();
+
             if (_settings.stopAtDashEnd)
             {
-                _rb.linearVelocity = Vector2.zero;
-                Debug.Log("[DashHandler] Dash ended and velocity stopped.");
+                if (_dashStartedOnGround)
+                {
+                    _rb.linearVelocity = Vector2.zero;
+                    Debug.Log("[DashHandler] Ground dash ended and velocity stopped.");
+                }
+                else
+                {
+                    // Keep carry speed in air so horizontal control does not feel locked after dash.
+                    _rb.linearVelocity = endVelocity;
+                    Debug.Log($"[DashHandler] Air dash ended with carry velocity: {endVelocity}");
+                }
                 yield break;
-            }
-
-            Vector2 endVelocity = _dashDir * (_settings.endDashSpeed * _dashSpeedMultiplier);
-
-            if (endVelocity.y < 0)
-            {
-                endVelocity.y *= _settings.endDashUpMult;
             }
 
             _rb.linearVelocity = endVelocity;
 
             Debug.Log($"[DashHandler] Dash ended! End velocity: {endVelocity}");
+        }
+
+        private Vector2 BuildEndVelocity()
+        {
+            float dashSpeed = Mathf.Max(0f, _settings.dashSpeed * _dashSpeedMultiplier);
+            float configuredEndSpeed = Mathf.Max(0f, _settings.endDashSpeed * _dashSpeedMultiplier);
+            float carrySpeed = configuredEndSpeed > 0f ? Mathf.Min(configuredEndSpeed, dashSpeed) : dashSpeed;
+
+            Vector2 endVelocity = _dashDir * carrySpeed;
+            if (endVelocity.y < 0)
+            {
+                endVelocity.y *= _settings.endDashUpMult;
+            }
+
+            if (!_dashStartedOnGround)
+            {
+                endVelocity.x *= _settings.airEndDashCarryMultiplier;
+            }
+
+            return endVelocity;
         }
 
         public void UpdateTimers()
