@@ -1,3 +1,5 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Game.Health.csproj" />
+  <Project Path="Game.Health.EditModeTests.csproj" />
 </Solution>
