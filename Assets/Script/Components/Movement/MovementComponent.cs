@@ -52,6 +52,8 @@ namespace Game.Components.Movement
         [SerializeField] private float postDashAirBrakeTime = 0.25f;
         [SerializeField] private float postDashAirBrakeStrength = 120f;
         [SerializeField, Range(0.5f, 2f)] private float postDashMaxAirSpeedMultiplier = 1.15f;
+        [SerializeField] private bool suppressUpwardCarryWhenRunHeldAfterDash = true;
+        [SerializeField, Range(0f, 1f)] private float postDashRunHoldThreshold = 0.1f;
 
         [Header("Jump Settings (Celeste-inspired)")]
         [SerializeField] private float jumpSpeed = -105f;
@@ -278,6 +280,7 @@ namespace Game.Components.Movement
             {
                 _postDashAirControlTimer = postDashAirControlTime;
                 _postDashAirBrakeTimer = postDashAirBrakeTime;
+                SuppressUnwantedUpwardCarryAfterDash();
             }
 
             _wasDashingLastFrame = isDashingNow;
@@ -1136,6 +1139,29 @@ namespace Game.Components.Movement
             float clampedTargetX = Mathf.Sign(currentSpeedX) * maxAllowedSpeed;
             float newSpeedX = Mathf.MoveTowards(currentSpeedX, clampedTargetX, postDashAirBrakeStrength * Time.deltaTime);
             rb.linearVelocity = new Vector2(newSpeedX, rb.linearVelocity.y);
+        }
+
+        private void SuppressUnwantedUpwardCarryAfterDash()
+        {
+            if (!suppressUpwardCarryWhenRunHeldAfterDash || rb == null)
+            {
+                return;
+            }
+
+            bool isHoldingRun = Mathf.Abs(moveInput.x) >= postDashRunHoldThreshold;
+            bool hasVerticalIntent = Mathf.Abs(moveInput.y) >= climbInputThreshold;
+
+            if (!isHoldingRun || hasVerticalIntent)
+            {
+                return;
+            }
+
+            if (rb.linearVelocity.y <= 0f)
+            {
+                return;
+            }
+
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         }
 
         private void RecalculateCurrentMoveSpeed()
