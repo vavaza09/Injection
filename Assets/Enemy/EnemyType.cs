@@ -4,5 +4,6 @@ public enum EnemyType
     Ranged,
     Flying,
     Boss,
-    Tank
+    Tank,
+    Kiki
 }
