@@ -48,7 +48,7 @@ public class TankEnemy : Enemy
         bool inDetectionRange = distanceToPlayer <= detectionRange;
         SetState(inDetectionRange ? EnemyState.Chase : EnemyState.Idle);
 
-        if (rotatePivotWhenIdle || GetState() == EnemyState.Chase)
+        if (inDetectionRange && (rotatePivotWhenIdle || GetState() == EnemyState.Chase))
         {
             RotatePivotToTarget();
         }
