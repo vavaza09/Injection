@@ -359,6 +359,34 @@ public class Player : character
             return;
         }
 
+        if (targetCharacter is Enemy)
+        {
+            EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
+            if (weakPoint == null)
+            {
+                EnemyWeakPoint[] weakPointConfigs = targetCharacter.GetComponentsInChildren<EnemyWeakPoint>();
+                for (int i = 0; i < weakPointConfigs.Length; i++)
+                {
+                    EnemyWeakPoint weakPointConfig = weakPointConfigs[i];
+                    if (weakPointConfig != null && weakPointConfig.IsWeakPoint(targetCollider))
+                    {
+                        weakPoint = weakPointConfig;
+                        break;
+                    }
+                }
+            }
+
+            if (weakPoint == null)
+            {
+                return;
+            }
+
+            if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter)
+            {
+                return;
+            }
+        }
+
         int targetId = targetCharacter.GetInstanceID();
         if (_dashHitTargets.Contains(targetId))
         {
