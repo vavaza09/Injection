@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9090418405512336103}
   - component: {fileID: 4228088044082926581}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3006710706382042102}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: gun_point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5404713435172612612}
   - component: {fileID: 6343078497374212012}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,9 +228,9 @@ GameObject:
   - component: {fileID: 271145667955291190}
   - component: {fileID: 8298999538917575035}
   - component: {fileID: 5577287370394050830}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Tank
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -423,7 +423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4091084095161656217}
   - component: {fileID: 451318991400264294}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: gun_pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
