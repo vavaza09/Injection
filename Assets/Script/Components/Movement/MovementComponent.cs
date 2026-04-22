@@ -144,6 +144,7 @@ namespace Game.Components.Movement
 
         public bool IsDashing => _dashHandler != null && _dashHandler.IsDashing;
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
+        public bool CanDash => _dashHandler != null && _dashHandler.CanDash;
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
         public bool IsClimbingState => isClimbing;
