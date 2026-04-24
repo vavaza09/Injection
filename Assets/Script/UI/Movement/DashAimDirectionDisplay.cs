@@ -25,6 +25,9 @@ namespace Game.UI.Movement
         [SerializeField, Min(0f)] private float orbitSmoothSpeed = 18f;
         [SerializeField] private bool useUnscaledTime = true;
 
+        [Header("Orbit Anchor")]
+        [SerializeField] private bool useArrowAnchorAsRingAttachPoint = true;
+
         [Header("Ring Guide")]
         [SerializeField] private bool autoCreateRingImage = true;
         [SerializeField, Min(16)] private int ringResolution = 128;
@@ -32,10 +35,16 @@ namespace Game.UI.Movement
         [SerializeField] private Color ringCanDashColor = new Color(1f, 1f, 1f, 0.2f);
         [SerializeField] private Color ringCannotDashColor = new Color(1f, 0f, 0f, 0.2f);
 
+        [Header("Flip Handling")]
+        [SerializeField] private bool compensateParentMirror = true;
+        [SerializeField] private Transform mirrorSourceTransform;
+
         private RectTransform _orbitTarget;
         private RectTransform _rotationTarget;
         private float _currentAngle;
         private bool _angleInitialized;
+        private Vector3 _rootBaseScale;
+        private bool _rootScaleInitialized;
 
         private void Awake()
         {
@@ -44,17 +53,24 @@ namespace Game.UI.Movement
                 root = gameObject;
             }
 
+            _rootBaseScale = root.transform.localScale;
+            _rootScaleInitialized = true;
+
+            if (arrowTransform == null)
+            {
+                if (arrowGraphic != null)
+                {
+                    arrowTransform = arrowGraphic.rectTransform;
+                }
+            }
+
             if (arrowTransform == null)
             {
                 arrowTransform = transform as RectTransform;
             }
 
-            // Default to the visible graphic, fallback to assigned transform.
-            _orbitTarget = arrowGraphic != null ? arrowGraphic.rectTransform : null;
-            if (_orbitTarget == null)
-            {
-                _orbitTarget = arrowTransform;
-            }
+            // Use arrowTransform for orbit/rotation so its anchor drives the attach point on the ring.
+            _orbitTarget = arrowTransform;
 
             _rotationTarget = _orbitTarget;
 
@@ -93,6 +109,8 @@ namespace Game.UI.Movement
                 ringImage.gameObject.SetActive(shouldShow);
             }
 
+            ApplyMirrorCompensation();
+
             if (!shouldShow)
             {
                 _angleInitialized = false;
@@ -120,15 +138,22 @@ namespace Game.UI.Movement
 
             float angleRad = _currentAngle * Mathf.Deg2Rad;
             Vector2 orbitDirection = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+            float appliedAngle = _currentAngle + angleOffset;
 
             if (_orbitTarget != null)
             {
-                _orbitTarget.anchoredPosition = orbitDirection * orbitRadius;
+                Vector2 orbitPosition = orbitDirection * orbitRadius;
+                if (useArrowAnchorAsRingAttachPoint)
+                {
+                    orbitPosition -= GetRotatedAnchorOffset(_orbitTarget, appliedAngle);
+                }
+
+                _orbitTarget.anchoredPosition = ToAnchoredPosition(_orbitTarget, orbitPosition);
             }
 
             if (_rotationTarget != null)
             {
-                _rotationTarget.localRotation = Quaternion.Euler(0f, 0f, _currentAngle + angleOffset);
+                _rotationTarget.localRotation = Quaternion.Euler(0f, 0f, appliedAngle);
             }
 
             if (arrowGraphic != null)
@@ -137,6 +162,105 @@ namespace Game.UI.Movement
             }
 
             UpdateRingVisual(canDash);
+        }
+
+        private Vector2 GetRotatedAnchorOffset(RectTransform rectTransform, float angleDeg)
+        {
+            if (rectTransform == null)
+            {
+                return Vector2.zero;
+            }
+
+            Vector2 localOffset = GetAnchorToPivotLocalOffset(rectTransform);
+            if (localOffset.sqrMagnitude <= 0.000001f)
+            {
+                return Vector2.zero;
+            }
+
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(angleRad);
+            float sin = Mathf.Sin(angleRad);
+
+            return new Vector2(
+                localOffset.x * cos - localOffset.y * sin,
+                localOffset.x * sin + localOffset.y * cos
+            );
+        }
+
+        private Vector2 GetAnchorToPivotLocalOffset(RectTransform rectTransform)
+        {
+            Vector2 anchorPoint = (rectTransform.anchorMin + rectTransform.anchorMax) * 0.5f;
+            Vector2 pivot = rectTransform.pivot;
+            Vector2 size = rectTransform.rect.size;
+
+            if (size.sqrMagnitude <= 0.000001f)
+            {
+                size = rectTransform.sizeDelta;
+            }
+
+            return new Vector2(
+                (anchorPoint.x - pivot.x) * size.x,
+                (anchorPoint.y - pivot.y) * size.y
+            );
+        }
+
+        private Vector2 ToAnchoredPosition(RectTransform rectTransform, Vector2 desiredPivotLocalPosition)
+        {
+            if (rectTransform == null)
+            {
+                return desiredPivotLocalPosition;
+            }
+
+            RectTransform parentRect = rectTransform.parent as RectTransform;
+            if (parentRect == null)
+            {
+                return desiredPivotLocalPosition;
+            }
+
+            Vector2 parentPivot = parentRect.pivot;
+            Vector2 parentSize = parentRect.rect.size;
+            Vector2 anchorRefNormalized = new Vector2(
+                Mathf.Lerp(rectTransform.anchorMin.x, rectTransform.anchorMax.x, rectTransform.pivot.x),
+                Mathf.Lerp(rectTransform.anchorMin.y, rectTransform.anchorMax.y, rectTransform.pivot.y)
+            );
+            Vector2 anchorRefLocal = new Vector2(
+                (anchorRefNormalized.x - parentPivot.x) * parentSize.x,
+                (anchorRefNormalized.y - parentPivot.y) * parentSize.y
+            );
+
+            return desiredPivotLocalPosition - anchorRefLocal;
+        }
+
+        private void ApplyMirrorCompensation()
+        {
+            if (!compensateParentMirror || root == null)
+            {
+                return;
+            }
+
+            Transform rootTransform = root.transform;
+            if (!_rootScaleInitialized)
+            {
+                _rootBaseScale = rootTransform.localScale;
+                _rootScaleInitialized = true;
+            }
+
+            Transform mirrorSource = mirrorSourceTransform != null
+                ? mirrorSourceTransform
+                : rootTransform.parent;
+
+            if (mirrorSource == null)
+            {
+                rootTransform.localScale = _rootBaseScale;
+                return;
+            }
+
+            float sourceX = mirrorSource.lossyScale.x;
+            float sourceSign = Mathf.Approximately(sourceX, 0f) ? 1f : Mathf.Sign(sourceX);
+
+            Vector3 compensatedScale = _rootBaseScale;
+            compensatedScale.x = Mathf.Abs(_rootBaseScale.x) * sourceSign;
+            rootTransform.localScale = compensatedScale;
         }
 
         private void UpdateRingVisual(bool canDash)

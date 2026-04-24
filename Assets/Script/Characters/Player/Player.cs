@@ -89,11 +89,15 @@ public class Player : character
             animator = GetComponentInChildren<Animator>();
             _logger?.LogWarning("Animator not assigned, finding in children...");
         }
+
+        TryAutoAssignDashAimDisplay();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        TryAutoAssignDashAimDisplay();
 
         if (_inputHandler != null)
         {
@@ -337,6 +341,11 @@ public class Player : character
     {
         if (dashAimDisplay == null)
         {
+            TryAutoAssignDashAimDisplay();
+        }
+
+        if (dashAimDisplay == null)
+        {
             return;
         }
 
@@ -345,6 +354,20 @@ public class Player : character
         bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
 
         dashAimDisplay.Refresh(ResolveDashDirection(), isAimHeld, canDashNow, isDashingNow);
+    }
+
+    private void TryAutoAssignDashAimDisplay()
+    {
+        if (dashAimDisplay != null)
+        {
+            return;
+        }
+
+        dashAimDisplay = GetComponentInChildren<DashAimDirectionDisplay>(includeInactive: true);
+        if (dashAimDisplay != null)
+        {
+            _logger?.LogWarning("DashAimDirectionDisplay was not assigned and has been auto-bound from children.");
+        }
     }
 
     private Vector2 ResolveDashDirection()
