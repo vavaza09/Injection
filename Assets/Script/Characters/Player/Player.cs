@@ -3,6 +3,7 @@ using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
 using Game.Components.Movement;
+using Game.UI.Movement;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
@@ -28,6 +29,10 @@ public class Player : character
     [SerializeField] private float slowMotionTimeScale = 0.3f; 
     [SerializeField] private float slowMotionDuration = 2f;     
     [SerializeField] private bool useSmoothSlowMotion = true;   
+
+    [Header("Dash Aim")]
+    [SerializeField] private bool requireAimHoldForDash = true;
+    [SerializeField] private DashAimDirectionDisplay dashAimDisplay;
 
     [Header("References for DI")]
     [SerializeField] private Animator animator;
@@ -84,11 +89,15 @@ public class Player : character
             animator = GetComponentInChildren<Animator>();
             _logger?.LogWarning("Animator not assigned, finding in children...");
         }
+
+        TryAutoAssignDashAimDisplay();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        TryAutoAssignDashAimDisplay();
 
         if (_inputHandler != null)
         {
@@ -105,7 +114,8 @@ public class Player : character
             _inputHandler.OnJumpPressed += Jump;
             _inputHandler.OnJumpReleased += CancelJump;
             _inputHandler.OnAttackPressed += Attack;
-            _inputHandler.OnRightClickPressed += ActivateSlowMotion;
+            _inputHandler.OnRightClickPressed += BeginDashAimMode;
+            _inputHandler.OnRightClickReleased += EndDashAimMode;
             _inputHandler.OnDashPressed += Dash;
 
             _inputHandler.Enable();
@@ -121,6 +131,9 @@ public class Player : character
     protected override void Update()
     {
         base.Update();
+
+        _inputHandler?.UpdateAimDirection(transform);
+        UpdateDashAimUI();
 
         HandleHealthCheatInput();
 
@@ -145,8 +158,6 @@ public class Player : character
             _dashHitTargets.Clear();
         }
         _wasDashing = isDashingNow;
-
-        _inputHandler?.UpdateAimDirection(transform);
     }
 
     private void HandleHealthCheatInput()
@@ -251,17 +262,25 @@ public class Player : character
 
     private void Dash()
     {   
-        _logger?.Log("Dash initiated");
-        Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+        if (!isAlive) return;
+        if (movementComponent == null) return;
 
-        if (aimDir == Vector2.zero)
+        if (requireAimHoldForDash && (_inputHandler == null || !_inputHandler.IsAimHeld))
         {
-            float facing = characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f;
-            aimDir = new Vector2(facing, 0f);
+            _logger?.Log("Dash blocked: hold right click to enter aim slow-motion mode first.");
+            return;
         }
 
-        movementComponent?.Dash(aimDir);
-        _audioController?.PlayDashSound();
+        _logger?.Log("Dash initiated");
+        Vector2 aimDir = ResolveDashDirection();
+        int dashesBefore = movementComponent.CurrentDashes;
+
+        movementComponent.Dash(aimDir);
+
+        if (movementComponent.IsDashing || movementComponent.CurrentDashes < dashesBefore)
+        {
+            _audioController?.PlayDashSound();
+        }
     }
 
     public void Jump()
@@ -305,6 +324,68 @@ public class Player : character
         }
 
         _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
+    }
+
+    private void BeginDashAimMode()
+    {
+        if (!isAlive) return;
+        ActivateSlowMotion();
+    }
+
+    private void EndDashAimMode()
+    {
+        SlowMotion.Instance.StopSlowMotion();
+    }
+
+    private void UpdateDashAimUI()
+    {
+        if (dashAimDisplay == null)
+        {
+            TryAutoAssignDashAimDisplay();
+        }
+
+        if (dashAimDisplay == null)
+        {
+            return;
+        }
+
+        bool isAimHeld = isAlive && _inputHandler != null && _inputHandler.IsAimHeld;
+        bool canDashNow = movementComponent != null && movementComponent.CanDash;
+        bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
+
+        dashAimDisplay.Refresh(ResolveDashDirection(), isAimHeld, canDashNow, isDashingNow);
+    }
+
+    private void TryAutoAssignDashAimDisplay()
+    {
+        if (dashAimDisplay != null)
+        {
+            return;
+        }
+
+        dashAimDisplay = GetComponentInChildren<DashAimDirectionDisplay>(includeInactive: true);
+        if (dashAimDisplay != null)
+        {
+            _logger?.LogWarning("DashAimDirectionDisplay was not assigned and has been auto-bound from children.");
+        }
+    }
+
+    private Vector2 ResolveDashDirection()
+    {
+        Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+
+        if (aimDir.sqrMagnitude <= 0.0001f)
+        {
+            float facing = characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f;
+            if (Mathf.Approximately(facing, 0f))
+            {
+                facing = 1f;
+            }
+
+            aimDir = new Vector2(facing, 0f);
+        }
+
+        return aimDir.normalized;
     }
 
     #endregion
@@ -461,9 +542,15 @@ public class Player : character
             _inputHandler.OnJumpPressed -= Jump;
             _inputHandler.OnJumpReleased -= CancelJump;
             _inputHandler.OnAttackPressed -= Attack;
-            _inputHandler.OnRightClickPressed -= ActivateSlowMotion; 
+            _inputHandler.OnRightClickPressed -= BeginDashAimMode;
+            _inputHandler.OnRightClickReleased -= EndDashAimMode;
             _inputHandler.OnDashPressed -= Dash;
             _inputHandler.Dispose();
+        }
+
+        if (FindAnyObjectByType<SlowMotion>() != null)
+        {
+            SlowMotion.Instance.StopSlowMotion();
         }
 
         _dashHitTargets.Clear();
