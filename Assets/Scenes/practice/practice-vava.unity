@@ -2437,19 +2437,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1693726294409167931, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.645
       objectReference: {fileID: 0}
     - target: {fileID: 1693726294409167931, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2148444923623881258, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2308052940577961938, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Size.x
+      value: 2.0254946
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308052940577961938, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Size.y
+      value: 2.6999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308052940577961938, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8158682532154282519, guid: ef398a72b5545db46a74d192142ec2d5, type: 3}
     - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: maxHealth
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: moveSpeed
-      value: 8
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: mainCamera
@@ -2459,13 +2475,41 @@ PrefabInstance:
       propertyPath: dashAimDisplay
       value: 
       objectReference: {fileID: 1478969088}
+    - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Size.x
+      value: 1.9036207
+      objectReference: {fileID: 0}
+    - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Size.y
+      value: 2.2154427
+      objectReference: {fileID: 0}
+    - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.18062305
+      objectReference: {fileID: 0}
+    - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.013677597
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.23
+      value: -6.28
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -21.23
+      value: -19.813
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2499,13 +2543,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Name
       value: ====PLAYER====
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: maxFall
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: maxSpeed
-      value: 8
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: moveSpeed
@@ -2517,7 +2569,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: acceleration
-      value: 28
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: deceleration
@@ -2534,6 +2586,10 @@ PrefabInstance:
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: reverseAirBrake
       value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: groundCheckSize.y
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: momentumDecayRate
@@ -2569,11 +2625,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallSlideAcceleration
-      value: 60
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallSlideMaxFallSpeed
-      value: 25
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashSettings.dashSpeed
