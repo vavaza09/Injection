@@ -1,5 +1,6 @@
 using Game.Components.Health;
 using Game.Components.Movement;
+using Game.Components.Combat;
 using UnityEngine;
 using VContainer;
 

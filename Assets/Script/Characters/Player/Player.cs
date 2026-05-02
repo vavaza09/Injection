@@ -3,9 +3,22 @@ using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
 using Game.Components.Movement;
+using Game.Components.Combat;
 using Game.UI.Movement;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+
+public enum PlayerState
+{
+    Dead        = 0,
+    Dashing     = 1,
+    Attacking   = 2,
+    WallSliding = 3,
+    Jumping     = 4,
+    Falling     = 5,
+    Running     = 6,
+    Idle        = 7
+}
 
 public class Player : character
 {
@@ -49,6 +62,13 @@ public class Player : character
     [SerializeField] private Key cheatReviveKey = Key.F5;
     [SerializeField] private float cheatInvincibilityDuration = 5f;
 
+    [Header("State Machine")]
+    [SerializeField] private float attackStateDuration = 0.5f;
+
+    private PlayerState _currentState  = PlayerState.Idle;
+    private PlayerState _previousState = PlayerState.Idle;
+    private float       _stateTimer    = 0f;
+
     [Header("Movement Combat")]
     [SerializeField] private float dashImpactBaseDamage = 15f;
     [SerializeField] private float dashImpactCooldown = 0.15f;
@@ -56,7 +76,6 @@ public class Player : character
 
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
-    private float _lastDashHitTime;
 
     #endregion
 
@@ -83,6 +102,8 @@ public class Player : character
     protected override void Awake()
     {
         base.Awake();
+
+        attackComponent = new AttackComponent(dashImpactCooldown);
 
         if (animator == null)
         {
@@ -113,7 +134,6 @@ public class Player : character
         {
             _inputHandler.OnJumpPressed += Jump;
             _inputHandler.OnJumpReleased += CancelJump;
-            _inputHandler.OnAttackPressed += Attack;
             _inputHandler.OnRightClickPressed += BeginDashAimMode;
             _inputHandler.OnRightClickReleased += EndDashAimMode;
             _inputHandler.OnDashPressed += Dash;
@@ -134,10 +154,12 @@ public class Player : character
 
         _inputHandler?.UpdateAimDirection(transform);
         UpdateDashAimUI();
-
         HandleHealthCheatInput();
 
-        if (!isAlive) return;
+        _stateTimer += Time.deltaTime;
+        EvaluateStateTransitions();
+
+        if (_currentState == PlayerState.Dead) return;
 
         _animationController?.UpdateMovementAnimation();
 
@@ -146,12 +168,7 @@ public class Player : character
             jumpsRemaining = maxJumps;
         }
 
-        if (movementComponent != null && movementComponent.IsDashing)
-        {
-            SlowMotion.Instance.StopSlowMotion();
-        }
-
-        // Reset dash-hit registry whenever a new dash starts.
+        // Backup: clear hit registry when a new dash starts (OnStateEnter is primary)
         bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
         if (isDashingNow && !_wasDashing)
         {
@@ -213,14 +230,7 @@ public class Player : character
             if (!isAlive)
             {
                 isAlive = true;
-                movementComponent?.SetCanMove(true);
-
-                Collider2D col = GetComponent<Collider2D>();
-                if (col != null)
-                {
-                    col.enabled = true;
-                }
-
+                ChangeState(PlayerState.Idle);
                 _logger?.LogWarning("Cheat revive applied.");
             }
 
@@ -234,7 +244,7 @@ public class Player : character
 
     private void FixedUpdate()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
         Move(moveInput);
@@ -246,7 +256,7 @@ public class Player : character
 
     public override void Move(Vector2 direction)
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         movementComponent?.Move(direction);
 
@@ -261,8 +271,8 @@ public class Player : character
     }
 
     private void Dash()
-    {   
-        if (!isAlive) return;
+    {
+        if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
 
         if (requireAimHoldForDash && (_inputHandler == null || !_inputHandler.IsAimHeld))
@@ -273,19 +283,13 @@ public class Player : character
 
         _logger?.Log("Dash initiated");
         Vector2 aimDir = ResolveDashDirection();
-        int dashesBefore = movementComponent.CurrentDashes;
-
         movementComponent.Dash(aimDir);
-
-        if (movementComponent.IsDashing || movementComponent.CurrentDashes < dashesBefore)
-        {
-            _audioController?.PlayDashSound();
-        }
+        // Sound and hit-registry clear fire in OnStateEnter(Dashing) when IsDashing becomes true.
     }
 
     public void Jump()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         if (movementComponent == null)
         {
@@ -298,13 +302,13 @@ public class Player : character
 
     public void CancelJump()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
         movementComponent?.CancelJump();
     }
 
     private void ActivateSlowMotion()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         if (useSmoothSlowMotion)
         {
@@ -328,7 +332,7 @@ public class Player : character
 
     private void BeginDashAimMode()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
         ActivateSlowMotion();
     }
 
@@ -392,15 +396,7 @@ public class Player : character
 
     #region Combat
 
-    public override void Attack()
-    {
-        if (!isAlive) return;
-
-        _animationController?.PlayAttackAnimation();
-        _audioController?.PlayAttackSound();
-
-        _logger?.Log("Player attacked");
-    }
+    public override void Attack() { }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -414,7 +410,7 @@ public class Player : character
 
     private void TryDealDashImpactDamage(Collider2D targetCollider)
     {
-        if (!isAlive || movementComponent == null || targetCollider == null)
+        if (_currentState != PlayerState.Dashing || movementComponent == null || targetCollider == null)
         {
             return;
         }
@@ -429,7 +425,7 @@ public class Player : character
             return;
         }
 
-        if (Time.time - _lastDashHitTime < dashImpactCooldown)
+        if (!attackComponent.CanAttack())
         {
             return;
         }
@@ -466,6 +462,7 @@ public class Player : character
             {
                 return;
             }
+            _logger?.Log($"Dash impact hit weak point: {weakPoint.name} on {targetCharacter.name}");
         }
 
         int targetId = targetCharacter.GetInstanceID();
@@ -477,11 +474,11 @@ public class Player : character
         float impactMultiplier = movementComponent.MovementAttackMultiplier;
         float impactPower = dashImpactBaseDamage * impactMultiplier;
 
-        targetCharacter.TakeDamage(1f);
+        attackComponent.PerformAttack(targetCharacter, impactPower);
         _dashHitTargets.Add(targetId);
-        _lastDashHitTime = Time.time;
-
-        _logger?.Log($"Dash impact hit {targetCharacter.name}, applied 1 hit (impact power {impactPower:F1}, x{impactMultiplier:F2})");
+        ChangeState(PlayerState.Attacking);
+        _logger?.Log($"weakPoint: {(targetCollider != null ? targetCollider.name : "null")}");
+        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {impactPower:F1}, x{impactMultiplier:F2})");
     }
 
     #endregion
@@ -517,16 +514,115 @@ public class Player : character
 
     protected override void OnDeath()
     {
-        movementComponent?.SetCanMove(false);
-        _animationController?.PlayDeathAnimation();
+        ChangeState(PlayerState.Dead);
+    }
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
+    #endregion
+
+    #region State Machine
+
+    private void ChangeState(PlayerState newState)
+    {
+        if (newState == _currentState) return;
+        if (_currentState == PlayerState.Dead && newState != PlayerState.Idle) return;
+
+        OnStateExit(_currentState);
+        _previousState = _currentState;
+        _currentState  = newState;
+        _stateTimer    = 0f;
+        OnStateEnter(_currentState);
+
+        _logger?.Log($"[SM] {_previousState} → {_currentState}");
+    }
+
+    private void OnStateEnter(PlayerState state)
+    {
+        switch (state)
         {
-            col.enabled = false;
+            case PlayerState.Dead:
+                movementComponent?.SetCanMove(false);
+                _animationController?.PlayDeathAnimation();
+                Collider2D deadCol = GetComponent<Collider2D>();
+                if (deadCol != null) deadCol.enabled = false;
+                _logger?.LogWarning("Player died! Game Over!");
+                break;
+
+            case PlayerState.Dashing:
+                _audioController?.PlayDashSound();
+                _dashHitTargets.Clear();
+                SlowMotion.Instance.StopSlowMotion();
+                break;
+
+            case PlayerState.Attacking:
+                _animationController?.PlayAttackAnimation();
+                _audioController?.PlayAttackSound();
+                break;
+
+            case PlayerState.Jumping:
+                _animationController?.PlayJumpAnimation();
+                _audioController?.PlayJumpSound();
+                break;
+        }
+    }
+
+    private void OnStateExit(PlayerState state)
+    {
+        switch (state)
+        {
+            case PlayerState.Dead:
+                movementComponent?.SetCanMove(true);
+                Collider2D exitCol = GetComponent<Collider2D>();
+                if (exitCol != null) exitCol.enabled = true;
+                break;
+        }
+    }
+
+    private void EvaluateStateTransitions()
+    {
+        if (!isAlive)
+        {
+            if (_currentState != PlayerState.Dead)
+                ChangeState(PlayerState.Dead);
+            return;
         }
 
-        _logger?.LogWarning("Player died! Game Over!");
+        if (movementComponent != null && movementComponent.IsDashing)
+        {
+            if (_currentState != PlayerState.Dashing && _currentState != PlayerState.Attacking)
+                ChangeState(PlayerState.Dashing);
+            return;
+        }
+
+        if (_currentState == PlayerState.Attacking && _stateTimer < attackStateDuration)
+            return;
+
+        if (movementComponent == null) return;
+
+        if (movementComponent.IsClimbing())
+        {
+            ChangeState(PlayerState.WallSliding);
+            return;
+        }
+
+        if (movementComponent.IsJumping())
+        {
+            ChangeState(PlayerState.Jumping);
+            return;
+        }
+
+        if (movementComponent.IsFalling())
+        {
+            ChangeState(PlayerState.Falling);
+            return;
+        }
+
+        if (movementComponent.IsGrounded())
+        {
+            const float runThreshold = 0.5f;
+            ChangeState(Mathf.Abs(movementComponent.GetVelocity().x) > runThreshold
+                ? PlayerState.Running
+                : PlayerState.Idle);
+        }
     }
 
     #endregion
@@ -541,7 +637,6 @@ public class Player : character
         {
             _inputHandler.OnJumpPressed -= Jump;
             _inputHandler.OnJumpReleased -= CancelJump;
-            _inputHandler.OnAttackPressed -= Attack;
             _inputHandler.OnRightClickPressed -= BeginDashAimMode;
             _inputHandler.OnRightClickReleased -= EndDashAimMode;
             _inputHandler.OnDashPressed -= Dash;
