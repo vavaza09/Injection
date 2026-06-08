@@ -95,6 +95,13 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
         [SerializeField] private LayerMask climbableLayer;
 
+        [Header("Grab Settings")]
+        [SerializeField] private LayerMask grabbableLayer;
+        [SerializeField] private float grabCheckRadius = 1.5f;
+        [SerializeField] private float grabLaunchBaseSpeed = 200f;
+        [SerializeField, Range(0.5f, 1f)] private float grabLaunchMinMultiplier = 0.6f;
+        [SerializeField, Range(1f, 2f)] private float grabLaunchMaxMultiplier = 1.4f;
+
         [Header("Debug")]
         [SerializeField] private bool enableVerboseLogs = false;
 
@@ -138,6 +145,11 @@ namespace Game.Components.Movement
         private float _postDashAirBrakeTimer;
         private bool _wasDashingLastFrame;
 
+        // Grab state
+        private bool isGrabbing;
+        private SwingPoint currentSwingPoint;
+        private float grabbedSpeedFactor;
+
         #endregion
 
         #region Properties
@@ -152,6 +164,9 @@ namespace Game.Components.Movement
         public float CurrentMoveSpeed => _currentMoveSpeed;
         public float MaxSpeed => maxSpeed;
         public float MovementAttackMultiplier => Mathf.Lerp(1f, dashMomentumMultiplier, _momentumNormalized);
+
+        public bool IsGrabbing => isGrabbing;
+        public bool CanGrab => !isGrabbing && FindGrabTarget() != null;
 
         public bool AutoJump
         {
@@ -182,6 +197,11 @@ namespace Game.Components.Movement
                 climbableLayer = LayerMask.GetMask("Climbable");
             }
 
+            if (grabbableLayer == 0)
+            {
+                grabbableLayer = LayerMask.GetMask("Grabbable");
+            }
+
             if (_logger == null)
             {
                 Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
@@ -208,7 +228,9 @@ namespace Game.Components.Movement
             _postDashAirControlTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
-            
+            isGrabbing = false;
+            currentSwingPoint = null;
+            grabbedSpeedFactor = 0f;
 
             if (rb != null)
             {
@@ -303,6 +325,12 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (isGrabbing)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             UpdateClimbState();
             if (isClimbing) return;
 
@@ -318,6 +346,7 @@ namespace Game.Components.Movement
             moveInput = direction;
 
             if (IsDashing) return;
+            if (isGrabbing) return;
             if (!canMove || rb == null) return;
 
             if (isClimbing)
@@ -441,6 +470,7 @@ namespace Game.Components.Movement
 
         public void Dash(Vector2 direction)
         {
+            if (isGrabbing) return;
             if (_dashHandler == null || !_dashHandler.CanDash || direction == Vector2.zero) return;
 
             if (_dashCoroutine != null)
@@ -941,6 +971,91 @@ namespace Game.Components.Movement
 
         #endregion
 
+        #region Grab
+
+        private SwingPoint FindGrabTarget()
+        {
+            if (characterTransform == null) return null;
+
+            Collider2D[] hits = Physics2D.OverlapCircleAll(characterTransform.position, grabCheckRadius, grabbableLayer);
+            SwingPoint nearest = null;
+            float nearestDist = float.MaxValue;
+
+            foreach (Collider2D hit in hits)
+            {
+                SwingPoint sp = hit.GetComponent<SwingPoint>();
+                if (sp == null) continue;
+
+                float dist = Vector2.Distance(characterTransform.position, sp.AnchorPosition);
+                if (dist < nearestDist)
+                {
+                    nearestDist = dist;
+                    nearest = sp;
+                }
+            }
+
+            return nearest;
+        }
+
+        public bool TryStartGrab()
+        {
+            if (rb == null || characterTransform == null) return false;
+
+            SwingPoint target = FindGrabTarget();
+            if (target == null) return false;
+
+            // Snapshot arrival speed BEFORE zeroing velocity — this is the launch-power source
+            grabbedSpeedFactor = GetCurrentSpeedFactorFromVelocity();
+
+            currentSwingPoint = target;
+            isGrabbing = true;
+
+            // Pin to anchor
+            rb.position = target.AnchorPosition;
+            rb.linearVelocity = Vector2.zero;
+
+            // Clear conflicting states
+            StopClimb();
+            ResetWallSlideState();
+            isJumping = false;
+            isFalling = false;
+            jumpGraceTimer = 0f;
+            varJumpTimer = 0f;
+            autoJump = false;
+
+            _logger?.Log($"Grab started on {target.name}, speedFactor={grabbedSpeedFactor:F2}");
+            return true;
+        }
+
+        public void LaunchFromGrab(Vector2 aimDir)
+        {
+            if (rb == null || !isGrabbing) return;
+
+            float speed = grabLaunchBaseSpeed * Mathf.Lerp(grabLaunchMinMultiplier, grabLaunchMaxMultiplier, grabbedSpeedFactor);
+            rb.linearVelocity = aimDir.normalized * speed;
+
+            currentSwingPoint = null;
+            isGrabbing = false;
+
+            isJumping = true;
+            isFalling = false;
+            ResetWallSlideState();
+
+            _logger?.Log($"Launch from grab: dir={aimDir}, speed={speed:F1}, factor={grabbedSpeedFactor:F2}");
+        }
+
+        public void ReleaseGrab()
+        {
+            if (!isGrabbing) return;
+
+            currentSwingPoint = null;
+            isGrabbing = false;
+
+            _logger?.Log("Grab released (drop)");
+        }
+
+        #endregion
+
         #region Utility
 
         private void MoveVExact(int amount)
@@ -1037,6 +1152,8 @@ namespace Game.Components.Movement
                 _currentMoveSpeed = 0f;
                 return;
             }
+
+            if (isGrabbing) return;
 
             bool hasHorizontalInput = Mathf.Abs(moveInput.x) > 0.1f;
             bool isReversingDirection = rb != null && IsReversingDirection(moveInput.x, rb.linearVelocity.x);
@@ -1196,6 +1313,9 @@ namespace Game.Components.Movement
             Gizmos.color = isTouchingWall ? Color.cyan : Color.yellow;
             Gizmos.DrawWireCube(leftCheckPos, wallCheckSize);
             Gizmos.DrawWireCube(rightCheckPos, wallCheckSize);
+
+            Gizmos.color = isGrabbing ? Color.cyan : new Color(0f, 1f, 1f, 0.3f);
+            Gizmos.DrawWireSphere(worldCenter, grabCheckRadius);
         }
 
         #endregion
