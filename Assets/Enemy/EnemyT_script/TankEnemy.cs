@@ -14,11 +14,22 @@ public class TankEnemy : Enemy
     [SerializeField] private float stopMoveThreshold = 0.1f;
     [SerializeField] private float backOffRange = 1.25f;
 
+    [Header("Barrel")]
+    [SerializeField] private float barrelRotateSpeed = 170f;
+    [SerializeField] private float barrelMinAngle = -15f;
+    [SerializeField] private float barrelMaxAngle = 170f;
+    [SerializeField] private float shootMinAngle = -5f;
+    [SerializeField] private float shootMaxAngle = 195f;
+
     private float lastShootTime = -999f;
+    private Animator animator;
+    private bool canShootAtPlayer;
+    private float currentBarrelAngle = 10f;
 
     protected override void Start()
     {
         base.Start();
+        animator = GetComponent<Animator>();
 
         if (movementComponent != null)
         {
@@ -48,9 +59,24 @@ public class TankEnemy : Enemy
         bool inDetectionRange = distanceToPlayer <= detectionRange;
         SetState(inDetectionRange ? EnemyState.Chase : EnemyState.Idle);
 
+        if (animator != null)
+            animator.SetBool("IsWalking", inDetectionRange);
+
         if (inDetectionRange && (rotatePivotWhenIdle || GetState() == EnemyState.Chase))
         {
             RotatePivotToTarget();
+        }
+        else
+        {
+            canShootAtPlayer = false;
+            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, 176f, barrelRotateSpeed * Time.deltaTime);
+            if (gunPivot != null)
+            {
+                if (gunPivot.parent != null)
+                    gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+                else
+                    gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+            }
         }
 
         if (GetState() == EnemyState.Chase)
@@ -121,12 +147,17 @@ public class TankEnemy : Enemy
             return;
         }
 
+        if (!canShootAtPlayer)
+        {
+            return;
+        }
+
         if (Time.time < lastShootTime + shootCooldown)
         {
             return;
         }
 
-        Vector2 shootDirection = attackPoint.right;
+        Vector2 shootDirection = -attackPoint.right;
         if (shootDirection.sqrMagnitude <= 0.0001f)
         {
             shootDirection = (playerTransform.position - attackPoint.position).normalized;
@@ -162,13 +193,31 @@ public class TankEnemy : Enemy
             Vector3 localTarget = gunPivot.parent.InverseTransformPoint(playerTransform.position);
             Vector3 localPivot = gunPivot.parent.InverseTransformPoint(gunPivot.position);
             Vector2 localDirection = localTarget - localPivot;
-            float localAngle = Mathf.Atan2(localDirection.y, localDirection.x) * Mathf.Rad2Deg;
-            gunPivot.localRotation = Quaternion.Euler(0f, 0f, localAngle);
+            float rawAngle = Mathf.Atan2(localDirection.y, localDirection.x) * Mathf.Rad2Deg;
+            float shootAngle = rawAngle < 0f ? rawAngle + 360f : rawAngle;
+            float normMin = shootMinAngle < 0f ? shootMinAngle + 360f : shootMinAngle;
+            float normMax = shootMaxAngle < 0f ? shootMaxAngle + 360f : shootMaxAngle;
+            canShootAtPlayer = normMin <= normMax
+                ? shootAngle >= normMin && shootAngle <= normMax
+                : shootAngle >= normMin || shootAngle <= normMax;
+            bool inVisualArc = rawAngle >= barrelMinAngle && rawAngle <= barrelMaxAngle;
+            float targetAngle = inVisualArc ? Mathf.Clamp(rawAngle, barrelMinAngle, barrelMaxAngle) : 176f;
+            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
+            gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
         }
         else
         {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            gunPivot.rotation = Quaternion.Euler(0f, 0f, angle);
+            float rawAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float shootAngle = rawAngle < 0f ? rawAngle + 360f : rawAngle;
+            float normMin = shootMinAngle < 0f ? shootMinAngle + 360f : shootMinAngle;
+            float normMax = shootMaxAngle < 0f ? shootMaxAngle + 360f : shootMaxAngle;
+            canShootAtPlayer = normMin <= normMax
+                ? shootAngle >= normMin && shootAngle <= normMax
+                : shootAngle >= normMin || shootAngle <= normMax;
+            bool inVisualArc = rawAngle >= barrelMinAngle && rawAngle <= barrelMaxAngle;
+            float targetAngle = inVisualArc ? Mathf.Clamp(rawAngle, barrelMinAngle, barrelMaxAngle) : 176f;
+            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
+            gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
         }
     }
 

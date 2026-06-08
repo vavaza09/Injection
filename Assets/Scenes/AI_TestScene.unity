@@ -4775,7 +4775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5506953351481280787, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -21.71
+      value: -21.43
       objectReference: {fileID: 0}
     - target: {fileID: 5506953351481280787, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4808,6 +4808,22 @@ PrefabInstance:
     - target: {fileID: 5506953351481280787, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: shootMaxAngle
+      value: 195
+      objectReference: {fileID: 0}
+    - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: shootMinAngle
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: barrelMaxAngle
+      value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: barrelMinAngle
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: playerTransform
