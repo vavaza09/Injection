@@ -1,0 +1,20 @@
+{
+  "name": "Game.Tests.Fixtures",
+  "references": [
+    "Game.Health",
+    "Core.Logging",
+    "Game.Components.Movement"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "optionalUnityReferences": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
