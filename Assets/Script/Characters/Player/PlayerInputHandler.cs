@@ -18,12 +18,14 @@ namespace Game.Characters.Player
 
         public Vector2 MoveInput => _moveInput;
         public Vector2 AimDirection => _aimDirection;
+        public bool IsAimHeld { get; private set; }
 
         // Events
         public event Action OnJumpPressed;
         public event Action OnJumpReleased;
         public event Action OnAttackPressed;
-        public event Action OnRightClickPressed; // ⬅️ เพิ่ม Event สำหรับคลิกขวา
+        public event Action OnRightClickPressed;
+        public event Action OnRightClickReleased;
         public event Action OnDashPressed;
 
         // Constructor - DI via VContainer
@@ -50,8 +52,9 @@ namespace Game.Characters.Player
             // Attack
             _actions.Player.Attack.performed += OnAttack;
 
-            // Right Click (Slow Motion) - ⬅️ เพิ่มการ Subscribe
-            _actions.Player.Aim.performed += OnRightClick;
+            // Right click is used as hold-to-aim mode for dash.
+            _actions.Player.Aim.started += OnRightClickStarted;
+            _actions.Player.Aim.canceled += OnRightClickCanceled;
 
             //Dash 
             _actions.Player.Dash.performed += OnDash;
@@ -66,9 +69,11 @@ namespace Game.Characters.Player
             _actions.Player.Jump.performed -= OnJump;
             _actions.Player.Jump.canceled -= OnJumpCancel;
             _actions.Player.Attack.performed -= OnAttack;
-            _actions.Player.Aim.performed -= OnRightClick;  // ⬅️ เพิ่ม Unsubscribe
+            _actions.Player.Aim.started -= OnRightClickStarted;
+            _actions.Player.Aim.canceled -= OnRightClickCanceled;
             _actions.Player.Dash.performed -= OnDash;
 
+            IsAimHeld = false;
             _actions.Player.Disable();
 
             _logger?.Log("Input system disabled");
@@ -125,11 +130,18 @@ namespace Game.Characters.Player
             _logger?.Log("Attack pressed");
         }
 
-        // ⬅️ เพิ่มเมธอดสำหรับ Right Click
-        private void OnRightClick(InputAction.CallbackContext context)
+        private void OnRightClickStarted(InputAction.CallbackContext context)
         {
+            IsAimHeld = true;
             OnRightClickPressed?.Invoke();
-            _logger?.Log("Right Click pressed - Slow Motion activated");
+            _logger?.Log("Right click started - Dash aim mode on");
+        }
+
+        private void OnRightClickCanceled(InputAction.CallbackContext context)
+        {
+            IsAimHeld = false;
+            OnRightClickReleased?.Invoke();
+            _logger?.Log("Right click released - Dash aim mode off");
         }
 
         private void OnDash(InputAction.CallbackContext context)

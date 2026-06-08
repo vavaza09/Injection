@@ -1,21 +1,38 @@
+using UnityEngine;
+
+namespace Game.Components.Combat
+{
+
 public class AttackComponent
 {
-    public float AttackDamage { get; private set; }
+    public float AttackDamage   { get; private set; }
     public float AttackCooldown { get; private set; }
     public float LastAttackTime { get; private set; }
 
-    public void PerformAttack()
-    { 
-        // Implement attack logic here (e.g., deal damage to target)
-    }
-
-    public bool CanAttack()
+    public AttackComponent(float cooldown)
     {
-        return false;
+        AttackCooldown = cooldown;
+        LastAttackTime = -cooldown;
     }
 
     public void SetDamage(float damage)
     {
-
+        AttackDamage = damage;
     }
+
+    public bool CanAttack()
+    {
+        return Time.time - LastAttackTime >= AttackCooldown;
+    }
+
+    public void PerformAttack(character target, float damage)
+    {
+        if (target == null) return;
+        // NOTE: HealthComponent currently treats every hit as 1 regardless of damage value.
+        // damage is passed through so momentum scaling takes effect once float damage is implemented.
+        target.TakeDamage(damage);
+        LastAttackTime = Time.time;
+    }
+}
+
 }

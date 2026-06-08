@@ -139,7 +139,8 @@ namespace Game.Components.Movement
             float carrySpeed = configuredEndSpeed > 0f ? Mathf.Min(configuredEndSpeed, dashSpeed) : dashSpeed;
 
             Vector2 endVelocity = _dashDir * carrySpeed;
-            if (endVelocity.y < 0)
+            // Unity 2D uses +Y as upward, so damp upward carry after dash ends.
+            if (endVelocity.y > 0f)
             {
                 endVelocity.y *= _settings.endDashUpMult;
             }
