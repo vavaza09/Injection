@@ -3,8 +3,11 @@ using System.Collections;
 
 public class StompEnemy : Enemy
 {
+    private Animator anim;
+    private SpriteRenderer spriteRenderer;
     [Header("Stomp Attack")]
     [SerializeField] private StompDamageCollider stompDamageCollider;
+    [SerializeField] private float preJumpDelay = 0.3f;
     [SerializeField] private float jumpHeightAbovePlayer = 3f;
     [SerializeField] private float jumpToPlayerTime = 0.35f;
     [SerializeField] private float stompDownSpeed = 20f;
@@ -22,6 +25,8 @@ public class StompEnemy : Enemy
     protected override void Awake()
     {
         base.Awake();
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (groundLayer == 0)
         {
@@ -55,6 +60,11 @@ public class StompEnemy : Enemy
                 movementComponent.Stop();
             }
             return;
+        }
+
+        if (spriteRenderer != null && direction.x != 0f)
+        {
+            spriteRenderer.flipX = direction.x < 0f;
         }
 
         base.Move(direction);
@@ -97,6 +107,18 @@ public class StompEnemy : Enemy
         isDropping = false;
         hasGroundImpact = false;
         lastAttackTime = Time.time;
+
+        if (anim != null)
+        {
+            anim.Play("Crab_Attack");
+        }
+
+        if (spriteRenderer != null && playerTransform != null)
+        {
+            spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+        }
+
+        yield return new WaitForSeconds(preJumpDelay);
 
         if (movementComponent != null)
         {
@@ -147,6 +169,11 @@ public class StompEnemy : Enemy
         if (movementComponent != null)
         {
             movementComponent.SetCanMove(true);
+        }
+
+        if (anim != null)
+        {
+            anim.Play("Crab_Walk");
         }
 
         isAttacking = false;
