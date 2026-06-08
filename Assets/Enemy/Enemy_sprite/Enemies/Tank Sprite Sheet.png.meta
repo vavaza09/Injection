@@ -1,37 +1,37 @@
 fileFormatVersion: 2
-guid: 42a4dc5997b25584c9a5226b859c9e45
+guid: 929530ac0885dd542b560fe87e79b1cb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7521067841466369339
-    second: Tank Sprite Sheet (1)_0
+      213: -6972376921959285876
+    second: Tank Sprite Sheet_0
   - first:
-      213: -8303917988976323580
-    second: Tank Sprite Sheet (1)_1
+      213: -8294967720558607790
+    second: Tank Sprite Sheet_1
   - first:
-      213: 9099440438057300973
-    second: Tank Sprite Sheet (1)_2
+      213: -8515862179430842653
+    second: Tank Sprite Sheet_2
   - first:
-      213: 1698491669073931758
-    second: Tank Sprite Sheet (1)_3
+      213: -3290013614195354011
+    second: Tank Sprite Sheet_3
   - first:
-      213: -3943755087197660215
-    second: Tank Sprite Sheet (1)_4
+      213: -3680459278169787940
+    second: Tank Sprite Sheet_4
   - first:
-      213: -2505149896268295105
-    second: Tank Sprite Sheet (1)_5
+      213: 340185455212803070
+    second: Tank Sprite Sheet_5
   - first:
-      213: -5371828844911986604
-    second: Tank Sprite Sheet (1)_6
+      213: 4442288236727083944
+    second: Tank Sprite Sheet_6
   - first:
-      213: 6177319457084128512
-    second: Tank Sprite Sheet (1)_7
+      213: -7987811068243411812
+    second: Tank Sprite Sheet_7
   - first:
-      213: 575970136105830754
-    second: Tank Sprite Sheet (1)_8
+      213: -551503128313467882
+    second: Tank Sprite Sheet_8
   - first:
-      213: 2104686071531966781
-    second: Tank Sprite Sheet (1)_9
+      213: 7047734167540752540
+    second: Tank Sprite Sheet_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,221 +127,221 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_0
+      name: Tank Sprite Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 3000
-        width: 2000
-        height: 1500
+        x: 98
+        y: 3094
+        width: 1807
+        height: 1210
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b35873e7a53306860800000000000000
-      internalID: 7521067841466369339
+      spriteID: c8b3c7671242d3f90800000000000000
+      internalID: -6972376921959285876
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_1
+      name: Tank Sprite Sheet_1
       rect:
         serializedVersion: 2
-        x: 2000
-        y: 3000
-        width: 2000
-        height: 1500
+        x: 2098
+        y: 3094
+        width: 1807
+        height: 1235
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4041717c59e82cc80800000000000000
-      internalID: -8303917988976323580
+      spriteID: 252c5c88eca52ec80800000000000000
+      internalID: -8294967720558607790
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_2
+      name: Tank Sprite Sheet_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1500
-        width: 2000
-        height: 1500
+        x: 98
+        y: 1594
+        width: 1807
+        height: 1210
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: de3fa351ed4b74e70800000000000000
-      internalID: 9099440438057300973
+      spriteID: 3ee37de777491d980800000000000000
+      internalID: -8515862179430842653
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_3
+      name: Tank Sprite Sheet_3
       rect:
         serializedVersion: 2
-        x: 2000
-        y: 1500
-        width: 2000
-        height: 1500
+        x: 2100
+        y: 1594
+        width: 1807
+        height: 1235
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eedac1d8c21429710800000000000000
-      internalID: 1698491669073931758
+      spriteID: 566dfa39c068752d0800000000000000
+      internalID: -3290013614195354011
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_4
+      name: Tank Sprite Sheet_4
       rect:
         serializedVersion: 2
-        x: 4000
-        y: 1500
-        width: 2000
-        height: 1500
+        x: 4098
+        y: 1594
+        width: 1807
+        height: 1210
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9cb9172a4a7f449c0800000000000000
-      internalID: -3943755087197660215
+      spriteID: cd1366259c16cecc0800000000000000
+      internalID: -3680459278169787940
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_5
+      name: Tank Sprite Sheet_5
       rect:
         serializedVersion: 2
-        x: 6000
-        y: 1500
-        width: 2000
-        height: 1500
+        x: 6098
+        y: 1594
+        width: 1807
+        height: 1235
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f3452d3317beb3dd0800000000000000
-      internalID: -2505149896268295105
+      spriteID: ef3b6bf7ed498b400800000000000000
+      internalID: 340185455212803070
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_6
+      name: Tank Sprite Sheet_6
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2000
-        height: 1500
+        x: 98
+        y: 94
+        width: 1807
+        height: 1210
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 458f2d0702e6375b0800000000000000
-      internalID: -5371828844911986604
+      spriteID: 8a3a3047d9d26ad30800000000000000
+      internalID: 4442288236727083944
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_7
+      name: Tank Sprite Sheet_7
       rect:
         serializedVersion: 2
-        x: 2000
-        y: 0
-        width: 2000
-        height: 1500
+        x: 2098
+        y: 89
+        width: 1807
+        height: 1240
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 00dbb9f315f3ab550800000000000000
-      internalID: 6177319457084128512
+      spriteID: c9cfa689728952190800000000000000
+      internalID: -7987811068243411812
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_8
+      name: Tank Sprite Sheet_8
       rect:
         serializedVersion: 2
-        x: 4000
-        y: 0
-        width: 2000
-        height: 1500
+        x: 4098
+        y: 93
+        width: 1807
+        height: 1211
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 26942d389c14ef700800000000000000
-      internalID: 575970136105830754
+      spriteID: 61ceb58a3daa858f0800000000000000
+      internalID: -551503128313467882
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tank Sprite Sheet (1)_9
+      name: Tank Sprite Sheet_9
       rect:
         serializedVersion: 2
-        x: 6000
-        y: 0
-        width: 2000
-        height: 1500
+        x: 6098
+        y: 94
+        width: 1807
+        height: 1235
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d311069b4d8553d10800000000000000
-      internalID: 2104686071531966781
+      spriteID: c9066a782e49ec160800000000000000
+      internalID: 7047734167540752540
       vertices: []
       indices: 
       edges: []
@@ -350,7 +350,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 96f7e2671cbc9c74c963c34a960965b2
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -358,20 +358,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":3.0},"gridSpriteSize":{"x":2000.0,"y":1500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Tank Sprite Sheet (1)_0: 7521067841466369339
-      Tank Sprite Sheet (1)_1: -8303917988976323580
-      Tank Sprite Sheet (1)_2: 9099440438057300973
-      Tank Sprite Sheet (1)_3: 1698491669073931758
-      Tank Sprite Sheet (1)_4: -3943755087197660215
-      Tank Sprite Sheet (1)_5: -2505149896268295105
-      Tank Sprite Sheet (1)_6: -5371828844911986604
-      Tank Sprite Sheet (1)_7: 6177319457084128512
-      Tank Sprite Sheet (1)_8: 575970136105830754
-      Tank Sprite Sheet (1)_9: 2104686071531966781
+      Tank Sprite Sheet_0: -6972376921959285876
+      Tank Sprite Sheet_1: -8294967720558607790
+      Tank Sprite Sheet_2: -8515862179430842653
+      Tank Sprite Sheet_3: -3290013614195354011
+      Tank Sprite Sheet_4: -3680459278169787940
+      Tank Sprite Sheet_5: 340185455212803070
+      Tank Sprite Sheet_6: 4442288236727083944
+      Tank Sprite Sheet_7: -7987811068243411812
+      Tank Sprite Sheet_8: -551503128313467882
+      Tank Sprite Sheet_9: 7047734167540752540
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
