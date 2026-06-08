@@ -7,7 +7,7 @@ public class StompEnemy : Enemy
     private SpriteRenderer spriteRenderer;
     [Header("Stomp Attack")]
     [SerializeField] private StompDamageCollider stompDamageCollider;
-    [SerializeField] private float preJumpDelay = 0.7f;
+    [SerializeField] private float preJumpDelay = 0.3f;
     [SerializeField] private float jumpHeightAbovePlayer = 3f;
     [SerializeField] private float jumpToPlayerTime = 0.35f;
     [SerializeField] private float stompDownSpeed = 20f;
@@ -110,7 +110,7 @@ public class StompEnemy : Enemy
 
         if (anim != null)
         {
-            anim.Play("Attack");
+            anim.Play("Crab_Attack");
         }
 
         if (spriteRenderer != null && playerTransform != null)
@@ -173,7 +173,7 @@ public class StompEnemy : Enemy
 
         if (anim != null)
         {
-            anim.Play("Walk");
+            anim.Play("Crab_Walk");
         }
 
         isAttacking = false;
