@@ -27,6 +27,7 @@ namespace Game.Characters.Player
         public event Action OnRightClickPressed;
         public event Action OnRightClickReleased;
         public event Action OnDashPressed;
+        public event Action OnGrabPressed;
 
         // Constructor - DI via VContainer
         public PlayerInputHandler(LoggerFactory loggerFactory)
@@ -56,8 +57,11 @@ namespace Game.Characters.Player
             _actions.Player.Aim.started += OnRightClickStarted;
             _actions.Player.Aim.canceled += OnRightClickCanceled;
 
-            //Dash 
+            //Dash
             _actions.Player.Dash.performed += OnDash;
+
+            // Grab — use .started to bypass the Hold interaction delay on the Interact action
+            _actions.Player.Interact.started += OnInteractStarted;
 
             _logger?.Log("Input system enabled");
         }
@@ -72,6 +76,7 @@ namespace Game.Characters.Player
             _actions.Player.Aim.started -= OnRightClickStarted;
             _actions.Player.Aim.canceled -= OnRightClickCanceled;
             _actions.Player.Dash.performed -= OnDash;
+            _actions.Player.Interact.started -= OnInteractStarted;
 
             IsAimHeld = false;
             _actions.Player.Disable();
@@ -148,6 +153,12 @@ namespace Game.Characters.Player
         {
             OnDashPressed?.Invoke();
             _logger?.Log("Dash pressed");
+        }
+
+        private void OnInteractStarted(InputAction.CallbackContext context)
+        {
+            OnGrabPressed?.Invoke();
+            _logger?.Log("Interact pressed (grab)");
         }
     }
 }
