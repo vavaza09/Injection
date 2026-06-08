@@ -214,19 +214,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c9a465a20dfc2d488c30fc467e02d46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHUD: {fileID: 239740366}
-  speed: 5
-  jumpForce: 5
-  minPushForce: 14
-  maxPushForce: 18
-  chargeTime: 0.9
-  minChargeThreshold: 0.7
-  dashControlLossTime: 0.4
-  groundCheckTransform: {fileID: 2013272813}
-  groundCheckRadius: 0.1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!114 &239740359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,10 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c2c370494d6d7946af7f4bb39cac46f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chargeBar: {fileID: 2075138030}
-  fillImage: {fileID: 2102495422}
-  chargingColor: {r: 1, g: 1, b: 1, a: 1}
-  readyColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &239740367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,7 +444,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fadb136df584ca048aa4adef2711c44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementScript: {fileID: 239740358}
 --- !u!114 &239740368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,6 +467,8 @@ MonoBehaviour:
   slowMotionTimeScale: 0.3
   slowMotionDuration: 2
   useSmoothSlowMotion: 1
+  requireAimHoldForDash: 1
+  dashAimDisplay: {fileID: 0}
   animator: {fileID: 239740364}
   invincibilityDuration: 2
   enableHealthCheats: 1
@@ -494,6 +478,7 @@ MonoBehaviour:
   cheatInvincibleKey: 97
   cheatReviveKey: 98
   cheatInvincibilityDuration: 5
+  attackStateDuration: 0.5
   dashImpactBaseDamage: 15
   dashImpactCooldown: 0.15
   dashDamageLayer:
@@ -4751,16 +4736,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2373342409532700347, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
+      propertyPath: preJumpDelay
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2373342409532700347, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1262778678}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.0835
+      value: 12.28
       objectReference: {fileID: 0}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19.95
+      value: -20.99
       objectReference: {fileID: 0}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4796,7 +4785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_Name
-      value: Stomper
+      value: Stomper(Crab)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
