@@ -80,7 +80,7 @@ public class TankEnemy : Enemy
 
         if (GetState() == EnemyState.Chase)
         {
-            if (distanceToPlayer > 7.9f)
+            if (distanceToPlayer > backOffRange - 0.1f)
             {
                 Move(Vector2.zero);
                 if (animator != null)
