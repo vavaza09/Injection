@@ -29,7 +29,7 @@ public class AttackComponent
     {
         if (target == null) return;
         // NOTE: HealthComponent currently treats every hit as 1 regardless of damage value.
-        // damage is passed through so momentum scaling takes effect once float damage is implemented.
+        // damage is passed through for when float damage is implemented.
         target.TakeDamage(damage);
         LastAttackTime = Time.time;
     }
