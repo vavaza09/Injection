@@ -509,14 +509,11 @@ public class Player : character
             return;
         }
 
-        float impactMultiplier = movementComponent.MovementAttackMultiplier;
-        float impactPower = dashImpactBaseDamage * impactMultiplier;
-
-        attackComponent.PerformAttack(targetCharacter, impactPower);
+        attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
         _dashHitTargets.Add(targetId);
         ChangeState(PlayerState.Attacking);
         _logger?.Log($"weakPoint: {(targetCollider != null ? targetCollider.name : "null")}");
-        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {impactPower:F1}, x{impactMultiplier:F2})");
+        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {dashImpactBaseDamage:F1})");
     }
 
     #endregion
