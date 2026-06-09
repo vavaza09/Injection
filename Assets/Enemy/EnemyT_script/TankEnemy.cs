@@ -25,6 +25,7 @@ public class TankEnemy : Enemy
     private Animator animator;
     private bool canShootAtPlayer;
     private float currentBarrelAngle = 10f;
+    private Vector2 lastMoveInput;
 
     protected override void Start()
     {
@@ -59,8 +60,6 @@ public class TankEnemy : Enemy
         bool inDetectionRange = distanceToPlayer <= detectionRange;
         SetState(inDetectionRange ? EnemyState.Chase : EnemyState.Idle);
 
-        if (animator != null)
-            animator.SetBool("IsWalking", inDetectionRange);
 
         if (inDetectionRange && (rotatePivotWhenIdle || GetState() == EnemyState.Chase))
         {
@@ -81,7 +80,22 @@ public class TankEnemy : Enemy
 
         if (GetState() == EnemyState.Chase)
         {
-            ChasePlayer();
+            if (distanceToPlayer > 7.9f)
+            {
+                Move(Vector2.zero);
+                if (animator != null)
+                    animator.SetBool("IsWalking", false);
+            }
+            else
+            {
+                ChasePlayer();
+
+                bool isMoving = movementComponent != null
+                    ? movementComponent.GetVelocity().magnitude > 1f
+                    : lastMoveInput.sqrMagnitude > 0.001f;
+                if (animator != null)
+                    animator.SetBool("IsWalking", isMoving);
+            }
 
             if (distanceToPlayer <= attackRange)
             {
@@ -91,10 +105,14 @@ public class TankEnemy : Enemy
         }
 
         Move(Vector2.zero);
+        if (animator != null)
+            animator.SetBool("IsWalking", false);
     }
 
     public override void Move(Vector2 direction)
     {
+        lastMoveInput = direction;
+
         if (movementComponent != null)
         {
             movementComponent.Move(direction);
