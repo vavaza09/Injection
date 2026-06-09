@@ -500,10 +500,10 @@ MonoBehaviour:
   stopMoveThreshold: 1.5
   backOffRange: 8
   barrelRotateSpeed: 165
-  barrelMinAngle: -16
-  barrelMaxAngle: 180
-  shootMinAngle: -18
-  shootMaxAngle: 185
+  barrelMinAngle: -5
+  barrelMaxAngle: 192
+  shootMinAngle: -7
+  shootMaxAngle: 195
 --- !u!95 &6666666666666666666
 Animator:
   serializedVersion: 7
