@@ -23,6 +23,7 @@ public class TankEnemy : Enemy
 
     private float lastShootTime = -999f;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
     private bool canShootAtPlayer;
     private float currentBarrelAngle = 10f;
     private Vector2 lastMoveInput;
@@ -31,6 +32,7 @@ public class TankEnemy : Enemy
     {
         base.Start();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (movementComponent != null)
         {
@@ -63,6 +65,7 @@ public class TankEnemy : Enemy
 
         if (inDetectionRange && (rotatePivotWhenIdle || GetState() == EnemyState.Chase))
         {
+            FlipTowardsPlayer();
             RotatePivotToTarget();
         }
         else
@@ -175,11 +178,7 @@ public class TankEnemy : Enemy
             return;
         }
 
-        Vector2 shootDirection = -attackPoint.right;
-        if (shootDirection.sqrMagnitude <= 0.0001f)
-        {
-            shootDirection = (playerTransform.position - attackPoint.position).normalized;
-        }
+        Vector2 shootDirection = (playerTransform.position - attackPoint.position).normalized;
 
         Quaternion rotation = Quaternion.FromToRotation(Vector2.right, shootDirection);
         GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, rotation);
@@ -191,6 +190,22 @@ public class TankEnemy : Enemy
         }
 
         lastShootTime = Time.time;
+    }
+
+    private void FlipTowardsPlayer()
+    {
+        if (playerTransform == null || spriteRenderer == null) return;
+        bool facingRight = playerTransform.position.x > transform.position.x;
+
+        spriteRenderer.flipX = facingRight;
+
+        // Flip the gun mount so the barrel tracks from the correct side
+        if (gunPivot != null && gunPivot.parent != null)
+        {
+            Vector3 s = gunPivot.parent.localScale;
+            s.x = facingRight ? -Mathf.Abs(s.x) : Mathf.Abs(s.x);
+            gunPivot.parent.localScale = s;
+        }
     }
 
     private void RotatePivotToTarget()
