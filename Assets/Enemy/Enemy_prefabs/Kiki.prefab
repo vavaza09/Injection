@@ -290,6 +290,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWeakPoint
   ownerEnemy: {fileID: 2181151058672896822}
+  weakPointColliders:
+  - {fileID: 1618289537991685747}
 --- !u!1 &4518119797810744639
 GameObject:
   m_ObjectHideFlags: 0
