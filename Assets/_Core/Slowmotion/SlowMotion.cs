@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SlowMotion : MonoBehaviour
+public class SlowMotion : MonoBehaviour, ISlowMotionController
 {
     private static SlowMotion _instance;
     public static SlowMotion Instance
@@ -35,10 +35,10 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// เปิดใช้งาน Slow Motion
+    /// ๏ฟฝิด๏ฟฝ๏ฟฝาน Slow Motion
     /// </summary>
-    /// <param name="timeScale">ความหนักของเวลาที่ต้องการหน่วง (0.0 - 1.0) เช่น 0.5 = ช้าลง 50%</param>
-    /// <param name="duration">ระยะเวลาที่ต้องการหน่วง (วินาที)</param>
+    /// <param name="timeScale">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (0.0 - 1.0) ๏ฟฝ๏ฟฝ 0.5 = ๏ฟฝ๏ฟฝ๏ฟฝลง 50%</param>
+    /// <param name="duration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (๏ฟฝินาท๏ฟฝ)</param>
     public void StartSlowMotion(float timeScale, float duration)
     {
         if (_slowMotionCoroutine != null)
@@ -50,12 +50,12 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// เปิดใช้งาน Slow Motion พร้อม Ease In/Out
+    /// ๏ฟฝิด๏ฟฝ๏ฟฝาน Slow Motion ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ Ease In/Out
     /// </summary>
-    /// <param name="timeScale">ความหนักของเวลาที่ต้องการหน่วง (0.0 - 1.0)</param>
-    /// <param name="duration">ระยะเวลาที่ต้องการหน่วง (วินาที)</param>
-    /// <param name="easeInDuration">เวลาในการ Fade In (วินาที)</param>
-    /// <param name="easeOutDuration">เวลาในการ Fade Out (วินาที)</param>
+    /// <param name="timeScale">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (0.0 - 1.0)</param>
+    /// <param name="duration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (๏ฟฝินาท๏ฟฝ)</param>
+    /// <param name="easeInDuration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝในก๏ฟฝ๏ฟฝ Fade In (๏ฟฝินาท๏ฟฝ)</param>
+    /// <param name="easeOutDuration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝในก๏ฟฝ๏ฟฝ Fade Out (๏ฟฝินาท๏ฟฝ)</param>
     public void StartSlowMotionSmooth(float timeScale, float duration, float easeInDuration = 0.2f, float easeOutDuration = 0.2f)
     {
         if (_slowMotionCoroutine != null)
@@ -67,7 +67,7 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// หยุด Slow Motion ทันที
+    /// ๏ฟฝ๏ฟฝุด Slow Motion ๏ฟฝัน๏ฟฝ๏ฟฝ
     /// </summary>
     public void StopSlowMotion()
     {
