@@ -204,7 +204,8 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   currentState: 0
   stompDamageCollider: {fileID: 0}
-  jumpHeightAbovePlayer: 4
+  preJumpDelay: 0.3
+  jumpHeightAbovePlayer: 5
   jumpToPlayerTime: 1
   stompDownSpeed: 17
   stompDamageDuration: 0.2
