@@ -16,25 +16,23 @@ namespace Game.Components.Movement
         [Header("Movement Settings")]
         [FormerlySerializedAs("moveSpeed")]
         [SerializeField] private float maxSpeed = 8f;
-        [SerializeField] private float acceleration = 48f;
+        [SerializeField] private float acceleration = 8f;
         [SerializeField] private float deceleration = 44f;
 
         [Header("Direction Change Physics")]
         [SerializeField] private float reverseGroundBrake = 120f;
         [SerializeField] private float reverseAirBrake = 70f;
-        [SerializeField, Range(0f, 1f)] private float reverseMomentumLoss = 0.2f;
-        [SerializeField] private float reverseMomentumDecayMultiplier = 2.5f;
         [SerializeField] private float reverseSpeedThreshold = 0.25f;
 
-        [Header("Momentum Settings")]
-        [SerializeField, Range(0.1f, 1f)] private float minSpeedMultiplier = 0.6f;
-        [SerializeField] private float momentumBuildRate = 2.1f;
-        [SerializeField] private float momentumDecayRate = 1.4f;
-        [SerializeField] private float momentumLossOnHit = 0.3f;
-        [SerializeField] private float momentumLossOnWallCrash = 0.2f;
-        [SerializeField] private float climbMomentumBoostMultiplier = 1.2f;
-        [SerializeField] private float dashMomentumMultiplier = 1.5f;
-        [SerializeField] private float wallSlideMaxFallAtMaxMomentumMultiplier = 1.2f;
+        [Header("Speed Impact Settings")]
+        [FormerlySerializedAs("momentumLossOnHit")]
+        [SerializeField] private float speedLossOnHit = 0.3f;
+        [FormerlySerializedAs("momentumLossOnWallCrash")]
+        [SerializeField] private float speedLossOnWallCrash = 0.2f;
+        [FormerlySerializedAs("climbMomentumBoostMultiplier")]
+        [SerializeField] private float climbSpeedBoostMultiplier = 1.2f;
+        [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
+        [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
         [Header("Speed Based Action Boost")]
         [SerializeField] private float jumpAtMaxSpeedMultiplier = 1.2f;
@@ -95,6 +93,13 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
         [SerializeField] private LayerMask climbableLayer;
 
+        [Header("Grab Settings")]
+        [SerializeField] private LayerMask grabbableLayer;
+        [SerializeField] private float grabCheckRadius = 1.5f;
+        [SerializeField] private float grabLaunchBaseSpeed = 200f;
+        [SerializeField, Range(0.5f, 1f)] private float grabLaunchMinMultiplier = 0.6f;
+        [SerializeField, Range(1f, 2f)] private float grabLaunchMaxMultiplier = 1.4f;
+
         [Header("Debug")]
         [SerializeField] private bool enableVerboseLogs = false;
 
@@ -126,10 +131,8 @@ namespace Game.Components.Movement
         private int wallSideSign;
         private bool _wasWallSliding;
         private float _currentWallSlideSpeed;
-        private bool _wasReversingDirection;
         private Vector2 moveInput;
-        private float _momentumNormalized;
-        private float _currentMoveSpeed;
+        private float _wallEntrySpeedFactor;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
@@ -137,6 +140,11 @@ namespace Game.Components.Movement
         private float _postDashAirControlTimer;
         private float _postDashAirBrakeTimer;
         private bool _wasDashingLastFrame;
+
+        // Grab state
+        private bool isGrabbing;
+        private SwingPoint currentSwingPoint;
+        private float grabbedSpeedFactor;
 
         #endregion
 
@@ -148,10 +156,10 @@ namespace Game.Components.Movement
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
         public bool IsClimbingState => isClimbing;
-        public float MomentumNormalized => _momentumNormalized;
-        public float CurrentMoveSpeed => _currentMoveSpeed;
         public float MaxSpeed => maxSpeed;
-        public float MovementAttackMultiplier => Mathf.Lerp(1f, dashMomentumMultiplier, _momentumNormalized);
+
+        public bool IsGrabbing => isGrabbing;
+        public bool CanGrab => !isGrabbing && FindGrabTarget() != null;
 
         public bool AutoJump
         {
@@ -182,6 +190,11 @@ namespace Game.Components.Movement
                 climbableLayer = LayerMask.GetMask("Climbable");
             }
 
+            if (grabbableLayer == 0)
+            {
+                grabbableLayer = LayerMask.GetMask("Grabbable");
+            }
+
             if (_logger == null)
             {
                 Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
@@ -201,14 +214,14 @@ namespace Game.Components.Movement
             wallSideSign = 0;
             _wasWallSliding = false;
             _currentWallSlideSpeed = 0f;
-            _wasReversingDirection = false;
             moveInput = Vector2.zero;
-            _momentumNormalized = 0f;
-            _currentMoveSpeed = 0f;
+            _wallEntrySpeedFactor = 0f;
             _postDashAirControlTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
-            
+            isGrabbing = false;
+            currentSwingPoint = null;
+            grabbedSpeedFactor = 0f;
 
             if (rb != null)
             {
@@ -264,8 +277,7 @@ namespace Game.Components.Movement
         {
             CheckGroundStatus();
             CheckWallStatus();
-            UpdateMomentum();
-            
+
             if (_dashHandler != null)
             {
                 _dashHandler.UpdateTimers();
@@ -303,6 +315,12 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (isGrabbing)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             UpdateClimbState();
             if (isClimbing) return;
 
@@ -318,6 +336,7 @@ namespace Game.Components.Movement
             moveInput = direction;
 
             if (IsDashing) return;
+            if (isGrabbing) return;
             if (!canMove || rb == null) return;
 
             if (isClimbing)
@@ -341,17 +360,8 @@ namespace Game.Components.Movement
             if (isReversingDirection)
             {
                 ApplyReverseBrake();
-
-                if (!_wasReversingDirection)
-                {
-                    ReduceMomentum(reverseMomentumLoss);
-                }
-
-                _wasReversingDirection = true;
                 return;
             }
-
-            _wasReversingDirection = false;
 
             float effectiveMoveSpeed = GetCurrentHorizontalSpeedLimit();
             float targetSpeed = direction.x * effectiveMoveSpeed;
@@ -441,6 +451,7 @@ namespace Game.Components.Movement
 
         public void Dash(Vector2 direction)
         {
+            if (isGrabbing) return;
             if (_dashHandler == null || !_dashHandler.CanDash || direction == Vector2.zero) return;
 
             if (_dashCoroutine != null)
@@ -850,7 +861,14 @@ namespace Game.Components.Movement
             bool leftHit = Physics2D.OverlapBox(leftCheckPos, wallCheckSize, 0f, climbableLayer);
             bool rightHit = Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
 
+            bool wasTouchingWall = isTouchingWall;
             isTouchingWall = !isGrounded && (leftHit || rightHit);
+
+            if (isTouchingWall && !wasTouchingWall)
+                _wallEntrySpeedFactor = GetCurrentSpeedFactorFromVelocity();
+            else if (!isTouchingWall)
+                _wallEntrySpeedFactor = 0f;
+
             if (enableVerboseLogs)
             {
                 Debug.Log($"Wall Check - Left: {leftHit}, Right: {rightHit}, IsTouchingWall: {isTouchingWall}");
@@ -913,13 +931,12 @@ namespace Game.Components.Movement
             }
 
             float gravityDirection = gravity >= 0f ? -1f : 1f;
-            float maxSlideSpeed = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxMomentumMultiplier, _momentumNormalized);
+            float maxSlideSpeed = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
             float currentGravityAlignedSpeed = rb.linearVelocity.y * gravityDirection;
 
             if (!_wasWallSliding)
             {
-                // Use the same movement speed source as Player/UI instead of a separate wall-slide start value.
-                _currentWallSlideSpeed = Mathf.Max(Mathf.Max(0f, currentGravityAlignedSpeed), _currentMoveSpeed);
+                _currentWallSlideSpeed = Mathf.Max(Mathf.Max(0f, currentGravityAlignedSpeed), _wallEntrySpeedFactor * maxSpeed);
             }
             else
             {
@@ -941,6 +958,91 @@ namespace Game.Components.Movement
 
         #endregion
 
+        #region Grab
+
+        private SwingPoint FindGrabTarget()
+        {
+            if (characterTransform == null) return null;
+
+            Collider2D[] hits = Physics2D.OverlapCircleAll(characterTransform.position, grabCheckRadius, grabbableLayer);
+            SwingPoint nearest = null;
+            float nearestDist = float.MaxValue;
+
+            foreach (Collider2D hit in hits)
+            {
+                SwingPoint sp = hit.GetComponent<SwingPoint>();
+                if (sp == null) continue;
+
+                float dist = Vector2.Distance(characterTransform.position, sp.AnchorPosition);
+                if (dist < nearestDist)
+                {
+                    nearestDist = dist;
+                    nearest = sp;
+                }
+            }
+
+            return nearest;
+        }
+
+        public bool TryStartGrab()
+        {
+            if (rb == null || characterTransform == null) return false;
+
+            SwingPoint target = FindGrabTarget();
+            if (target == null) return false;
+
+            // Snapshot arrival speed BEFORE zeroing velocity — this is the launch-power source
+            grabbedSpeedFactor = GetCurrentSpeedFactorFromVelocity();
+
+            currentSwingPoint = target;
+            isGrabbing = true;
+
+            // Pin to anchor
+            rb.position = target.AnchorPosition;
+            rb.linearVelocity = Vector2.zero;
+
+            // Clear conflicting states
+            StopClimb();
+            ResetWallSlideState();
+            isJumping = false;
+            isFalling = false;
+            jumpGraceTimer = 0f;
+            varJumpTimer = 0f;
+            autoJump = false;
+
+            _logger?.Log($"Grab started on {target.name}, speedFactor={grabbedSpeedFactor:F2}");
+            return true;
+        }
+
+        public void LaunchFromGrab(Vector2 aimDir)
+        {
+            if (rb == null || !isGrabbing) return;
+
+            float speed = grabLaunchBaseSpeed * Mathf.Lerp(grabLaunchMinMultiplier, grabLaunchMaxMultiplier, grabbedSpeedFactor);
+            rb.linearVelocity = aimDir.normalized * speed;
+
+            currentSwingPoint = null;
+            isGrabbing = false;
+
+            isJumping = true;
+            isFalling = false;
+            ResetWallSlideState();
+
+            _logger?.Log($"Launch from grab: dir={aimDir}, speed={speed:F1}, factor={grabbedSpeedFactor:F2}");
+        }
+
+        public void ReleaseGrab()
+        {
+            if (!isGrabbing) return;
+
+            currentSwingPoint = null;
+            isGrabbing = false;
+
+            _logger?.Log("Grab released (drop)");
+        }
+
+        #endregion
+
         #region Utility
 
         private void MoveVExact(int amount)
@@ -956,19 +1058,6 @@ namespace Game.Components.Movement
         public void SetSpeed(float speed)
         {
             maxSpeed = Mathf.Max(0f, speed);
-            if (Mathf.Abs(moveInput.x) > 0.1f)
-            {
-                RecalculateCurrentMoveSpeed();
-            }
-        }
-
-        public void ReduceMomentum(float amount)
-        {
-            _momentumNormalized = Mathf.Clamp01(_momentumNormalized - Mathf.Abs(amount));
-            if (Mathf.Abs(moveInput.x) > 0.1f)
-            {
-                RecalculateCurrentMoveSpeed();
-            }
         }
 
         public void SetCanMove(bool value)
@@ -977,9 +1066,7 @@ namespace Game.Components.Movement
             if (!canMove)
             {
                 StopClimb();
-                _momentumNormalized = 0f;
-                _currentMoveSpeed = 0f;
-                _wasReversingDirection = false;
+                _wallEntrySpeedFactor = 0f;
                 _postDashAirControlTimer = 0f;
                 _postDashAirBrakeTimer = 0f;
                 _wasDashingLastFrame = false;
@@ -1021,65 +1108,19 @@ namespace Game.Components.Movement
 
         public void NotifyWallCrash()
         {
-            ReduceMomentum(momentumLossOnWallCrash);
+            if (rb != null)
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x * (1f - speedLossOnWallCrash), rb.linearVelocity.y);
         }
 
         public void NotifyDamageTaken()
         {
-            ReduceMomentum(momentumLossOnHit);
-        }
-
-        private void UpdateMomentum()
-        {
-            if (!canMove)
-            {
-                _momentumNormalized = 0f;
-                _currentMoveSpeed = 0f;
-                return;
-            }
-
-            bool hasHorizontalInput = Mathf.Abs(moveInput.x) > 0.1f;
-            bool isReversingDirection = rb != null && IsReversingDirection(moveInput.x, rb.linearVelocity.x);
-            bool isBuildingMomentum = isGrounded && !IsDashing && hasHorizontalInput && !isReversingDirection;
-
-            if (isBuildingMomentum)
-            {
-                _momentumNormalized += momentumBuildRate * Time.deltaTime;
-            }
-            else
-            {
-                float decayMultiplier = isReversingDirection ? reverseMomentumDecayMultiplier : 1f;
-                _momentumNormalized -= momentumDecayRate * decayMultiplier * Time.deltaTime;
-            }
-
-            _momentumNormalized = Mathf.Clamp01(_momentumNormalized);
-
-            if (hasHorizontalInput)
-            {
-                RecalculateCurrentMoveSpeed();
-                return;
-            }
-
-            // No move input: follow real horizontal speed so UI and player motion stay in sync.
             if (rb != null)
-            {
-                _currentMoveSpeed = Mathf.Abs(rb.linearVelocity.x);
-                return;
-            }
-
-            float speedDecayRate = isGrounded ? deceleration : airDeceleration;
-            _currentMoveSpeed = Mathf.MoveTowards(_currentMoveSpeed, 0f, speedDecayRate * Time.deltaTime);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x * (1f - speedLossOnHit), rb.linearVelocity.y);
         }
 
         private float GetCurrentHorizontalSpeedLimit()
         {
-            float speedLimit = _currentMoveSpeed;
-            if (Mathf.Abs(moveInput.x) > 0.1f && speedLimit <= 0f)
-            {
-                speedLimit = maxSpeed * minSpeedMultiplier;
-            }
-
-            return Mathf.Max(0.01f, speedLimit);
+            return maxSpeed;
         }
 
         private float GetCurrentSpeedFactorFromVelocity()
@@ -1097,7 +1138,7 @@ namespace Game.Components.Movement
 
         private float GetCurrentClimbSpeed()
         {
-            return climbSpeed * Mathf.Lerp(1f, climbMomentumBoostMultiplier, _momentumNormalized);
+            return climbSpeed * Mathf.Lerp(1f, climbSpeedBoostMultiplier, _wallEntrySpeedFactor);
         }
 
         private bool IsReversingDirection(float inputX, float currentSpeed)
@@ -1165,16 +1206,6 @@ namespace Game.Components.Movement
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         }
 
-        private void RecalculateCurrentMoveSpeed()
-        {
-            if (!canMove)
-            {
-                _currentMoveSpeed = 0f;
-                return;
-            }
-
-            _currentMoveSpeed = Mathf.Lerp(maxSpeed * minSpeedMultiplier, maxSpeed, _momentumNormalized);
-        }
 
         #endregion
 
@@ -1196,6 +1227,9 @@ namespace Game.Components.Movement
             Gizmos.color = isTouchingWall ? Color.cyan : Color.yellow;
             Gizmos.DrawWireCube(leftCheckPos, wallCheckSize);
             Gizmos.DrawWireCube(rightCheckPos, wallCheckSize);
+
+            Gizmos.color = isGrabbing ? Color.cyan : new Color(0f, 1f, 1f, 0.3f);
+            Gizmos.DrawWireSphere(worldCenter, grabCheckRadius);
         }
 
         #endregion
