@@ -1,3 +1,5 @@
+using System;
+
 namespace Game.Components.Health
 {
     public enum HealthState
@@ -12,6 +14,9 @@ namespace Game.Components.Health
         public float currentHealth { get; private set; }
         public int hitCount { get; private set; }
         public HealthState currentState { get; private set; } = HealthState.Normal;
+
+        public event Action OnInvincibilityStarted;
+        public event Action OnInvincibilityEnded;
 
         private float invincibilityTimer;
 
@@ -35,6 +40,7 @@ namespace Game.Components.Health
                 {
                     invincibilityTimer = 0f;
                     currentState = HealthState.Normal;
+                    OnInvincibilityEnded?.Invoke();
                 }
             }
         }
@@ -72,6 +78,7 @@ namespace Game.Components.Health
 
             invincibilityTimer = duration;
             currentState = HealthState.Invincible;
+            OnInvincibilityStarted?.Invoke();
         }
 
         public bool IsInvincible()

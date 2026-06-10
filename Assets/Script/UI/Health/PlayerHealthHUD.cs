@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace Game.UI.Health
 {
-    /// <summary>
-    /// Displays player health as hit-count values in real time.
-    /// Attach this to your HUD canvas and assign two TMP labels.
-    /// </summary>
     public class PlayerHealthHUD : MonoBehaviour
     {
         [Header("References")]
@@ -31,28 +27,49 @@ namespace Game.UI.Health
 
             AutoBindLabelsIfMissing();
             EnsureLabelsExist();
+        }
+
+        private void Start()
+        {
+            BindEvents();
             Refresh(force: true);
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            if (player == null)
-            {
-                player = FindFirstObjectByType<Player>();
-                if (player == null)
-                {
-                    return;
-                }
-            }
+            UnbindEvents();
+        }
 
-            Refresh(force: false);
+        private void OnDestroy()
+        {
+            UnbindEvents();
         }
 
         public void Initialize(Player targetPlayer)
         {
+            UnbindEvents();
             player = targetPlayer;
+            BindEvents();
             Refresh(force: true);
         }
+
+        private void BindEvents()
+        {
+            if (player == null) return;
+            player.Damaged  += OnHealthChanged;
+            player.Healed   += OnHealthChanged;
+            player.Died     += OnHealthChanged;
+        }
+
+        private void UnbindEvents()
+        {
+            if (player == null) return;
+            player.Damaged  -= OnHealthChanged;
+            player.Healed   -= OnHealthChanged;
+            player.Died     -= OnHealthChanged;
+        }
+
+        private void OnHealthChanged(character _) => Refresh(force: true);
 
         private void AutoBindLabelsIfMissing()
         {
@@ -64,10 +81,7 @@ namespace Game.UI.Health
             TextMeshProUGUI[] labels = GetComponentsInChildren<TextMeshProUGUI>(true);
             foreach (TextMeshProUGUI label in labels)
             {
-                if (label == null)
-                {
-                    continue;
-                }
+                if (label == null) continue;
 
                 string labelName = label.gameObject.name.ToLowerInvariant();
 
@@ -89,23 +103,16 @@ namespace Game.UI.Health
         private void EnsureLabelsExist()
         {
             if (remainingHitsLabel == null)
-            {
                 remainingHitsLabel = CreateFallbackLabel("RemainingHitsText", new Vector2(20f, -20f));
-            }
 
             if (hitCountLabel == null)
-            {
                 hitCountLabel = CreateFallbackLabel("HitCountText", new Vector2(20f, -55f));
-            }
         }
 
         private TextMeshProUGUI CreateFallbackLabel(string objectName, Vector2 anchoredPosition)
         {
             RectTransform rootRect = transform as RectTransform;
-            if (rootRect == null)
-            {
-                return null;
-            }
+            if (rootRect == null) return null;
 
             GameObject labelObject = new GameObject(objectName, typeof(RectTransform));
             labelObject.transform.SetParent(transform, false);
@@ -121,16 +128,12 @@ namespace Game.UI.Health
             label.fontSize = 24f;
             label.alignment = TextAlignmentOptions.TopLeft;
             label.color = Color.white;
-
             return label;
         }
 
         private void Refresh(bool force)
         {
-            if (player == null)
-            {
-                return;
-            }
+            if (player == null) return;
 
             int remainingHits = player.GetRemainingHits();
             int maxHits = player.GetMaxHits();
@@ -139,9 +142,7 @@ namespace Game.UI.Health
             if (force || remainingHits != _lastRemainingHits || maxHits != _lastMaxHits)
             {
                 if (remainingHitsLabel != null)
-                {
                     remainingHitsLabel.text = string.Format(remainingHitsFormat, remainingHits, maxHits);
-                }
 
                 _lastRemainingHits = remainingHits;
                 _lastMaxHits = maxHits;
@@ -150,9 +151,7 @@ namespace Game.UI.Health
             if (force || hitCount != _lastHitCount)
             {
                 if (hitCountLabel != null)
-                {
                     hitCountLabel.text = string.Format(hitCountFormat, hitCount);
-                }
 
                 _lastHitCount = hitCount;
             }

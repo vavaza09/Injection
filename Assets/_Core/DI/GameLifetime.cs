@@ -4,6 +4,7 @@ using VContainer;
 using Core.Logging;
 using Game.Components.Health;
 using Game.Components.Movement;
+using Game.Components.Combat;
 using Game.Characters.Player;
 
 public class GameLifetime : LifetimeScope
@@ -24,9 +25,13 @@ public class GameLifetime : LifetimeScope
             new LoggerFactory(logConfig),
             Lifetime.Singleton);
 
+        // Register SlowMotion as singleton via its interface
+        builder.Register<ISlowMotionController>(_ => SlowMotion.Instance, Lifetime.Singleton);
+
         // Register plain C# components
         builder.Register<HealthComponent>(Lifetime.Transient);
         builder.Register<MovementComponent>(Lifetime.Transient);
+        builder.Register<AttackComponent>(resolver => new AttackComponent(0.15f), Lifetime.Transient);
 
         // Register Player Controllers (Plain C# - No MonoBehaviour)
         builder.Register<PlayerInputHandler>(Lifetime.Singleton);

@@ -336,6 +336,8 @@ GameObject:
   - component: {fileID: 1111984903749375963}
   - component: {fileID: 2586450101955332431}
   - component: {fileID: 9206611309243768537}
+  - component: {fileID: 7705200461922201765}
+  - component: {fileID: 4885150918750639098}
   m_Layer: 0
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -533,19 +535,9 @@ MonoBehaviour:
   dashAimDisplay: {fileID: 0}
   animator: {fileID: 519027211526569210}
   invincibilityDuration: 2
-  enableHealthCheats: 1
-  cheatTakeHitKey: 94
-  cheatHealHitKey: 95
-  cheatFullHealKey: 96
-  cheatInvincibleKey: 97
-  cheatReviveKey: 98
-  cheatInvincibilityDuration: 5
   attackStateDuration: 0.5
-  dashImpactBaseDamage: 15
-  dashImpactCooldown: 0.15
-  dashDamageLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  dashImpact: {fileID: 0}
+  invincibilityBlinkInterval: 0.1
 --- !u!114 &9206611309243768537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,3 +623,38 @@ MonoBehaviour:
   grabLaunchMaxMultiplier: 1.4
   enableVerboseLogs: 0
   canMove: 1
+--- !u!114 &7705200461922201765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bab787035ffb5e5429cf30efe7e22193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDashImpact
+  dashImpactBaseDamage: 15
+  dashImpactCooldown: 0.15
+  dashDamageLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &4885150918750639098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cb498f65be062848bdbfc7a4397c22d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDebugCheats
+  takeHitKey: 94
+  healHitKey: 95
+  fullHealKey: 96
+  invincibleKey: 97
+  reviveKey: 98
+  invincibilityDuration: 5
