@@ -17,7 +17,8 @@ public enum PlayerState
     Jumping     = 4,
     Falling     = 5,
     Running     = 6,
-    Idle        = 7
+    Idle        = 7,
+    Grabbing    = 8
 }
 
 public class Player : character
@@ -137,6 +138,7 @@ public class Player : character
             _inputHandler.OnRightClickPressed += BeginDashAimMode;
             _inputHandler.OnRightClickReleased += EndDashAimMode;
             _inputHandler.OnDashPressed += Dash;
+            _inputHandler.OnGrabPressed += HandleGrabInput;
 
             _inputHandler.Enable();
         }
@@ -270,6 +272,31 @@ public class Player : character
         }
     }
 
+    private void HandleGrabInput()
+    {
+        if (_currentState == PlayerState.Dead) return;
+        if (movementComponent == null) return;
+
+        if (movementComponent.IsGrabbing)
+        {
+            movementComponent.ReleaseGrab();
+            SlowMotion.Instance.StopSlowMotion();
+            return;
+        }
+
+        // Block grab while right-click dash-aim is held
+        if (_inputHandler != null && _inputHandler.IsAimHeld) return;
+
+        if (movementComponent.CanGrab)
+        {
+            bool grabbed = movementComponent.TryStartGrab();
+            if (grabbed)
+            {
+                ActivateSlowMotion();
+            }
+        }
+    }
+
     private void Dash()
     {
         if (_currentState == PlayerState.Dead) return;
@@ -294,6 +321,17 @@ public class Player : character
         if (movementComponent == null)
         {
             _logger?.LogError("Cannot jump: MovementComponent is null");
+            return;
+        }
+
+        if (movementComponent.IsGrabbing)
+        {
+            Vector2 aimDir = ResolveDashDirection();
+            movementComponent.LaunchFromGrab(aimDir);
+            SlowMotion.Instance.StopSlowMotion();
+            // Celeste-style refresh: restore dash and jump on launch
+            jumpsRemaining = maxJumps;
+            movementComponent.ResetDash();
             return;
         }
 
@@ -471,14 +509,11 @@ public class Player : character
             return;
         }
 
-        float impactMultiplier = movementComponent.MovementAttackMultiplier;
-        float impactPower = dashImpactBaseDamage * impactMultiplier;
-
-        attackComponent.PerformAttack(targetCharacter, impactPower);
+        attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
         _dashHitTargets.Add(targetId);
         ChangeState(PlayerState.Attacking);
         _logger?.Log($"weakPoint: {(targetCollider != null ? targetCollider.name : "null")}");
-        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {impactPower:F1}, x{impactMultiplier:F2})");
+        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {dashImpactBaseDamage:F1})");
     }
 
     #endregion
@@ -562,6 +597,10 @@ public class Player : character
                 _animationController?.PlayJumpAnimation();
                 _audioController?.PlayJumpSound();
                 break;
+
+            case PlayerState.Grabbing:
+                // Placeholder: wire grab animation when art is ready
+                break;
         }
     }
 
@@ -590,6 +629,12 @@ public class Player : character
         {
             if (_currentState != PlayerState.Dashing && _currentState != PlayerState.Attacking)
                 ChangeState(PlayerState.Dashing);
+            return;
+        }
+
+        if (movementComponent != null && movementComponent.IsGrabbing)
+        {
+            ChangeState(PlayerState.Grabbing);
             return;
         }
 
@@ -640,6 +685,7 @@ public class Player : character
             _inputHandler.OnRightClickPressed -= BeginDashAimMode;
             _inputHandler.OnRightClickReleased -= EndDashAimMode;
             _inputHandler.OnDashPressed -= Dash;
+            _inputHandler.OnGrabPressed -= HandleGrabInput;
             _inputHandler.Dispose();
         }
 
