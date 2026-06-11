@@ -44,6 +44,7 @@ public class CameraManager : MonoBehaviour
     private CinemachinePositionComposer _composer;
 
     private Coroutine _lerpRoutine;
+    private Coroutine _shakeRoutine;
     private bool _isFallingCommitted;
     private float _fallTimer;
 
@@ -215,17 +216,30 @@ public class CameraManager : MonoBehaviour
         Debug.Log($"Entered room with bounds: {roomBounds}");
     }
 
-    // Public API for camera shake
     public void Shake(float intensity, float duration = 0.3f)
     {
-        if (_currentCam != null)
+        if (_shakeRoutine != null) StopCoroutine(_shakeRoutine);
+        _shakeRoutine = StartCoroutine(ShakeRoutine(intensity, duration));
+    }
+
+    private IEnumerator ShakeRoutine(float intensity, float duration)
+    {
+        Transform camT = Camera.main?.transform;
+        if (camT == null) { _shakeRoutine = null; yield break; }
+
+        var eof = new WaitForEndOfFrame();
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
-            var impulse = _currentCam.GetComponent<CinemachineImpulseSource>();
-            if (impulse != null)
-            {
-                impulse.GenerateImpulse(intensity);
-            }
+            float strength = intensity * (1f - Mathf.Clamp01(elapsed / duration));
+            camT.position += new Vector3(
+                Random.Range(-1f, 1f) * strength,
+                Random.Range(-1f, 1f) * strength,
+                0f);
+            yield return eof;
+            elapsed += Time.unscaledDeltaTime;
         }
+        _shakeRoutine = null;
     }
 
     public void EnterRoomLock(Transform roomAnchor)
