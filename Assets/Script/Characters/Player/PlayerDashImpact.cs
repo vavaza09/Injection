@@ -103,7 +103,7 @@ public class PlayerDashImpact : MonoBehaviour
 
         if (hitWeakPoint)
         {
-            SlowMotion.Instance.StartSlowMotion(hitstopTimeScale, hitstopDuration);
+            SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
             CameraManager.instance?.Shake(weakPointShakeIntensity);
             _hitFlash?.Flash();
             HitFlashFX.Spawn(targetCollider.bounds.center);

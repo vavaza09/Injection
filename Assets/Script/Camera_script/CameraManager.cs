@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CameraManager : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class CameraManager : MonoBehaviour
 
     private Coroutine _lerpRoutine;
     private Coroutine _shakeRoutine;
+    private Vector3 _shakeOffset;
     private bool _isFallingCommitted;
     private float _fallTimer;
 
@@ -61,6 +63,23 @@ public class CameraManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnEnable()
+    {
+        RenderPipelineManager.beginCameraRendering += ApplyShakeBeforeRender;
+    }
+
+    private void OnDisable()
+    {
+        RenderPipelineManager.beginCameraRendering -= ApplyShakeBeforeRender;
+    }
+
+    // Runs after Cinemachine's LateUpdate but before the draw call — correct timing for shake.
+    private void ApplyShakeBeforeRender(ScriptableRenderContext ctx, Camera cam)
+    {
+        if (cam != Camera.main || _shakeOffset == Vector3.zero) return;
+        cam.transform.position += _shakeOffset;
     }
 
     private void Start()
@@ -224,21 +243,18 @@ public class CameraManager : MonoBehaviour
 
     private IEnumerator ShakeRoutine(float intensity, float duration)
     {
-        Transform camT = Camera.main?.transform;
-        if (camT == null) { _shakeRoutine = null; yield break; }
-
-        var eof = new WaitForEndOfFrame();
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            elapsed += Time.unscaledDeltaTime;
             float strength = intensity * (1f - Mathf.Clamp01(elapsed / duration));
-            camT.position += new Vector3(
+            _shakeOffset = new Vector3(
                 Random.Range(-1f, 1f) * strength,
                 Random.Range(-1f, 1f) * strength,
                 0f);
-            yield return eof;
-            elapsed += Time.unscaledDeltaTime;
+            yield return null;
         }
+        _shakeOffset = Vector3.zero;
         _shakeRoutine = null;
     }
 
