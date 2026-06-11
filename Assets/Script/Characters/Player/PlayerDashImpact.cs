@@ -11,13 +11,17 @@ public class PlayerDashImpact : MonoBehaviour
     [SerializeField] private LayerMask dashDamageLayer = ~0;
 
     [Header("Hitstop")]
-    [SerializeField] private float hitstopDuration = 0.06f;
-    [SerializeField] private float hitstopTimeScale = 0f;
+    [SerializeField] private float hitstopDuration = 1f;
+    [SerializeField] private float hitstopTimeScale = 0.2f;
+
+    [Header("Weak Point Hit Feedback")]
+    [SerializeField] private float weakPointShakeIntensity = 0.1f;
 
     public event Action ImpactLanded;
 
     private AttackComponent _attackComponent;
     private MovementComponentRef _movement;
+    private HitFlash _hitFlash;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
 
@@ -35,6 +39,7 @@ public class PlayerDashImpact : MonoBehaviour
         _movement = new MovementComponentRef(movementComponent);
         float cooldown = cooldownOverride >= 0f ? cooldownOverride : dashImpactCooldown;
         _attackComponent = new AttackComponent(cooldown);
+        _hitFlash = GetComponentInChildren<HitFlash>();
     }
 
     private void Update()
@@ -97,6 +102,13 @@ public class PlayerDashImpact : MonoBehaviour
         ImpactLanded?.Invoke();
 
         if (hitWeakPoint)
+        {
             SlowMotion.Instance.StartSlowMotion(hitstopTimeScale, hitstopDuration);
+            CameraManager.instance?.Shake(weakPointShakeIntensity);
+            _hitFlash?.Flash();
+            HitFlashFX.Spawn(targetCollider.bounds.center);
+            SoundManager.PlaySound(SoundType.HITSTOP);
+            targetCharacter.Die();
+        }
     }
 }
