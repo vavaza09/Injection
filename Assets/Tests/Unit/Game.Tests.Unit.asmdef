@@ -1,0 +1,22 @@
+{
+  "name": "Game.Tests.Unit",
+  "references": [
+    "Game.Health",
+    "Game.Tests.Fixtures",
+    "Game.Components.Movement"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,3 +1,11 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Game.Components.Movement.csproj" />
+  <Project Path="Game.Tests.Integration.csproj" />
+  <Project Path="Game.Tests.Fixtures.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Game.Health.csproj" />
+  <Project Path="Game.Tests.Unit.csproj" />
+  <Project Path="Core.Logging.csproj" />
+  <Project Path="Game.Health.EditModeTests.csproj" />
 </Solution>
