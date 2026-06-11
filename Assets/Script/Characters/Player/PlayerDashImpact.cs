@@ -3,7 +3,7 @@ using Game.Components.Combat;
 using System.Collections.Generic;
 using System;
 
-public class PlayerDashImpact : MonoBehaviour
+public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamageTarget
 {
     [Header("Dash Impact Settings")]
     [SerializeField] private float dashImpactBaseDamage = 15f;
@@ -11,7 +11,9 @@ public class PlayerDashImpact : MonoBehaviour
     [SerializeField] private LayerMask dashDamageLayer = ~0;
 
     public event Action ImpactLanded;
+    public event Action TrueDamageConsumed;
 
+    private bool _trueDamageArmed;
     private AttackComponent _attackComponent;
     private MovementComponentRef _movement;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
@@ -33,6 +35,8 @@ public class PlayerDashImpact : MonoBehaviour
         _attackComponent = new AttackComponent(cooldown);
     }
 
+    public void ArmTrueDamage() => _trueDamageArmed = true;
+
     private void Update()
     {
         if (_movement == null) return;
@@ -40,6 +44,14 @@ public class PlayerDashImpact : MonoBehaviour
         bool isDashingNow = _movement.IsDashing;
         if (isDashingNow && !_wasDashing)
             _dashHitTargets.Clear();
+
+        // Dash just ended — consume the armed buff regardless of whether it hit anything
+        if (!isDashingNow && _wasDashing && _trueDamageArmed)
+        {
+            _trueDamageArmed = false;
+            TrueDamageConsumed?.Invoke();
+        }
+
         _wasDashing = isDashingNow;
     }
 
@@ -63,7 +75,7 @@ public class PlayerDashImpact : MonoBehaviour
         character targetCharacter = targetCollider.GetComponentInParent<character>();
         if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
 
-        if (targetCharacter is Enemy)
+        if (targetCharacter is Enemy && !_trueDamageArmed)
         {
             EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
             if (weakPoint == null)

@@ -62,6 +62,8 @@ public class Player : character
     [Header("Movement Combat")]
     [SerializeField] private PlayerDashImpact dashImpact;
 
+    private PlayerEnergyCollector _energyCollector;
+
     [Header("Invincibility Visual")]
     [SerializeField] private float invincibilityBlinkInterval = 0.1f;
     private SpriteRenderer _spriteRenderer;
@@ -97,6 +99,8 @@ public class Player : character
 
         if (dashImpact == null)
             dashImpact = GetComponent<PlayerDashImpact>();
+
+        _energyCollector = GetComponent<PlayerEnergyCollector>();
 
         if (animator == null)
         {
@@ -210,6 +214,8 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
+
+        if (_energyCollector != null && _energyCollector.TryCollectNearby()) return;
 
         if (movementComponent.IsGrabbing)
         {
