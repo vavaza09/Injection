@@ -111,23 +111,40 @@ public class CameraManager : MonoBehaviour
 
     private void ResolveCurrentCamera()
     {
+        // Try inspector assignment first, then auto-find
         if (_allVirtualCameras == null || _allVirtualCameras.Length == 0)
         {
-            Debug.LogWarning("CameraManager: No virtual cameras assigned!");
+            _allVirtualCameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
+        }
+
+        // Pick the first active one
+        if (_allVirtualCameras != null)
+        {
+            for (int i = 0; i < _allVirtualCameras.Length; i++)
+            {
+                if (_allVirtualCameras[i] != null && _allVirtualCameras[i].isActiveAndEnabled)
+                {
+                    _currentCam = _allVirtualCameras[i];
+                    break;
+                }
+            }
+
+            if (_currentCam == null && _allVirtualCameras.Length > 0)
+                _currentCam = _allVirtualCameras[0];
+        }
+
+        // Last resort: find by name
+        if (_currentCam == null)
+        {
+            var go = GameObject.Find("CinemachineCamera");
+            if (go != null) _currentCam = go.GetComponent<CinemachineCamera>();
+        }
+
+        if (_currentCam == null)
+        {
+            Debug.LogError("CameraManager: Could not find any CinemachineCamera in the scene!");
             return;
         }
-
-        // Pick the enabled one
-        for (int i = 0; i < _allVirtualCameras.Length; i++)
-        {
-            if (_allVirtualCameras[i] != null && _allVirtualCameras[i].isActiveAndEnabled)
-            {
-                _currentCam = _allVirtualCameras[i];
-                break;
-            }
-        }
-
-        if (_currentCam == null) _currentCam = _allVirtualCameras[0];
 
         // Get CinemachinePositionComposer (new API - replaces FramingTransposer)
         _composer = _currentCam.GetComponent<CinemachinePositionComposer>();
