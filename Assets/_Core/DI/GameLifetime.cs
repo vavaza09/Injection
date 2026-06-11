@@ -5,12 +5,17 @@ using Core.Logging;
 using Game.Components.Health;
 using Game.Components.Movement;
 using Game.Components.Combat;
+using Game.Components.Skills;
 using Game.Characters.Player;
 
 public class GameLifetime : LifetimeScope
 {
     [Header("Logging")]
     [SerializeField] private LogConfig logConfig;
+
+    [Header("Energy")]
+    [SerializeField] private int maxEnergy   = 3;
+    [SerializeField] private int startEnergy = 0;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -48,8 +53,19 @@ public class GameLifetime : LifetimeScope
         // PlayerAudioController uses SoundManager (no AudioClip dependencies)
         builder.Register<PlayerAudioController>(Lifetime.Singleton);
 
+        // Skill system
+        builder.Register<PlayerSkillEvents>(Lifetime.Singleton).As<IPlayerSkillEvents>();
+        builder.Register<EnergyPool>(
+            _ => new EnergyPool(maxEnergy, startEnergy),
+            Lifetime.Singleton)
+            .As<IEnergyPool>()
+            .As<IEnergyStore>();
+
         // Register MonoBehaviour components in hierarchy
         builder.RegisterComponentInHierarchy<character>();
         builder.RegisterComponentInHierarchy<Player>();
+        builder.RegisterComponentInHierarchy<PlayerSkillController>();
+        builder.RegisterComponentInHierarchy<PlayerEnergyCollector>();
+        builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
     }
 }
