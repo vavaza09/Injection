@@ -10,6 +10,10 @@ public class PlayerDashImpact : MonoBehaviour
     [SerializeField] private float dashImpactCooldown = 0.15f;
     [SerializeField] private LayerMask dashDamageLayer = ~0;
 
+    [Header("Hitstop")]
+    [SerializeField] private float hitstopDuration = 0.06f;
+    [SerializeField] private float hitstopTimeScale = 0f;
+
     public event Action ImpactLanded;
 
     private AttackComponent _attackComponent;
@@ -63,6 +67,7 @@ public class PlayerDashImpact : MonoBehaviour
         character targetCharacter = targetCollider.GetComponentInParent<character>();
         if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
 
+        bool hitWeakPoint = false;
         if (targetCharacter is Enemy)
         {
             EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
@@ -81,6 +86,7 @@ public class PlayerDashImpact : MonoBehaviour
 
             if (weakPoint == null) return;
             if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return;
+            hitWeakPoint = true;
         }
 
         int targetId = targetCharacter.GetInstanceID();
@@ -89,5 +95,8 @@ public class PlayerDashImpact : MonoBehaviour
         _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
         _dashHitTargets.Add(targetId);
         ImpactLanded?.Invoke();
+
+        if (hitWeakPoint)
+            SlowMotion.Instance.StartSlowMotion(hitstopTimeScale, hitstopDuration);
     }
 }

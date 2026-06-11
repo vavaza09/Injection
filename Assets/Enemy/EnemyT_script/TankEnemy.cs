@@ -13,13 +13,11 @@ public class TankEnemy : Enemy
     [SerializeField] private bool rotatePivotWhenIdle = true;
     [SerializeField] private float stopMoveThreshold = 0.1f;
     [SerializeField] private float backOffRange = 1.25f;
+    [SerializeField] private float flipDelay = 1f;
 
     [Header("Barrel")]
     [SerializeField] private float barrelRotateSpeed = 170f;
-    [SerializeField] private float barrelMinAngle = -15f;
-    [SerializeField] private float barrelMaxAngle = 170f;
-    [SerializeField] private float shootMinAngle = -5f;
-    [SerializeField] private float shootMaxAngle = 195f;
+    [SerializeField] private float gunArcDegrees = 60f;
 
     private float lastShootTime = -999f;
     private Animator animator;
@@ -28,11 +26,28 @@ public class TankEnemy : Enemy
     private float currentBarrelAngle = 10f;
     private Vector2 lastMoveInput;
 
+    private bool _currentFacingRight;
+    private bool _pendingFacingRight;
+    private float _flipTimer = -1f;
+
+    private Transform _gunMountParent;
+    private float _gunPivotDefaultLocalX;
+
     protected override void Start()
     {
         base.Start();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        _currentFacingRight = spriteRenderer != null && spriteRenderer.flipX;
+
+        // Move gunPivot out of the non-uniformly scaled Circle parent so rotation
+        // doesn't cause visual width distortion (Circle has scale 0.55 x 1.04).
+        if (gunPivot != null && gunPivot.parent != null && gunPivot.parent != transform)
+        {
+            _gunMountParent = gunPivot.parent;
+            gunPivot.SetParent(transform, worldPositionStays: true);
+            _gunPivotDefaultLocalX = gunPivot.localPosition.x;
+        }
 
         if (movementComponent != null)
         {
@@ -71,14 +86,10 @@ public class TankEnemy : Enemy
         else
         {
             canShootAtPlayer = false;
-            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, 176f, barrelRotateSpeed * Time.deltaTime);
+            float idleAngle = _currentFacingRight ? 0f : 180f;
+            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, idleAngle, barrelRotateSpeed * Time.deltaTime);
             if (gunPivot != null)
-            {
-                if (gunPivot.parent != null)
-                    gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
-                else
-                    gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
-            }
+                gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
         }
 
         if (GetState() == EnemyState.Chase)
@@ -195,63 +206,70 @@ public class TankEnemy : Enemy
     private void FlipTowardsPlayer()
     {
         if (playerTransform == null || spriteRenderer == null) return;
-        bool facingRight = playerTransform.position.x > transform.position.x;
+        bool desiredFacingRight = playerTransform.position.x > transform.position.x;
 
+        if (desiredFacingRight == _currentFacingRight)
+        {
+            _flipTimer = -1f;
+            return;
+        }
+
+        if (_pendingFacingRight != desiredFacingRight)
+        {
+            _pendingFacingRight = desiredFacingRight;
+            _flipTimer = flipDelay;
+        }
+
+        _flipTimer -= Time.deltaTime;
+        if (_flipTimer <= 0f)
+        {
+            _currentFacingRight = desiredFacingRight;
+            _flipTimer = -1f;
+            ApplyFlip(_currentFacingRight);
+        }
+    }
+
+    private void ApplyFlip(bool facingRight)
+    {
         spriteRenderer.flipX = facingRight;
 
-        // Flip the gun mount so the barrel tracks from the correct side
-        if (gunPivot != null && gunPivot.parent != null)
+        // Flip the Circle mount visual
+        if (_gunMountParent != null)
         {
-            Vector3 s = gunPivot.parent.localScale;
+            Vector3 s = _gunMountParent.localScale;
             s.x = facingRight ? -Mathf.Abs(s.x) : Mathf.Abs(s.x);
-            gunPivot.parent.localScale = s;
+            _gunMountParent.localScale = s;
         }
+
+        // Mirror the pivot to the correct side — no scale change, so rotation stays undistorted
+        if (gunPivot != null)
+        {
+            Vector3 pos = gunPivot.localPosition;
+            pos.x = facingRight ? -_gunPivotDefaultLocalX : _gunPivotDefaultLocalX;
+            gunPivot.localPosition = pos;
+        }
+
+        // Snap barrel to new facing direction so it doesn't spin 180° on flip
+        currentBarrelAngle = facingRight ? 0f : 180f;
     }
 
     private void RotatePivotToTarget()
     {
-        if (gunPivot == null || playerTransform == null)
-        {
-            return;
-        }
+        if (gunPivot == null || playerTransform == null) return;
 
-        Vector2 direction = playerTransform.position - gunPivot.position;
-        if (direction.sqrMagnitude <= 0.0001f)
-        {
-            return;
-        }
+        Vector2 direction = (Vector2)(playerTransform.position - gunPivot.position);
+        if (direction.sqrMagnitude <= 0.0001f) return;
 
-        if (gunPivot.parent != null)
-        {
-            Vector3 localTarget = gunPivot.parent.InverseTransformPoint(playerTransform.position);
-            Vector3 localPivot = gunPivot.parent.InverseTransformPoint(gunPivot.position);
-            Vector2 localDirection = localTarget - localPivot;
-            float rawAngle = Mathf.Atan2(localDirection.y, localDirection.x) * Mathf.Rad2Deg;
-            float shootAngle = rawAngle < 0f ? rawAngle + 360f : rawAngle;
-            float normMin = shootMinAngle < 0f ? shootMinAngle + 360f : shootMinAngle;
-            float normMax = shootMaxAngle < 0f ? shootMaxAngle + 360f : shootMaxAngle;
-            canShootAtPlayer = normMin <= normMax
-                ? shootAngle >= normMin && shootAngle <= normMax
-                : shootAngle >= normMin || shootAngle <= normMax;
-            bool inVisualArc = rawAngle >= barrelMinAngle && rawAngle <= barrelMaxAngle;
-            float targetAngle = inVisualArc ? Mathf.Clamp(rawAngle, barrelMinAngle, barrelMaxAngle) : 176f;
-            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
-            gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
-        }
-        else
-        {
-            float rawAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            float shootAngle = rawAngle < 0f ? rawAngle + 360f : rawAngle;
-            float normMin = shootMinAngle < 0f ? shootMinAngle + 360f : shootMinAngle;
-            float normMax = shootMaxAngle < 0f ? shootMaxAngle + 360f : shootMaxAngle;
-            canShootAtPlayer = normMin <= normMax
-                ? shootAngle >= normMin && shootAngle <= normMax
-                : shootAngle >= normMin || shootAngle <= normMax;
-            bool inVisualArc = rawAngle >= barrelMinAngle && rawAngle <= barrelMaxAngle;
-            float targetAngle = inVisualArc ? Mathf.Clamp(rawAngle, barrelMinAngle, barrelMaxAngle) : 176f;
-            currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
-            gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
-        }
+        float rawAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float facingAngle = _currentFacingRight ? 0f : 180f;
+        float halfArc = gunArcDegrees * 0.5f;
+
+        float angleDiff = Mathf.DeltaAngle(facingAngle, rawAngle);
+        canShootAtPlayer = Mathf.Abs(angleDiff) <= halfArc;
+        float targetAngle = facingAngle + Mathf.Clamp(angleDiff, -halfArc, halfArc);
+
+        currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
+        gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
     }
 
     private void OnDrawGizmosSelected()
