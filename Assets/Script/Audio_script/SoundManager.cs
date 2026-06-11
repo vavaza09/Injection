@@ -10,6 +10,7 @@ public enum SoundType
     FOOTSTEP,
     HURT,
     MAGIC,
+    HITSTOP,
 }
 
 public enum MusicType

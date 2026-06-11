@@ -102,6 +102,7 @@ public abstract class character : MonoBehaviour
 
     public virtual void Die()
     {
+        if (!isAlive) return;
         isAlive = false;
         OnDeath();
         Died?.Invoke(this);
@@ -123,8 +124,8 @@ public abstract class character : MonoBehaviour
     }
     
     protected virtual void OnTakeDamage()
-    { 
-        Debug.Log($"{characterName} took damage.");
+    {
+        HitFlashFX.Spawn(transform.position);
     }
     
     protected virtual void OnDestroy() 
