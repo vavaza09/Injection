@@ -10,16 +10,17 @@ namespace Game.Components.Health
     {
         public float maxHealth { get; private set; }
         public float currentHealth { get; private set; }
+        public int hitCount { get; private set; }
         public HealthState currentState { get; private set; } = HealthState.Normal;
 
         private float invincibilityTimer;
-        private float invincibilityDuration;
 
         public void Initialize(float max)
         {
-            maxHealth = max;
-            maxHealth = max;
+            int maxHits = max <= 0f ? 1 : (int)System.Math.Ceiling(max);
+            maxHealth = maxHits;
             currentHealth = maxHealth;
+            hitCount = 0;
             currentState = HealthState.Normal;
             invincibilityTimer = 0f;
         }
@@ -44,10 +45,13 @@ namespace Game.Components.Health
         /// </summary>
         public bool TakeDamage(float amount)
         {
-            if (currentState == HealthState.Invincible)
+            _ = amount; // Kept for API compatibility; each hit always counts as one.
+
+            if (currentState == HealthState.Invincible || IsDead())
                 return false;
 
-            currentHealth -= amount;
+            hitCount++;
+            currentHealth -= 1f;
             if (currentHealth < 0f)
                 currentHealth = 0f;
 
@@ -59,7 +63,13 @@ namespace Game.Components.Health
         /// </summary>
         public void StartInvincibility(float duration)
         {
-            invincibilityDuration = duration;
+            if (duration <= 0f)
+            {
+                invincibilityTimer = 0f;
+                currentState = HealthState.Normal;
+                return;
+            }
+
             invincibilityTimer = duration;
             currentState = HealthState.Invincible;
         }
@@ -71,9 +81,23 @@ namespace Game.Components.Health
 
         public void Heal(float amount)
         {
-            currentHealth += amount;
+            int healHits = amount <= 0f ? 0 : (int)System.Math.Ceiling(amount);
+            if (healHits <= 0)
+                return;
+
+            currentHealth += healHits;
             if (currentHealth > maxHealth)
                 currentHealth = maxHealth;
+        }
+
+        public int GetHitCount()
+        {
+            return hitCount;
+        }
+
+        public int GetRemainingHitCount()
+        {
+            return (int)currentHealth;
         }
 
         public float GetHealthPercentage()

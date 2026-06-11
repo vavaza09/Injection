@@ -2,6 +2,10 @@ public enum EnemyType
 {
     Melee,
     Ranged,
+    Furnace,
+    Stomp,
     Flying,
-    Boss
+    Boss,
+    Tank,
+    Kiki
 }

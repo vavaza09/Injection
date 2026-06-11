@@ -3,7 +3,22 @@ using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
 using Game.Components.Movement;
+using Game.Components.Combat;
+using Game.UI.Movement;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
+
+public enum PlayerState
+{
+    Dead        = 0,
+    Dashing     = 1,
+    Attacking   = 2,
+    WallSliding = 3,
+    Jumping     = 4,
+    Falling     = 5,
+    Running     = 6,
+    Idle        = 7
+}
 
 public class Player : character
 {
@@ -28,11 +43,31 @@ public class Player : character
     [SerializeField] private float slowMotionDuration = 2f;     
     [SerializeField] private bool useSmoothSlowMotion = true;   
 
+    [Header("Dash Aim")]
+    [SerializeField] private bool requireAimHoldForDash = true;
+    [SerializeField] private DashAimDirectionDisplay dashAimDisplay;
+
     [Header("References for DI")]
     [SerializeField] private Animator animator;
 
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
+
+    [Header("Health Cheat (Debug)")]
+    [SerializeField] private bool enableHealthCheats = true;
+    [SerializeField] private Key cheatTakeHitKey = Key.F1;
+    [SerializeField] private Key cheatHealHitKey = Key.F2;
+    [SerializeField] private Key cheatFullHealKey = Key.F3;
+    [SerializeField] private Key cheatInvincibleKey = Key.F4;
+    [SerializeField] private Key cheatReviveKey = Key.F5;
+    [SerializeField] private float cheatInvincibilityDuration = 5f;
+
+    [Header("State Machine")]
+    [SerializeField] private float attackStateDuration = 0.5f;
+
+    private PlayerState _currentState  = PlayerState.Idle;
+    private PlayerState _previousState = PlayerState.Idle;
+    private float       _stateTimer    = 0f;
 
     [Header("Movement Combat")]
     [SerializeField] private float dashImpactBaseDamage = 15f;
@@ -41,7 +76,6 @@ public class Player : character
 
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
-    private float _lastDashHitTime;
 
     #endregion
 
@@ -69,16 +103,22 @@ public class Player : character
     {
         base.Awake();
 
+        attackComponent = new AttackComponent(dashImpactCooldown);
+
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
             _logger?.LogWarning("Animator not assigned, finding in children...");
         }
+
+        TryAutoAssignDashAimDisplay();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        TryAutoAssignDashAimDisplay();
 
         if (_inputHandler != null)
         {
@@ -94,8 +134,8 @@ public class Player : character
         {
             _inputHandler.OnJumpPressed += Jump;
             _inputHandler.OnJumpReleased += CancelJump;
-            _inputHandler.OnAttackPressed += Attack;
-            _inputHandler.OnRightClickPressed += ActivateSlowMotion;
+            _inputHandler.OnRightClickPressed += BeginDashAimMode;
+            _inputHandler.OnRightClickReleased += EndDashAimMode;
             _inputHandler.OnDashPressed += Dash;
 
             _inputHandler.Enable();
@@ -112,7 +152,14 @@ public class Player : character
     {
         base.Update();
 
-        if (!isAlive) return;
+        _inputHandler?.UpdateAimDirection(transform);
+        UpdateDashAimUI();
+        HandleHealthCheatInput();
+
+        _stateTimer += Time.deltaTime;
+        EvaluateStateTransitions();
+
+        if (_currentState == PlayerState.Dead) return;
 
         _animationController?.UpdateMovementAnimation();
 
@@ -121,20 +168,74 @@ public class Player : character
             jumpsRemaining = maxJumps;
         }
 
-        if (movementComponent != null && movementComponent.IsDashing)
-        {
-            SlowMotion.Instance.StopSlowMotion();
-        }
-
-        // Reset dash-hit registry whenever a new dash starts.
+        // Backup: clear hit registry when a new dash starts (OnStateEnter is primary)
         bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
         if (isDashingNow && !_wasDashing)
         {
             _dashHitTargets.Clear();
         }
         _wasDashing = isDashingNow;
+    }
 
-        _inputHandler?.UpdateAimDirection(transform);
+    private void HandleHealthCheatInput()
+    {
+        if (!enableHealthCheats || healthComponent == null)
+        {
+            return;
+        }
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            return;
+        }
+
+        if (keyboard[cheatTakeHitKey].wasPressedThisFrame)
+        {
+            int beforeHitCount = GetHitCount();
+            TakeDamage(1f);
+            int afterHitCount = GetHitCount();
+
+            if (afterHitCount == beforeHitCount)
+            {
+                _logger?.Log("Cheat hit was blocked (invincible or already dead).");
+            }
+            else
+            {
+                _logger?.Log($"Cheat hit applied. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+            }
+        }
+
+        if (keyboard[cheatHealHitKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(1f);
+            _logger?.Log($"Cheat heal +1 hit. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
+
+        if (keyboard[cheatFullHealKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(healthComponent.maxHealth);
+            _logger?.Log($"Cheat full heal. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
+
+        if (keyboard[cheatInvincibleKey].wasPressedThisFrame)
+        {
+            healthComponent.StartInvincibility(cheatInvincibilityDuration);
+            _logger?.Log($"Cheat invincibility started for {cheatInvincibilityDuration:F1}s");
+        }
+
+        if (keyboard[cheatReviveKey].wasPressedThisFrame)
+        {
+            healthComponent.Heal(healthComponent.maxHealth);
+            if (!isAlive)
+            {
+                isAlive = true;
+                ChangeState(PlayerState.Idle);
+                _logger?.LogWarning("Cheat revive applied.");
+            }
+
+            _logger?.Log($"Cheat revive/full reset. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
+        }
     }
 
     #endregion
@@ -143,7 +244,7 @@ public class Player : character
 
     private void FixedUpdate()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
         Move(moveInput);
@@ -155,7 +256,7 @@ public class Player : character
 
     public override void Move(Vector2 direction)
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         movementComponent?.Move(direction);
 
@@ -170,23 +271,25 @@ public class Player : character
     }
 
     private void Dash()
-    {   
-        _logger?.Log("Dash initiated");
-        Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+    {
+        if (_currentState == PlayerState.Dead) return;
+        if (movementComponent == null) return;
 
-        if (aimDir == Vector2.zero)
+        if (requireAimHoldForDash && (_inputHandler == null || !_inputHandler.IsAimHeld))
         {
-            float facing = characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f;
-            aimDir = new Vector2(facing, 0f);
+            _logger?.Log("Dash blocked: hold right click to enter aim slow-motion mode first.");
+            return;
         }
 
-        movementComponent?.Dash(aimDir);
-        _audioController?.PlayDashSound();
+        _logger?.Log("Dash initiated");
+        Vector2 aimDir = ResolveDashDirection();
+        movementComponent.Dash(aimDir);
+        // Sound and hit-registry clear fire in OnStateEnter(Dashing) when IsDashing becomes true.
     }
 
     public void Jump()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         if (movementComponent == null)
         {
@@ -199,13 +302,13 @@ public class Player : character
 
     public void CancelJump()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
         movementComponent?.CancelJump();
     }
 
     private void ActivateSlowMotion()
     {
-        if (!isAlive) return;
+        if (_currentState == PlayerState.Dead) return;
 
         if (useSmoothSlowMotion)
         {
@@ -227,19 +330,73 @@ public class Player : character
         _logger?.Log($"Slow Motion activated! TimeScale: {slowMotionTimeScale}, Duration: {slowMotionDuration}s");
     }
 
+    private void BeginDashAimMode()
+    {
+        if (_currentState == PlayerState.Dead) return;
+        ActivateSlowMotion();
+    }
+
+    private void EndDashAimMode()
+    {
+        SlowMotion.Instance.StopSlowMotion();
+    }
+
+    private void UpdateDashAimUI()
+    {
+        if (dashAimDisplay == null)
+        {
+            TryAutoAssignDashAimDisplay();
+        }
+
+        if (dashAimDisplay == null)
+        {
+            return;
+        }
+
+        bool isAimHeld = isAlive && _inputHandler != null && _inputHandler.IsAimHeld;
+        bool canDashNow = movementComponent != null && movementComponent.CanDash;
+        bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
+
+        dashAimDisplay.Refresh(ResolveDashDirection(), isAimHeld, canDashNow, isDashingNow);
+    }
+
+    private void TryAutoAssignDashAimDisplay()
+    {
+        if (dashAimDisplay != null)
+        {
+            return;
+        }
+
+        dashAimDisplay = GetComponentInChildren<DashAimDirectionDisplay>(includeInactive: true);
+        if (dashAimDisplay != null)
+        {
+            _logger?.LogWarning("DashAimDirectionDisplay was not assigned and has been auto-bound from children.");
+        }
+    }
+
+    private Vector2 ResolveDashDirection()
+    {
+        Vector2 aimDir = _inputHandler != null ? _inputHandler.AimDirection : Vector2.zero;
+
+        if (aimDir.sqrMagnitude <= 0.0001f)
+        {
+            float facing = characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f;
+            if (Mathf.Approximately(facing, 0f))
+            {
+                facing = 1f;
+            }
+
+            aimDir = new Vector2(facing, 0f);
+        }
+
+        return aimDir.normalized;
+    }
+
     #endregion
 
     #region Combat
 
-    public override void Attack()
-    {
-        if (!isAlive) return;
-
-        _animationController?.PlayAttackAnimation();
-        _audioController?.PlayAttackSound();
-
-        _logger?.Log("Player attacked");
-    }
+    public override void Attack() { }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -253,7 +410,7 @@ public class Player : character
 
     private void TryDealDashImpactDamage(Collider2D targetCollider)
     {
-        if (!isAlive || movementComponent == null || targetCollider == null)
+        if (_currentState != PlayerState.Dashing || movementComponent == null || targetCollider == null)
         {
             return;
         }
@@ -268,7 +425,7 @@ public class Player : character
             return;
         }
 
-        if (Time.time - _lastDashHitTime < dashImpactCooldown)
+        if (!attackComponent.CanAttack())
         {
             return;
         }
@@ -279,25 +436,69 @@ public class Player : character
             return;
         }
 
+        if (targetCharacter is Enemy)
+        {
+            EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
+            if (weakPoint == null)
+            {
+                EnemyWeakPoint[] weakPointConfigs = targetCharacter.GetComponentsInChildren<EnemyWeakPoint>();
+                for (int i = 0; i < weakPointConfigs.Length; i++)
+                {
+                    EnemyWeakPoint weakPointConfig = weakPointConfigs[i];
+                    if (weakPointConfig != null && weakPointConfig.IsWeakPoint(targetCollider))
+                    {
+                        weakPoint = weakPointConfig;
+                        break;
+                    }
+                }
+            }
+
+            if (weakPoint == null)
+            {
+                return;
+            }
+
+            if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter)
+            {
+                return;
+            }
+            _logger?.Log($"Dash impact hit weak point: {weakPoint.name} on {targetCharacter.name}");
+        }
+
         int targetId = targetCharacter.GetInstanceID();
         if (_dashHitTargets.Contains(targetId))
         {
             return;
         }
 
-        float damageMultiplier = movementComponent.MovementAttackMultiplier;
-        float finalDamage = dashImpactBaseDamage * damageMultiplier;
+        float impactMultiplier = movementComponent.MovementAttackMultiplier;
+        float impactPower = dashImpactBaseDamage * impactMultiplier;
 
-        targetCharacter.TakeDamage(finalDamage);
+        attackComponent.PerformAttack(targetCharacter, impactPower);
         _dashHitTargets.Add(targetId);
-        _lastDashHitTime = Time.time;
-
-        _logger?.Log($"Dash impact hit {targetCharacter.name} for {finalDamage:F1} damage (x{damageMultiplier:F2})");
+        ChangeState(PlayerState.Attacking);
+        _logger?.Log($"weakPoint: {(targetCollider != null ? targetCollider.name : "null")}");
+        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {impactPower:F1}, x{impactMultiplier:F2})");
     }
 
     #endregion
 
     #region Health And Death
+
+    public int GetRemainingHits()
+    {
+        return healthComponent != null ? healthComponent.GetRemainingHitCount() : 0;
+    }
+
+    public int GetHitCount()
+    {
+        return healthComponent != null ? healthComponent.GetHitCount() : 0;
+    }
+
+    public int GetMaxHits()
+    {
+        return healthComponent != null ? Mathf.CeilToInt(healthComponent.maxHealth) : Mathf.CeilToInt(maxHealth);
+    }
 
     protected override void OnTakeDamage()
     {
@@ -313,16 +514,115 @@ public class Player : character
 
     protected override void OnDeath()
     {
-        movementComponent?.SetCanMove(false);
-        _animationController?.PlayDeathAnimation();
+        ChangeState(PlayerState.Dead);
+    }
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
+    #endregion
+
+    #region State Machine
+
+    private void ChangeState(PlayerState newState)
+    {
+        if (newState == _currentState) return;
+        if (_currentState == PlayerState.Dead && newState != PlayerState.Idle) return;
+
+        OnStateExit(_currentState);
+        _previousState = _currentState;
+        _currentState  = newState;
+        _stateTimer    = 0f;
+        OnStateEnter(_currentState);
+
+        _logger?.Log($"[SM] {_previousState} → {_currentState}");
+    }
+
+    private void OnStateEnter(PlayerState state)
+    {
+        switch (state)
         {
-            col.enabled = false;
+            case PlayerState.Dead:
+                movementComponent?.SetCanMove(false);
+                _animationController?.PlayDeathAnimation();
+                Collider2D deadCol = GetComponent<Collider2D>();
+                if (deadCol != null) deadCol.enabled = false;
+                _logger?.LogWarning("Player died! Game Over!");
+                break;
+
+            case PlayerState.Dashing:
+                _audioController?.PlayDashSound();
+                _dashHitTargets.Clear();
+                SlowMotion.Instance.StopSlowMotion();
+                break;
+
+            case PlayerState.Attacking:
+                _animationController?.PlayAttackAnimation();
+                _audioController?.PlayAttackSound();
+                break;
+
+            case PlayerState.Jumping:
+                _animationController?.PlayJumpAnimation();
+                _audioController?.PlayJumpSound();
+                break;
+        }
+    }
+
+    private void OnStateExit(PlayerState state)
+    {
+        switch (state)
+        {
+            case PlayerState.Dead:
+                movementComponent?.SetCanMove(true);
+                Collider2D exitCol = GetComponent<Collider2D>();
+                if (exitCol != null) exitCol.enabled = true;
+                break;
+        }
+    }
+
+    private void EvaluateStateTransitions()
+    {
+        if (!isAlive)
+        {
+            if (_currentState != PlayerState.Dead)
+                ChangeState(PlayerState.Dead);
+            return;
         }
 
-        _logger?.LogWarning("Player died! Game Over!");
+        if (movementComponent != null && movementComponent.IsDashing)
+        {
+            if (_currentState != PlayerState.Dashing && _currentState != PlayerState.Attacking)
+                ChangeState(PlayerState.Dashing);
+            return;
+        }
+
+        if (_currentState == PlayerState.Attacking && _stateTimer < attackStateDuration)
+            return;
+
+        if (movementComponent == null) return;
+
+        if (movementComponent.IsClimbing())
+        {
+            ChangeState(PlayerState.WallSliding);
+            return;
+        }
+
+        if (movementComponent.IsJumping())
+        {
+            ChangeState(PlayerState.Jumping);
+            return;
+        }
+
+        if (movementComponent.IsFalling())
+        {
+            ChangeState(PlayerState.Falling);
+            return;
+        }
+
+        if (movementComponent.IsGrounded())
+        {
+            const float runThreshold = 0.5f;
+            ChangeState(Mathf.Abs(movementComponent.GetVelocity().x) > runThreshold
+                ? PlayerState.Running
+                : PlayerState.Idle);
+        }
     }
 
     #endregion
@@ -337,10 +637,15 @@ public class Player : character
         {
             _inputHandler.OnJumpPressed -= Jump;
             _inputHandler.OnJumpReleased -= CancelJump;
-            _inputHandler.OnAttackPressed -= Attack;
-            _inputHandler.OnRightClickPressed -= ActivateSlowMotion; 
+            _inputHandler.OnRightClickPressed -= BeginDashAimMode;
+            _inputHandler.OnRightClickReleased -= EndDashAimMode;
             _inputHandler.OnDashPressed -= Dash;
             _inputHandler.Dispose();
+        }
+
+        if (FindAnyObjectByType<SlowMotion>() != null)
+        {
+            SlowMotion.Instance.StopSlowMotion();
         }
 
         _dashHitTargets.Clear();
