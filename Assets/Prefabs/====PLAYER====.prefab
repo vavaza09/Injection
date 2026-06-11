@@ -32,6 +32,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 506056908665171857}
+  - {fileID: 1469812664371556569}
   m_Father: {fileID: 4782564417429803577}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -102,6 +103,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &1344462908036067775
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1469812664371556569}
+  m_Layer: 0
+  m_Name: EnergyHUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1469812664371556569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1344462908036067775}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5517287351408820096}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2530035418342197973
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +370,8 @@ GameObject:
   - component: {fileID: 9206611309243768537}
   - component: {fileID: 7705200461922201765}
   - component: {fileID: 4885150918750639098}
+  - component: {fileID: 1234567890123456789}
+  - component: {fileID: 8086246394040665203}
   m_Layer: 0
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -658,3 +692,37 @@ MonoBehaviour:
   invincibleKey: 97
   reviveKey: 98
   invincibilityDuration: 5
+--- !u!114 &1234567890123456789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1c2e3f4b5d67890abcdef1234567890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkillController
+  empRadius: 5
+  empStunDuration: 3
+  empCooldown: 8
+  empEnergyCost: 1
+  trueDamageCooldown: 5
+  trueDamageEnergyCost: 1
+  empFlashColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  empFlashDuration: 0.15
+  trueDamageArmedColor: {r: 1, g: 0.5, b: 0.1, a: 1}
+--- !u!114 &8086246394040665203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a18956f347ee984fa8dfbf0a37e76f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerEnergyCollector
+  collectRadius: 1.5
