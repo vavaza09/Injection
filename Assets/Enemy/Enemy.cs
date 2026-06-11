@@ -82,12 +82,25 @@ public class Enemy : character
     {
         currentState = EnemyState.Dead;
 
+        StopAllCoroutines();
+
+        EnemyAI ai = GetComponent<EnemyAI>();
+        if (ai != null) ai.enabled = false;
+
         if (movementComponent != null)
-        {
             movementComponent.Stop();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
-        // Optional: disable collisions, play anim, etc.
-        // GetComponent<Collider2D>()?.enabled = false;
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D col in colliders)
+            col.enabled = false;
+
+        Destroy(gameObject, 1.5f);
     }
 
     protected override void OnTakeDamage()

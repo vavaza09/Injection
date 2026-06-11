@@ -12,12 +12,12 @@ public class MeleeEnemy : Enemy
         attack = GetComponent<MeleeEnemyAttack>();
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+        if (!isAlive) return;
         if (attack != null)
-        {
             attack.UpdateAttack();
-        }
     }
 
     public override void Move(Vector2 direction)

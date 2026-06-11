@@ -10,12 +10,20 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     [SerializeField] private float dashImpactCooldown = 0.15f;
     [SerializeField] private LayerMask dashDamageLayer = ~0;
 
+    [Header("Hitstop")]
+    [SerializeField] private float hitstopDuration = 1f;
+    [SerializeField] private float hitstopTimeScale = 0.2f;
+
+    [Header("Weak Point Hit Feedback")]
+    [SerializeField] private float weakPointShakeIntensity = 0.1f;
+
     public event Action ImpactLanded;
     public event Action TrueDamageConsumed;
 
     private bool _trueDamageArmed;
     private AttackComponent _attackComponent;
     private MovementComponentRef _movement;
+    private HitFlash _hitFlash;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
 
@@ -33,6 +41,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         _movement = new MovementComponentRef(movementComponent);
         float cooldown = cooldownOverride >= 0f ? cooldownOverride : dashImpactCooldown;
         _attackComponent = new AttackComponent(cooldown);
+        _hitFlash = GetComponentInChildren<HitFlash>();
     }
 
     public void ArmTrueDamage() => _trueDamageArmed = true;
@@ -75,6 +84,8 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         character targetCharacter = targetCollider.GetComponentInParent<character>();
         if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
 
+
+        bool hitWeakPoint = false;
         if (targetCharacter is Enemy && !_trueDamageArmed)
         {
             EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
@@ -93,6 +104,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
             if (weakPoint == null) return;
             if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return;
+            hitWeakPoint = true;
         }
 
         int targetId = targetCharacter.GetInstanceID();
@@ -101,5 +113,15 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
         _dashHitTargets.Add(targetId);
         ImpactLanded?.Invoke();
+
+        if (hitWeakPoint)
+        {
+            SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
+            CameraManager.instance?.Shake(weakPointShakeIntensity);
+            _hitFlash?.Flash();
+            HitFlashFX.Spawn(targetCollider.bounds.center);
+            SoundManager.PlaySound(SoundType.HITSTOP);
+            targetCharacter.Die();
+        }
     }
 }

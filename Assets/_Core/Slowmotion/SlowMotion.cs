@@ -19,6 +19,8 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     }
 
     private Coroutine _slowMotionCoroutine;
+    private Coroutine _hitstopCoroutine;
+    private bool _hitstopActive;
     private float _defaultFixedDeltaTime;
 
     private void Awake()
@@ -67,10 +69,35 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     }
 
     /// <summary>
-    /// ��ش Slow Motion �ѹ��
+    /// High-priority slow-motion for hit reactions. Cannot be cancelled by StopSlowMotion().
+    /// </summary>
+    public void StartHitstop(float timeScale, float duration)
+    {
+        if (_hitstopCoroutine != null) StopCoroutine(_hitstopCoroutine);
+        if (_slowMotionCoroutine != null) { StopCoroutine(_slowMotionCoroutine); _slowMotionCoroutine = null; }
+        _hitstopCoroutine = StartCoroutine(HitstopCoroutine(timeScale, duration));
+    }
+
+    private IEnumerator HitstopCoroutine(float timeScale, float duration)
+    {
+        _hitstopActive = true;
+        Time.timeScale = Mathf.Clamp01(timeScale);
+        Time.fixedDeltaTime = _defaultFixedDeltaTime * Time.timeScale;
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        _hitstopActive = false;
+        _hitstopCoroutine = null;
+        ResetTimeScale();
+    }
+
+    /// <summary>
+    /// ��ش Slow Motion �ѹ�� (does not cancel an active hitstop)
     /// </summary>
     public void StopSlowMotion()
     {
+        if (_hitstopActive) return;
+
         if (_slowMotionCoroutine != null)
         {
             StopCoroutine(_slowMotionCoroutine);

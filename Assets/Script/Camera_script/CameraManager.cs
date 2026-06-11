@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CameraManager : MonoBehaviour
 {
@@ -44,6 +45,8 @@ public class CameraManager : MonoBehaviour
     private CinemachinePositionComposer _composer;
 
     private Coroutine _lerpRoutine;
+    private Coroutine _shakeRoutine;
+    private Vector3 _shakeOffset;
     private bool _isFallingCommitted;
     private float _fallTimer;
 
@@ -60,6 +63,23 @@ public class CameraManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnEnable()
+    {
+        RenderPipelineManager.beginCameraRendering += ApplyShakeBeforeRender;
+    }
+
+    private void OnDisable()
+    {
+        RenderPipelineManager.beginCameraRendering -= ApplyShakeBeforeRender;
+    }
+
+    // Runs after Cinemachine's LateUpdate but before the draw call — correct timing for shake.
+    private void ApplyShakeBeforeRender(ScriptableRenderContext ctx, Camera cam)
+    {
+        if (cam != Camera.main || _shakeOffset == Vector3.zero) return;
+        cam.transform.position += _shakeOffset;
     }
 
     private void Start()
@@ -111,23 +131,40 @@ public class CameraManager : MonoBehaviour
 
     private void ResolveCurrentCamera()
     {
+        // Try inspector assignment first, then auto-find
         if (_allVirtualCameras == null || _allVirtualCameras.Length == 0)
         {
-            Debug.LogWarning("CameraManager: No virtual cameras assigned!");
+            _allVirtualCameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
+        }
+
+        // Pick the first active one
+        if (_allVirtualCameras != null)
+        {
+            for (int i = 0; i < _allVirtualCameras.Length; i++)
+            {
+                if (_allVirtualCameras[i] != null && _allVirtualCameras[i].isActiveAndEnabled)
+                {
+                    _currentCam = _allVirtualCameras[i];
+                    break;
+                }
+            }
+
+            if (_currentCam == null && _allVirtualCameras.Length > 0)
+                _currentCam = _allVirtualCameras[0];
+        }
+
+        // Last resort: find by name
+        if (_currentCam == null)
+        {
+            var go = GameObject.Find("CinemachineCamera");
+            if (go != null) _currentCam = go.GetComponent<CinemachineCamera>();
+        }
+
+        if (_currentCam == null)
+        {
+            Debug.LogError("CameraManager: Could not find any CinemachineCamera in the scene!");
             return;
         }
-
-        // Pick the enabled one
-        for (int i = 0; i < _allVirtualCameras.Length; i++)
-        {
-            if (_allVirtualCameras[i] != null && _allVirtualCameras[i].isActiveAndEnabled)
-            {
-                _currentCam = _allVirtualCameras[i];
-                break;
-            }
-        }
-
-        if (_currentCam == null) _currentCam = _allVirtualCameras[0];
 
         // Get CinemachinePositionComposer (new API - replaces FramingTransposer)
         _composer = _currentCam.GetComponent<CinemachinePositionComposer>();
@@ -198,17 +235,27 @@ public class CameraManager : MonoBehaviour
         Debug.Log($"Entered room with bounds: {roomBounds}");
     }
 
-    // Public API for camera shake
     public void Shake(float intensity, float duration = 0.3f)
     {
-        if (_currentCam != null)
+        if (_shakeRoutine != null) StopCoroutine(_shakeRoutine);
+        _shakeRoutine = StartCoroutine(ShakeRoutine(intensity, duration));
+    }
+
+    private IEnumerator ShakeRoutine(float intensity, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
-            var impulse = _currentCam.GetComponent<CinemachineImpulseSource>();
-            if (impulse != null)
-            {
-                impulse.GenerateImpulse(intensity);
-            }
+            elapsed += Time.unscaledDeltaTime;
+            float strength = intensity * (1f - Mathf.Clamp01(elapsed / duration));
+            _shakeOffset = new Vector3(
+                Random.Range(-1f, 1f) * strength,
+                Random.Range(-1f, 1f) * strength,
+                0f);
+            yield return null;
         }
+        _shakeOffset = Vector3.zero;
+        _shakeRoutine = null;
     }
 
     public void EnterRoomLock(Transform roomAnchor)
