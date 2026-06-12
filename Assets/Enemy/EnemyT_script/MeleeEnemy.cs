@@ -16,6 +16,7 @@ public class MeleeEnemy : Enemy
     {
         base.Update();
         if (!isAlive) return;
+        if (IsStunned) return;
         if (attack != null)
             attack.UpdateAttack();
     }

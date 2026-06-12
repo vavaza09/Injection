@@ -55,6 +55,9 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        if (enemy.GetState() == EnemyState.Stunned && currentState != EnemyState.Stunned)
+            ChangeState(EnemyState.Stunned);
+
         switch (currentState)
         {
             case EnemyState.Idle:
@@ -68,6 +71,8 @@ public class EnemyAI : MonoBehaviour
                 break;
             case EnemyState.Attack:
                 Attack();
+                break;
+            case EnemyState.Stunned:
                 break;
             case EnemyState.Dead:
                 break;
