@@ -21,6 +21,8 @@ public class StompEnemy : Enemy
     private bool hasGroundImpact;
     private float lastAttackTime = -999f;
     private BoxCollider2D stompBoxCollider;
+    private Coroutine _stompRoutineHandle;
+    private Coroutine _damageWindowHandle;
 
     protected override void Awake()
     {
@@ -98,7 +100,33 @@ public class StompEnemy : Enemy
             return;
         }
 
-        StartCoroutine(StompAttackRoutine());
+        _stompRoutineHandle = StartCoroutine(StompAttackRoutine());
+    }
+
+    protected override void OnStunInterrupt()
+    {
+        if (_stompRoutineHandle != null)
+        {
+            StopCoroutine(_stompRoutineHandle);
+            _stompRoutineHandle = null;
+        }
+        if (_damageWindowHandle != null)
+        {
+            StopCoroutine(_damageWindowHandle);
+            _damageWindowHandle = null;
+        }
+
+        if (stompDamageCollider != null)
+        {
+            Collider2D hitbox = stompDamageCollider.GetHitboxCollider();
+            if (hitbox != null) hitbox.enabled = false;
+        }
+
+        if (movementComponent != null)
+            movementComponent.SetCanMove(true);
+
+        isAttacking = false;
+        isDropping = false;
     }
 
     private IEnumerator StompAttackRoutine()
@@ -164,7 +192,8 @@ public class StompEnemy : Enemy
             rb.linearVelocity = Vector2.zero;
         }
 
-        yield return StartCoroutine(EnableStompDamageWindow());
+        _damageWindowHandle = StartCoroutine(EnableStompDamageWindow());
+        yield return _damageWindowHandle;
 
         if (movementComponent != null)
         {
