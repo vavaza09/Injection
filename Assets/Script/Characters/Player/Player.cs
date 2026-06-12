@@ -2,11 +2,8 @@
 using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
-using Game.Components.Movement;
-using Game.Components.Combat;
 using Game.UI.Movement;
-using System.Collections.Generic;
-using UnityEngine.InputSystem;
+using System.Collections;
 
 public enum PlayerState
 {
@@ -17,7 +14,8 @@ public enum PlayerState
     Jumping     = 4,
     Falling     = 5,
     Running     = 6,
-    Idle        = 7
+    Idle        = 7,
+    Grabbing    = 8
 }
 
 public class Player : character
@@ -30,6 +28,7 @@ public class Player : character
     private PlayerInputHandler _inputHandler;
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
+    private ISlowMotionController _slowMotion;
 
     [Header("Player Movement")]
     [SerializeField] private int maxJumps = 2;
@@ -53,15 +52,6 @@ public class Player : character
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
 
-    [Header("Health Cheat (Debug)")]
-    [SerializeField] private bool enableHealthCheats = true;
-    [SerializeField] private Key cheatTakeHitKey = Key.F1;
-    [SerializeField] private Key cheatHealHitKey = Key.F2;
-    [SerializeField] private Key cheatFullHealKey = Key.F3;
-    [SerializeField] private Key cheatInvincibleKey = Key.F4;
-    [SerializeField] private Key cheatReviveKey = Key.F5;
-    [SerializeField] private float cheatInvincibilityDuration = 5f;
-
     [Header("State Machine")]
     [SerializeField] private float attackStateDuration = 0.5f;
 
@@ -70,12 +60,17 @@ public class Player : character
     private float       _stateTimer    = 0f;
 
     [Header("Movement Combat")]
-    [SerializeField] private float dashImpactBaseDamage = 15f;
-    [SerializeField] private float dashImpactCooldown = 0.15f;
-    [SerializeField] private LayerMask dashDamageLayer = ~0;
+    [SerializeField] private PlayerDashImpact dashImpact;
 
-    private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
-    private bool _wasDashing;
+    [Header("Movement VFX")]
+    [SerializeField] private PlayerMovementVFX movementVFX;
+
+    private PlayerEnergyCollector _energyCollector;
+
+    [Header("Invincibility Visual")]
+    [SerializeField] private float invincibilityBlinkInterval = 0.1f;
+    private SpriteRenderer _spriteRenderer;
+    private Coroutine _invincibilityBlinkCoroutine;
 
     #endregion
 
@@ -86,12 +81,14 @@ public class Player : character
         LoggerFactory loggerFactory,
         PlayerInputHandler inputHandler,
         PlayerAnimationController animationController,
-        PlayerAudioController audioController)
+        PlayerAudioController audioController,
+        ISlowMotionController slowMotion)
     {
         _logger = loggerFactory?.CreateLogger<Player>();
         _inputHandler = inputHandler;
         _animationController = animationController;
         _audioController = audioController;
+        _slowMotion = slowMotion;
         _logger?.Log("Player components injected via DI");
     }
 
@@ -103,13 +100,21 @@ public class Player : character
     {
         base.Awake();
 
-        attackComponent = new AttackComponent(dashImpactCooldown);
+        if (dashImpact == null)
+            dashImpact = GetComponent<PlayerDashImpact>();
+
+        if (movementVFX == null)
+            movementVFX = GetComponent<PlayerMovementVFX>();
+
+        _energyCollector = GetComponent<PlayerEnergyCollector>();
 
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
             _logger?.LogWarning("Animator not assigned, finding in children...");
         }
+
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         TryAutoAssignDashAimDisplay();
     }
@@ -137,12 +142,24 @@ public class Player : character
             _inputHandler.OnRightClickPressed += BeginDashAimMode;
             _inputHandler.OnRightClickReleased += EndDashAimMode;
             _inputHandler.OnDashPressed += Dash;
+            _inputHandler.OnGrabPressed += HandleGrabInput;
 
             _inputHandler.Enable();
         }
         else
         {
             _logger?.LogError("PlayerInputHandler not injected!");
+        }
+
+        InvincibilityStarted += OnInvincibilityVisualStart;
+        InvincibilityEnded   += OnInvincibilityVisualEnd;
+
+        movementVFX?.Initialize(movementComponent);
+
+        if (dashImpact != null)
+        {
+            dashImpact.Initialize(movementComponent);
+            dashImpact.ImpactLanded += () => ChangeState(PlayerState.Attacking);
         }
 
         _logger?.Log("Player initialized");
@@ -154,7 +171,6 @@ public class Player : character
 
         _inputHandler?.UpdateAimDirection(transform);
         UpdateDashAimUI();
-        HandleHealthCheatInput();
 
         _stateTimer += Time.deltaTime;
         EvaluateStateTransitions();
@@ -168,74 +184,6 @@ public class Player : character
             jumpsRemaining = maxJumps;
         }
 
-        // Backup: clear hit registry when a new dash starts (OnStateEnter is primary)
-        bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
-        if (isDashingNow && !_wasDashing)
-        {
-            _dashHitTargets.Clear();
-        }
-        _wasDashing = isDashingNow;
-    }
-
-    private void HandleHealthCheatInput()
-    {
-        if (!enableHealthCheats || healthComponent == null)
-        {
-            return;
-        }
-
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard == null)
-        {
-            return;
-        }
-
-        if (keyboard[cheatTakeHitKey].wasPressedThisFrame)
-        {
-            int beforeHitCount = GetHitCount();
-            TakeDamage(1f);
-            int afterHitCount = GetHitCount();
-
-            if (afterHitCount == beforeHitCount)
-            {
-                _logger?.Log("Cheat hit was blocked (invincible or already dead).");
-            }
-            else
-            {
-                _logger?.Log($"Cheat hit applied. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
-            }
-        }
-
-        if (keyboard[cheatHealHitKey].wasPressedThisFrame)
-        {
-            healthComponent.Heal(1f);
-            _logger?.Log($"Cheat heal +1 hit. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
-        }
-
-        if (keyboard[cheatFullHealKey].wasPressedThisFrame)
-        {
-            healthComponent.Heal(healthComponent.maxHealth);
-            _logger?.Log($"Cheat full heal. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
-        }
-
-        if (keyboard[cheatInvincibleKey].wasPressedThisFrame)
-        {
-            healthComponent.StartInvincibility(cheatInvincibilityDuration);
-            _logger?.Log($"Cheat invincibility started for {cheatInvincibilityDuration:F1}s");
-        }
-
-        if (keyboard[cheatReviveKey].wasPressedThisFrame)
-        {
-            healthComponent.Heal(healthComponent.maxHealth);
-            if (!isAlive)
-            {
-                isAlive = true;
-                ChangeState(PlayerState.Idle);
-                _logger?.LogWarning("Cheat revive applied.");
-            }
-
-            _logger?.Log($"Cheat revive/full reset. Remaining {GetRemainingHits()}/{GetMaxHits()}, hits taken {GetHitCount()}");
-        }
     }
 
     #endregion
@@ -270,6 +218,33 @@ public class Player : character
         }
     }
 
+    private void HandleGrabInput()
+    {
+        if (_currentState == PlayerState.Dead) return;
+        if (movementComponent == null) return;
+
+        if (_energyCollector != null && _energyCollector.TryCollectNearby()) return;
+
+        if (movementComponent.IsGrabbing)
+        {
+            movementComponent.ReleaseGrab();
+            _slowMotion?.StopSlowMotion();
+            return;
+        }
+
+        // Block grab while right-click dash-aim is held
+        if (_inputHandler != null && _inputHandler.IsAimHeld) return;
+
+        if (movementComponent.CanGrab)
+        {
+            bool grabbed = movementComponent.TryStartGrab();
+            if (grabbed)
+            {
+                ActivateSlowMotion();
+            }
+        }
+    }
+
     private void Dash()
     {
         if (_currentState == PlayerState.Dead) return;
@@ -297,6 +272,17 @@ public class Player : character
             return;
         }
 
+        if (movementComponent.IsGrabbing)
+        {
+            Vector2 aimDir = ResolveDashDirection();
+            movementComponent.LaunchFromGrab(aimDir);
+            _slowMotion?.StopSlowMotion();
+            // Celeste-style refresh: restore dash and jump on launch
+            jumpsRemaining = maxJumps;
+            movementComponent.ResetDash();
+            return;
+        }
+
         movementComponent.Jump(particles: true, playSfx: true);
     }
 
@@ -312,7 +298,7 @@ public class Player : character
 
         if (useSmoothSlowMotion)
         {
-            SlowMotion.Instance.StartSlowMotionSmooth(
+            _slowMotion?.StartSlowMotionSmooth(
                 slowMotionTimeScale,
                 slowMotionDuration,
                 easeInDuration: 0.1f,
@@ -321,7 +307,7 @@ public class Player : character
         }
         else
         {
-            SlowMotion.Instance.StartSlowMotion(
+            _slowMotion?.StartSlowMotion(
                 slowMotionTimeScale,
                 slowMotionDuration
             );
@@ -338,7 +324,7 @@ public class Player : character
 
     private void EndDashAimMode()
     {
-        SlowMotion.Instance.StopSlowMotion();
+        _slowMotion?.StopSlowMotion();
     }
 
     private void UpdateDashAimUI()
@@ -394,94 +380,7 @@ public class Player : character
 
     #endregion
 
-    #region Combat
-
     public override void Attack() { }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        TryDealDashImpactDamage(collision.collider);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        TryDealDashImpactDamage(other);
-    }
-
-    private void TryDealDashImpactDamage(Collider2D targetCollider)
-    {
-        if (_currentState != PlayerState.Dashing || movementComponent == null || targetCollider == null)
-        {
-            return;
-        }
-
-        if (!movementComponent.DashAttacking)
-        {
-            return;
-        }
-
-        if ((dashDamageLayer.value & (1 << targetCollider.gameObject.layer)) == 0)
-        {
-            return;
-        }
-
-        if (!attackComponent.CanAttack())
-        {
-            return;
-        }
-
-        character targetCharacter = targetCollider.GetComponentInParent<character>();
-        if (targetCharacter == null || targetCharacter == this)
-        {
-            return;
-        }
-
-        if (targetCharacter is Enemy)
-        {
-            EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
-            if (weakPoint == null)
-            {
-                EnemyWeakPoint[] weakPointConfigs = targetCharacter.GetComponentsInChildren<EnemyWeakPoint>();
-                for (int i = 0; i < weakPointConfigs.Length; i++)
-                {
-                    EnemyWeakPoint weakPointConfig = weakPointConfigs[i];
-                    if (weakPointConfig != null && weakPointConfig.IsWeakPoint(targetCollider))
-                    {
-                        weakPoint = weakPointConfig;
-                        break;
-                    }
-                }
-            }
-
-            if (weakPoint == null)
-            {
-                return;
-            }
-
-            if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter)
-            {
-                return;
-            }
-            _logger?.Log($"Dash impact hit weak point: {weakPoint.name} on {targetCharacter.name}");
-        }
-
-        int targetId = targetCharacter.GetInstanceID();
-        if (_dashHitTargets.Contains(targetId))
-        {
-            return;
-        }
-
-        float impactMultiplier = movementComponent.MovementAttackMultiplier;
-        float impactPower = dashImpactBaseDamage * impactMultiplier;
-
-        attackComponent.PerformAttack(targetCharacter, impactPower);
-        _dashHitTargets.Add(targetId);
-        ChangeState(PlayerState.Attacking);
-        _logger?.Log($"weakPoint: {(targetCollider != null ? targetCollider.name : "null")}");
-        _logger?.Log($"Dash impact hit {targetCharacter.name}, transitioning to Attacking (impact power {impactPower:F1}, x{impactMultiplier:F2})");
-    }
-
-    #endregion
 
     #region Health And Death
 
@@ -500,16 +399,56 @@ public class Player : character
         return healthComponent != null ? Mathf.CeilToInt(healthComponent.maxHealth) : Mathf.CeilToInt(maxHealth);
     }
 
+    public void StartCheatInvincibility(float duration)
+    {
+        healthComponent?.StartInvincibility(duration);
+    }
+
+    public void CheatRevive(float invincDuration)
+    {
+        if (healthComponent == null) return;
+        healthComponent.Heal(healthComponent.maxHealth);
+        if (!isAlive)
+        {
+            isAlive = true;
+            ChangeState(PlayerState.Idle);
+        }
+        healthComponent.StartInvincibility(invincDuration);
+    }
+
     protected override void OnTakeDamage()
     {
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
-        OnInvincibilityVisual();
     }
 
-    private void OnInvincibilityVisual()
+    private void OnInvincibilityVisualStart()
     {
+        if (_invincibilityBlinkCoroutine != null)
+            StopCoroutine(_invincibilityBlinkCoroutine);
+        _invincibilityBlinkCoroutine = StartCoroutine(InvincibilityBlinkCoroutine());
+    }
+
+    private void OnInvincibilityVisualEnd()
+    {
+        if (_invincibilityBlinkCoroutine != null)
+        {
+            StopCoroutine(_invincibilityBlinkCoroutine);
+            _invincibilityBlinkCoroutine = null;
+        }
+        if (_spriteRenderer != null)
+            _spriteRenderer.enabled = true;
+    }
+
+    private IEnumerator InvincibilityBlinkCoroutine()
+    {
+        while (true)
+        {
+            if (_spriteRenderer != null)
+                _spriteRenderer.enabled = !_spriteRenderer.enabled;
+            yield return new WaitForSeconds(invincibilityBlinkInterval);
+        }
     }
 
     protected override void OnDeath()
@@ -549,8 +488,8 @@ public class Player : character
 
             case PlayerState.Dashing:
                 _audioController?.PlayDashSound();
-                _dashHitTargets.Clear();
-                SlowMotion.Instance.StopSlowMotion();
+                _slowMotion?.StopSlowMotion();
+                movementVFX?.PlayDashBurst(movementComponent != null ? movementComponent.DashDirection : Vector2.zero);
                 break;
 
             case PlayerState.Attacking:
@@ -561,6 +500,14 @@ public class Player : character
             case PlayerState.Jumping:
                 _animationController?.PlayJumpAnimation();
                 _audioController?.PlayJumpSound();
+                if (_previousState == PlayerState.WallSliding)
+                    movementVFX?.PlayWallJumpBurst();
+                else
+                    movementVFX?.PlayJumpPuff();
+                break;
+
+            case PlayerState.Grabbing:
+                // Placeholder: wire grab animation when art is ready
                 break;
         }
     }
@@ -590,6 +537,12 @@ public class Player : character
         {
             if (_currentState != PlayerState.Dashing && _currentState != PlayerState.Attacking)
                 ChangeState(PlayerState.Dashing);
+            return;
+        }
+
+        if (movementComponent != null && movementComponent.IsGrabbing)
+        {
+            ChangeState(PlayerState.Grabbing);
             return;
         }
 
@@ -640,15 +593,14 @@ public class Player : character
             _inputHandler.OnRightClickPressed -= BeginDashAimMode;
             _inputHandler.OnRightClickReleased -= EndDashAimMode;
             _inputHandler.OnDashPressed -= Dash;
+            _inputHandler.OnGrabPressed -= HandleGrabInput;
             _inputHandler.Dispose();
         }
 
-        if (FindAnyObjectByType<SlowMotion>() != null)
-        {
-            SlowMotion.Instance.StopSlowMotion();
-        }
+        InvincibilityStarted -= OnInvincibilityVisualStart;
+        InvincibilityEnded   -= OnInvincibilityVisualEnd;
 
-        _dashHitTargets.Clear();
+        _slowMotion?.StopSlowMotion();
     }
 
     #endregion

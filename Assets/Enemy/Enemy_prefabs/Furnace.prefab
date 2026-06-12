@@ -251,6 +251,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWeakPoint
   ownerEnemy: {fileID: 946617358513943892}
+  weakPointColliders:
+  - {fileID: 7105860446297271012}
 --- !u!58 &7105860446297271012
 CircleCollider2D:
   m_ObjectHideFlags: 0

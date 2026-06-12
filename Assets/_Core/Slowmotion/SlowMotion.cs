@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SlowMotion : MonoBehaviour
+public class SlowMotion : MonoBehaviour, ISlowMotionController
 {
     private static SlowMotion _instance;
     public static SlowMotion Instance
@@ -19,6 +19,8 @@ public class SlowMotion : MonoBehaviour
     }
 
     private Coroutine _slowMotionCoroutine;
+    private Coroutine _hitstopCoroutine;
+    private bool _hitstopActive;
     private float _defaultFixedDeltaTime;
 
     private void Awake()
@@ -35,10 +37,10 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// เปิดใช้งาน Slow Motion
+    /// ๏ฟฝิด๏ฟฝ๏ฟฝาน Slow Motion
     /// </summary>
-    /// <param name="timeScale">ความหนักของเวลาที่ต้องการหน่วง (0.0 - 1.0) เช่น 0.5 = ช้าลง 50%</param>
-    /// <param name="duration">ระยะเวลาที่ต้องการหน่วง (วินาที)</param>
+    /// <param name="timeScale">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (0.0 - 1.0) ๏ฟฝ๏ฟฝ 0.5 = ๏ฟฝ๏ฟฝ๏ฟฝลง 50%</param>
+    /// <param name="duration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (๏ฟฝินาท๏ฟฝ)</param>
     public void StartSlowMotion(float timeScale, float duration)
     {
         if (_slowMotionCoroutine != null)
@@ -50,12 +52,12 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// เปิดใช้งาน Slow Motion พร้อม Ease In/Out
+    /// ๏ฟฝิด๏ฟฝ๏ฟฝาน Slow Motion ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ Ease In/Out
     /// </summary>
-    /// <param name="timeScale">ความหนักของเวลาที่ต้องการหน่วง (0.0 - 1.0)</param>
-    /// <param name="duration">ระยะเวลาที่ต้องการหน่วง (วินาที)</param>
-    /// <param name="easeInDuration">เวลาในการ Fade In (วินาที)</param>
-    /// <param name="easeOutDuration">เวลาในการ Fade Out (วินาที)</param>
+    /// <param name="timeScale">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (0.0 - 1.0)</param>
+    /// <param name="duration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาท๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝวง (๏ฟฝินาท๏ฟฝ)</param>
+    /// <param name="easeInDuration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝในก๏ฟฝ๏ฟฝ Fade In (๏ฟฝินาท๏ฟฝ)</param>
+    /// <param name="easeOutDuration">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝในก๏ฟฝ๏ฟฝ Fade Out (๏ฟฝินาท๏ฟฝ)</param>
     public void StartSlowMotionSmooth(float timeScale, float duration, float easeInDuration = 0.2f, float easeOutDuration = 0.2f)
     {
         if (_slowMotionCoroutine != null)
@@ -67,10 +69,35 @@ public class SlowMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// หยุด Slow Motion ทันที
+    /// High-priority slow-motion for hit reactions. Cannot be cancelled by StopSlowMotion().
+    /// </summary>
+    public void StartHitstop(float timeScale, float duration)
+    {
+        if (_hitstopCoroutine != null) StopCoroutine(_hitstopCoroutine);
+        if (_slowMotionCoroutine != null) { StopCoroutine(_slowMotionCoroutine); _slowMotionCoroutine = null; }
+        _hitstopCoroutine = StartCoroutine(HitstopCoroutine(timeScale, duration));
+    }
+
+    private IEnumerator HitstopCoroutine(float timeScale, float duration)
+    {
+        _hitstopActive = true;
+        Time.timeScale = Mathf.Clamp01(timeScale);
+        Time.fixedDeltaTime = _defaultFixedDeltaTime * Time.timeScale;
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        _hitstopActive = false;
+        _hitstopCoroutine = null;
+        ResetTimeScale();
+    }
+
+    /// <summary>
+    /// ๏ฟฝ๏ฟฝุด Slow Motion ๏ฟฝัน๏ฟฝ๏ฟฝ (does not cancel an active hitstop)
     /// </summary>
     public void StopSlowMotion()
     {
+        if (_hitstopActive) return;
+
         if (_slowMotionCoroutine != null)
         {
             StopCoroutine(_slowMotionCoroutine);

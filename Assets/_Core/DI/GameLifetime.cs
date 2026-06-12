@@ -4,12 +4,18 @@ using VContainer;
 using Core.Logging;
 using Game.Components.Health;
 using Game.Components.Movement;
+using Game.Components.Combat;
+using Game.Components.Skills;
 using Game.Characters.Player;
 
 public class GameLifetime : LifetimeScope
 {
     [Header("Logging")]
     [SerializeField] private LogConfig logConfig;
+
+    [Header("Energy")]
+    [SerializeField] private int maxEnergy   = 3;
+    [SerializeField] private int startEnergy = 0;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -24,9 +30,13 @@ public class GameLifetime : LifetimeScope
             new LoggerFactory(logConfig),
             Lifetime.Singleton);
 
+        // Register SlowMotion as singleton via its interface
+        builder.Register<ISlowMotionController>(_ => SlowMotion.Instance, Lifetime.Singleton);
+
         // Register plain C# components
         builder.Register<HealthComponent>(Lifetime.Transient);
         builder.Register<MovementComponent>(Lifetime.Transient);
+        builder.Register<AttackComponent>(resolver => new AttackComponent(0.15f), Lifetime.Transient);
 
         // Register Player Controllers (Plain C# - No MonoBehaviour)
         builder.Register<PlayerInputHandler>(Lifetime.Singleton);
@@ -43,8 +53,23 @@ public class GameLifetime : LifetimeScope
         // PlayerAudioController uses SoundManager (no AudioClip dependencies)
         builder.Register<PlayerAudioController>(Lifetime.Singleton);
 
+        // Skill system
+        builder.Register<PlayerSkillEvents>(Lifetime.Singleton).As<IPlayerSkillEvents>();
+        builder.Register<EnergyPool>(
+            _ => new EnergyPool(maxEnergy, startEnergy),
+            Lifetime.Singleton)
+            .As<IEnergyPool>()
+            .As<IEnergyStore>();
+
         // Register MonoBehaviour components in hierarchy
         builder.RegisterComponentInHierarchy<character>();
         builder.RegisterComponentInHierarchy<Player>();
+        builder.RegisterComponentInHierarchy<PlayerSkillController>();
+        builder.RegisterComponentInHierarchy<PlayerEnergyCollector>();
+        var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
+        if (energyHUD != null)
+            builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
+
+        builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
     }
 }

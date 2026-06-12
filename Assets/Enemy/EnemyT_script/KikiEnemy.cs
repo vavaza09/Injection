@@ -16,6 +16,7 @@ public class KikiEnemy : Enemy
     private bool hasDamagedThisAttack;
     private float lastAttackTime = -999f;
     private Quaternion baseLocalRotation;
+    private Coroutine _smashRoutineHandle;
 
     protected override void Awake()
     {
@@ -66,7 +67,7 @@ public class KikiEnemy : Enemy
             return;
         }
 
-        StartCoroutine(SmashAttackRoutine());
+        _smashRoutineHandle = StartCoroutine(SmashAttackRoutine());
     }
 
     public override void Move(Vector2 direction)
@@ -81,6 +82,17 @@ public class KikiEnemy : Enemy
         }
 
         base.Move(direction);
+    }
+
+    protected override void OnStunInterrupt()
+    {
+        if (_smashRoutineHandle != null)
+        {
+            StopCoroutine(_smashRoutineHandle);
+            _smashRoutineHandle = null;
+        }
+        transform.localRotation = baseLocalRotation;
+        isAttacking = false;
     }
 
     private IEnumerator SmashAttackRoutine()

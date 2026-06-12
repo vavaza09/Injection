@@ -3,6 +3,7 @@ using Game.Components.Movement;
 using Game.Components.Combat;
 using UnityEngine;
 using VContainer;
+using System;
 
 public abstract class character : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public abstract class character : MonoBehaviour
     //State
     protected float currentHealth;
     protected bool isAlive = true;
-    
+
     //Unity Components
     protected Transform characterTransform;
     protected Rigidbody2D rb;
@@ -25,6 +26,12 @@ public abstract class character : MonoBehaviour
     [SerializeField] protected MovementComponent movementComponent;
     protected AttackComponent attackComponent;
     private bool isHealthInitialized;
+
+    public event Action<character> Damaged;
+    public event Action<character> Died;
+    public event Action<character> Healed;
+    public event Action InvincibilityStarted;
+    public event Action InvincibilityEnded;
 
     protected virtual void Awake()
     {
@@ -85,6 +92,7 @@ public abstract class character : MonoBehaviour
         }
 
         OnTakeDamage();
+        Damaged?.Invoke(this);
 
         if (healthComponent.IsDead())
         {
@@ -94,8 +102,17 @@ public abstract class character : MonoBehaviour
 
     public virtual void Die()
     {
+        if (!isAlive) return;
         isAlive = false;
         OnDeath();
+        Died?.Invoke(this);
+    }
+
+    public virtual void Heal(float amount)
+    {
+        EnsureHealthComponent();
+        healthComponent.Heal(amount);
+        Healed?.Invoke(this);
     }
 
     public abstract void Move(Vector2 direction);
@@ -107,8 +124,8 @@ public abstract class character : MonoBehaviour
     }
     
     protected virtual void OnTakeDamage()
-    { 
-        Debug.Log($"{characterName} took damage.");
+    {
+        HitFlashFX.Spawn(transform.position);
     }
     
     protected virtual void OnDestroy() 
@@ -135,6 +152,8 @@ public abstract class character : MonoBehaviour
             healthComponent.Initialize(maxHealth);
             currentHealth = maxHealth;
             isHealthInitialized = true;
+            healthComponent.OnInvincibilityStarted += () => InvincibilityStarted?.Invoke();
+            healthComponent.OnInvincibilityEnded   += () => InvincibilityEnded?.Invoke();
         }
     }
 }
