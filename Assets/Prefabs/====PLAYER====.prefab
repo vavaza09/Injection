@@ -571,6 +571,7 @@ MonoBehaviour:
   invincibilityDuration: 2
   attackStateDuration: 0.5
   dashImpact: {fileID: 0}
+  movementVFX: {fileID: 0}
   invincibilityBlinkInterval: 0.1
 --- !u!114 &9206611309243768537
 MonoBehaviour:
@@ -674,6 +675,9 @@ MonoBehaviour:
   dashDamageLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+  hitstopDuration: 1
+  hitstopTimeScale: 0.2
+  weakPointShakeIntensity: 0.1
 --- !u!114 &4885150918750639098
 MonoBehaviour:
   m_ObjectHideFlags: 0
