@@ -1,31 +1,28 @@
 fileFormatVersion: 2
-guid: 7580ab295e695cd45805cde1c457ee52
+guid: 6ade41755ce887b498fe26e12c1ac634
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5661836666407872079
-    second: Run Sheet_0
+      213: 8784582976403850439
+    second: Jump Sheet_0
   - first:
-      213: 1026690240056884786
-    second: Run Sheet_1
+      213: 362222422750631360
+    second: Jump Sheet_1
   - first:
-      213: -528503008782959442
-    second: Run Sheet_2
+      213: 3491249618924272060
+    second: Jump Sheet_2
   - first:
-      213: -4230672881587419238
-    second: Run Sheet_3
+      213: 1472773496119677972
+    second: Jump Sheet_3
   - first:
-      213: 6311626645133119393
-    second: Run Sheet_4
+      213: -1977383632489616944
+    second: Jump Sheet_4
   - first:
-      213: -773796366044266796
-    second: Run Sheet_5
+      213: 6759931630411225352
+    second: Jump Sheet_5
   - first:
-      213: -5308311492740594087
-    second: Run Sheet_6
-  - first:
-      213: -8012879379974966490
-    second: Run Sheet_7
+      213: 2962092893255214342
+    second: Jump Sheet_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,177 +118,155 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Run Sheet_0
+      name: Jump Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1620
-        height: 2160
+        x: 186
+        y: 174
+        width: 1265
+        height: 1566
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f46e58d4372e29e40800000000000000
-      internalID: 5661836666407872079
+      spriteID: 7c4ce70acab19e970800000000000000
+      internalID: 8784582976403850439
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_1
+      name: Jump Sheet_1
       rect:
         serializedVersion: 2
-        x: 1620
-        y: 0
-        width: 1620
-        height: 2160
+        x: 1836
+        y: 174
+        width: 1266
+        height: 1566
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 23e73fc65598f3e00800000000000000
-      internalID: 1026690240056884786
+      spriteID: 0c59bb5df5fd60500800000000000000
+      internalID: 362222422750631360
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_2
+      name: Jump Sheet_2
       rect:
         serializedVersion: 2
-        x: 3240
-        y: 0
-        width: 1620
-        height: 2160
+        x: 3538
+        y: 174
+        width: 1171
+        height: 1626
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eac34ca40516aa8f0800000000000000
-      internalID: -528503008782959442
+      spriteID: cb9f23ee709637030800000000000000
+      internalID: 3491249618924272060
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_3
+      name: Jump Sheet_3
       rect:
         serializedVersion: 2
-        x: 4860
-        y: 0
-        width: 1620
-        height: 2160
+        x: 4991
+        y: 536
+        width: 1279
+        height: 1563
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a978a14ed61a945c0800000000000000
-      internalID: -4230672881587419238
+      spriteID: 414d2de01b7507410800000000000000
+      internalID: 1472773496119677972
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_4
+      name: Jump Sheet_4
       rect:
         serializedVersion: 2
-        x: 6480
-        y: 0
-        width: 1620
-        height: 2160
+        x: 6590
+        y: 722
+        width: 1281
+        height: 1376
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1afcc0a4ef6679750800000000000000
-      internalID: 6311626645133119393
+      spriteID: 0d9e8c8101cee84e0800000000000000
+      internalID: -1977383632489616944
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_5
+      name: Jump Sheet_5
       rect:
         serializedVersion: 2
-        x: 8100
-        y: 0
-        width: 1620
-        height: 2160
+        x: 8214
+        y: 680
+        width: 1282
+        height: 1374
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4de71790e4ce245f0800000000000000
-      internalID: -773796366044266796
+      spriteID: 8099690900a10dd50800000000000000
+      internalID: 6759931630411225352
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run Sheet_6
+      name: Jump Sheet_6
       rect:
         serializedVersion: 2
-        x: 9720
-        y: 0
-        width: 1620
-        height: 2160
+        x: 9837
+        y: 228
+        width: 1256
+        height: 1774
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 956c21e62d61556b0800000000000000
-      internalID: -5308311492740594087
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Run Sheet_7
-      rect:
-        serializedVersion: 2
-        x: 11340
-        y: 0
-        width: 1620
-        height: 2160
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6233a8078a88cc090800000000000000
-      internalID: -8012879379974966490
+      spriteID: 605af26eac77b1920800000000000000
+      internalID: 2962092893255214342
       vertices: []
       indices: 
       edges: []
@@ -300,7 +275,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5cbc160b040a85a4181cbd03f0a8d13c
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -308,18 +283,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Run Sheet_0: 5661836666407872079
-      Run Sheet_1: 1026690240056884786
-      Run Sheet_2: -528503008782959442
-      Run Sheet_3: -4230672881587419238
-      Run Sheet_4: 6311626645133119393
-      Run Sheet_5: -773796366044266796
-      Run Sheet_6: -5308311492740594087
-      Run Sheet_7: -8012879379974966490
+      Jump Sheet_0: 8784582976403850439
+      Jump Sheet_1: 362222422750631360
+      Jump Sheet_2: 3491249618924272060
+      Jump Sheet_3: 1472773496119677972
+      Jump Sheet_4: -1977383632489616944
+      Jump Sheet_5: 6759931630411225352
+      Jump Sheet_6: 2962092893255214342
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
