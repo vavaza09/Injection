@@ -237,6 +237,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 616428636699444507}
+  - component: {fileID: 1710299645656462137}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -264,6 +265,25 @@ Transform:
   - {fileID: 7844796628579246451}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1710299645656462137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2481936106090359616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c6a2010238e184997513e6a322ead6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossIdleAnimation
+  upperR: {fileID: 8411531435335297693}
+  upperL: {fileID: 7844796628579246451}
+  clawR: {fileID: 2775490480446070666}
+  hammerL: {fileID: 4181672387151403361}
+  bobSpeed: 2.5
+  bobAmplitude: 0.15
+  phaseOffset: 0.3
 --- !u!1 &2831306935088325681
 GameObject:
   m_ObjectHideFlags: 0
