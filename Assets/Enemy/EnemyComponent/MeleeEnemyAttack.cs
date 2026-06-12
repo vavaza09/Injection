@@ -1,5 +1,4 @@
 using UnityEngine;
-using Game.Components.Health;
 
 public class MeleeEnemyAttack : MonoBehaviour
 {
@@ -125,10 +124,10 @@ public class MeleeEnemyAttack : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            HealthComponent targetHealth = hit.GetComponent<HealthComponent>();
-            if (targetHealth != null)
+            character targetCharacter = hit.GetComponentInParent<character>();
+            if (targetCharacter != null)
             {
-                targetHealth.TakeDamage(meleeDamage);
+                targetCharacter.TakeDamage(meleeDamage);
             }
 
             if (applyKnockback)

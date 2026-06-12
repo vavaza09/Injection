@@ -69,3 +69,4 @@ CLAUDE.md
 .claude/
 .claude-code/
 qa_testing_config.json
+.output/

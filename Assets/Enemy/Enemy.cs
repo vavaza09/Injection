@@ -1,5 +1,6 @@
 using Game.Components.Health;
 using Game.Components.Movement;
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : character
@@ -17,10 +18,30 @@ public class Enemy : character
     [Header("State")]
     [SerializeField] protected EnemyState currentState = EnemyState.Idle;
 
+    [Header("Stun")]
+    [SerializeField] private Color stunTintColor = new Color(0.3f, 0.9f, 1f, 1f);
+    [SerializeField] private float stunBlinkInterval = 0.12f;
+    [SerializeField] private GameObject stunVfxPrefab;
+
+    private float _stunEndTime;
+    private Coroutine _stunBlinkRoutine;
+    private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
+    private Color _originalSpriteColor;
+    private GameObject _activeStunVfx;
+
+    public bool IsStunned => currentState == EnemyState.Stunned && isAlive;
+
 
     protected override void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (_spriteRenderer != null)
+            _originalSpriteColor = _spriteRenderer.color;
+
+        _animator = GetComponentInChildren<Animator>();
 
         // Auto-find player if not assigned
         if (playerTransform == null)
@@ -78,20 +99,135 @@ public class Enemy : character
         //}
     }
 
-    protected override void OnDeath()
+    protected override void Update()
     {
-        currentState = EnemyState.Dead;
+        base.Update();
+        if (IsStunned && Time.time >= _stunEndTime)
+            EndStun();
+    }
+
+    public virtual void Stun(float duration)
+    {
+        if (!isAlive) return;
+
+        _stunEndTime = Time.time + duration;
+
+        if (IsStunned) return;
+
+        OnStunInterrupt();
+        SetState(EnemyState.Stunned);
 
         if (movementComponent != null)
-        {
             movementComponent.Stop();
+
+        if (rb != null)
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+        if (_animator != null)
+            _animator.speed = 0f;
+
+        if (_stunBlinkRoutine != null)
+            StopCoroutine(_stunBlinkRoutine);
+        _stunBlinkRoutine = StartCoroutine(StunBlinkRoutine());
+
+        if (_activeStunVfx != null)
+            Destroy(_activeStunVfx);
+
+        if (stunVfxPrefab != null)
+        {
+            _activeStunVfx = Instantiate(stunVfxPrefab, transform.position, Quaternion.identity, transform);
         }
-        // Optional: disable collisions, play anim, etc.
-        // GetComponent<Collider2D>()?.enabled = false;
+        else
+        {
+            Bounds bounds = _spriteRenderer != null
+                ? _spriteRenderer.bounds
+                : new Bounds(transform.position, Vector3.one * 0.5f);
+            _activeStunVfx = StunElectricFX.Attach(transform, bounds);
+        }
+    }
+
+    protected virtual void OnStunInterrupt() { }
+
+    private void EndStun()
+    {
+        if (_animator != null)
+            _animator.speed = 1f;
+
+        if (_stunBlinkRoutine != null)
+        {
+            StopCoroutine(_stunBlinkRoutine);
+            _stunBlinkRoutine = null;
+        }
+
+        if (_spriteRenderer != null)
+            _spriteRenderer.color = _originalSpriteColor;
+
+        if (_activeStunVfx != null)
+        {
+            Destroy(_activeStunVfx);
+            _activeStunVfx = null;
+        }
+
+        if (!isAlive) return;
+
+        SetState(EnemyState.Idle);
+    }
+
+    private IEnumerator StunBlinkRoutine()
+    {
+        if (_spriteRenderer == null) yield break;
+        while (true)
+        {
+            _spriteRenderer.color = stunTintColor;
+            yield return new WaitForSeconds(stunBlinkInterval);
+            _spriteRenderer.color = _originalSpriteColor;
+            yield return new WaitForSeconds(stunBlinkInterval);
+        }
+    }
+
+    protected override void OnDeath()
+    {
+        if (_stunBlinkRoutine != null)
+        {
+            StopCoroutine(_stunBlinkRoutine);
+            _stunBlinkRoutine = null;
+        }
+        if (_spriteRenderer != null)
+            _spriteRenderer.color = _originalSpriteColor;
+        if (_animator != null)
+            _animator.speed = 1f;
+        if (_activeStunVfx != null)
+        {
+            Destroy(_activeStunVfx);
+            _activeStunVfx = null;
+        }
+
+        currentState = EnemyState.Dead;
+
+        StopAllCoroutines();
+
+        EnemyAI ai = GetComponent<EnemyAI>();
+        if (ai != null) ai.enabled = false;
+
+        if (movementComponent != null)
+            movementComponent.Stop();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D col in colliders)
+            col.enabled = false;
+
+        Destroy(gameObject, 1.5f);
     }
 
     protected override void OnTakeDamage()
     {
+        if (IsStunned) return;
         if (currentState == EnemyState.Idle || currentState == EnemyState.Patrol)
         {
             currentState = EnemyState.Chase;
@@ -101,6 +237,8 @@ public class Enemy : character
 
     public virtual void DetectPlayer()
     {
+        if (IsStunned) return;
+
         // Early return if player not found
         if (playerTransform == null)
         {

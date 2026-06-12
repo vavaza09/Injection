@@ -27,6 +27,9 @@ namespace Game.Characters.Player
         public event Action OnRightClickPressed;
         public event Action OnRightClickReleased;
         public event Action OnDashPressed;
+        public event Action OnGrabPressed;
+        public event Action OnSkill1Pressed;
+        public event Action OnSkill2Pressed;
 
         // Constructor - DI via VContainer
         public PlayerInputHandler(LoggerFactory loggerFactory)
@@ -56,8 +59,14 @@ namespace Game.Characters.Player
             _actions.Player.Aim.started += OnRightClickStarted;
             _actions.Player.Aim.canceled += OnRightClickCanceled;
 
-            //Dash 
+            //Dash
             _actions.Player.Dash.performed += OnDash;
+
+            // Grab — use .started to bypass the Hold interaction delay on the Interact action
+            _actions.Player.Interact.started += OnInteractStarted;
+
+            _actions.Player.Skill1.performed += OnSkill1;
+            _actions.Player.Skill2.performed += OnSkill2;
 
             _logger?.Log("Input system enabled");
         }
@@ -72,6 +81,9 @@ namespace Game.Characters.Player
             _actions.Player.Aim.started -= OnRightClickStarted;
             _actions.Player.Aim.canceled -= OnRightClickCanceled;
             _actions.Player.Dash.performed -= OnDash;
+            _actions.Player.Interact.started -= OnInteractStarted;
+            _actions.Player.Skill1.performed -= OnSkill1;
+            _actions.Player.Skill2.performed -= OnSkill2;
 
             IsAimHeld = false;
             _actions.Player.Disable();
@@ -148,6 +160,24 @@ namespace Game.Characters.Player
         {
             OnDashPressed?.Invoke();
             _logger?.Log("Dash pressed");
+        }
+
+        private void OnInteractStarted(InputAction.CallbackContext context)
+        {
+            OnGrabPressed?.Invoke();
+            _logger?.Log("Interact pressed (grab)");
+        }
+
+        private void OnSkill1(InputAction.CallbackContext context)
+        {
+            OnSkill1Pressed?.Invoke();
+            _logger?.Log("Skill1 pressed (EMP)");
+        }
+
+        private void OnSkill2(InputAction.CallbackContext context)
+        {
+            OnSkill2Pressed?.Invoke();
+            _logger?.Log("Skill2 pressed (TrueDamage)");
         }
     }
 }
