@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: be97c52c689a44047a21733932867f64
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4187586545390918147
+    second: Head and Body Idle Sprite Sheet_0
+  - first:
+      213: 1583114827500718020
+    second: Head and Body Idle Sprite Sheet_1
+  - first:
+      213: 417957810492785819
+    second: Head and Body Idle Sprite Sheet_2
+  - first:
+      213: -9011771825832725648
+    second: Head and Body Idle Sprite Sheet_3
+  - first:
+      213: -2472065298553476544
+    second: Head and Body Idle Sprite Sheet_4
+  - first:
+      213: -7410493373021261701
+    second: Head and Body Idle Sprite Sheet_5
+  - first:
+      213: 4507081216862907074
+    second: Head and Body Idle Sprite Sheet_6
+  - first:
+      213: 1355401143580515539
+    second: Head and Body Idle Sprite Sheet_7
+  - first:
+      213: -6733428630164639750
+    second: Head and Body Idle Sprite Sheet_8
+  - first:
+      213: 209878194924620611
+    second: Head and Body Idle Sprite Sheet_9
+  - first:
+      213: 8889140204773858022
+    second: Head and Body Idle Sprite Sheet_10
+  - first:
+      213: -7513771170447815746
+    second: Head and Body Idle Sprite Sheet_11
+  - first:
+      213: -227712597813014380
+    second: Head and Body Idle Sprite Sheet_12
+  - first:
+      213: 5750057520704563843
+    second: Head and Body Idle Sprite Sheet_13
+  - first:
+      213: 6379921069500417673
+    second: Head and Body Idle Sprite Sheet_14
+  - first:
+      213: -5808270902767073713
+    second: Head and Body Idle Sprite Sheet_15
+  - first:
+      213: -6282821192044784643
+    second: Head and Body Idle Sprite Sheet_16
+  - first:
+      213: 5676260504519380779
+    second: Head and Body Idle Sprite Sheet_17
+  - first:
+      213: 3009663242962234207
+    second: Head and Body Idle Sprite Sheet_18
+  - first:
+      213: 1022676844572334045
+    second: Head and Body Idle Sprite Sheet_19
+  - first:
+      213: 2609241973499674101
+    second: Head and Body Idle Sprite Sheet_20
+  - first:
+      213: -3704799618518814765
+    second: Head and Body Idle Sprite Sheet_21
+  - first:
+      213: -2919424157638322575
+    second: Head and Body Idle Sprite Sheet_22
+  - first:
+      213: 5893214676521167150
+    second: Head and Body Idle Sprite Sheet_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 16384
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 11065
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30a1b38b6cb4d1a30800000000000000
+      internalID: 4187586545390918147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 4703
+        y: 11065
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c785d34c8a58f510800000000000000
+      internalID: 1583114827500718020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 8543
+        y: 11066
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b94c5890a62ecc500800000000000000
+      internalID: 417957810492785819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 12383
+        y: 11067
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 073fd545541cfe280800000000000000
+      internalID: -9011771825832725648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 8908
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04a662265b571bdd0800000000000000
+      internalID: -2472065298553476544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 4711
+        y: 8909
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b707eaa2a83a82990800000000000000
+      internalID: -7410493373021261701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 8551
+        y: 8909
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cae2f8bc7e5c8e30800000000000000
+      internalID: 4507081216862907074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 12383
+        y: 8910
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dc564ba82a5fc210800000000000000
+      internalID: 1355401143580515539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 6751
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aff679a065e0e82a0800000000000000
+      internalID: -6733428630164639750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 4703
+        y: 6752
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34b05963b13a9e200800000000000000
+      internalID: 209878194924620611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 8543
+        y: 6753
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ea50386be19c5b70800000000000000
+      internalID: 8889140204773858022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 12384
+        y: 6753
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebb03ed1ee8b9b790800000000000000
+      internalID: -7513771170447815746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 4594
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4905978499007dcf0800000000000000
+      internalID: -227712597813014380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 4703
+        y: 4593
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38aa8a799de4ccf40800000000000000
+      internalID: 5750057520704563843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 8543
+        y: 4593
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9864a9219680a8850800000000000000
+      internalID: 6379921069500417673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 12383
+        y: 4592
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f46c4513360e46fa0800000000000000
+      internalID: -5808270902767073713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 2431
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df3dfd4e96feec8a0800000000000000
+      internalID: -6282821192044784643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 4703
+        y: 2430
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2f0570dad026ce40800000000000000
+      internalID: 5676260504519380779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 8543
+        y: 2429
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5b605a06c874c920800000000000000
+      internalID: 3009663242962234207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 12383
+        y: 2429
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd750c8fb27413e00800000000000000
+      internalID: 1022676844572334045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 268
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fdbc7320c3e53420800000000000000
+      internalID: 2609241973499674101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 4703
+        y: 267
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dfee263068e59cc0800000000000000
+      internalID: -3704799618518814765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 8543
+        y: 266
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1761647423f1c77d0800000000000000
+      internalID: -2919424157638322575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head and Body Idle Sprite Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 12383
+        y: 265
+        width: 2129
+        height: 1746
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e29a9235687e8c150800000000000000
+      internalID: 5893214676521167150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Head and Body Idle Sprite Sheet_0: 4187586545390918147
+      Head and Body Idle Sprite Sheet_1: 1583114827500718020
+      Head and Body Idle Sprite Sheet_10: 8889140204773858022
+      Head and Body Idle Sprite Sheet_11: -7513771170447815746
+      Head and Body Idle Sprite Sheet_12: -227712597813014380
+      Head and Body Idle Sprite Sheet_13: 5750057520704563843
+      Head and Body Idle Sprite Sheet_14: 6379921069500417673
+      Head and Body Idle Sprite Sheet_15: -5808270902767073713
+      Head and Body Idle Sprite Sheet_16: -6282821192044784643
+      Head and Body Idle Sprite Sheet_17: 5676260504519380779
+      Head and Body Idle Sprite Sheet_18: 3009663242962234207
+      Head and Body Idle Sprite Sheet_19: 1022676844572334045
+      Head and Body Idle Sprite Sheet_2: 417957810492785819
+      Head and Body Idle Sprite Sheet_20: 2609241973499674101
+      Head and Body Idle Sprite Sheet_21: -3704799618518814765
+      Head and Body Idle Sprite Sheet_22: -2919424157638322575
+      Head and Body Idle Sprite Sheet_23: 5893214676521167150
+      Head and Body Idle Sprite Sheet_3: -9011771825832725648
+      Head and Body Idle Sprite Sheet_4: -2472065298553476544
+      Head and Body Idle Sprite Sheet_5: -7410493373021261701
+      Head and Body Idle Sprite Sheet_6: 4507081216862907074
+      Head and Body Idle Sprite Sheet_7: 1355401143580515539
+      Head and Body Idle Sprite Sheet_8: -6733428630164639750
+      Head and Body Idle Sprite Sheet_9: 209878194924620611
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
