@@ -130,11 +130,19 @@ public class Enemy : character
             StopCoroutine(_stunBlinkRoutine);
         _stunBlinkRoutine = StartCoroutine(StunBlinkRoutine());
 
+        if (_activeStunVfx != null)
+            Destroy(_activeStunVfx);
+
         if (stunVfxPrefab != null)
         {
-            if (_activeStunVfx != null)
-                Destroy(_activeStunVfx);
             _activeStunVfx = Instantiate(stunVfxPrefab, transform.position, Quaternion.identity, transform);
+        }
+        else
+        {
+            Bounds bounds = _spriteRenderer != null
+                ? _spriteRenderer.bounds
+                : new Bounds(transform.position, Vector3.one * 0.5f);
+            _activeStunVfx = StunElectricFX.Attach(transform, bounds);
         }
     }
 
