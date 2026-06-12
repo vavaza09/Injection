@@ -1,0 +1,943 @@
+fileFormatVersion: 2
+guid: 472d89f1861f2284398e9a36035a407c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8706733479554922058
+    second: Claw Idle Sprite Sheet_0
+  - first:
+      213: -2655242536511855066
+    second: Claw Idle Sprite Sheet_1
+  - first:
+      213: -3581946856457876586
+    second: Claw Idle Sprite Sheet_2
+  - first:
+      213: 2272449832096731599
+    second: Claw Idle Sprite Sheet_3
+  - first:
+      213: -8484762007711103075
+    second: Claw Idle Sprite Sheet_4
+  - first:
+      213: 5205459115892899414
+    second: Claw Idle Sprite Sheet_5
+  - first:
+      213: 146607358778906614
+    second: Claw Idle Sprite Sheet_6
+  - first:
+      213: -8782719310360089231
+    second: Claw Idle Sprite Sheet_7
+  - first:
+      213: 4725965775367848640
+    second: Claw Idle Sprite Sheet_8
+  - first:
+      213: 9007141149491865734
+    second: Claw Idle Sprite Sheet_9
+  - first:
+      213: 7935808945989321324
+    second: Claw Idle Sprite Sheet_10
+  - first:
+      213: -1074848768033677978
+    second: Claw Idle Sprite Sheet_11
+  - first:
+      213: 1735000647709845754
+    second: Claw Idle Sprite Sheet_12
+  - first:
+      213: 666567398590416618
+    second: Claw Idle Sprite Sheet_13
+  - first:
+      213: -5797981796241197922
+    second: Claw Idle Sprite Sheet_14
+  - first:
+      213: 5973082019877690761
+    second: Claw Idle Sprite Sheet_15
+  - first:
+      213: 1370701271561428651
+    second: Claw Idle Sprite Sheet_16
+  - first:
+      213: -1207287385381077860
+    second: Claw Idle Sprite Sheet_17
+  - first:
+      213: -785959752618544078
+    second: Claw Idle Sprite Sheet_18
+  - first:
+      213: 7890648722715331850
+    second: Claw Idle Sprite Sheet_19
+  - first:
+      213: -1091463330523198750
+    second: Claw Idle Sprite Sheet_20
+  - first:
+      213: 2673647145275758595
+    second: Claw Idle Sprite Sheet_21
+  - first:
+      213: 2596483753830475400
+    second: Claw Idle Sprite Sheet_22
+  - first:
+      213: -3789881928872980377
+    second: Claw Idle Sprite Sheet_23
+  - first:
+      213: 2651738947420673053
+    second: Claw Idle Sprite Sheet_24
+  - first:
+      213: 7963605761402194980
+    second: Claw Idle Sprite Sheet_25
+  - first:
+      213: 1266273165610624581
+    second: Claw Idle Sprite Sheet_26
+  - first:
+      213: 5689851105206319376
+    second: Claw Idle Sprite Sheet_27
+  - first:
+      213: 1802787847331531072
+    second: Claw Idle Sprite Sheet_28
+  - first:
+      213: 4977179181332093720
+    second: Claw Idle Sprite Sheet_29
+  - first:
+      213: -1151993264294289430
+    second: Claw Idle Sprite Sheet_30
+  - first:
+      213: -8189617492397612920
+    second: Claw Idle Sprite Sheet_31
+  - first:
+      213: -394394610149380419
+    second: Claw Idle Sprite Sheet_32
+  - first:
+      213: 5665945056339088644
+    second: Claw Idle Sprite Sheet_33
+  - first:
+      213: -945523675685339958
+    second: Claw Idle Sprite Sheet_34
+  - first:
+      213: -2912751854507737990
+    second: Claw Idle Sprite Sheet_35
+  - first:
+      213: -9017059863729198472
+    second: Claw Idle Sprite Sheet_36
+  - first:
+      213: 7559094076060606855
+    second: Claw Idle Sprite Sheet_37
+  - first:
+      213: 4506978268266245870
+    second: Claw Idle Sprite Sheet_38
+  - first:
+      213: -4470626893117722429
+    second: Claw Idle Sprite Sheet_39
+  - first:
+      213: 6219686842020786647
+    second: Claw Idle Sprite Sheet_40
+  - first:
+      213: 8174897503251144633
+    second: Claw Idle Sprite Sheet_41
+  - first:
+      213: 153993570127040796
+    second: Claw Idle Sprite Sheet_42
+  - first:
+      213: -5810065009273348133
+    second: Claw Idle Sprite Sheet_43
+  - first:
+      213: -763962818508122976
+    second: Claw Idle Sprite Sheet_44
+  - first:
+      213: 7083577745921492790
+    second: Claw Idle Sprite Sheet_45
+  - first:
+      213: -8498401782793108984
+    second: Claw Idle Sprite Sheet_46
+  - first:
+      213: 3495126439860749325
+    second: Claw Idle Sprite Sheet_47
+  - first:
+      213: 3338757578347416260
+    second: Claw Idle Sprite Sheet_48
+  - first:
+      213: -6458218560024405586
+    second: Claw Idle Sprite Sheet_49
+  - first:
+      213: 481248786616192449
+    second: Claw Idle Sprite Sheet_50
+  - first:
+      213: 67854785519679672
+    second: Claw Idle Sprite Sheet_51
+  - first:
+      213: 3474718123207937260
+    second: Claw Idle Sprite Sheet_52
+  - first:
+      213: -6324641194623466793
+    second: Claw Idle Sprite Sheet_53
+  - first:
+      213: -5184123282407810900
+    second: Claw Idle Sprite Sheet_54
+  - first:
+      213: -7472041493622231330
+    second: Claw Idle Sprite Sheet_55
+  - first:
+      213: -1995146615814932153
+    second: Claw Idle Sprite Sheet_56
+  - first:
+      213: -2781885717997600102
+    second: Claw Idle Sprite Sheet_57
+  - first:
+      213: -9132099201655445455
+    second: Claw Idle Sprite Sheet_58
+  - first:
+      213: 5807027368297391727
+    second: Claw Idle Sprite Sheet_59
+  - first:
+      213: 8848426673073885133
+    second: Claw Idle Sprite Sheet_60
+  - first:
+      213: -768528521214276890
+    second: Claw Idle Sprite Sheet_61
+  - first:
+      213: 5244571786233726028
+    second: Claw Idle Sprite Sheet_62
+  - first:
+      213: -4867485036222408171
+    second: Claw Idle Sprite Sheet_63
+  - first:
+      213: 887160146602654470
+    second: Claw Idle Sprite Sheet_64
+  - first:
+      213: -2857579920673571349
+    second: Claw Idle Sprite Sheet_65
+  - first:
+      213: -116074219495268089
+    second: Claw Idle Sprite Sheet_66
+  - first:
+      213: 6614069202833357351
+    second: Claw Idle Sprite Sheet_67
+  - first:
+      213: -1649209895697829739
+    second: Claw Idle Sprite Sheet_68
+  - first:
+      213: 8221651113927726856
+    second: Claw Idle Sprite Sheet_69
+  - first:
+      213: -2394128518525219305
+    second: Claw Idle Sprite Sheet_70
+  - first:
+      213: 220827091751861380
+    second: Claw Idle Sprite Sheet_71
+  - first:
+      213: 8008325033259977951
+    second: Claw Idle Sprite Sheet_72
+  - first:
+      213: 6796759289581007376
+    second: Claw Idle Sprite Sheet_73
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 16384
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 2333
+        y: 10875
+        width: 1095
+        height: 735
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b9c025d7087b2780800000000000000
+      internalID: -8706733479554922058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 6173
+        y: 10875
+        width: 1095
+        height: 735
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62624ba2bfea62bd0800000000000000
+      internalID: -2655242536511855066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 10020
+        y: 10875
+        width: 1088
+        height: 735
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69b4080ef4e5a4ec0800000000000000
+      internalID: -3581946856457876586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 13860
+        y: 10883
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc19504151d598f10800000000000000
+      internalID: 2272449832096731599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 8723
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6882441572bcffc70800000000000000
+      internalID: 9007141149491865734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 6180
+        y: 8723
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c628f0fc038a12e60800000000000000
+      internalID: 7935808945989321324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 10020
+        y: 8723
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66d16128dbe5511f0800000000000000
+      internalID: -1074848768033677978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 13860
+        y: 8723
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af861db85e5f31810800000000000000
+      internalID: 1735000647709845754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 6563
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30816ecb9e3ba1520800000000000000
+      internalID: 2673647145275758595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 6173
+        y: 6563
+        width: 1095
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8866324a730980420800000000000000
+      internalID: 2596483753830475400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 10013
+        y: 6563
+        width: 1095
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d14d31ee58edcc420800000000000000
+      internalID: 2651738947420673053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 13845
+        y: 6563
+        width: 1103
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 546a4d03cb4b29110800000000000000
+      internalID: 1266273165610624581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 2325
+        y: 4410
+        width: 1103
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87a2dff04d7fcd280800000000000000
+      internalID: -9017059863729198472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 6165
+        y: 4403
+        width: 1103
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eee2a622bd00c8e30800000000000000
+      internalID: 4506978268266245870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 10013
+        y: 4403
+        width: 1095
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d1f1d0ca34c05650800000000000000
+      internalID: 6219686842020786647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_42
+      rect:
+        serializedVersion: 2
+        x: 13853
+        y: 4403
+        width: 1095
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c11dd1d0658132200800000000000000
+      internalID: 153993570127040796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_52
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 2243
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ceccb6429bda83030800000000000000
+      internalID: 3474718123207937260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_53
+      rect:
+        serializedVersion: 2
+        x: 6180
+        y: 2243
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d28aa6c75c5a38a0800000000000000
+      internalID: -6324641194623466793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 10020
+        y: 2243
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca81040675b4e08b0800000000000000
+      internalID: -5184123282407810900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 13860
+        y: 2243
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edeeaa1a9d9fd4890800000000000000
+      internalID: -7472041493622231330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_64
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 83
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60b7225f373df4c00800000000000000
+      internalID: 887160146602654470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_65
+      rect:
+        serializedVersion: 2
+        x: 6180
+        y: 83
+        width: 1088
+        height: 727
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bed76f6c336d758d0800000000000000
+      internalID: -2857579920673571349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_66
+      rect:
+        serializedVersion: 2
+        x: 10020
+        y: 75
+        width: 1088
+        height: 735
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7016763cc1f936ef0800000000000000
+      internalID: -116074219495268089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Claw Idle Sprite Sheet_67
+      rect:
+        serializedVersion: 2
+        x: 13853
+        y: 75
+        width: 1095
+        height: 735
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72abbbaa5e4e9cb50800000000000000
+      internalID: 6614069202833357351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b917719061e94594083172f207e9a728
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":24.0,"y":24.0},"gridSpriteSize":{"x":1024.0,"y":1024.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":1,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Claw Idle Sprite Sheet_0: -8706733479554922058
+      Claw Idle Sprite Sheet_1: -2655242536511855066
+      Claw Idle Sprite Sheet_10: 7935808945989321324
+      Claw Idle Sprite Sheet_11: -1074848768033677978
+      Claw Idle Sprite Sheet_12: 1735000647709845754
+      Claw Idle Sprite Sheet_13: 666567398590416618
+      Claw Idle Sprite Sheet_14: -5797981796241197922
+      Claw Idle Sprite Sheet_15: 5973082019877690761
+      Claw Idle Sprite Sheet_16: 1370701271561428651
+      Claw Idle Sprite Sheet_17: -1207287385381077860
+      Claw Idle Sprite Sheet_18: -785959752618544078
+      Claw Idle Sprite Sheet_19: 7890648722715331850
+      Claw Idle Sprite Sheet_2: -3581946856457876586
+      Claw Idle Sprite Sheet_20: -1091463330523198750
+      Claw Idle Sprite Sheet_21: 2673647145275758595
+      Claw Idle Sprite Sheet_22: 2596483753830475400
+      Claw Idle Sprite Sheet_23: -3789881928872980377
+      Claw Idle Sprite Sheet_24: 2651738947420673053
+      Claw Idle Sprite Sheet_25: 7963605761402194980
+      Claw Idle Sprite Sheet_26: 1266273165610624581
+      Claw Idle Sprite Sheet_27: 5689851105206319376
+      Claw Idle Sprite Sheet_28: 1802787847331531072
+      Claw Idle Sprite Sheet_29: 4977179181332093720
+      Claw Idle Sprite Sheet_3: 2272449832096731599
+      Claw Idle Sprite Sheet_30: -1151993264294289430
+      Claw Idle Sprite Sheet_31: -8189617492397612920
+      Claw Idle Sprite Sheet_32: -394394610149380419
+      Claw Idle Sprite Sheet_33: 5665945056339088644
+      Claw Idle Sprite Sheet_34: -945523675685339958
+      Claw Idle Sprite Sheet_35: -2912751854507737990
+      Claw Idle Sprite Sheet_36: -9017059863729198472
+      Claw Idle Sprite Sheet_37: 7559094076060606855
+      Claw Idle Sprite Sheet_38: 4506978268266245870
+      Claw Idle Sprite Sheet_39: -4470626893117722429
+      Claw Idle Sprite Sheet_4: -8484762007711103075
+      Claw Idle Sprite Sheet_40: 6219686842020786647
+      Claw Idle Sprite Sheet_41: 8174897503251144633
+      Claw Idle Sprite Sheet_42: 153993570127040796
+      Claw Idle Sprite Sheet_43: -5810065009273348133
+      Claw Idle Sprite Sheet_44: -763962818508122976
+      Claw Idle Sprite Sheet_45: 7083577745921492790
+      Claw Idle Sprite Sheet_46: -8498401782793108984
+      Claw Idle Sprite Sheet_47: 3495126439860749325
+      Claw Idle Sprite Sheet_48: 3338757578347416260
+      Claw Idle Sprite Sheet_49: -6458218560024405586
+      Claw Idle Sprite Sheet_5: 5205459115892899414
+      Claw Idle Sprite Sheet_50: 481248786616192449
+      Claw Idle Sprite Sheet_51: 67854785519679672
+      Claw Idle Sprite Sheet_52: 3474718123207937260
+      Claw Idle Sprite Sheet_53: -6324641194623466793
+      Claw Idle Sprite Sheet_54: -5184123282407810900
+      Claw Idle Sprite Sheet_55: -7472041493622231330
+      Claw Idle Sprite Sheet_56: -1995146615814932153
+      Claw Idle Sprite Sheet_57: -2781885717997600102
+      Claw Idle Sprite Sheet_58: -9132099201655445455
+      Claw Idle Sprite Sheet_59: 5807027368297391727
+      Claw Idle Sprite Sheet_6: 146607358778906614
+      Claw Idle Sprite Sheet_60: 8848426673073885133
+      Claw Idle Sprite Sheet_61: -768528521214276890
+      Claw Idle Sprite Sheet_62: 5244571786233726028
+      Claw Idle Sprite Sheet_63: -4867485036222408171
+      Claw Idle Sprite Sheet_64: 887160146602654470
+      Claw Idle Sprite Sheet_65: -2857579920673571349
+      Claw Idle Sprite Sheet_66: -116074219495268089
+      Claw Idle Sprite Sheet_67: 6614069202833357351
+      Claw Idle Sprite Sheet_68: -1649209895697829739
+      Claw Idle Sprite Sheet_69: 8221651113927726856
+      Claw Idle Sprite Sheet_7: -8782719310360089231
+      Claw Idle Sprite Sheet_70: -2394128518525219305
+      Claw Idle Sprite Sheet_71: 220827091751861380
+      Claw Idle Sprite Sheet_72: 8008325033259977951
+      Claw Idle Sprite Sheet_73: 6796759289581007376
+      Claw Idle Sprite Sheet_8: 4725965775367848640
+      Claw Idle Sprite Sheet_9: 9007141149491865734
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
