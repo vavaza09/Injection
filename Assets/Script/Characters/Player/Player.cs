@@ -62,6 +62,9 @@ public class Player : character
     [Header("Movement Combat")]
     [SerializeField] private PlayerDashImpact dashImpact;
 
+    [Header("Movement VFX")]
+    [SerializeField] private PlayerMovementVFX movementVFX;
+
     private PlayerEnergyCollector _energyCollector;
 
     [Header("Invincibility Visual")]
@@ -99,6 +102,9 @@ public class Player : character
 
         if (dashImpact == null)
             dashImpact = GetComponent<PlayerDashImpact>();
+
+        if (movementVFX == null)
+            movementVFX = GetComponent<PlayerMovementVFX>();
 
         _energyCollector = GetComponent<PlayerEnergyCollector>();
 
@@ -147,6 +153,8 @@ public class Player : character
 
         InvincibilityStarted += OnInvincibilityVisualStart;
         InvincibilityEnded   += OnInvincibilityVisualEnd;
+
+        movementVFX?.Initialize(movementComponent);
 
         if (dashImpact != null)
         {
@@ -481,6 +489,7 @@ public class Player : character
             case PlayerState.Dashing:
                 _audioController?.PlayDashSound();
                 _slowMotion?.StopSlowMotion();
+                movementVFX?.PlayDashBurst(movementComponent != null ? movementComponent.DashDirection : Vector2.zero);
                 break;
 
             case PlayerState.Attacking:
@@ -491,6 +500,10 @@ public class Player : character
             case PlayerState.Jumping:
                 _animationController?.PlayJumpAnimation();
                 _audioController?.PlayJumpSound();
+                if (_previousState == PlayerState.WallSliding)
+                    movementVFX?.PlayWallJumpBurst();
+                else
+                    movementVFX?.PlayJumpPuff();
                 break;
 
             case PlayerState.Grabbing:

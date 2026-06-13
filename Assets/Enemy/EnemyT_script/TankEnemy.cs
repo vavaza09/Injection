@@ -68,6 +68,15 @@ public class TankEnemy : Enemy
             return;
         }
 
+        if (IsStunned)
+        {
+            Move(Vector2.zero);
+            if (animator != null)
+                animator.SetBool("IsWalking", false);
+            canShootAtPlayer = false;
+            return;
+        }
+
         if (playerTransform == null)
         {
             return;
