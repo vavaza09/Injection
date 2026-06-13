@@ -161,6 +161,10 @@ namespace Game.Components.Movement
         public bool IsGrabbing => isGrabbing;
         public bool CanGrab => !isGrabbing && FindGrabTarget() != null;
 
+        public float SpeedFactor => GetCurrentSpeedFactorFromVelocity();
+        public int WallSideSign => wallSideSign;
+        public Vector2 DashDirection => _dashHandler?.DashDir ?? Vector2.zero;
+
         public bool AutoJump
         {
             get => autoJump;
