@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: fb79ccdcb6c034641b21b02aa756d5f6
+guid: 5c342e79fbd928544bf2c23c64988d9c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2579037703369554663
-    second: Upper ledt arm_0
+      213: 4325234141475599245
+    second: IMG_1499_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 16384
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Upper ledt arm_0
+      name: IMG_1499_0
       rect:
         serializedVersion: 2
-        x: 680
-        y: 744
-        width: 719
-        height: 970
+        x: 1009
+        y: 411
+        width: 2128
+        height: 1745
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 91581548fda653cd0800000000000000
-      internalID: -2579037703369554663
+      spriteID: d837b0d1981560c30800000000000000
+      internalID: 4325234141475599245
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Upper ledt arm_0: -2579037703369554663
+      IMG_1499_0: 4325234141475599245
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
