@@ -86,6 +86,12 @@ public abstract class BossBase : MonoBehaviour
         }
     }
 
+    public bool IsPlayerInRange(float range)
+    {
+        if (playerTransform == null) return false;
+        return Vector2.Distance(transform.position, playerTransform.position) <= range;
+    }
+
     public abstract void OnPlayerDetected();
     public abstract void OnPlayerLost();
     public abstract void TakeDamage(int amount);
