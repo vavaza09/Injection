@@ -3,14 +3,13 @@ using UnityEngine;
 using UnityEngine.Events;
 
 // Hammer slam attack for a 2D sprite-based boss, driven by IK target Transforms.
+// BOTH the shoulder (Boss_Upper_L) AND the end-effector (Boss_Arm_Left_LimbSolver2D_Target)
+// move simultaneously so the entire arm extends during the slam.
 // Detection and attack selection are handled by BossAttackManager — this script
 // only runs the animation when TriggerAttack() is called.
-//
-// Arc path uses quadratic bezier interpolation so the arm swings naturally.
-// Idle positions are captured once at Start; IK targets are not touched outside an attack.
 public class BossHammerAttack : MonoBehaviour
 {
-    // ── References ────────────────────────────────────────────────────────
+    // ── References ────────────────────────────────────────────────────────────────
 
     [Header("References")]
     [Tooltip("Upper-arm IK root — idle position saved at Start.")]
@@ -22,7 +21,7 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("'Hammer collider' GameObject — activated during impact hold only.")]
     [SerializeField] private GameObject hammerCollider;
 
-    // ── Wind-Up Phase ─────────────────────────────────────────────────────
+    // ── Wind-Up Phase ─────────────────────────────────────────────────────────────
 
     [Header("Wind-Up Phase")]
     [SerializeField] private Vector2 windUpOffset = new Vector2(-0.5f, 2.5f);
@@ -30,7 +29,7 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("Ease-in: starts slow, accelerates into the raised pose.")]
     [SerializeField] private AnimationCurve windUpCurve;
 
-    // ── Swing Phase ───────────────────────────────────────────────────────
+    // ── Swing Phase ───────────────────────────────────────────────────────────────
 
     [Header("Swing Phase")]
     [Tooltip("Bezier control point offset — the arc passes near here during the swing.")]
@@ -42,14 +41,14 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("Sharp ease-in: explosive start, decelerates at impact.")]
     [SerializeField] private AnimationCurve swingCurve;
 
-    // ── Impact Hold ───────────────────────────────────────────────────────
+    // ── Impact Hold ───────────────────────────────────────────────────────────────
 
     [Header("Impact Hold")]
     [SerializeField] private float holdDuration = 0.3f;
     [Tooltip("Fires at the moment of impact.")]
     public UnityEvent OnImpact;
 
-    // ── Recovery Phase ────────────────────────────────────────────────────
+    // ── Recovery Phase ────────────────────────────────────────────────────────────
 
     [Header("Recovery Phase")]
     [Tooltip("Bezier control point for the return arc.")]
@@ -58,7 +57,15 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("Ease-out: starts moving, gently decelerates back to idle.")]
     [SerializeField] private AnimationCurve recoveryCurve;
 
-    // ── Settings ──────────────────────────────────────────────────────────
+    // ── Upper Arm ─────────────────────────────────────────────────────────────────
+
+    [Header("Upper Arm")]
+    [Tooltip("Fraction of the swing offset the shoulder moves. 0 = stays at idle. 0.4 = natural extension.")]
+    [SerializeField] private float upperArmReachRatio = 0.4f;
+    [Tooltip("Extra upward bow on the shoulder during wind-up, giving a natural pre-slam lift.")]
+    [SerializeField] private float upperArmBowOffset = 0.3f;
+
+    // ── Settings ──────────────────────────────────────────────────────────────────
 
     [Header("Settings")]
     [SerializeField] private float cooldown = 2f;
@@ -66,13 +73,13 @@ public class BossHammerAttack : MonoBehaviour
     [SerializeField] private bool isAttacking;
     public bool IsAttacking => isAttacking;
 
-    // ── Private state ─────────────────────────────────────────────────────
+    // ── Private state ─────────────────────────────────────────────────────────────
 
     private Vector3 _idleHammerPos;
     private Vector3 _idleUpperPos;
     private bool    _idleSaved;
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
     private void Awake()
     {
@@ -86,7 +93,7 @@ public class BossHammerAttack : MonoBehaviour
         if (hammerCollider != null) hammerCollider.SetActive(false);
     }
 
-    // ── Public API ────────────────────────────────────────────────────────
+    // ── Public API ────────────────────────────────────────────────────────────────
 
     /// <summary>Start the attack. Ignored while already attacking.</summary>
     public void TriggerAttack()
@@ -105,76 +112,91 @@ public class BossHammerAttack : MonoBehaviour
         if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = _idleUpperPos;
     }
 
-    // ── Attack sequence ───────────────────────────────────────────────────
+    // ── Attack sequence ───────────────────────────────────────────────────────────
 
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
 
-        float xDir    = transform.lossyScale.x >= 0f ? 1f : -1f;
+        float xDir  = transform.lossyScale.x >= 0f ? 1f : -1f;
+
+        // Hammer target positions
         Vector3 windUp = _idleHammerPos + new Vector3(windUpOffset.x      * xDir, windUpOffset.y,      0f);
         Vector3 arcMid = _idleHammerPos + new Vector3(swingArcMidOffset.x * xDir, swingArcMidOffset.y, 0f);
         Vector3 impact = _idleHammerPos + new Vector3(swingImpactOffset.x * xDir, swingImpactOffset.y, 0f);
         Vector3 recMid = _idleHammerPos + new Vector3(recoveryArcMidOffset.x * xDir, recoveryArcMidOffset.y, 0f);
 
-        // ── Wind-Up ──────────────────────────────────────────────────────
-        yield return TweenWorld(hammerLeftIKTarget, _idleHammerPos, windUp, windUpDuration, windUpCurve);
+        // Upper arm positions: fraction of hammer offsets + bow lift during wind-up
+        Vector3 upperWindUp = _idleUpperPos + new Vector3(
+            windUpOffset.x      * xDir * upperArmReachRatio * 0.5f,
+            windUpOffset.y      * upperArmReachRatio + upperArmBowOffset, 0f);
+        Vector3 upperImpact = _idleUpperPos + new Vector3(
+            swingImpactOffset.x * xDir * upperArmReachRatio,
+            swingImpactOffset.y * upperArmReachRatio, 0f);
 
-        // ── Swing ────────────────────────────────────────────────────────
-        yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration, swingCurve);
+        // ── Phase 1: Wind-Up ─────────────────────────────────────────────────────
+        float e = 0f;
+        while (e < windUpDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(windUpCurve, e / windUpDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = Vector3.Lerp(_idleHammerPos, windUp,      c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = Vector3.Lerp(_idleUpperPos,  upperWindUp, c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = windUp;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = upperWindUp;
 
-        // ── Impact Hold ──────────────────────────────────────────────────
+        // ── Phase 2: Swing ───────────────────────────────────────────────────────
+        Vector3 upperSwingCtrl = (upperWindUp + upperImpact) * 0.5f;
+        e = 0f;
+        while (e < swingDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(swingCurve, e / swingDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = QuadBezier(windUp,      arcMid,         impact,      c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = QuadBezier(upperWindUp, upperSwingCtrl, upperImpact, c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = impact;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = upperImpact;
+
+        // ── Phase 3: Impact Hold ─────────────────────────────────────────────────
         if (hammerCollider != null) hammerCollider.SetActive(true);
         OnImpact?.Invoke();
         yield return new WaitForSeconds(holdDuration);
         if (hammerCollider != null) hammerCollider.SetActive(false);
 
-        // ── Recovery ─────────────────────────────────────────────────────
-        yield return BezierTween(hammerLeftIKTarget, impact, recMid, _idleHammerPos, recoveryDuration, recoveryCurve);
+        // ── Phase 4: Recovery ────────────────────────────────────────────────────
+        Vector3 upperRecCtrl = (upperImpact + _idleUpperPos) * 0.5f + Vector3.up * 0.3f;
+        e = 0f;
+        while (e < recoveryDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(recoveryCurve, e / recoveryDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = QuadBezier(impact,      recMid,       _idleHammerPos, c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = QuadBezier(upperImpact, upperRecCtrl, _idleUpperPos,  c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = _idleHammerPos;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = _idleUpperPos;
 
         isAttacking = false;
         yield return new WaitForSeconds(cooldown);
     }
 
-    // ── Tween helpers ─────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────────
 
-    private static IEnumerator TweenWorld(
-        Transform t, Vector3 from, Vector3 to, float dur, AnimationCurve curve)
-    {
-        if (t == null) yield break;
-        float e = 0f;
-        while (e < dur)
-        {
-            e += Time.deltaTime;
-            float raw = Mathf.Clamp01(e / dur);
-            t.position = Vector3.Lerp(from, to, curve != null ? curve.Evaluate(raw) : raw);
-            yield return null;
-        }
-        t.position = to;
-    }
+    private static float Eval(AnimationCurve c, float t) =>
+        c != null ? c.Evaluate(Mathf.Clamp01(t)) : Mathf.Clamp01(t);
 
-    private static IEnumerator BezierTween(
-        Transform t, Vector3 from, Vector3 control, Vector3 to, float dur, AnimationCurve curve)
-    {
-        if (t == null) yield break;
-        float e = 0f;
-        while (e < dur)
-        {
-            e += Time.deltaTime;
-            float raw = Mathf.Clamp01(e / dur);
-            t.position = QuadraticBezier(from, control, to, curve != null ? curve.Evaluate(raw) : raw);
-            yield return null;
-        }
-        t.position = to;
-    }
-
-    private static Vector3 QuadraticBezier(Vector3 a, Vector3 control, Vector3 b, float t)
+    private static Vector3 QuadBezier(Vector3 a, Vector3 ctrl, Vector3 b, float t)
     {
         float u = 1f - t;
-        return u * u * a + 2f * u * t * control + t * t * b;
+        return u * u * a + 2f * u * t * ctrl + t * t * b;
     }
 
-    // ── Setup ─────────────────────────────────────────────────────────────
+    // ── Setup ─────────────────────────────────────────────────────────────────────
 
     private void SaveIdlePositions()
     {
