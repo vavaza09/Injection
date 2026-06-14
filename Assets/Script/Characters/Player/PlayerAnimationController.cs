@@ -16,11 +16,12 @@ namespace Game.Characters.Player
         // Animation parameter hashes
         private readonly int _animMoveSpeed;
         private readonly int _animIsGrounded;
-        private readonly int _animIsClimbing;
+        private readonly int _animIsWallSliding;
+        private readonly int _animIsFalling;
         private readonly int _animAttack;
-        private readonly int _animJump;
         private readonly int _animDeath;
-        private readonly bool _hasClimbParameter;
+        private readonly bool _hasWallSlideParameter;
+        private readonly bool _hasFallingParameter;
 
         // Constructor - DI via VContainer
         public PlayerAnimationController(Animator animator, LoggerFactory loggerFactory)
@@ -31,11 +32,12 @@ namespace Game.Characters.Player
             // Cache animation parameters
             _animMoveSpeed = Animator.StringToHash("MoveSpeed");
             _animIsGrounded = Animator.StringToHash("IsGrounded");
-            _animIsClimbing = Animator.StringToHash("IsClimbing");
+            _animIsWallSliding = Animator.StringToHash("IsWallSliding");
+            _animIsFalling = Animator.StringToHash("IsFalling");
             _animAttack = Animator.StringToHash("Attack");
-            _animJump = Animator.StringToHash("Jump");
             _animDeath = Animator.StringToHash("Death");
-            _hasClimbParameter = HasBoolParameter(_animator, "IsClimbing");
+            _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
+            _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -54,9 +56,16 @@ namespace Game.Characters.Player
             _animator.SetFloat(_animMoveSpeed, moveSpeed);
             _animator.SetBool(_animIsGrounded, _movementComponent.IsGrounded());
 
-            if (_hasClimbParameter)
+            if (_hasWallSlideParameter)
             {
-                _animator.SetBool(_animIsClimbing, _movementComponent.IsClimbing());
+                _animator.SetBool(_animIsWallSliding, _movementComponent.IsWallSliding);
+            }
+
+            // Airborne anim is driven by a continuous bool (not a one-shot trigger), so the
+            // Jump → Fall flow always matches physics regardless of frame ordering.
+            if (_hasFallingParameter)
+            {
+                _animator.SetBool(_animIsFalling, _movementComponent.IsFallingAnim);
             }
         }
 
@@ -73,15 +82,6 @@ namespace Game.Characters.Player
             }
 
             return false;
-        }
-
-        public void PlayJumpAnimation()
-        {
-            if (_animator != null)
-            {
-                _animator.SetTrigger(_animJump);
-                _logger?.Log("Jump animation played");
-            }
         }
 
         public void PlayAttackAnimation()

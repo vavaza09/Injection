@@ -650,7 +650,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
   m_PrefabInstance: {fileID: 7463461259957835901}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1105099259}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34cd7907d1691a847b63cb34ee235aeb, type: 3}
@@ -1609,6 +1609,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kiki_Test
       objectReference: {fileID: 0}
+    - target: {fileID: 556367457260148969, guid: 69478948e04ed444199919ce4557c583, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8782525518642100712, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3
@@ -1809,6 +1813,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1105099259 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+  m_PrefabInstance: {fileID: 7463461259957835901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1153519791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1938,7 +1947,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -2326,12 +2335,52 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
   m_PrefabInstance: {fileID: 7463461259957835901}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1105099259}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29cee0a4f6462f54ba46cd57071dd941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1329597946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105099259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42e497a7d2c2f443b99736dd08e2b04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementVFX
+  windSpeedThreshold: 0.405
+  windRateMin: 12
+  windRateMax: 35
+  windLengthScaleMin: 2.5
+  windLengthScaleMax: 5
+  windBackOffset: 0.4
+  windAlphaMin: 0.35
+  windAlphaMax: 0.8
+  windColor: {r: 0.7, g: 0.85, b: 1, a: 0.7}
+  runDustMinSpeed: 1.5
+  runDustMaxRate: 10
+  dustColor: {r: 0.92, g: 0.92, b: 0.88, a: 0.45}
+  jumpPuffCount: 6
+  landMinFallSpeed: 4
+  landMaxFallSpeed: 20
+  landBurstMin: 6
+  landBurstMax: 18
+  dashBurstCount: 7
+  dashStreakLengthScale: 4
+  dashColor: {r: 1, g: 1, b: 1, a: 0.5}
+  ghostInterval: 0.04
+  ghostFadeDuration: 0.25
+  ghostStartAlpha: 0.45
+  ghostTint: {r: 1, g: 1, b: 1, a: 1}
+  wallDustRate: 8
+  wallJumpBurstCount: 8
+  behindPlayerOrder: 5
+  frontOfPlayerOrder: 10
 --- !u!1 &1459732127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2418,6 +2467,10 @@ PrefabInstance:
     - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_Name
       value: Furnace_Test
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5928436914197378935, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2527,6 +2580,10 @@ PrefabInstance:
     - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_Name
       value: Stomper_Test
+      objectReference: {fileID: 0}
+    - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2903,6 +2960,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tank_Test
       objectReference: {fileID: 0}
+    - target: {fileID: 8658080719701645966, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3224,10 +3285,46 @@ PrefabInstance:
       propertyPath: m_Name
       value: ====PLAYER====
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windAlphaMax
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windAlphaMin
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windLengthScaleMin
+      value: 7.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: windSpeedThreshold
+      value: 0.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: wallJumpVerticalSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1329597946}
   m_SourcePrefab: {fileID: 100100000, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

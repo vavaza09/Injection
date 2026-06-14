@@ -1,4 +1,5 @@
 ﻿using ILogger = Core.Logging.ILogger;
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Core.Logging;
@@ -29,8 +30,6 @@ namespace Game.Components.Movement
         [SerializeField] private float speedLossOnHit = 0.3f;
         [FormerlySerializedAs("momentumLossOnWallCrash")]
         [SerializeField] private float speedLossOnWallCrash = 0.2f;
-        [FormerlySerializedAs("climbMomentumBoostMultiplier")]
-        [SerializeField] private float climbSpeedBoostMultiplier = 1.2f;
         [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
         [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
@@ -82,11 +81,11 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 groundCheckSize = new Vector2(0.4f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
 
-        [Header("Climb Settings")]
-        [SerializeField] private float climbSpeed = 8f;
+        [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
-        [SerializeField] private float climbInputThreshold = 0.1f;
+        [Tooltip("Seconds after a wall jump during which wall contact is ignored so the launch carries the player away.")]
+        [SerializeField] private float wallJumpLockTime = 0.15f;
 
         [Header("Wall Check")]
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
@@ -99,6 +98,10 @@ namespace Game.Components.Movement
         [SerializeField] private float grabLaunchBaseSpeed = 200f;
         [SerializeField, Range(0.5f, 1f)] private float grabLaunchMinMultiplier = 0.6f;
         [SerializeField, Range(1f, 2f)] private float grabLaunchMaxMultiplier = 1.4f;
+
+        [Header("Animation")]
+        [Tooltip("Minimum vertical speed (units/s) before the airborne anim counts as rising vs falling.")]
+        [SerializeField] private float airAnimSpeedThreshold = 1f;
 
         [Header("Debug")]
         [SerializeField] private bool enableVerboseLogs = false;
@@ -127,12 +130,12 @@ namespace Game.Components.Movement
         private bool isGrounded;
         [SerializeField] private bool canMove = true;
         private bool isTouchingWall;
-        private bool isClimbing;
         private int wallSideSign;
         private bool _wasWallSliding;
         private float _currentWallSlideSpeed;
         private Vector2 moveInput;
         private float _wallEntrySpeedFactor;
+        private float _wallJumpLockTimer;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
@@ -150,13 +153,32 @@ namespace Game.Components.Movement
 
         #region Properties
 
+        /// <summary>Raised the instant a ground jump launches. Use for one-shot feedback (sfx/vfx).</summary>
+        public event Action Jumped;
+        /// <summary>Raised the instant a wall jump launches. Use for one-shot feedback (sfx/vfx).</summary>
+        public event Action WallJumped;
+
         public bool IsDashing => _dashHandler != null && _dashHandler.IsDashing;
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
         public bool CanDash => _dashHandler != null && _dashHandler.CanDash;
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
-        public bool IsClimbingState => isClimbing;
         public float MaxSpeed => maxSpeed;
+
+        // Animation-facing airborne state. Derives "up" from the sign of jumpSpeed so it is
+        // correct regardless of the project's vertical convention (and survives Inspector overrides).
+        private float UpSign => Mathf.Sign(jumpSpeed != 0f ? jumpSpeed : -1f);
+        private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
+        private bool IsPushingAwayFromWall => wallSideSign != 0
+            && Mathf.Abs(moveInput.x) >= wallInputThreshold
+            && Mathf.Sign(moveInput.x) == -wallSideSign;
+        public bool IsWallSliding => isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
+                                     && IsFallingAlongGravity && !IsPushingAwayFromWall;
+        public bool IsAirborne => rb != null && !isGrounded && !IsWallSliding && !isGrabbing && !IsDashing;
+        public bool IsRisingAnim => IsAirborne
+                                    && Mathf.Sign(rb.linearVelocity.y) == UpSign
+                                    && Mathf.Abs(rb.linearVelocity.y) > airAnimSpeedThreshold;
+        public bool IsFallingAnim => IsAirborne && !IsRisingAnim;
 
         public bool IsGrabbing => isGrabbing;
         public bool CanGrab => !isGrabbing && FindGrabTarget() != null;
@@ -213,13 +235,13 @@ namespace Game.Components.Movement
             rb = rigidbody;
             characterTransform = transform;
             canMove = true;
-            isClimbing = false;
             isTouchingWall = false;
             wallSideSign = 0;
             _wasWallSliding = false;
             _currentWallSlideSpeed = 0f;
             moveInput = Vector2.zero;
             _wallEntrySpeedFactor = 0f;
+            _wallJumpLockTimer = 0f;
             _postDashAirControlTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
@@ -279,6 +301,11 @@ namespace Game.Components.Movement
         /// </summary>
         public void UpdateMovement()
         {
+            if (_wallJumpLockTimer > 0f)
+            {
+                _wallJumpLockTimer = Mathf.Max(0f, _wallJumpLockTimer - Time.deltaTime);
+            }
+
             CheckGroundStatus();
             CheckWallStatus();
 
@@ -314,7 +341,6 @@ namespace Game.Components.Movement
 
             if (isDashingNow)
             {
-                StopClimb();
                 ResetWallSlideState();
                 return;
             }
@@ -324,9 +350,6 @@ namespace Game.Components.Movement
                 if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
-
-            UpdateClimbState();
-            if (isClimbing) return;
 
             UpdateJumpState();
         }
@@ -342,15 +365,6 @@ namespace Game.Components.Movement
             if (IsDashing) return;
             if (isGrabbing) return;
             if (!canMove || rb == null) return;
-
-            if (isClimbing)
-            {
-                float climbVelocity = Mathf.Abs(direction.y) >= climbInputThreshold
-                    ? direction.y * GetCurrentClimbSpeed()
-                    : 0f;
-                rb.linearVelocity = new Vector2(0f, climbVelocity);
-                return;
-            }
 
             float currentSpeed = rb.linearVelocity.x;
 
@@ -371,7 +385,6 @@ namespace Game.Components.Movement
             float targetSpeed = direction.x * effectiveMoveSpeed;
             bool isPushingIntoWall = !isGrounded
                                      && isTouchingWall
-                                     && !isClimbing
                                      && wallSideSign != 0
                                      && Mathf.Abs(direction.x) >= wallInputThreshold
                                      && Mathf.Sign(direction.x) == wallSideSign;
@@ -498,7 +511,7 @@ namespace Game.Components.Movement
                 return;
             }
 
-            if (isClimbing)
+            if (IsWallSliding)
             {
                 PerformWallJump();
                 return;
@@ -550,16 +563,22 @@ namespace Game.Components.Movement
                 ? -wallSideSign
                 : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
 
-            StopClimb();
+            ResetWallSlideState();
 
             BeginJumpWindow(varJumpTime);
 
+            // Wall jump always launches in the "up" direction (UpSign, derived from jumpSpeed),
+            // regardless of the serialized field's sign — a stale/negative value must never
+            // fire the player into the ground.
             rb.linearVelocity = new Vector2(
                 jumpAwayDirection * wallJumpHorizontalSpeed,
-                wallJumpVerticalSpeed
+                Mathf.Abs(wallJumpVerticalSpeed) * UpSign
             );
 
             ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
+
+            _wallJumpLockTimer = wallJumpLockTime;
+            WallJumped?.Invoke();
         }
 
         private bool CanExecuteJump()
@@ -573,7 +592,7 @@ namespace Game.Components.Movement
                 return false;
             }
 
-            if (isClimbing)
+            if (IsWallSliding)
             {
                 return true;
             }
@@ -608,6 +627,8 @@ namespace Game.Components.Movement
             Vector2 jumpVelocity = new Vector2(currentSpeedX + jumpBoostAmount, jumpVerticalSpeed);
             rb.linearVelocity = jumpVelocity;
             ApplyJumpStateAfterLaunch(jumpVelocity.y);
+
+            Jumped?.Invoke();
 
             if (enableVerboseLogs)
             {
@@ -672,7 +693,6 @@ namespace Game.Components.Movement
         {
             if (rb == null) return;
 
-            if (HandleClimbJumpState()) return;
             if (HandleWallSlideJumpState()) return;
 
             ResetWallSlideState();
@@ -686,23 +706,9 @@ namespace Game.Components.Movement
             UpdateAirborneJumpFlags();
         }
 
-        private bool HandleClimbJumpState()
-        {
-            if (!isClimbing)
-            {
-                return false;
-            }
-
-            ResetWallSlideState();
-            isJumping = false;
-            isFalling = false;
-            return true;
-        }
-
         private bool HandleWallSlideJumpState()
         {
-            bool wallSlideActive = isTouchingWall && !isGrounded;
-            if (!wallSlideActive)
+            if (!IsWallSliding)
             {
                 return false;
             }
@@ -856,6 +862,17 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (_wallJumpLockTimer > 0f)
+            {
+                // During the wall-jump lock window, ignore wall contact so the launch
+                // velocity carries the player away instead of being re-captured by the
+                // climb / wall-slide logic on the very next frame.
+                isTouchingWall = false;
+                wallSideSign = 0;
+                _wallEntrySpeedFactor = 0f;
+                return;
+            }
+
             Vector2 center = characterTransform.position;
             float offsetX = Mathf.Abs(wallCheckOffset.x);
 
@@ -889,42 +906,6 @@ namespace Game.Components.Movement
             {
                 wallSideSign = 0;
             }
-        }
-
-        private void UpdateClimbState()
-        {
-            if (!canMove || rb == null)
-            {
-                StopClimb();
-                return;
-            }
-
-            bool wantsToClimb = Mathf.Abs(moveInput.y) >= climbInputThreshold;
-            bool canClimbNow = !isGrounded && isTouchingWall;
-
-            if (canClimbNow && wantsToClimb)
-            {
-                if (!isClimbing)
-                {
-                    isClimbing = true;
-                    isJumping = false;
-                    isFalling = false;
-                    jumpGraceTimer = 0;
-                    varJumpTimer = 0;
-                    autoJump = false;
-                    rb.linearVelocity = Vector2.zero;
-                }
-
-                return;
-            }
-
-            StopClimb();
-        }
-
-        private void StopClimb()
-        {
-            if (!isClimbing) return;
-            isClimbing = false;
         }
 
         private void UpdateWallSlideVelocity()
@@ -1006,7 +987,6 @@ namespace Game.Components.Movement
             rb.linearVelocity = Vector2.zero;
 
             // Clear conflicting states
-            StopClimb();
             ResetWallSlideState();
             isJumping = false;
             isFalling = false;
@@ -1069,7 +1049,6 @@ namespace Game.Components.Movement
             canMove = value;
             if (!canMove)
             {
-                StopClimb();
                 _wallEntrySpeedFactor = 0f;
                 _postDashAirControlTimer = 0f;
                 _postDashAirBrakeTimer = 0f;
@@ -1090,11 +1069,6 @@ namespace Game.Components.Movement
         public bool IsFalling()
         {
             return isFalling;
-        }
-
-        public bool IsClimbing()
-        {
-            return isClimbing;
         }
 
         public Vector2 GetVelocity()
@@ -1138,11 +1112,6 @@ namespace Game.Components.Movement
             // Normalize by character max speed, not current cap, to avoid false 1.0 factor while coasting.
             float referenceSpeed = Mathf.Max(0.01f, maxSpeed);
             return Mathf.Clamp01(speedNow / referenceSpeed);
-        }
-
-        private float GetCurrentClimbSpeed()
-        {
-            return climbSpeed * Mathf.Lerp(1f, climbSpeedBoostMultiplier, _wallEntrySpeedFactor);
         }
 
         private bool IsReversingDirection(float inputX, float currentSpeed)
@@ -1195,7 +1164,7 @@ namespace Game.Components.Movement
             }
 
             bool isHoldingRun = Mathf.Abs(moveInput.x) >= postDashRunHoldThreshold;
-            bool hasVerticalIntent = Mathf.Abs(moveInput.y) >= climbInputThreshold;
+            bool hasVerticalIntent = Mathf.Abs(moveInput.y) >= wallInputThreshold;
 
             if (!isHoldingRun || hasVerticalIntent)
             {
