@@ -1,25 +1,15 @@
 using UnityEngine;
+using UnityEngine.U2D.IK;
 
 public class Boss : BossBase
 {
-    [Header("Sprite References")]
-    [SerializeField] private Transform upperR;
-    [SerializeField] private Transform upperL;
-    [SerializeField] private Transform clawR;
-    [SerializeField] private Transform bossBody;
+    [Header("IK Solver (auto-wires Hammer_Left_Target at Start)")]
+    [Tooltip("Drag Boss_Arm_Left_LimbSolver2D here. At Start it receives the hammer target automatically.")]
+    [SerializeField] private LimbSolver2D hammerLimbSolver;
 
-    [Header("Attack Joints")]
-    [SerializeField] private Transform upperLJoint;   // Upper_L_Joint
-    [SerializeField] private Transform lowerLJoint;   // Lower_L_Joint
-    [SerializeField] private Transform hammer;        // Boss_Hammer(L)
-
-    [Header("Attack Settings")]
-    [SerializeField] private float attackRange    = 5f;
-    [SerializeField] private float hammerCooldown = 10f;
-
-    [Header("Thrust Distances (scale up/down if arm over/under-shoots)")]
-    [SerializeField] private float upperThrustX = 1.5f;
-    [SerializeField] private float lowerThrustX = 1.0f;
+    [Header("IK Targets (set by CrabHammerSlam or manually)")]
+    [Tooltip("Hammer_Left_Target — the LimbSolver2D effector target.")]
+    [SerializeField] private Transform hammerLeftTarget;
 
     private BossIdleState _idleState;
 
@@ -32,19 +22,8 @@ public class Boss : BossBase
 
     public override void OnPlayerDetected()
     {
-        var attack = new BossHammerAttack(
-            this,
-            upperLJoint,
-            lowerLJoint,
-            hammer,
-            upperThrustX,
-            lowerThrustX,
-            attackRange,
-            hammerCooldown,
-            OnHammerImpact);
-
-        TransitionTo(new BossAttackState(this, attack));
-        Debug.Log("[Boss] Player detected → AttackState");
+        // Attack is handled by the CrabHammerSlam component (self-managed via Update).
+        Debug.Log("[Boss] Player detected.");
     }
 
     public override void OnPlayerLost()
@@ -66,30 +45,24 @@ public class Boss : BossBase
         StopAllCoroutines();
     }
 
-    private void OnHammerImpact()
-    {
-        // TODO: spawn hitbox, trigger camera shake, play VFX/SFX here
-    }
-
     private void HandleDeath()
     {
+        GetComponent<BossHammerSwing>()?.ResetArm();
         Exit();
         Destroy(gameObject, 1f);
     }
 
     private void ResolveReferences()
     {
-        if (upperLJoint == null) upperLJoint = FindDeep("Upper_L_Joint");
-        if (lowerLJoint == null) lowerLJoint = FindDeep("Lower_L_Joint");
-        if (hammer      == null) hammer      = FindDeep("Boss_Hammer(L)");
-        if (upperR      == null) upperR      = FindDeep("Boss_Upper_R");
-        if (upperL      == null) upperL      = FindDeep("Boss_Upper_L");
-        if (clawR       == null) clawR       = FindDeep("Boss_Claw(R)");
-        if (bossBody    == null) bossBody    = FindDeep("Boss_Body");
+        if (hammerLeftTarget == null) hammerLeftTarget = FindDeep("Hammer_Left_Target");
 
-        if (upperLJoint == null) Debug.LogWarning("[Boss] Upper_L_Joint not found.");
-        if (lowerLJoint == null) Debug.LogWarning("[Boss] Lower_L_Joint not found.");
-        if (hammer      == null) Debug.LogWarning("[Boss] Boss_Hammer(L) not found.");
+        // Wire the IK target to the solver so the arm tracks it
+        if (hammerLimbSolver != null && hammerLeftTarget != null)
+        {
+            var chain = hammerLimbSolver.GetChain(0);
+            if (chain != null && chain.target == null)
+                chain.target = hammerLeftTarget;
+        }
     }
 
     private Transform FindDeep(string childName)
@@ -97,5 +70,13 @@ public class Boss : BossBase
         foreach (Transform t in GetComponentsInChildren<Transform>(true))
             if (t.name == childName) return t;
         return null;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(1f, 0.85f, 0f, 0.07f);
+        Gizmos.DrawSphere(transform.position, detectionRadius);
+        Gizmos.color = new Color(1f, 0.85f, 0f, 0.35f);
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
