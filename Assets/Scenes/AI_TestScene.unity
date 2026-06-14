@@ -287,17 +287,17 @@ MonoBehaviour:
   m_SolveFromDefaultPose: 1
   m_Weight: 1
   m_Chain:
-    m_EffectorTransform: {fileID: 677741893}
-    m_TargetTransform: {fileID: 977050026}
+    m_EffectorTransform: {fileID: 1532931163}
+    m_TargetTransform: {fileID: 1808746885}
     m_TransformCount: 3
     m_Transforms:
     - {fileID: 1740685113}
-    - {fileID: 287210686}
-    - {fileID: 677741893}
+    - {fileID: 1870630720}
+    - {fileID: 1532931163}
     m_DefaultLocalRotations:
     - {x: -0, y: -0, z: -0, w: 1}
-    - {x: -0, y: -0, z: -0.19435017, w: 0.98093224}
-    - {x: -0, y: -0, z: 0.000000014901161, w: 1}
+    - {x: -0, y: -0, z: -0.38789687, w: 0.9217028}
+    - {x: 0, y: 0, z: 0, w: 1}
     m_StoredLocalRotations:
     - {x: 0, y: 0, z: 0, w: 0}
     - {x: 0, y: 0, z: 0, w: 0}
@@ -316,7 +316,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 977050026}
+  - {fileID: 1808746885}
   m_Father: {fileID: 593077541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &210219437 stripped
@@ -468,38 +468,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &287210685
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 287210686}
-  m_Layer: 0
-  m_Name: Boss_Claw
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &287210686
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 287210685}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.21904916, w: 0.97571385}
-  m_LocalPosition: {x: 3.09, y: -5.2, z: -0.7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 677741893}
-  m_Father: {fileID: 1740685113}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &373861926 stripped
 CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 1618289537991685747, guid: 69478948e04ed444199919ce4557c583, type: 3}
@@ -1005,7 +973,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 581440549}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.11145281, w: 0.99376976}
+  m_LocalRotation: {x: 0, y: 0, z: 0.0011156313, w: 0.9999994}
   m_LocalPosition: {x: -3.43, y: -5.57, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1483,38 +1451,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &677741892
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 677741893}
-  m_Layer: 0
-  m_Name: Claw_Point
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &677741893
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 677741892}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.04961863, w: 0.99876827}
-  m_LocalPosition: {x: -7.66, y: -1.14, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1870630720}
-  m_Father: {fileID: 287210686}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &879963573
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,13 +1475,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879963573}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.039648652, w: 0.9992137}
+  m_LocalRotation: {x: -0, y: -0, z: -0.033127017, w: 0.99945116}
   m_LocalPosition: {x: 4.44, y: -3.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 581440550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.797}
 --- !u!1 &939968737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1583,37 +1519,6 @@ CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 7105860446297271012, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
   m_PrefabInstance: {fileID: 5425083471043710189}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &977050025
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 977050026}
-  m_Layer: 0
-  m_Name: Boss_Arm_Right_LimbSolver2D_Target
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &977050026
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 977050025}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.14016455, w: 0.9901282}
-  m_LocalPosition: {x: 9.29, y: -2.65, z: -1.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 125476761}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.115}
 --- !u!1 &1026160082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1639,14 +1544,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026160082}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.10793765, w: 0.9941577}
+  m_LocalRotation: {x: 0, y: 0, z: 0.07514211, w: 0.99717283}
   m_LocalPosition: {x: -2.65, y: -1.45, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 581440550}
   m_Father: {fileID: 1387079100}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 4.62}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 8.619}
 --- !u!212 &1026160084
 SpriteRenderer:
   serializedVersion: 2
@@ -2670,6 +2575,37 @@ Transform:
   - {fileID: 1826641883}
   m_Father: {fileID: 593077541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1532931162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1532931163}
+  m_Layer: 0
+  m_Name: Boss_Claw_Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1532931163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532931162}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.000000011175871, w: 1}
+  m_LocalPosition: {x: -6.57, y: -3.47, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1870630720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1537702879
 GameObject:
   m_ObjectHideFlags: 0
@@ -3141,14 +3077,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740685112}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.030568462, w: 0.9995327}
+  m_LocalRotation: {x: 0, y: 0, z: -0.13897319, w: 0.9902961}
   m_LocalPosition: {x: 10.11, y: -1.48, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 287210686}
+  - {fileID: 1870630720}
   m_Father: {fileID: 939968738}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 20.92}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -15.977}
 --- !u!212 &1740685114
 SpriteRenderer:
   serializedVersion: 2
@@ -3322,6 +3258,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1808746884
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1808746885}
+  m_Layer: 0
+  m_Name: Boss_Arm_Right_LimbSolver2D_Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1808746885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808746884}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.08746907, w: 0.99616724}
+  m_LocalPosition: {x: 7.839225, y: -1.8682263, z: -1.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 125476761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1826641882
 GameObject:
   m_ObjectHideFlags: 0
@@ -3347,7 +3314,7 @@ Transform:
   m_GameObject: {fileID: 1826641882}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.043182116, w: 0.9990672}
-  m_LocalPosition: {x: 1.33, y: -1.29, z: -1.2}
+  m_LocalPosition: {x: 3.7473297, y: -1.9248524, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3655,12 +3622,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1870630719}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.16692483, w: 0.9859696}
-  m_LocalPosition: {x: 9.23, y: 2.34, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.05182027, w: 0.99865645}
+  m_LocalPosition: {x: 3.35, y: -5.52, z: -0.6999999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 677741893}
+  m_Children:
+  - {fileID: 1532931163}
+  m_Father: {fileID: 1740685113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1870630721
 Animator:
@@ -6398,7 +6366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossClawAttack
   upperRightIKTarget: {fileID: 1740685113}
-  clawRightIKTarget: {fileID: 977050026}
+  clawRightIKTarget: {fileID: 0}
   clawCollider: {fileID: 1105080370}
   clawAttackZone: {fileID: 1713496632}
   playerTransform: {fileID: 1274332873}
