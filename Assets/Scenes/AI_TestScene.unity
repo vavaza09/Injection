@@ -1507,7 +1507,7 @@ Transform:
   m_GameObject: {fileID: 939968737}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 106.48, y: -13.24, z: -0.8}
+  m_LocalPosition: {x: 106.48, y: -13.24, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2961,7 +2961,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.19043732, y: -2.4756112}
+  m_Offset: {x: -0.04639435, y: -1.872767}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2971,7 +2971,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 24.994385, y: 12.045035}
+  m_Size: {x: 22.79831, y: 13.250724}
   m_EdgeRadius: 0
 --- !u!1 &1716032115
 GameObject:
@@ -6133,7 +6133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
   maxHealth: 100
-  detectionRadius: 25
+  detectionRadius: 35
   hammerLimbSolver: {fileID: 1525544614}
   hammerLeftTarget: {fileID: 1826641883}
 --- !u!1 &6816937868527908258
@@ -6328,8 +6328,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  upperArmReachRatio: 0.4
-  upperArmBowOffset: 0.3
   cooldown: 2
   isAttacking: 0
 --- !u!114 &7867971398253140959
@@ -6347,7 +6345,7 @@ MonoBehaviour:
   detectionRadius: 6
   playerTransform: {fileID: 1274332873}
   globalCooldown: 1.5
-  maxConsecutiveSameAttack: 3
+  maxConsecutiveSameAttack: 2
   hammerAttack: {fileID: 7867971398253140958}
   clawAttack: {fileID: 7867971398253140960}
   lastAttackName: 
@@ -6365,8 +6363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 205c978a0eb7f244cb525566e3a73b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossClawAttack
-  upperRightIKTarget: {fileID: 1740685113}
-  clawRightIKTarget: {fileID: 0}
+  clawRightIKTarget: {fileID: 1808746885}
   clawCollider: {fileID: 1105080370}
   clawAttackZone: {fileID: 1713496632}
   playerTransform: {fileID: 1274332873}
@@ -6397,8 +6394,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  upperArmReachRatio: 0.4
-  upperArmBowOffset: 0.3
   strikeDuration: 0.25
   strikeCurve:
     serializedVersion: 2
