@@ -2,84 +2,70 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Self-contained hammer swing attack for a 2D sprite-based boss.
-//
-// Detection: a CircleCollider2D (isTrigger) on the boss detects the Player tag.
-//   → Player enters  : starts the attack loop automatically.
-//   → Player exits   : stops initiating new attacks (current swing completes normally).
-//
-// Attack arc: the hammer IK target follows a quadratic bezier curve, not a straight line,
-// so the arm actually swings through an arc rather than sliding linearly.
-//
-// Phases
-//   1. Wind-up  (~0.5 s) : IK target rises up and slightly back (ease-in).
-//   2. Swing    (~0.25 s): bezier arc forward and down to impact point (sharp ease-in).
-//   3. Hold     (~0.3 s) : hammer stays at impact, collider active, OnImpact fires.
-//   4. Recovery (~0.8 s) : bezier arc gently back to idle position (ease-out).
-//
-// Attach to the boss root. Auto-finds IK targets and Hammer collider by name on Start.
-// Call TriggerAttack() from external code if you want to fire the attack manually too.
+// Hammer slam attack for a 2D sprite-based boss, driven by IK target Transforms.
+// BOTH the shoulder (Boss_Upper_L) AND the end-effector (Boss_Arm_Left_LimbSolver2D_Target)
+// move simultaneously so the entire arm extends during the slam.
+// Detection and attack selection are handled by BossAttackManager — this script
+// only runs the animation when TriggerAttack() is called.
 public class BossHammerAttack : MonoBehaviour
 {
-    // ── References ────────────────────────────────────────────────────────
+    // ── References ────────────────────────────────────────────────────────────────
 
     [Header("References")]
-    [Tooltip("'upper left' — upper-arm IK root. Idle position saved at Start.")]
+    [Tooltip("Upper-arm IK root — idle position saved at Start.")]
     [SerializeField] private Transform upperLeftIKTarget;
 
-    [Tooltip("'Hammer left' — IK effector target. This drives the entire swing arc.")]
+    [Tooltip("Hammer IK effector target — drives the entire swing arc.")]
     [SerializeField] private Transform hammerLeftIKTarget;
 
     [Tooltip("'Hammer collider' GameObject — activated during impact hold only.")]
     [SerializeField] private GameObject hammerCollider;
 
-    // ── Detection ─────────────────────────────────────────────────────────
-
-    [Header("Detection")]
-    [Tooltip("Radius of the CircleCollider2D trigger used to detect the player.\n" +
-             "Make sure there is a CircleCollider2D (isTrigger) on this GameObject.")]
-    [SerializeField] private float detectionRadius = 5f;
-
-    // ── Wind-Up Phase ─────────────────────────────────────────────────────
+    // ── Wind-Up Phase ─────────────────────────────────────────────────────────────
 
     [Header("Wind-Up Phase")]
-    [Tooltip("Offset from the saved idle world position. Negative X = back, positive Y = raise up.")]
     [SerializeField] private Vector2 windUpOffset = new Vector2(-0.5f, 2.5f);
     [SerializeField] private float windUpDuration = 0.5f;
     [Tooltip("Ease-in: starts slow, accelerates into the raised pose.")]
     [SerializeField] private AnimationCurve windUpCurve;
 
-    // ── Swing Phase ───────────────────────────────────────────────────────
+    // ── Swing Phase ───────────────────────────────────────────────────────────────
 
     [Header("Swing Phase")]
-    [Tooltip("Bezier control point offset — the arc passes near here during the swing.\n" +
-             "Positive X = forward, positive Y = still high (creates the overhead arc).")]
+    [Tooltip("Bezier control point offset — the arc passes near here during the swing.")]
     [SerializeField] private Vector2 swingArcMidOffset = new Vector2(0.5f, 1f);
 
-    [Tooltip("Arc endpoint offset — where the hammer hits the ground.\n" +
-             "Positive X = forward toward player, negative Y = down into the ground.")]
+    [Tooltip("Arc endpoint — where the hammer slams down.")]
     [SerializeField] private Vector2 swingImpactOffset = new Vector2(1.5f, -1.5f);
     [SerializeField] private float swingDuration = 0.25f;
-    [Tooltip("Sharp ease-in: explosive start, decelerates at impact — feels heavy and powerful.")]
+    [Tooltip("Sharp ease-in: explosive start, decelerates at impact.")]
     [SerializeField] private AnimationCurve swingCurve;
 
-    // ── Impact Hold ───────────────────────────────────────────────────────
+    // ── Impact Hold ───────────────────────────────────────────────────────────────
 
     [Header("Impact Hold")]
     [SerializeField] private float holdDuration = 0.3f;
-    [Tooltip("Fires at the moment of impact. Wire up screenshake, VFX, SFX, and damage here.")]
+    [Tooltip("Fires at the moment of impact.")]
     public UnityEvent OnImpact;
 
-    // ── Recovery Phase ────────────────────────────────────────────────────
+    // ── Recovery Phase ────────────────────────────────────────────────────────────
 
     [Header("Recovery Phase")]
-    [Tooltip("Bezier control point for the return arc — gives the lift a natural curve.")]
+    [Tooltip("Bezier control point for the return arc.")]
     [SerializeField] private Vector2 recoveryArcMidOffset = new Vector2(0.3f, 0.5f);
     [SerializeField] private float recoveryDuration = 0.8f;
     [Tooltip("Ease-out: starts moving, gently decelerates back to idle.")]
     [SerializeField] private AnimationCurve recoveryCurve;
 
-    // ── Settings ──────────────────────────────────────────────────────────
+    // ── Upper Arm ─────────────────────────────────────────────────────────────────
+
+    [Header("Upper Arm")]
+    [Tooltip("Fraction of the swing offset the shoulder moves. 0 = stays at idle. 0.4 = natural extension.")]
+    [SerializeField] private float upperArmReachRatio = 0.4f;
+    [Tooltip("Extra upward bow on the shoulder during wind-up, giving a natural pre-slam lift.")]
+    [SerializeField] private float upperArmBowOffset = 0.3f;
+
+    // ── Settings ──────────────────────────────────────────────────────────────────
 
     [Header("Settings")]
     [SerializeField] private float cooldown = 2f;
@@ -87,14 +73,13 @@ public class BossHammerAttack : MonoBehaviour
     [SerializeField] private bool isAttacking;
     public bool IsAttacking => isAttacking;
 
-    // ── Private state ─────────────────────────────────────────────────────
+    // ── Private state ─────────────────────────────────────────────────────────────
 
-    private bool    _playerInRange;
     private Vector3 _idleHammerPos;
     private Vector3 _idleUpperPos;
     private bool    _idleSaved;
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
     private void Awake()
     {
@@ -108,118 +93,110 @@ public class BossHammerAttack : MonoBehaviour
         if (hammerCollider != null) hammerCollider.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (_playerInRange && !isAttacking)
-            StartCoroutine(AttackRoutine());
-    }
+    // ── Public API ────────────────────────────────────────────────────────────────
 
-    // ── Trigger detection ─────────────────────────────────────────────────
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            _playerInRange = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            _playerInRange = false;
-    }
-
-    // ── Public API ────────────────────────────────────────────────────────
-
-    /// <summary>Start the attack immediately (also callable from external AI/state machine).</summary>
+    /// <summary>Start the attack. Ignored while already attacking.</summary>
     public void TriggerAttack()
     {
         if (!isAttacking) StartCoroutine(AttackRoutine());
     }
 
-    /// <summary>Abort mid-attack and snap the arm back to idle (death, stagger, etc.).</summary>
+    /// <summary>Abort and snap arm back to idle (boss death, stagger, etc.).</summary>
     public void ResetArm()
     {
         StopAllCoroutines();
-        isAttacking    = false;
-        _playerInRange = false;
+        isAttacking = false;
         if (hammerCollider != null) hammerCollider.SetActive(false);
         if (!_idleSaved) return;
         if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = _idleHammerPos;
         if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = _idleUpperPos;
     }
 
-    // ── Attack sequence ───────────────────────────────────────────────────
+    // ── Attack sequence ───────────────────────────────────────────────────────────
 
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
 
-        // Mirror X offsets when boss is facing left (negative lossy X scale).
-        float xDir    = transform.lossyScale.x >= 0f ? 1f : -1f;
-        Vector3 windUp = _idleHammerPos + new Vector3(windUpOffset.x       * xDir, windUpOffset.y,       0f);
-        Vector3 arcMid = _idleHammerPos + new Vector3(swingArcMidOffset.x  * xDir, swingArcMidOffset.y,  0f);
-        Vector3 impact = _idleHammerPos + new Vector3(swingImpactOffset.x  * xDir, swingImpactOffset.y,  0f);
+        float xDir  = transform.lossyScale.x >= 0f ? 1f : -1f;
+
+        // Hammer target positions
+        Vector3 windUp = _idleHammerPos + new Vector3(windUpOffset.x      * xDir, windUpOffset.y,      0f);
+        Vector3 arcMid = _idleHammerPos + new Vector3(swingArcMidOffset.x * xDir, swingArcMidOffset.y, 0f);
+        Vector3 impact = _idleHammerPos + new Vector3(swingImpactOffset.x * xDir, swingImpactOffset.y, 0f);
         Vector3 recMid = _idleHammerPos + new Vector3(recoveryArcMidOffset.x * xDir, recoveryArcMidOffset.y, 0f);
 
-        // Phase 1 — Wind-up: arm rises to loaded position
-        yield return TweenWorld(hammerLeftIKTarget, _idleHammerPos, windUp, windUpDuration, windUpCurve);
+        // Upper arm positions: fraction of hammer offsets + bow lift during wind-up
+        Vector3 upperWindUp = _idleUpperPos + new Vector3(
+            windUpOffset.x      * xDir * upperArmReachRatio * 0.5f,
+            windUpOffset.y      * upperArmReachRatio + upperArmBowOffset, 0f);
+        Vector3 upperImpact = _idleUpperPos + new Vector3(
+            swingImpactOffset.x * xDir * upperArmReachRatio,
+            swingImpactOffset.y * upperArmReachRatio, 0f);
 
-        // Phase 2 — Swing: arc from raised position through overshoot → ground impact
-        yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration, swingCurve);
+        // ── Phase 1: Wind-Up ─────────────────────────────────────────────────────
+        float e = 0f;
+        while (e < windUpDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(windUpCurve, e / windUpDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = Vector3.Lerp(_idleHammerPos, windUp,      c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = Vector3.Lerp(_idleUpperPos,  upperWindUp, c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = windUp;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = upperWindUp;
 
-        // Phase 3 — Impact hold: collider on, event fires, hammer stays at ground
+        // ── Phase 2: Swing ───────────────────────────────────────────────────────
+        Vector3 upperSwingCtrl = (upperWindUp + upperImpact) * 0.5f;
+        e = 0f;
+        while (e < swingDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(swingCurve, e / swingDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = QuadBezier(windUp,      arcMid,         impact,      c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = QuadBezier(upperWindUp, upperSwingCtrl, upperImpact, c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = impact;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = upperImpact;
+
+        // ── Phase 3: Impact Hold ─────────────────────────────────────────────────
         if (hammerCollider != null) hammerCollider.SetActive(true);
         OnImpact?.Invoke();
         yield return new WaitForSeconds(holdDuration);
-
-        // Phase 4 — Recovery: collider off, arc back to idle
         if (hammerCollider != null) hammerCollider.SetActive(false);
-        yield return BezierTween(hammerLeftIKTarget, impact, recMid, _idleHammerPos, recoveryDuration, recoveryCurve);
+
+        // ── Phase 4: Recovery ────────────────────────────────────────────────────
+        Vector3 upperRecCtrl = (upperImpact + _idleUpperPos) * 0.5f + Vector3.up * 0.3f;
+        e = 0f;
+        while (e < recoveryDuration)
+        {
+            e += Time.deltaTime;
+            float c = Eval(recoveryCurve, e / recoveryDuration);
+            if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = QuadBezier(impact,      recMid,       _idleHammerPos, c);
+            if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = QuadBezier(upperImpact, upperRecCtrl, _idleUpperPos,  c);
+            yield return null;
+        }
+        if (hammerLeftIKTarget != null) hammerLeftIKTarget.position = _idleHammerPos;
+        if (upperLeftIKTarget  != null) upperLeftIKTarget.position  = _idleUpperPos;
 
         isAttacking = false;
         yield return new WaitForSeconds(cooldown);
     }
 
-    // ── Tween helpers ─────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────────
 
-    private static IEnumerator TweenWorld(
-        Transform t, Vector3 from, Vector3 to, float dur, AnimationCurve curve)
-    {
-        if (t == null) yield break;
-        float e = 0f;
-        while (e < dur)
-        {
-            e += Time.deltaTime;
-            float raw = Mathf.Clamp01(e / dur);
-            t.position = Vector3.Lerp(from, to, curve != null ? curve.Evaluate(raw) : raw);
-            yield return null;
-        }
-        t.position = to;
-    }
+    private static float Eval(AnimationCurve c, float t) =>
+        c != null ? c.Evaluate(Mathf.Clamp01(t)) : Mathf.Clamp01(t);
 
-    private static IEnumerator BezierTween(
-        Transform t, Vector3 from, Vector3 control, Vector3 to, float dur, AnimationCurve curve)
-    {
-        if (t == null) yield break;
-        float e = 0f;
-        while (e < dur)
-        {
-            e += Time.deltaTime;
-            float raw = Mathf.Clamp01(e / dur);
-            t.position = QuadraticBezier(from, control, to, curve != null ? curve.Evaluate(raw) : raw);
-            yield return null;
-        }
-        t.position = to;
-    }
-
-    /// <summary>Quadratic bezier: smoothly interpolates through a control point for a curved arc.</summary>
-    private static Vector3 QuadraticBezier(Vector3 a, Vector3 control, Vector3 b, float t)
+    private static Vector3 QuadBezier(Vector3 a, Vector3 ctrl, Vector3 b, float t)
     {
         float u = 1f - t;
-        return u * u * a + 2f * u * t * control + t * t * b;
+        return u * u * a + 2f * u * t * ctrl + t * t * b;
     }
 
-    // ── Setup helpers ─────────────────────────────────────────────────────
+    // ── Setup ─────────────────────────────────────────────────────────────────────
 
     private void SaveIdlePositions()
     {
@@ -263,15 +240,6 @@ public class BossHammerAttack : MonoBehaviour
         return go != null ? go.transform : null;
     }
 
-    // Called by Unity when component is added via the Inspector — pre-fills curves.
-    private void Reset()
-    {
-        windUpCurve   = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f),  new Keyframe(1f, 1f, 2f, 2f));
-        swingCurve    = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f),  new Keyframe(1f, 1f, 0f, 0f));
-        recoveryCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f),  new Keyframe(1f, 1f, 0f, 0f));
-    }
-
-    // Called in Awake — sets curve defaults when added via AddComponent (not via Inspector).
     private void EnsureDefaultCurves()
     {
         if (windUpCurve == null || windUpCurve.length == 0)
@@ -280,5 +248,12 @@ public class BossHammerAttack : MonoBehaviour
             swingCurve    = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
         if (recoveryCurve == null || recoveryCurve.length == 0)
             recoveryCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
+    }
+
+    private void Reset()
+    {
+        windUpCurve   = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f), new Keyframe(1f, 1f, 2f, 2f));
+        swingCurve    = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
+        recoveryCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
     }
 }

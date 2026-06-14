@@ -492,7 +492,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 287210685}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.12247807, w: 0.9924712}
+  m_LocalRotation: {x: 0, y: 0, z: 0.21904916, w: 0.97571385}
   m_LocalPosition: {x: 3.09, y: -5.2, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1507,7 +1507,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 677741892}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.03900025, w: 0.9992392}
+  m_LocalRotation: {x: -0, y: -0, z: -0.04961863, w: 0.99876827}
   m_LocalPosition: {x: -7.66, y: -1.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1607,13 +1607,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 977050025}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.20307517, w: 0.97916317}
-  m_LocalPosition: {x: 11.22, y: -2.27, z: -1.2}
+  m_LocalRotation: {x: -0, y: -0, z: 0.14016455, w: 0.9901282}
+  m_LocalPosition: {x: 9.29, y: -2.65, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 125476761}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.115}
 --- !u!1 &1026160082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1935,6 +1935,74 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1105080370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1105080372}
+  - component: {fileID: 1105080371}
+  m_Layer: 0
+  m_Name: Claw collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!58 &1105080371
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105080370}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!4 &1105080372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105080370}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -110.06, y: 15.44, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5173724913968477575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1128111572 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2301711623423801022, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -2891,6 +2959,84 @@ Transform:
   - {fileID: 1924639573}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1713496629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1713496631}
+  - component: {fileID: 1713496632}
+  m_Layer: 0
+  m_Name: Claw Attack Zone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1713496631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713496629}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5173724913968477575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1713496632
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713496629}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.19043732, y: -2.4756112}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 24.994385, y: 12.045035}
+  m_EdgeRadius: 0
 --- !u!1 &1716032115
 GameObject:
   m_ObjectHideFlags: 0
@@ -2995,7 +3141,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740685112}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.12042828, w: 0.99272203}
+  m_LocalRotation: {x: 0, y: 0, z: -0.030568462, w: 0.9995327}
   m_LocalPosition: {x: 10.11, y: -1.48, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3510,7 +3656,7 @@ Transform:
   m_GameObject: {fileID: 1870630719}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.16692483, w: 0.9859696}
-  m_LocalPosition: {x: 9.24, y: 1.84, z: 0}
+  m_LocalPosition: {x: 9.23, y: 2.34, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5841,6 +5987,8 @@ Transform:
   m_Children:
   - {fileID: 1032833963}
   - {fileID: 8369962566626697757}
+  - {fileID: 1105080372}
+  - {fileID: 1713496631}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5425083471043710189
@@ -6017,7 +6165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
   maxHealth: 100
-  detectionRadius: 30
+  detectionRadius: 25
   hammerLimbSolver: {fileID: 1525544614}
   hammerLeftTarget: {fileID: 1826641883}
 --- !u!1 &6816937868527908258
@@ -6051,6 +6199,8 @@ GameObject:
   - component: {fileID: 6443093242242359939}
   - component: {fileID: 7867971398253140958}
   - component: {fileID: 7867971398253140957}
+  - component: {fileID: 7867971398253140960}
+  - component: {fileID: 7867971398253140959}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -6092,8 +6242,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 5
+  m_Offset: {x: -0.064590454, y: -0.23683167}
+  m_Radius: 10.133789
 --- !u!114 &7867971398253140958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6109,7 +6259,6 @@ MonoBehaviour:
   upperLeftIKTarget: {fileID: 1026160083}
   hammerLeftIKTarget: {fileID: 1826641883}
   hammerCollider: {fileID: 1650654452}
-  detectionRadius: 7
   windUpOffset: {x: 3.35, y: 6.5}
   windUpDuration: 1.6
   windUpCurve:
@@ -6154,7 +6303,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  swingArcMidOffset: {x: 4, y: 5}
+  swingArcMidOffset: {x: 0.5, y: 1}
   swingImpactOffset: {x: 1.5, y: -1.5}
   swingDuration: 0.3
   swingCurve:
@@ -6211,7 +6360,131 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  upperArmReachRatio: 0.4
+  upperArmBowOffset: 0.3
   cooldown: 2
+  isAttacking: 0
+--- !u!114 &7867971398253140959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7867971398253140956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18244524df787004bad820861bb8f06d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossAttackManager
+  detectionRadius: 6
+  playerTransform: {fileID: 1274332873}
+  globalCooldown: 1.5
+  maxConsecutiveSameAttack: 3
+  hammerAttack: {fileID: 7867971398253140958}
+  clawAttack: {fileID: 7867971398253140960}
+  lastAttackName: 
+  consecutiveCount: 0
+  playerInRange: 0
+--- !u!114 &7867971398253140960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7867971398253140956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 205c978a0eb7f244cb525566e3a73b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossClawAttack
+  upperRightIKTarget: {fileID: 1740685113}
+  clawRightIKTarget: {fileID: 977050026}
+  clawCollider: {fileID: 1105080370}
+  clawAttackZone: {fileID: 1713496632}
+  playerTransform: {fileID: 1274332873}
+  anticipationDistance: 2.5
+  anticipationLift: 2
+  anticipationDuration: 0.4
+  anticipationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  upperArmReachRatio: 0.4
+  upperArmBowOffset: 0.3
+  strikeDuration: 0.25
+  strikeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  holdDuration: 0.4
+  OnClawImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  retractDuration: 0.7
+  retractCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   isAttacking: 0
 --- !u!4 &8369962566626697757
 Transform:
