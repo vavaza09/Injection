@@ -12,11 +12,12 @@ public class PlayerMovementVFX : MonoBehaviour
     #region Serialized Fields
 
     [Header("Wind Streaks")]
-    [SerializeField, Range(0f, 1f)] private float windSpeedThreshold = 0.0f; // TEMP: diagnose visibility
+    [SerializeField, Range(0f, 1f)] private float windSpeedThreshold = 0.5f;
     [SerializeField] private float windRateMin = 12f;
     [SerializeField] private float windRateMax = 35f;
-    [SerializeField] private float windLengthScaleMin = 8f;
-    [SerializeField] private float windLengthScaleMax = 20f;
+    [SerializeField] private float windLengthScaleMin = 2.5f;
+    [SerializeField] private float windLengthScaleMax = 5f;
+    [SerializeField] private float windBackOffset = 0.4f;
     [SerializeField, Range(0f, 1f)] private float windAlphaMin = 0.35f;
     [SerializeField, Range(0f, 1f)] private float windAlphaMax = 0.80f;
     [SerializeField] private Color windColor = new Color(0.7f, 0.85f, 1f, 0.7f);
@@ -81,6 +82,9 @@ public class PlayerMovementVFX : MonoBehaviour
 
     // Wall side cache (valid even after leaving wall)
     private int _lastWallSide = 1;
+
+    // Dash edge detection for wind streak clear
+    private bool _wasDashing;
 
     // Static texture cache
     private static Texture2D _softCircleTex;
@@ -150,6 +154,22 @@ public class PlayerMovementVFX : MonoBehaviour
     {
         if (_windStreaks == null) return;
         var emission = _windStreaks.emission;
+
+        if (_movement.IsDashing)
+        {
+            if (!_wasDashing)
+                _windStreaks.gameObject.SetActive(false);
+            _wasDashing = true;
+            return;
+        }
+
+        if (_wasDashing)
+        {
+            _windStreaks.gameObject.SetActive(true);
+            _windStreaks.Play();
+        }
+        _wasDashing = false;
+
         if (speedFactor < windSpeedThreshold)
         {
             emission.rateOverTime = 0f;
@@ -170,12 +190,16 @@ public class PlayerMovementVFX : MonoBehaviour
         // World-space velocity opposite to movement — particles stay in XY plane, visible in 2D
         if (vel.sqrMagnitude > 0.01f)
         {
-            float windSpeed = Mathf.Lerp(5f, 14f, t);
+            float windSpeed = Mathf.Lerp(4f, 8f, t);
             Vector2 windDir = -vel.normalized * windSpeed;
             var vol = _windStreaks.velocityOverLifetime;
             // All axes Constant mode → no MinMaxCurve mode mismatch
             vol.x = new ParticleSystem.MinMaxCurve(windDir.x);
             vol.y = new ParticleSystem.MinMaxCurve(windDir.y);
+
+            // Push spawn point backward so the symmetric stretch tip lands on the body, not past the front
+            Vector3 back = (Vector3)(-vel.normalized * windBackOffset);
+            _windStreaks.transform.position = transform.position + back;
         }
     }
 
@@ -205,7 +229,7 @@ public class PlayerMovementVFX : MonoBehaviour
         if (_wallDust == null) return;
         var emission = _wallDust.emission;
 
-        if (_movement.IsClimbingState)
+        if (_movement.IsWallSliding)
         {
             _lastWallSide = _movement.WallSideSign;
             emission.rateOverTime = wallDustRate;
@@ -355,7 +379,7 @@ public class PlayerMovementVFX : MonoBehaviour
         var psr = go.GetComponent<ParticleSystemRenderer>();
         psr.material = AlphaBlendMat(windColor);
         psr.renderMode = ParticleSystemRenderMode.Stretch;
-        psr.velocityScale = 0.18f;
+        psr.velocityScale = 0.06f;
         psr.lengthScale = windLengthScaleMin;
         psr.sortingLayerName = "Default";
         psr.sortingOrder = behindPlayerOrder;
