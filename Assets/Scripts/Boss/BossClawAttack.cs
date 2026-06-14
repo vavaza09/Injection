@@ -3,26 +3,22 @@ using UnityEngine;
 using UnityEngine.Events;
 
 // Claw strike for a 2D sprite-based boss.
-// BOTH the shoulder (Boss_Upper_R) AND the end-effector (Boss_Arm_Right_LimbSolver2D_Target)
-// move simultaneously so the entire arm extends to reach the player.
+// Only the end-effector (Boss_Arm_Right_LimbSolver2D_Target) moves.
 // The BoxCollider2D (clawAttackZone) is the reach limit — no separate maxReachDistance.
 //
 // Phases:
-//   1. Anticipation : Both IK targets pull BACK away from player direction.
-//   2. Strike       : Upper arm extends toward player; effector hits exact player position.
-//   3. Hold         : Arm stays at impact; damage collider active; OnClawImpact fires.
-//   4. Retract      : Both IK targets arc back to idle simultaneously.
+//   1. Anticipation : Claw pulls BACK away from player direction.
+//   2. Strike       : Claw hits exact player position via bezier arc.
+//   3. Hold         : Claw stays at impact; damage collider active; OnClawImpact fires.
+//   4. Retract      : Claw arcs back to idle.
 //
 // Attach to the boss root. Call TriggerClawAttack() from BossAttackManager.
 // CanAttack returns true when player is inside clawAttackZone and the claw is free.
 public class BossClawAttack : MonoBehaviour
 {
-    // ── IK Targets ────────────────────────────────────────────────────────
+    // ── IK Target ─────────────────────────────────────────────────────────
 
-    [Header("IK Targets")]
-    [Tooltip("Boss_Upper_R — shoulder bone. Moves toward the player to extend the arm's reach.")]
-    [SerializeField] private Transform upperRightIKTarget;
-
+    [Header("IK Target")]
     [Tooltip("Boss_Arm_Right_LimbSolver2D_Target — end effector. Moves to the player's exact position.")]
     [SerializeField] private Transform clawRightIKTarget;
 
@@ -45,7 +41,7 @@ public class BossClawAttack : MonoBehaviour
     // ── Anticipation Phase ────────────────────────────────────────────────
 
     [Header("Anticipation Phase  (~0.3 s)")]
-    [Tooltip("How far the claw end-effector pulls back, away from the player direction.")]
+    [Tooltip("How far the claw pulls back, away from the player direction.")]
     [SerializeField] private float anticipationDistance = 1.5f;
 
     [Tooltip("Extra upward component on the pull-back so the arm lifts before striking.")]
@@ -58,13 +54,6 @@ public class BossClawAttack : MonoBehaviour
     // ── Strike Phase ──────────────────────────────────────────────────────
 
     [Header("Strike Phase  (~0.15 s)")]
-    [Tooltip("Fraction of the boss→player vector the shoulder moves during the strike.\n" +
-             "0 = shoulder stays at idle. 1 = shoulder moves all the way to the player.")]
-    [SerializeField] private float upperArmReachRatio = 0.4f;
-
-    [Tooltip("Upward offset applied to the shoulder's strike position for a natural arm bow.")]
-    [SerializeField] private float upperArmBowOffset = 0.3f;
-
     [SerializeField] private float strikeDuration = 0.15f;
     [Tooltip("Sharp ease-in: explosive lunge toward the player.")]
     [SerializeField] private AnimationCurve strikeCurve;
@@ -104,7 +93,6 @@ public class BossClawAttack : MonoBehaviour
     // ── Private state ─────────────────────────────────────────────────────
 
     private Vector3 _idleClawPos;
-    private Vector3 _idleUpperPos;
     private bool    _idleSaved;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
@@ -129,15 +117,14 @@ public class BossClawAttack : MonoBehaviour
         if (!isAttacking) StartCoroutine(ClawRoutine());
     }
 
-    /// <summary>Abort immediately and snap both IK targets back to idle.</summary>
+    /// <summary>Abort immediately and snap the claw IK target back to idle.</summary>
     public void ResetClaw()
     {
         StopAllCoroutines();
         isAttacking = false;
         if (clawCollider != null) clawCollider.SetActive(false);
         if (!_idleSaved) return;
-        if (clawRightIKTarget  != null) clawRightIKTarget.position  = _idleClawPos;
-        if (upperRightIKTarget != null) upperRightIKTarget.position = _idleUpperPos;
+        if (clawRightIKTarget != null) clawRightIKTarget.position = _idleClawPos;
     }
 
     // ── Attack sequence ───────────────────────────────────────────────────
@@ -150,49 +137,35 @@ public class BossClawAttack : MonoBehaviour
         Vector2 pullBack   = -toPlayer2D;
 
         // ── Phase 1: Anticipation ────────────────────────────────────────
-        // End-effector pulls back away from player; shoulder pulls back at 30% of that.
-        Vector3 clawAntPos  = _idleClawPos
-                            + (Vector3)(pullBack * anticipationDistance)
-                            + Vector3.up * anticipationLift;
-        Vector3 upperAntPos = _idleUpperPos + (Vector3)(pullBack * anticipationDistance * 0.3f);
+        Vector3 clawAntPos = _idleClawPos
+                           + (Vector3)(pullBack * anticipationDistance)
+                           + Vector3.up * anticipationLift;
 
         float e = 0f;
         while (e < anticipationDuration)
         {
             e += Time.deltaTime;
             float c = Eval(anticipationCurve, e / anticipationDuration);
-            if (clawRightIKTarget  != null) clawRightIKTarget.position  = Vector3.Lerp(_idleClawPos, clawAntPos,  c);
-            if (upperRightIKTarget != null) upperRightIKTarget.position = Vector3.Lerp(_idleUpperPos, upperAntPos, c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = Vector3.Lerp(_idleClawPos, clawAntPos, c);
             yield return null;
         }
-        if (clawRightIKTarget  != null) clawRightIKTarget.position  = clawAntPos;
-        if (upperRightIKTarget != null) upperRightIKTarget.position = upperAntPos;
+        if (clawRightIKTarget != null) clawRightIKTarget.position = clawAntPos;
 
         // ── Phase 2: Strike ──────────────────────────────────────────────
-        // End-effector hits exact player position; shoulder extends by upperArmReachRatio.
         Vector3 strikeTarget = playerTransform.position;
         strikeTarget.z = _idleClawPos.z;
 
-        Vector2 toStrike     = (Vector2)playerTransform.position - (Vector2)transform.position;
-        Vector3 upperStrike  = _idleUpperPos
-                             + (Vector3)((Vector3)toStrike * upperArmReachRatio)
-                             + Vector3.up * upperArmBowOffset;
-        upperStrike.z = _idleUpperPos.z;
-
-        Vector3 strikeCtrl = (clawAntPos  + strikeTarget) * 0.5f + Vector3.up * 0.5f;
-        Vector3 upperCtrl  = (upperAntPos + upperStrike)  * 0.5f;
+        Vector3 strikeCtrl = (clawAntPos + strikeTarget) * 0.5f + Vector3.up * 0.5f;
 
         e = 0f;
         while (e < strikeDuration)
         {
             e += Time.deltaTime;
             float c = Eval(strikeCurve, e / strikeDuration);
-            if (clawRightIKTarget  != null) clawRightIKTarget.position  = QuadBezier(clawAntPos,  strikeCtrl, strikeTarget, c);
-            if (upperRightIKTarget != null) upperRightIKTarget.position = QuadBezier(upperAntPos, upperCtrl,  upperStrike,  c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = QuadBezier(clawAntPos, strikeCtrl, strikeTarget, c);
             yield return null;
         }
-        if (clawRightIKTarget  != null) clawRightIKTarget.position  = strikeTarget;
-        if (upperRightIKTarget != null) upperRightIKTarget.position = upperStrike;
+        if (clawRightIKTarget != null) clawRightIKTarget.position = strikeTarget;
 
         // Move damage collider to exact strike position and activate.
         if (clawCollider != null)
@@ -208,21 +181,17 @@ public class BossClawAttack : MonoBehaviour
         if (clawCollider != null) clawCollider.SetActive(false);
 
         // ── Phase 4: Retract ─────────────────────────────────────────────
-        // Both IK targets arc back to saved idle positions simultaneously.
-        Vector3 retractCtrl      = (strikeTarget + _idleClawPos)  * 0.5f + Vector3.up * 0.4f;
-        Vector3 upperRetractCtrl = (upperStrike  + _idleUpperPos) * 0.5f;
+        Vector3 retractCtrl = (strikeTarget + _idleClawPos) * 0.5f + Vector3.up * 0.4f;
 
         e = 0f;
         while (e < retractDuration)
         {
             e += Time.deltaTime;
             float c = Eval(retractCurve, e / retractDuration);
-            if (clawRightIKTarget  != null) clawRightIKTarget.position  = QuadBezier(strikeTarget, retractCtrl,      _idleClawPos,  c);
-            if (upperRightIKTarget != null) upperRightIKTarget.position = QuadBezier(upperStrike,  upperRetractCtrl, _idleUpperPos, c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = QuadBezier(strikeTarget, retractCtrl, _idleClawPos, c);
             yield return null;
         }
-        if (clawRightIKTarget  != null) clawRightIKTarget.position  = _idleClawPos;
-        if (upperRightIKTarget != null) upperRightIKTarget.position = _idleUpperPos;
+        if (clawRightIKTarget != null) clawRightIKTarget.position = _idleClawPos;
 
         isAttacking = false;
     }
@@ -243,9 +212,8 @@ public class BossClawAttack : MonoBehaviour
     private void SaveIdlePositions()
     {
         if (_idleSaved) return;
-        _idleClawPos  = clawRightIKTarget  != null ? clawRightIKTarget.position  : Vector3.zero;
-        _idleUpperPos = upperRightIKTarget != null ? upperRightIKTarget.position : Vector3.zero;
-        _idleSaved    = true;
+        _idleClawPos = clawRightIKTarget != null ? clawRightIKTarget.position : Vector3.zero;
+        _idleSaved   = true;
     }
 
     private void ResolveReferences()
@@ -255,9 +223,6 @@ public class BossClawAttack : MonoBehaviour
             var go = GameObject.FindGameObjectWithTag("Player");
             if (go != null) playerTransform = go.transform;
         }
-
-        if (upperRightIKTarget == null)
-            upperRightIKTarget = FindDeep("Boss_Upper_R");
 
         if (clawRightIKTarget == null)
             clawRightIKTarget = FindDeep("Boss_Arm_Right_LimbSolver2D_Target")
@@ -269,11 +234,10 @@ public class BossClawAttack : MonoBehaviour
             if (t != null) clawCollider = t.gameObject;
         }
 
-        if (upperRightIKTarget == null) Debug.LogWarning("[BossClawAttack] 'Boss_Upper_R' not found — assign in Inspector.");
-        if (clawRightIKTarget  == null) Debug.LogWarning("[BossClawAttack] 'Boss_Arm_Right_LimbSolver2D_Target' not found — assign in Inspector.");
-        if (clawCollider       == null) Debug.LogWarning("[BossClawAttack] 'Claw collider' not found — assign in Inspector.");
-        if (clawAttackZone     == null) Debug.LogWarning("[BossClawAttack] 'Claw Attack Zone' collider not assigned — claw will never attack.");
-        if (playerTransform    == null) Debug.LogWarning("[BossClawAttack] Player not found — tag the player 'Player'.");
+        if (clawRightIKTarget == null) Debug.LogWarning("[BossClawAttack] 'Boss_Arm_Right_LimbSolver2D_Target' not found — assign in Inspector.");
+        if (clawCollider      == null) Debug.LogWarning("[BossClawAttack] 'Claw collider' not found — assign in Inspector.");
+        if (clawAttackZone    == null) Debug.LogWarning("[BossClawAttack] 'Claw Attack Zone' collider not assigned — claw will never attack.");
+        if (playerTransform   == null) Debug.LogWarning("[BossClawAttack] Player not found — tag the player 'Player'.");
     }
 
     private Transform FindDeep(string n)
