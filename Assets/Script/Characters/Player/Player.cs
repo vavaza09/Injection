@@ -509,7 +509,6 @@ public class Player : character
             case PlayerState.Dashing:
                 _audioController?.PlayDashSound();
                 _slowMotion?.StopSlowMotion();
-                movementVFX?.PlayDashBurst(movementComponent != null ? movementComponent.DashDirection : Vector2.zero);
                 break;
 
             case PlayerState.Attacking:
