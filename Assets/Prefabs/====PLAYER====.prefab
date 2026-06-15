@@ -593,28 +593,20 @@ MonoBehaviour:
   reverseSpeedThreshold: 0.25
   speedLossOnHit: 0.3
   speedLossOnWallCrash: 0.2
-  climbSpeedBoostMultiplier: 1.35
   wallSlideMaxFallAtMaxSpeedMultiplier: 1.35
   jumpAtMaxSpeedMultiplier: 5
   dashAtMaxSpeedMultiplier: 5
   airAcceleration: 16
   airDeceleration: 18
   airControlMultiplier: 0.9
-  postDashAirControlTime: 0.18
-  postDashAirAccelerationOverride: 28
-  postDashAirControlBoost: 1.05
   postDashAirBrakeTime: 0.22
   postDashAirBrakeStrength: 140
   postDashMaxAirSpeedMultiplier: 1.05
-  suppressUpwardCarryWhenRunHeldAfterDash: 1
-  postDashRunHoldThreshold: 0.1
   jumpSpeed: 2
   jumpHBoost: 40
-  varJumpTime: 0.2
   jumpGraceTime: 0.1
   gravity: 10
   maxFall: 10
-  halfGravThreshold: 40
   fallGravityMultiplier: 1.8
   lowJumpGravityMultiplier: 3
   fallAirControlMultiplier: 0.65
@@ -630,20 +622,16 @@ MonoBehaviour:
     dashCooldown: 0.2
     dashRefillCooldown: 0.1
     dashAttackTime: 0.3
-    dashCornerCorrection: 4
-    dashVFloorSnapDist: 3
     maxDashes: 1
-    forceHorizontalDash: 0
     stopAtDashEnd: 1
     airEndDashCarryMultiplier: 0.55
   groundCheckSize: {x: 0.4, y: 2}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  climbSpeed: 6
-  wallJumpHorizontalSpeed: 60
-  wallJumpVerticalSpeed: -95
-  climbInputThreshold: 0.1
+  wallJumpHorizontalSpeed: 20
+  wallJumpVerticalSpeed: 4
+  wallJumpLockTime: 0.15
   wallCheckSize: {x: 0.2, y: 0.8}
   wallCheckOffset: {x: 0.73, y: 0}
   climbableLayer:
@@ -656,7 +644,7 @@ MonoBehaviour:
   grabLaunchBaseSpeed: 10
   grabLaunchMinMultiplier: 0.6
   grabLaunchMaxMultiplier: 1.4
-  enableVerboseLogs: 0
+  airAnimSpeedThreshold: 1
   canMove: 1
 --- !u!114 &7705200461922201765
 MonoBehaviour:

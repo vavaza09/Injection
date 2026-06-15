@@ -30,8 +30,6 @@ namespace Game.Components.Movement
         [SerializeField] private float speedLossOnHit = 0.3f;
         [FormerlySerializedAs("momentumLossOnWallCrash")]
         [SerializeField] private float speedLossOnWallCrash = 0.2f;
-        [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
-        [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
         [Header("Speed Based Action Boost")]
         [SerializeField] private float jumpAtMaxSpeedMultiplier = 1.2f;
@@ -43,29 +41,23 @@ namespace Game.Components.Movement
         [SerializeField] private float airControlMultiplier = 0.8f;
 
         [Header("Post Dash Air Control")]
-        [SerializeField] private float postDashAirControlTime = 0.2f;
-        [SerializeField] private float postDashAirAccelerationOverride = 45f;
-        [SerializeField, Range(0.1f, 2f)] private float postDashAirControlBoost = 1.15f;
         [SerializeField] private float postDashAirBrakeTime = 0.25f;
         [SerializeField] private float postDashAirBrakeStrength = 120f;
         [SerializeField, Range(0.5f, 2f)] private float postDashMaxAirSpeedMultiplier = 1.15f;
-        [SerializeField] private bool suppressUpwardCarryWhenRunHeldAfterDash = true;
-        [SerializeField, Range(0f, 1f)] private float postDashRunHoldThreshold = 0.1f;
 
         [Header("Jump Settings (Celeste-inspired)")]
         [SerializeField] private float jumpSpeed = -105f;
         [SerializeField] private float jumpHBoost = 40f;
-        [SerializeField] private float varJumpTime = 0.2f;
         [SerializeField] private float jumpGraceTime = 0.1f;
 
         [Header("Gravity Settings")]
         [SerializeField] private float gravity = 900f;
         [SerializeField] private float maxFall = 160f;
-        [SerializeField] private float halfGravThreshold = 40f;
 
         [Header("Advanced Jump")]
         [SerializeField] private float fallGravityMultiplier = 2.5f;
-        [SerializeField] private float lowJumpGravityMultiplier = 3f;
+        [FormerlySerializedAs("lowJumpGravityMultiplier")]
+        [SerializeField] private float risingGravityMultiplier = 3f;
         [SerializeField] private float fallAirControlMultiplier = 0.75f;
 
         [Header("Wall Stick")]
@@ -73,6 +65,8 @@ namespace Game.Components.Movement
         [SerializeField] private float wallSlideAcceleration = 160f;
         [SerializeField] private float wallStickHorizontalBrake = 120f;
         [SerializeField] private float wallInputThreshold = 0.1f;
+        [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
+        [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
         [Header("Dash Settings")]
         [SerializeField] private DashSettings dashSettings = new DashSettings();
@@ -84,6 +78,8 @@ namespace Game.Components.Movement
         [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
+        [Tooltip("Wall jump launch (both axes) scales from 1x at zero approach speed up to this at full wall-entry momentum, matching the speed-powers-actions pillar.")]
+        [SerializeField] private float wallJumpAtMaxSpeedMultiplier = 1.2f;
         [Tooltip("Seconds after a wall jump during which wall contact is ignored so the launch carries the player away.")]
         [SerializeField] private float wallJumpLockTime = 0.15f;
 
@@ -102,9 +98,6 @@ namespace Game.Components.Movement
         [Header("Animation")]
         [Tooltip("Minimum vertical speed (units/s) before the airborne anim counts as rising vs falling.")]
         [SerializeField] private float airAnimSpeedThreshold = 1f;
-
-        [Header("Debug")]
-        [SerializeField] private bool enableVerboseLogs = false;
 
         #endregion
 
@@ -140,7 +133,6 @@ namespace Game.Components.Movement
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
         private Coroutine _dashCoroutine;
-        private float _postDashAirControlTimer;
         private float _postDashAirBrakeTimer;
         private bool _wasDashingLastFrame;
 
@@ -169,11 +161,10 @@ namespace Game.Components.Movement
         // correct regardless of the project's vertical convention (and survives Inspector overrides).
         private float UpSign => Mathf.Sign(jumpSpeed != 0f ? jumpSpeed : -1f);
         private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
-        private bool IsPushingAwayFromWall => wallSideSign != 0
-            && Mathf.Abs(moveInput.x) >= wallInputThreshold
-            && Mathf.Sign(moveInput.x) == -wallSideSign;
+        // Wall stick is intentional: holding a direction away from the wall does NOT peel you
+        // off. The only ways to leave are a wall jump or sliding all the way down to the ground.
         public bool IsWallSliding => isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
-                                     && IsFallingAlongGravity && !IsPushingAwayFromWall;
+                                     && IsFallingAlongGravity;
         public bool IsAirborne => rb != null && !isGrounded && !IsWallSliding && !isGrabbing && !IsDashing;
         public bool IsRisingAnim => IsAirborne
                                     && Mathf.Sign(rb.linearVelocity.y) == UpSign
@@ -242,7 +233,6 @@ namespace Game.Components.Movement
             moveInput = Vector2.zero;
             _wallEntrySpeedFactor = 0f;
             _wallJumpLockTimer = 0f;
-            _postDashAirControlTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
             isGrabbing = false;
@@ -253,17 +243,11 @@ namespace Game.Components.Movement
             {
                 if (rb.gravityScale != 0)
                 {
-                    Debug.LogWarning($"[MovementComponent] Rigidbody2D.gravityScale was {rb.gravityScale}, forcing to 0");
+                    _logger?.LogWarning($"Rigidbody2D.gravityScale was {rb.gravityScale}, forcing to 0");
                     rb.gravityScale = 0;
                 }
 
-                if (enableVerboseLogs)
-                {
-                    Debug.Log($"✅ Rigidbody2D Settings:");
-                    Debug.Log($"   - Gravity Scale: {rb.gravityScale}");
-                    Debug.Log($"   - Body Type: {rb.bodyType}");
-                    Debug.Log($"   - Mass: {rb.mass}");
-                }
+                _logger?.Log($"Rigidbody2D settings: gravityScale={rb.gravityScale}, bodyType={rb.bodyType}, mass={rb.mass}");
             }
 
             // Initialize dash handler (composition)
@@ -285,10 +269,7 @@ namespace Game.Components.Movement
                 groundCheckObj.transform.SetParent(characterTransform);
                 groundCheckObj.transform.localPosition = new Vector3(0, -0.5f, 0);
                 groundCheck = groundCheckObj.transform;
-                if (enableVerboseLogs)
-                {
-                    Debug.Log($"[MovementComponent] Auto-created GroundCheck for {characterTransform.name}");
-                }
+                _logger?.Log($"Auto-created GroundCheck for {characterTransform.name}");
             }
         }
 
@@ -322,17 +303,11 @@ namespace Game.Components.Movement
             bool isDashingNow = IsDashing;
             if (_wasDashingLastFrame && !isDashingNow && !isGrounded)
             {
-                _postDashAirControlTimer = postDashAirControlTime;
                 _postDashAirBrakeTimer = postDashAirBrakeTime;
-                SuppressUnwantedUpwardCarryAfterDash();
+                CancelUnwantedPostDashUpwardCarry();
             }
 
             _wasDashingLastFrame = isDashingNow;
-
-            if (_postDashAirControlTimer > 0f)
-            {
-                _postDashAirControlTimer = Mathf.Max(0f, _postDashAirControlTimer - Time.deltaTime);
-            }
 
             if (_postDashAirBrakeTimer > 0f)
             {
@@ -365,6 +340,11 @@ namespace Game.Components.Movement
             if (IsDashing) return;
             if (isGrabbing) return;
             if (!canMove || rb == null) return;
+
+            // While stuck to a wall, horizontal velocity is owned entirely by
+            // UpdateWallSlideVelocity (which brakes it to 0). Applying movement force here
+            // would let the player simply walk off the wall, defeating the wall stick.
+            if (IsWallSliding) return;
 
             float currentSpeed = rb.linearVelocity.x;
 
@@ -416,22 +396,6 @@ namespace Game.Components.Movement
                 }
 
                 targetSpeed *= controlMultiplier;
-
-                if (_postDashAirControlTimer > 0f)
-                {
-                    accelRate = Mathf.Max(accelRate, postDashAirAccelerationOverride);
-
-                    // Rebuild target speed from the horizontal intent so control still works
-                    // even if scene overrides set air control multipliers near zero.
-                    if (Mathf.Abs(direction.x) > 0.01f)
-                    {
-                        float assistedTargetSpeed = direction.x * effectiveMoveSpeed * postDashAirControlBoost;
-                        if (Mathf.Abs(assistedTargetSpeed) > Mathf.Abs(targetSpeed))
-                        {
-                            targetSpeed = assistedTargetSpeed;
-                        }
-                    }
-                }
 
                 // Keep airborne momentum when holding the same direction; do not auto-brake in mid-air.
                 bool isHoldingSameAirDirection = Mathf.Abs(direction.x) > 0.01f
@@ -501,10 +465,7 @@ namespace Game.Components.Movement
         /// </summary>
         public void Jump(bool particles = true, bool playSfx = true)
         {
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"🎯 Jump() START - Current velocity: {rb?.linearVelocity}");
-            }
+            _logger?.Log($"Jump() START - Current velocity: {rb?.linearVelocity}");
 
             if (!CanExecuteJump())
             {
@@ -563,16 +524,23 @@ namespace Game.Components.Movement
                 ? -wallSideSign
                 : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
 
+            // Scale the launch by the speed the player carried INTO the wall, not their
+            // current velocity (wall-stick has already braked horizontal speed to ~0).
+            // This keeps wall jumps on the "speed powers actions" pillar: a fast approach
+            // launches harder. _wallEntrySpeedFactor is still valid here (the wall-jump
+            // lock that zeroes it only takes effect on the next CheckWallStatus).
+            float wallJumpMultiplier = Mathf.Lerp(1f, wallJumpAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
+
             ResetWallSlideState();
 
-            BeginJumpWindow(varJumpTime);
+            BeginJumpWindow();
 
             // Wall jump always launches in the "up" direction (UpSign, derived from jumpSpeed),
             // regardless of the serialized field's sign — a stale/negative value must never
             // fire the player into the ground.
             rb.linearVelocity = new Vector2(
-                jumpAwayDirection * wallJumpHorizontalSpeed,
-                Mathf.Abs(wallJumpVerticalSpeed) * UpSign
+                jumpAwayDirection * wallJumpHorizontalSpeed * wallJumpMultiplier,
+                Mathf.Abs(wallJumpVerticalSpeed) * UpSign * wallJumpMultiplier
             );
 
             ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
@@ -585,10 +553,7 @@ namespace Game.Components.Movement
         {
             if (!canMove || rb == null)
             {
-                if (enableVerboseLogs)
-                {
-                    Debug.LogWarning($"❌ Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
-                }
+                _logger?.LogWarning($"Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
                 return false;
             }
 
@@ -599,10 +564,7 @@ namespace Game.Components.Movement
 
             if (jumpGraceTimer <= 0f && !isGrounded)
             {
-                if (enableVerboseLogs)
-                {
-                    Debug.LogWarning($"❌ Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
-                }
+                _logger?.LogWarning($"Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
                 return false;
             }
 
@@ -611,12 +573,7 @@ namespace Game.Components.Movement
 
         private void ExecuteGroundJump()
         {
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"✅ Jump SUCCESS! Applying velocity...");
-            }
-
-            BeginJumpWindow(varJumpTime);
+            BeginJumpWindow();
 
             float currentSpeedX = rb.linearVelocity.x;
             float moveDirection = ResolveJumpDirection(currentSpeedX);
@@ -630,24 +587,19 @@ namespace Game.Components.Movement
 
             Jumped?.Invoke();
 
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"   - Current Speed X: {currentSpeedX:F2}");
-                Debug.Log($"   - Speed Factor: {speedFactor:F2}");
-                Debug.Log($"   - Jump Boost: {jumpBoostAmount:F2}");
-                Debug.Log($"   - Jump Vertical Speed: {jumpVerticalSpeed:F2}");
-                Debug.Log($"   - New Velocity: {jumpVelocity}");
-                Debug.Log($"✅ Jump applied! Final velocity: {rb.linearVelocity}");
-                Debug.Log($"   - varJumpSpeed: {varJumpSpeed}");
-                Debug.Log($"   - autoJump: {autoJump}");
-            }
+            _logger?.Log($"Jump applied! speedX={currentSpeedX:F2}, speedFactor={speedFactor:F2}, " +
+                         $"boost={jumpBoostAmount:F2}, vSpeed={jumpVerticalSpeed:F2}, velocity={jumpVelocity}");
         }
 
-        private void BeginJumpWindow(float duration)
+        // Standard jumps (ground / coyote / wall) only consume the coyote grace here.
+        // They intentionally do NOT engage the variable-jump hold or autoJump-driven
+        // half-gravity — jump power comes from momentum, not button-hold. That machinery
+        // is reserved for Bounce() (springs), which sets its own autoJump/timers.
+        private void BeginJumpWindow()
         {
             jumpGraceTimer = 0f;
-            varJumpTimer = duration;
-            autoJump = true;
+            varJumpTimer = 0f;
+            autoJump = false;
         }
 
         private float ResolveJumpDirection(float currentSpeedX)
@@ -795,19 +747,15 @@ namespace Game.Components.Movement
         private float ResolveJumpGravityMultiplier()
         {
             float verticalSpeed = rb.linearVelocity.y;
-            if (Mathf.Abs(verticalSpeed) < halfGravThreshold && (autoJump || varJumpTimer > 0f))
-            {
-                return 0.5f;
-            }
 
             if (verticalSpeed > 0f)
             {
                 return fallGravityMultiplier;
             }
 
-            if (verticalSpeed < 0f && varJumpTimer <= 0f)
+            if (verticalSpeed < 0f)
             {
-                return lowJumpGravityMultiplier;
+                return risingGravityMultiplier;
             }
 
             return 1f;
@@ -837,19 +785,13 @@ namespace Game.Components.Movement
 
             if (previousGrounded != isGrounded)
             {
-                if (enableVerboseLogs)
-                {
-                    Debug.Log($"Ground State Changed: {previousGrounded} -> {isGrounded}");
-                }
+                _logger?.Log($"Ground state changed: {previousGrounded} -> {isGrounded}");
             }
 
             if (previousGrounded && !isGrounded && rb != null && rb.linearVelocity.y >= 0)
             {
                 StartJumpGraceTime();
-                if (enableVerboseLogs)
-                {
-                    Debug.Log("Started Jump Grace Time (Coyote Time)");
-                }
+                _logger?.Log("Started jump grace time (coyote time)");
             }
         }
 
@@ -890,10 +832,6 @@ namespace Game.Components.Movement
             else if (!isTouchingWall)
                 _wallEntrySpeedFactor = 0f;
 
-            if (enableVerboseLogs)
-            {
-                Debug.Log($"Wall Check - Left: {leftHit}, Right: {rightHit}, IsTouchingWall: {isTouchingWall}");
-            }
             if (rightHit)
             {
                 wallSideSign = 1;
@@ -1050,7 +988,6 @@ namespace Game.Components.Movement
             if (!canMove)
             {
                 _wallEntrySpeedFactor = 0f;
-                _postDashAirControlTimer = 0f;
                 _postDashAirBrakeTimer = 0f;
                 _wasDashingLastFrame = false;
             }
@@ -1156,27 +1093,25 @@ namespace Game.Components.Movement
             rb.linearVelocity = new Vector2(newSpeedX, rb.linearVelocity.y);
         }
 
-        private void SuppressUnwantedUpwardCarryAfterDash()
+        // A shallow/diagonal air dash leaves a little upward carry at dash-end that reads as an
+        // unwanted "pop". Cancel that residual upward velocity unless the player is deliberately
+        // steering upward (a real up-dash). Direction is resolved via UpSign so it stays correct
+        // regardless of the project's vertical-sign convention. Reuses wallInputThreshold as the
+        // up-intent deadzone so no extra serialized knob is needed.
+        private void CancelUnwantedPostDashUpwardCarry()
         {
-            if (!suppressUpwardCarryWhenRunHeldAfterDash || rb == null)
+            if (rb == null)
             {
                 return;
             }
 
-            bool isHoldingRun = Mathf.Abs(moveInput.x) >= postDashRunHoldThreshold;
-            bool hasVerticalIntent = Mathf.Abs(moveInput.y) >= wallInputThreshold;
+            bool steeringUpward = moveInput.y * UpSign > wallInputThreshold;
+            bool carryingUpward = rb.linearVelocity.y * UpSign > 0f;
 
-            if (!isHoldingRun || hasVerticalIntent)
+            if (carryingUpward && !steeringUpward)
             {
-                return;
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             }
-
-            if (rb.linearVelocity.y <= 0f)
-            {
-                return;
-            }
-
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         }
 
 
