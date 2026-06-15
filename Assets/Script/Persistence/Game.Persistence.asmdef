@@ -1,0 +1,16 @@
+{
+  "name": "Game.Persistence",
+  "rootNamespace": "Game.Persistence",
+  "references": [
+    "Core.Logging"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}
