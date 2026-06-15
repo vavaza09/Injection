@@ -15,15 +15,10 @@ namespace Game.Components.Movement
         public float dashRefillCooldown = 0.1f;
         public float dashAttackTime = 0.3f;
 
-        [Header("Dash Correction")]
-        public int dashCornerCorrection = 4;
-        public int dashVFloorSnapDist = 3;
-
         [Header("Dash Count")]
         public int maxDashes = 1;
 
         [Header("Dash Behavior")]
-        public bool forceHorizontalDash = false;
         public bool stopAtDashEnd = true;
         [Range(0.1f, 1f)] public float airEndDashCarryMultiplier = 0.65f;
     }
@@ -77,14 +72,7 @@ namespace Game.Components.Movement
             _dashCooldownTimer = _settings.dashCooldown;
             _dashRefillCooldownTimer = _settings.dashRefillCooldown;
             _dashAttackTimer = _settings.dashAttackTime;
-            Vector2 dashDirection = direction;
-            if (_settings.forceHorizontalDash)
-            {
-                float x = Mathf.Abs(direction.x) > 0.01f ? direction.x : 1f;
-                dashDirection = new Vector2(Mathf.Sign(x), 0f);
-            }
-
-            _dashDir = dashDirection.normalized;
+            _dashDir = direction.normalized;
             _dashSpeedMultiplier = Mathf.Max(0.1f, speedMultiplier);
 
             Debug.Log($"[DashHandler] Dash started! Direction: {_dashDir}, Dashes left: {_currentDashes}, Multiplier: {_dashSpeedMultiplier:F2}");

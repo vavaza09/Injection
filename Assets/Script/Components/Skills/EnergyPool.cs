@@ -37,5 +37,11 @@ namespace Game.Components.Skills
             Changed?.Invoke();
             return true;
         }
+
+        public void SetCurrent(int value)
+        {
+            Current = Mathf.Clamp(value, 0, Max);
+            Changed?.Invoke();
+        }
     }
 }

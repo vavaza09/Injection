@@ -156,6 +156,17 @@ public class Player : character
 
         movementVFX?.Initialize(movementComponent);
 
+        if (movementComponent != null)
+        {
+            movementComponent.Jumped += OnJumped;
+            movementComponent.WallJumped += OnWallJumped;
+        }
+
+        if (movementComponent != null)
+        {
+            movementComponent.GrabStarted += OnGrabStarted;
+        }
+
         if (dashImpact != null)
         {
             dashImpact.Initialize(movementComponent);
@@ -237,11 +248,7 @@ public class Player : character
 
         if (movementComponent.CanGrab)
         {
-            bool grabbed = movementComponent.TryStartGrab();
-            if (grabbed)
-            {
-                ActivateSlowMotion();
-            }
+            movementComponent.TryStartGrab();
         }
     }
 
@@ -290,6 +297,25 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         movementComponent?.CancelJump();
+    }
+
+    // One-shot jump feedback. Driven by MovementComponent events (fired the instant a jump
+    // launches) instead of the polled state machine, so sfx/vfx are never lost to frame timing.
+    private void OnJumped()
+    {
+        _audioController?.PlayJumpSound();
+        movementVFX?.PlayJumpPuff();
+    }
+
+    private void OnWallJumped()
+    {
+        _audioController?.PlayJumpSound();
+        movementVFX?.PlayWallJumpBurst();
+    }
+
+    private void OnGrabStarted()
+    {
+        ActivateSlowMotion();
     }
 
     private void ActivateSlowMotion()
@@ -416,6 +442,33 @@ public class Player : character
         healthComponent.StartInvincibility(invincDuration);
     }
 
+    public void HealToFull()
+    {
+        if (healthComponent != null)
+            healthComponent.Heal(healthComponent.maxHealth);
+    }
+
+    public void Respawn(float invincDuration)
+    {
+        if (healthComponent != null)
+            healthComponent.Heal(healthComponent.maxHealth);
+
+        if (!isAlive)
+        {
+            isAlive = true;
+            ChangeState(PlayerState.Idle);
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
+
+        if (movementComponent != null)
+            movementComponent.SetCanMove(true);
+
+        if (healthComponent != null)
+            healthComponent.StartInvincibility(invincDuration);
+    }
+
     protected override void OnTakeDamage()
     {
         movementComponent?.NotifyDamageTaken();
@@ -489,7 +542,6 @@ public class Player : character
             case PlayerState.Dashing:
                 _audioController?.PlayDashSound();
                 _slowMotion?.StopSlowMotion();
-                movementVFX?.PlayDashBurst(movementComponent != null ? movementComponent.DashDirection : Vector2.zero);
                 break;
 
             case PlayerState.Attacking:
@@ -497,14 +549,8 @@ public class Player : character
                 _audioController?.PlayAttackSound();
                 break;
 
-            case PlayerState.Jumping:
-                _animationController?.PlayJumpAnimation();
-                _audioController?.PlayJumpSound();
-                if (_previousState == PlayerState.WallSliding)
-                    movementVFX?.PlayWallJumpBurst();
-                else
-                    movementVFX?.PlayJumpPuff();
-                break;
+            // Jump feedback (sfx + puff/wall-burst) is handled by OnJumped/OnWallJumped,
+            // wired to MovementComponent's Jumped/WallJumped events — see Start().
 
             case PlayerState.Grabbing:
                 // Placeholder: wire grab animation when art is ready
@@ -551,7 +597,7 @@ public class Player : character
 
         if (movementComponent == null) return;
 
-        if (movementComponent.IsClimbing())
+        if (movementComponent.IsWallSliding)
         {
             ChangeState(PlayerState.WallSliding);
             return;
@@ -595,6 +641,13 @@ public class Player : character
             _inputHandler.OnDashPressed -= Dash;
             _inputHandler.OnGrabPressed -= HandleGrabInput;
             _inputHandler.Dispose();
+        }
+
+        if (movementComponent != null)
+        {
+            movementComponent.Jumped -= OnJumped;
+            movementComponent.WallJumped -= OnWallJumped;
+            movementComponent.GrabStarted -= OnGrabStarted;
         }
 
         InvincibilityStarted -= OnInvincibilityVisualStart;
