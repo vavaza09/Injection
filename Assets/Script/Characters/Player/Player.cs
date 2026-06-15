@@ -162,6 +162,11 @@ public class Player : character
             movementComponent.WallJumped += OnWallJumped;
         }
 
+        if (movementComponent != null)
+        {
+            movementComponent.GrabStarted += OnGrabStarted;
+        }
+
         if (dashImpact != null)
         {
             dashImpact.Initialize(movementComponent);
@@ -243,11 +248,7 @@ public class Player : character
 
         if (movementComponent.CanGrab)
         {
-            bool grabbed = movementComponent.TryStartGrab();
-            if (grabbed)
-            {
-                ActivateSlowMotion();
-            }
+            movementComponent.TryStartGrab();
         }
     }
 
@@ -310,6 +311,11 @@ public class Player : character
     {
         _audioController?.PlayJumpSound();
         movementVFX?.PlayWallJumpBurst();
+    }
+
+    private void OnGrabStarted()
+    {
+        ActivateSlowMotion();
     }
 
     private void ActivateSlowMotion()
@@ -434,6 +440,33 @@ public class Player : character
             ChangeState(PlayerState.Idle);
         }
         healthComponent.StartInvincibility(invincDuration);
+    }
+
+    public void HealToFull()
+    {
+        if (healthComponent != null)
+            healthComponent.Heal(healthComponent.maxHealth);
+    }
+
+    public void Respawn(float invincDuration)
+    {
+        if (healthComponent != null)
+            healthComponent.Heal(healthComponent.maxHealth);
+
+        if (!isAlive)
+        {
+            isAlive = true;
+            ChangeState(PlayerState.Idle);
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
+
+        if (movementComponent != null)
+            movementComponent.SetCanMove(true);
+
+        if (healthComponent != null)
+            healthComponent.StartInvincibility(invincDuration);
     }
 
     protected override void OnTakeDamage()
@@ -614,6 +647,7 @@ public class Player : character
         {
             movementComponent.Jumped -= OnJumped;
             movementComponent.WallJumped -= OnWallJumped;
+            movementComponent.GrabStarted -= OnGrabStarted;
         }
 
         InvincibilityStarted -= OnInvincibilityVisualStart;

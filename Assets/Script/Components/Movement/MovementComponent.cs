@@ -94,6 +94,7 @@ namespace Game.Components.Movement
         [SerializeField] private float grabLaunchBaseSpeed = 200f;
         [SerializeField, Range(0.5f, 1f)] private float grabLaunchMinMultiplier = 0.6f;
         [SerializeField, Range(1f, 2f)] private float grabLaunchMaxMultiplier = 1.4f;
+        [SerializeField] private bool autoGrab = true;
 
         [Header("Animation")]
         [Tooltip("Minimum vertical speed (units/s) before the airborne anim counts as rising vs falling.")]
@@ -149,6 +150,8 @@ namespace Game.Components.Movement
         public event Action Jumped;
         /// <summary>Raised the instant a wall jump launches. Use for one-shot feedback (sfx/vfx).</summary>
         public event Action WallJumped;
+        /// <summary>Raised whenever a grab succeeds (manual or auto). Use for one-shot feedback (sfx/slow-motion).</summary>
+        public event Action GrabStarted;
 
         public bool IsDashing => _dashHandler != null && _dashHandler.IsDashing;
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
@@ -182,6 +185,12 @@ namespace Game.Components.Movement
         {
             get => autoJump;
             set => autoJump = value;
+        }
+
+        public bool AutoGrab
+        {
+            get => autoGrab;
+            set => autoGrab = value;
         }
 
         #endregion
@@ -318,6 +327,11 @@ namespace Game.Components.Movement
             {
                 ResetWallSlideState();
                 return;
+            }
+
+            if (autoGrab && !isGrabbing && !isGrounded && CanGrab)
+            {
+                TryStartGrab();
             }
 
             if (isGrabbing)
@@ -919,6 +933,7 @@ namespace Game.Components.Movement
 
             currentSwingPoint = target;
             isGrabbing = true;
+            GrabStarted?.Invoke();
 
             // Pin to anchor
             rb.position = target.AnchorPosition;
