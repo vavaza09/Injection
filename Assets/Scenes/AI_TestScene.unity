@@ -1104,6 +1104,9 @@ MonoBehaviour:
   attackRange: 1.5
   playerTransform: {fileID: 0}
   currentState: 1
+  stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  stunBlinkInterval: 0.12
+  stunVfxPrefab: {fileID: 0}
 --- !u!70 &664721452
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5518,13 +5521,14 @@ MonoBehaviour:
   upperR: {fileID: 4322046857657555457}
   upperL: {fileID: 2566890200946004463}
   clawR: {fileID: 7621700335954030358}
-  hammerL: {fileID: 8451414889503435261}
   bossBody: {fileID: 8369962566626697757}
   upperLJoint: {fileID: 190007989}
   lowerLJoint: {fileID: 1584534391}
-  hammerHitboxPrefab: {fileID: 1650654452}
+  hammer: {fileID: 0}
   attackRange: 15
   hammerCooldown: 2
+  upperThrustX: 1.5
+  lowerThrustX: 1
 --- !u!1 &6537490675042220328
 GameObject:
   m_ObjectHideFlags: 0
