@@ -141,6 +141,7 @@ namespace Game.Components.Movement
         private bool isGrabbing;
         private SwingPoint currentSwingPoint;
         private float grabbedSpeedFactor;
+        private float _autoGrabCooldownTimer;
 
         #endregion
 
@@ -329,7 +330,10 @@ namespace Game.Components.Movement
                 return;
             }
 
-            if (autoGrab && !isGrabbing && !isGrounded && CanGrab)
+            if (_autoGrabCooldownTimer > 0f)
+                _autoGrabCooldownTimer -= Time.deltaTime;
+
+            if (autoGrab && _autoGrabCooldownTimer <= 0f && !isGrabbing && !isGrounded && CanGrab)
             {
                 TryStartGrab();
             }
@@ -960,6 +964,7 @@ namespace Game.Components.Movement
 
             currentSwingPoint = null;
             isGrabbing = false;
+            _autoGrabCooldownTimer = 0.4f;
 
             isJumping = true;
             isFalling = false;
@@ -974,6 +979,7 @@ namespace Game.Components.Movement
 
             currentSwingPoint = null;
             isGrabbing = false;
+            _autoGrabCooldownTimer = 0.4f;
 
             _logger?.Log("Grab released (drop)");
         }
