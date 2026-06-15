@@ -12,6 +12,7 @@ namespace Game.Components.Skills
         int Max { get; }
         bool IsFull { get; }
         bool TryAdd(int amount);
+        void SetCurrent(int value);
         event System.Action Changed;
     }
 

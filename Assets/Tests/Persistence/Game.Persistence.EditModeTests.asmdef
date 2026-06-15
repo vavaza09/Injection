@@ -1,0 +1,22 @@
+{
+  "name": "Game.Persistence.EditModeTests",
+  "references": [
+    "Game.Persistence",
+    "Core.Logging",
+    "Game.Tests.Fixtures"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
