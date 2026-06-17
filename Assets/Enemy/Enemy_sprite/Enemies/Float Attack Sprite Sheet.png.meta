@@ -1,0 +1,461 @@
+fileFormatVersion: 2
+guid: 351ee31e67dd7a346a33d09f9464553c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6260953252590031183
+    second: Float Attack Sprite Sheet_0
+  - first:
+      213: 2680523274798707828
+    second: Float Attack Sprite Sheet_1
+  - first:
+      213: 4828913842977040272
+    second: Float Attack Sprite Sheet_2
+  - first:
+      213: 226299592389862831
+    second: Float Attack Sprite Sheet_3
+  - first:
+      213: 5711723751719812595
+    second: Float Attack Sprite Sheet_4
+  - first:
+      213: 3145963610090808783
+    second: Float Attack Sprite Sheet_5
+  - first:
+      213: -6948930543942201600
+    second: Float Attack Sprite Sheet_6
+  - first:
+      213: 6707700556643241945
+    second: Float Attack Sprite Sheet_7
+  - first:
+      213: -4179117007621063081
+    second: Float Attack Sprite Sheet_8
+  - first:
+      213: 6075118981238771005
+    second: Float Attack Sprite Sheet_9
+  - first:
+      213: -2983135003323088736
+    second: Float Attack Sprite Sheet_10
+  - first:
+      213: 5977862625128176833
+    second: Float Attack Sprite Sheet_11
+  - first:
+      213: 6695539308995525146
+    second: Float Attack Sprite Sheet_12
+  - first:
+      213: 8211454913650253751
+    second: Float Attack Sprite Sheet_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 512
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 4677
+        width: 756
+        height: 1163
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4194ffafcf53e650800000000000000
+      internalID: 6260953252590031183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 1929
+        y: 4666
+        width: 703
+        height: 1189
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4743b8667b1233520800000000000000
+      internalID: 2680523274798707828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 3426
+        y: 4633
+        width: 689
+        height: 1242
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 097ec953e8fb30340800000000000000
+      internalID: 4828913842977040272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 4929
+        y: 4654
+        width: 724
+        height: 1236
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa5a631c74af32300800000000000000
+      internalID: 226299592389862831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 3209
+        width: 800
+        height: 1164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fdbb6c7d7e144f40800000000000000
+      internalID: 5711723751719812595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 1915
+        y: 3177
+        width: 893
+        height: 1216
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc5a4cf3c35b8ab20800000000000000
+      internalID: 3145963610090808783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 3292
+        y: 3160
+        width: 914
+        height: 1201
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00f867fbc70709f90800000000000000
+      internalID: -6948930543942201600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 4677
+        y: 3365
+        width: 1210
+        height: 952
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9df096a0e1a861d50800000000000000
+      internalID: 6707700556643241945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 2008
+        width: 1353
+        height: 654
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75ef3f5393bc006c0800000000000000
+      internalID: -4179117007621063081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 1698
+        y: 1794
+        width: 1142
+        height: 1005
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d48fca6882f4450800000000000000
+      internalID: 6075118981238771005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 3215
+        y: 1595
+        width: 800
+        height: 1213
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a0c4e11586c996d0800000000000000
+      internalID: -2983135003323088736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 4862
+        y: 1543
+        width: 653
+        height: 1309
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1ab75ce6855bec50800000000000000
+      internalID: 6695539308995525146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Float Attack Sprite Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 113
+        width: 732
+        height: 1195
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bf5241ecb2f4f170800000000000000
+      internalID: 8211454913650253751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 107df8819149c204b8816ca4676dc5ad
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":4.0},"gridSpriteSize":{"x":1500.0,"y":1500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Float Attack Sprite Sheet_0: 6260953252590031183
+      Float Attack Sprite Sheet_1: 2680523274798707828
+      Float Attack Sprite Sheet_10: -2983135003323088736
+      Float Attack Sprite Sheet_11: 5977862625128176833
+      Float Attack Sprite Sheet_12: 6695539308995525146
+      Float Attack Sprite Sheet_13: 8211454913650253751
+      Float Attack Sprite Sheet_2: 4828913842977040272
+      Float Attack Sprite Sheet_3: 226299592389862831
+      Float Attack Sprite Sheet_4: 5711723751719812595
+      Float Attack Sprite Sheet_5: 3145963610090808783
+      Float Attack Sprite Sheet_6: -6948930543942201600
+      Float Attack Sprite Sheet_7: 6707700556643241945
+      Float Attack Sprite Sheet_8: -4179117007621063081
+      Float Attack Sprite Sheet_9: 6075118981238771005
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

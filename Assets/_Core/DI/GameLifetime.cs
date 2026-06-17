@@ -71,6 +71,9 @@ public class GameLifetime : LifetimeScope
         if (energyHUD != null)
             builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
 
+        var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
+        if (empBlastReceiver != null)
+            builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
         builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
 
         // Persistence system

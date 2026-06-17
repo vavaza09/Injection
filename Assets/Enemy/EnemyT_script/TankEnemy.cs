@@ -113,9 +113,7 @@ public class TankEnemy : Enemy
             {
                 ChasePlayer();
 
-                bool isMoving = movementComponent != null
-                    ? movementComponent.GetVelocity().magnitude > 1f
-                    : lastMoveInput.sqrMagnitude > 0.001f;
+                bool isMoving = lastMoveInput.sqrMagnitude > 0.001f;
                 if (animator != null)
                     animator.SetBool("IsWalking", isMoving);
             }

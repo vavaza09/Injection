@@ -1,37 +1,46 @@
 fileFormatVersion: 2
-guid: 21ad6af8766320047bcd96fb1646d5bc
+guid: 9ad0ec4abaa7fea4981293d28c022a97
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2936973425278932814
-    second: Crab Attack Sprite Sheet_0
+      213: 8357101171975800367
+    second: Oven Attack Sprite Sheet_0
   - first:
-      213: -8301433514933993863
-    second: Crab Attack Sprite Sheet_1
+      213: 4896713542859966424
+    second: Oven Attack Sprite Sheet_1
   - first:
-      213: 6892943633326812513
-    second: Crab Attack Sprite Sheet_2
+      213: 1969950311206134791
+    second: Oven Attack Sprite Sheet_2
   - first:
-      213: -451773237814464325
-    second: Crab Attack Sprite Sheet_3
+      213: 1108626648531331681
+    second: Oven Attack Sprite Sheet_3
   - first:
-      213: 5870404337946421488
-    second: Crab Attack Sprite Sheet_4
+      213: -118433987573811898
+    second: Oven Attack Sprite Sheet_4
   - first:
-      213: 4626368983761576863
-    second: Crab Attack Sprite Sheet_5
+      213: 5557315951043031458
+    second: Oven Attack Sprite Sheet_5
   - first:
-      213: -7652823274641993296
-    second: Crab Attack Sprite Sheet_6
+      213: 6853245115859648446
+    second: Oven Attack Sprite Sheet_6
   - first:
-      213: -821855033038073529
-    second: Crab Attack Sprite Sheet_7
+      213: 7133404276350503007
+    second: Oven Attack Sprite Sheet_7
   - first:
-      213: -3437690496132365969
-    second: Crab Attack Sprite Sheet_8
+      213: -6816097147849860299
+    second: Oven Attack Sprite Sheet_8
   - first:
-      213: 4579590760396440643
-    second: Crab Attack Sprite Sheet_9
+      213: -1923135318881968175
+    second: Oven Attack Sprite Sheet_9
+  - first:
+      213: -2550502125592602700
+    second: Oven Attack Sprite Sheet_10
+  - first:
+      213: -6767278053980103498
+    second: Oven Attack Sprite Sheet_11
+  - first:
+      213: -5165881192933303894
+    second: Oven Attack Sprite Sheet_12
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_0
+      name: Oven Attack Sprite Sheet_0
       rect:
         serializedVersion: 2
-        x: 5040
-        y: 3200
-        width: 1412
-        height: 1344
+        x: 0
+        y: 3000
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,20 +151,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b8ac7ffa36cd37d0800000000000000
-      internalID: -2936973425278932814
+      spriteID: f264e93fc336af370800000000000000
+      internalID: 8357101171975800367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_1
+      name: Oven Attack Sprite Sheet_1
       rect:
         serializedVersion: 2
-        x: 7328
-        y: 3322
-        width: 1420
-        height: 1364
+        x: 2000
+        y: 3000
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -164,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 97e36d773326bcc80800000000000000
-      internalID: -8301433514933993863
+      spriteID: 8d74309f50f94f340800000000000000
+      internalID: 4896713542859966424
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_2
+      name: Oven Attack Sprite Sheet_2
       rect:
         serializedVersion: 2
-        x: 9607
-        y: 4303
-        width: 1454
-        height: 1367
+        x: 4000
+        y: 3000
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 16d2c31d6b7a8af50800000000000000
-      internalID: 6892943633326812513
+      spriteID: 704ac9cee5ba65b10800000000000000
+      internalID: 1969950311206134791
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_3
+      name: Oven Attack Sprite Sheet_3
       rect:
         serializedVersion: 2
-        x: 210
-        y: 3104
-        width: 1910
-        height: 1172
+        x: 6000
+        y: 3000
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bb07a0142aafab9f0800000000000000
-      internalID: -451773237814464325
+      spriteID: 16aed362012a26f00800000000000000
+      internalID: 1108626648531331681
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_4
+      name: Oven Attack Sprite Sheet_4
       rect:
         serializedVersion: 2
-        x: 2408
-        y: 3106
-        width: 2099
-        height: 1120
+        x: 0
+        y: 1500
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -230,20 +239,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0f8653384add77150800000000000000
-      internalID: 5870404337946421488
+      spriteID: 64574517aec3b5ef0800000000000000
+      internalID: -118433987573811898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_5
+      name: Oven Attack Sprite Sheet_5
       rect:
         serializedVersion: 2
-        x: 120
-        y: 1384
-        width: 2085
-        height: 1190
+        x: 2000
+        y: 1500
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -252,20 +261,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f936ef4441a243040800000000000000
-      internalID: 4626368983761576863
+      spriteID: 2a1388ed96d8f1d40800000000000000
+      internalID: 5557315951043031458
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_6
+      name: Oven Attack Sprite Sheet_6
       rect:
         serializedVersion: 2
-        x: 2349
-        y: 1311
-        width: 2210
-        height: 1157
+        x: 4000
+        y: 1500
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -274,20 +283,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0b15f1237c5bbc590800000000000000
-      internalID: -7652823274641993296
+      spriteID: ebfbe717f1e9b1f50800000000000000
+      internalID: 6853245115859648446
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_7
+      name: Oven Attack Sprite Sheet_7
       rect:
         serializedVersion: 2
-        x: 4857
-        y: 204
-        width: 1760
-        height: 1255
+        x: 6000
+        y: 1500
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -296,20 +305,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 74116eaa33f2894f0800000000000000
-      internalID: -821855033038073529
+      spriteID: f58cf1b1561fef260800000000000000
+      internalID: 7133404276350503007
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_8
+      name: Oven Attack Sprite Sheet_8
       rect:
         serializedVersion: 2
-        x: 7226
-        y: 103
-        width: 1616
-        height: 1286
+        x: 0
+        y: 0
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -318,20 +327,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f614b4a15beda40d0800000000000000
-      internalID: -3437690496132365969
+      spriteID: 53b1bdbd1cb5861a0800000000000000
+      internalID: -6816097147849860299
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Crab Attack Sprite Sheet_9
+      name: Oven Attack Sprite Sheet_9
       rect:
         serializedVersion: 2
-        x: 9526
-        y: 103
-        width: 1616
-        height: 1286
+        x: 2000
+        y: 0
+        width: 2000
+        height: 1500
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -340,8 +349,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 344471a6889fd8f30800000000000000
-      internalID: 4579590760396440643
+      spriteID: 1df580fdd96af45e0800000000000000
+      internalID: -1923135318881968175
       vertices: []
       indices: 
       edges: []
@@ -350,7 +359,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 78436b7f4eb614843b075a9d02e2984e
+    spriteID: e5cb4e8a7cebaa24eae1eff29fa02222
     internalID: 0
     vertices: []
     indices: 
@@ -358,18 +367,20 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":3.0},"gridSpriteSize":{"x":2000.0,"y":1500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Crab Attack Sprite Sheet_0: -2936973425278932814
-      Crab Attack Sprite Sheet_1: -8301433514933993863
-      Crab Attack Sprite Sheet_2: 6892943633326812513
-      Crab Attack Sprite Sheet_3: -451773237814464325
-      Crab Attack Sprite Sheet_4: 5870404337946421488
-      Crab Attack Sprite Sheet_5: 4626368983761576863
-      Crab Attack Sprite Sheet_6: -7652823274641993296
-      Crab Attack Sprite Sheet_7: -821855033038073529
-      Crab Attack Sprite Sheet_8: -3437690496132365969
-      Crab Attack Sprite Sheet_9: 4579590760396440643
+      Oven Attack Sprite Sheet_0: 8357101171975800367
+      Oven Attack Sprite Sheet_1: 4896713542859966424
+      Oven Attack Sprite Sheet_2: 1969950311206134791
+      Oven Attack Sprite Sheet_3: 1108626648531331681
+      Oven Attack Sprite Sheet_4: -118433987573811898
+      Oven Attack Sprite Sheet_5: 5557315951043031458
+      Oven Attack Sprite Sheet_6: 6853245115859648446
+      Oven Attack Sprite Sheet_7: 7133404276350503007
+      Oven Attack Sprite Sheet_8: -6816097147849860299
+      Oven Attack Sprite Sheet_9: -1923135318881968175
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
