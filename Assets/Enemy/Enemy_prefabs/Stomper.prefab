@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 250965131468786845}
   - component: {fileID: 2888888888888888801}
   - component: {fileID: 2980075121419006311}
+  - component: {fileID: 4308025563405263791}
   m_Layer: 7
   m_Name: Stomper
   m_TagString: Enemy
@@ -322,6 +323,50 @@ CapsuleCollider2D:
   m_Offset: {x: -0.034443855, y: -0.15717697}
   m_Size: {x: 2.093626, y: 2.093626}
   m_Direction: 0
+--- !u!114 &4308025563405263791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6235209925273369146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9b90cd707a43148a329439cf93dd2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathExplosion
+  freezeDuration: 1
+  flashInterval: 0.08
+  explosionFrames:
+  - {fileID: -32627859074496401, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -3260179074879666930, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -2241823390196364601, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6828211064989150017, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6147399792674712462, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  explosionFps: 12
+  explosionScale: 1
+  bodyPartSprites:
+  - {fileID: -2348147288295659028, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: -2480484798757759453, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: 5484358717627732253, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: 5532999159884682432, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: -7319120848887204818, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: 149502436514997192, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: -2292426640866010609, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  - {fileID: 8972072494101960159, guid: 9f06f2db9e2d7e04c9f013db0badb94d, type: 3}
+  bodyPartScale: 0.15
+  launchForce: 6
+  upwardBias: 1.5
+  partRotationSpeed: 220
+  partGravityScale: 1.5
+  partLifetime: 2.2
+  partFadeDuration: 0.8
+  trailTime: 0.4
+  trailStartWidth: 0.12
+  trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}
+  trailEndColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
 --- !u!1 &7719385527507976808
 GameObject:
   m_ObjectHideFlags: 0
