@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3628812479955192404}
   - component: {fileID: 946617358513943892}
   - component: {fileID: 3743495189645005898}
+  - component: {fileID: -8172469288643704360}
   m_Layer: 7
   m_Name: Furnace
   m_TagString: Enemy
@@ -182,12 +183,17 @@ MonoBehaviour:
   attackRange: 14
   playerTransform: {fileID: 0}
   currentState: 0
+  stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  stunBlinkInterval: 0.12
+  stunVfxPrefab: {fileID: 0}
   projectilePrefab: {fileID: 8716880806875173954, guid: 1741940f20ea9354892af2b1d532f533, type: 3}
   spawnHeight: 5
   fallSpeed: 18
   hitboxSize: {x: 1.5, y: 1.5}
   attackCooldown: 1.25
   damageAmount: 1
+  attackWindupDuration: 1
+  invertFacing: 1
 --- !u!114 &3743495189645005898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,6 +211,28 @@ MonoBehaviour:
   patrolRange: 3
   patrolSpeed: 0.7
   idleTimeAtEdge: 2
+--- !u!95 &-8172469288643704360
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375100751388855051}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1be45212914fcdc448e949b90eb5f66d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8386856855678871285
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,42 +4,31 @@ public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private Enemy enemy;
     [SerializeField] private EnemyState currentState = EnemyState.Idle;
-    
+
     [Header("Patrol Settings")]
-    [SerializeField] private float patrolRange = 3f;
     [SerializeField] private float patrolSpeed = 2f;
-    [SerializeField] private float idleTimeAtEdge = 2f;
-    
+    [SerializeField] private float walkDistance = 4f;
+    [SerializeField] private float noPlayerWalkDelay = 3f;
+    [SerializeField] private float boundaryPauseTime = 0.8f;
+
+    private Vector2 patrolCenter;
+    private float leftBoundary;
+    private float rightBoundary;
+
     private float stateTimer;
-    private Vector2 patrolStartPosition;
-    private Vector2 leftEdge;
-    private Vector2 rightEdge;
-    private Vector2 currentTarget;
-    private bool movingRight;
-    private bool isAtEdge;
-    private bool patrolInitialized;
+    private float noPlayerTimer;
+    private bool movingRight = true;
+    private bool isAtBoundary;
 
     private void Awake()
     {
         if (enemy == null)
-        {
             enemy = GetComponent<Enemy>();
-        }
-        
-        stateTimer = 0f;
-        patrolStartPosition = transform.position;
-        
-        // Calculate patrol edges ONCE at start
-        leftEdge = new Vector2(patrolStartPosition.x - patrolRange, patrolStartPosition.y);
-        rightEdge = new Vector2(patrolStartPosition.x + patrolRange, patrolStartPosition.y);
-        
-        // Start moving right
-        movingRight = true;
-        currentTarget = rightEdge;
-        isAtEdge = false;
-        patrolInitialized = true;
-        
-        // Set initial facing direction
+
+        patrolCenter = transform.position;
+        leftBoundary  = patrolCenter.x - walkDistance;
+        rightBoundary = patrolCenter.x + walkDistance;
+
         FlipSprite(movingRight);
     }
 
@@ -50,114 +39,61 @@ public class EnemyAI : MonoBehaviour
 
     public void UpdateAI()
     {
-        if (enemy == null)
-        {
-            return;
-        }
+        if (enemy == null) return;
 
         if (enemy.GetState() == EnemyState.Stunned && currentState != EnemyState.Stunned)
             ChangeState(EnemyState.Stunned);
 
         switch (currentState)
         {
-            case EnemyState.Idle:
-                Idle();
-                break;
-            case EnemyState.Patrol:
-                Patrol();
-                break;
-            case EnemyState.Chase:
-                Chase();
-                break;
-            case EnemyState.Attack:
-                Attack();
-                break;
-            case EnemyState.Stunned:
-                break;
-            case EnemyState.Dead:
-                break;
+            case EnemyState.Idle:    Idle();    break;
+            case EnemyState.Patrol:  Patrol();  break;
+            case EnemyState.Chase:   Chase();   break;
+            case EnemyState.Attack:  Attack();  break;
+            case EnemyState.Stunned: break;
+            case EnemyState.Dead:    break;
         }
     }
 
     public void ChangeState(EnemyState newState)
     {
-        if (newState == currentState)
-        {
-            return;
-        }
-
+        if (newState == currentState) return;
         currentState = newState;
         stateTimer = 0f;
-
         enemy.SetState(newState);
-
-     
-        if (newState == EnemyState.Patrol)
-        {
-            // Only recalculate if not initialized yet
-            if (!patrolInitialized)
-            {
-                patrolStartPosition = transform.position;
-                leftEdge = new Vector2(patrolStartPosition.x - patrolRange, patrolStartPosition.y);
-                rightEdge = new Vector2(patrolStartPosition.x + patrolRange, patrolStartPosition.y);
-                patrolInitialized = true;   
-            }
-            
-            isAtEdge = false;
-        }
-        
-        // When stopping chase, flip to face back towards patrol area
-        if (newState == EnemyState.Patrol)
-        {
-            // Determine which direction to face based on current target
-            bool shouldFaceRight = currentTarget.x > transform.position.x;
-            FlipSprite(shouldFaceRight);
-        }
     }
 
     private void Idle()
     {
+        enemy.PatrolArea();
         enemy.DetectPlayer();
 
-        if (enemy.GetState() != EnemyState.Idle)
+        if (enemy.GetState() == EnemyState.Chase || enemy.GetState() == EnemyState.Attack)
         {
+            noPlayerTimer = 0f;
+            isAtBoundary = false;
             ChangeState(enemy.GetState());
             return;
         }
-            
-        stateTimer += Time.deltaTime;
 
-        // Check if we're idling at an edge
-        if (isAtEdge)
+        if (isAtBoundary)
         {
-            // Wait at edge for specified time
-            if (stateTimer >= idleTimeAtEdge)
+            stateTimer += Time.deltaTime;
+            if (stateTimer >= boundaryPauseTime)
             {
-                // Turn around and go back to patrol
-                if (movingRight)
-                {
-                    movingRight = false;
-                    currentTarget = leftEdge;
-                    FlipSprite(false); // Face left
-                }
-                else
-                {
-                    movingRight = true;
-                    currentTarget = rightEdge;
-                    FlipSprite(true); // Face right
-                }
-                
-                isAtEdge = false;
+                movingRight = !movingRight;
+                FlipSprite(movingRight);
+                isAtBoundary = false;
                 ChangeState(EnemyState.Patrol);
             }
+            return;
         }
-        else
+
+        noPlayerTimer += Time.deltaTime;
+        if (noPlayerTimer >= noPlayerWalkDelay)
         {
-            // Normal idle at start
-            if (stateTimer >= 2f)
-            {
-                ChangeState(EnemyState.Patrol);
-            }
+            noPlayerTimer = 0f;
+            ChangeState(EnemyState.Patrol);
         }
     }
 
@@ -165,55 +101,53 @@ public class EnemyAI : MonoBehaviour
     {
         enemy.DetectPlayer();
 
-        if (enemy.GetState() != EnemyState.Patrol)
+        if (enemy.GetState() == EnemyState.Chase || enemy.GetState() == EnemyState.Attack)
         {
+            noPlayerTimer = 0f;
             ChangeState(enemy.GetState());
             return;
         }
 
- 
-        Vector2 currentPos = transform.position;
-        
-        // Check if reached edge
-        float distanceToTarget = Mathf.Abs(currentPos.x - currentTarget.x);
-        
-        if (distanceToTarget < 0.2f)
+        float x = transform.position.x;
+        if (movingRight && x >= rightBoundary)
         {
-            // Reached edge, switch to idle state
-            isAtEdge = true;
+            isAtBoundary = true;
             ChangeState(EnemyState.Idle);
+            return;
         }
-        else
+        if (!movingRight && x <= leftBoundary)
         {
-            // Move towards current target edge
-            float directionX = currentTarget.x - currentPos.x;
-            Vector2 direction = new Vector2(directionX, 0f).normalized;
-            enemy.Patrol(direction, patrolSpeed);
-            
-            // Update facing direction while moving
-            bool shouldFaceRight = directionX > 0;
-            FlipSprite(shouldFaceRight);
+            isAtBoundary = true;
+            ChangeState(EnemyState.Idle);
+            return;
         }
+
+        Vector2 direction = new Vector2(movingRight ? 1f : -1f, 0f);
+        enemy.Patrol(direction, patrolSpeed);
+        FlipSprite(movingRight);
     }
 
     private void Chase()
     {
         enemy.ChasePlayer();
         enemy.DetectPlayer();
-     
-        if (enemy.transform.position.x < enemy.GetComponent<Enemy>().playerTransform.position.x)
+
+        if (enemy.GetState() == EnemyState.Attack)
         {
-            FlipSprite(true); 
+            ChangeState(EnemyState.Attack);
+            return;
         }
-        else
-        {
-            FlipSprite(false); 
-        }
-        
+
         if (enemy.GetState() != EnemyState.Chase)
         {
-            ChangeState(enemy.GetState());
+            noPlayerTimer = 0f;
+            enemy.SetState(EnemyState.Idle);
+            ChangeState(EnemyState.Idle);
+            return;
         }
+
+        bool playerRight = enemy.playerTransform.position.x > enemy.transform.position.x;
+        FlipSprite(playerRight);
     }
 
     private void Attack()
@@ -222,7 +156,12 @@ public class EnemyAI : MonoBehaviour
 
         if (enemy.GetState() != EnemyState.Attack)
         {
-            ChangeState(enemy.GetState());
+            if (enemy.GetState() != EnemyState.Chase)
+            {
+                noPlayerTimer = 0f;
+                enemy.SetState(EnemyState.Idle);
+            }
+            ChangeState(enemy.GetState() == EnemyState.Chase ? EnemyState.Chase : EnemyState.Idle);
             return;
         }
 
@@ -234,99 +173,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
     private void FlipSprite(bool faceRight)
     {
-        if (enemy == null)
-        {
-            return;
-        }
-
+        if (enemy == null) return;
         Vector3 scale = enemy.transform.localScale;
-        
-        if (faceRight)
-        {
-            // Face right (positive scale)
-            if (scale.x < 0)
-            {
-                scale.x = Mathf.Abs(scale.x);
-                enemy.transform.localScale = scale;
-            }
-        }
-        else
-        {
-            // Face left (negative scale)
-            if (scale.x > 0)
-            {
-                scale.x = -Mathf.Abs(scale.x);
-                enemy.transform.localScale = scale;
-            }
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Vector2 startPos;
-        Vector2 left;
-        Vector2 right;
-        
-        if (Application.isPlaying)
-        {
-            startPos = patrolStartPosition;
-            left = leftEdge;
-            right = rightEdge;
-        }
-        else
-        {
-            startPos = transform.position;
-            left = new Vector2(startPos.x - patrolRange, startPos.y);
-            right = new Vector2(startPos.x + patrolRange, startPos.y);
-        }
-        
-        // Draw patrol range line
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(left, right);
-        
-        // Draw left edge (red)
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(left, 0.3f);
-        Gizmos.DrawLine(left + Vector2.up * 0.5f, left + Vector2.down * 0.5f);
-        
-        // Draw right edge (red)
-        Gizmos.DrawWireSphere(right, 0.3f);
-        Gizmos.DrawLine(right + Vector2.up * 0.5f, right + Vector2.down * 0.5f);
-        
-        // Draw patrol center (green)
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(startPos, 0.2f);
-        
-        // Draw current target when playing
-        if (Application.isPlaying && currentState == EnemyState.Patrol)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(currentTarget, 0.25f);
-            Gizmos.DrawLine(transform.position, currentTarget);
-            
-            // Draw direction arrow
-            Vector3 arrowEnd;
-            if (movingRight)
-            {
-                Gizmos.color = Color.blue;
-                arrowEnd = transform.position + Vector3.right * 0.5f;
-            }
-            else
-            {
-                Gizmos.color = Color.blue;
-                arrowEnd = transform.position + Vector3.left * 0.5f;
-            }
-            Gizmos.DrawLine(transform.position, arrowEnd);
-        }
-        
-        // Show when at edge in idle
-        if (Application.isPlaying && currentState == EnemyState.Idle && isAtEdge)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, 0.4f);
-        }
+        float abs = Mathf.Abs(scale.x);
+        scale.x = (faceRight != enemy.SpriteFacesLeft) ? abs : -abs;
+        enemy.transform.localScale = scale;
     }
 }
