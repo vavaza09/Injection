@@ -7,6 +7,7 @@ using Game.Components.Movement;
 using Game.Components.Combat;
 using Game.Components.Skills;
 using Game.Characters.Player;
+using Game.Persistence;
 
 public class GameLifetime : LifetimeScope
 {
@@ -73,5 +74,27 @@ public class GameLifetime : LifetimeScope
         var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
         if (empBlastReceiver != null)
             builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
+        builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
+
+        // Persistence system
+        builder.Register<ISaveStorage>(_ => new JsonFileSaveStorage("save.json"), Lifetime.Singleton);
+        builder.Register<SaveService>(resolver => new SaveService(
+            resolver.Resolve<ISaveStorage>(),
+            resolver.Resolve<LoggerFactory>().CreateLogger("SaveService")),
+            Lifetime.Singleton);
+        builder.RegisterComponentInHierarchy<SaveApplier>();
+        builder.RegisterComponentInHierarchy<RespawnCoordinator>();
+
+        // Inject all SavePointTrigger and BossPersistence instances in the scene
+        builder.RegisterBuildCallback(container =>
+        {
+            var savePoints = FindObjectsByType<SavePointTrigger>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var sp in savePoints)
+                container.Inject(sp);
+
+            var bossPersistences = FindObjectsByType<BossPersistence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var bp in bossPersistences)
+                container.Inject(bp);
+        });
     }
 }
