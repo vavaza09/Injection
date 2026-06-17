@@ -224,7 +224,11 @@ public class Enemy : character
         foreach (Collider2D col in colliders)
             col.enabled = false;
 
-        Destroy(gameObject, 1.5f);
+        EnemyDeathExplosion deathFX = GetComponent<EnemyDeathExplosion>();
+        if (deathFX != null)
+            deathFX.TriggerDeath();
+        else
+            Destroy(gameObject, 1.5f);
     }
 
     protected override void OnTakeDamage()

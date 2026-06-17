@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 946617358513943892}
   - component: {fileID: 3743495189645005898}
   - component: {fileID: 5307776503066102702}
+  - component: {fileID: 2940432419409455292}
   m_Layer: 7
   m_Name: Furnace
   m_TagString: Enemy
@@ -234,6 +235,47 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2940432419409455292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375100751388855051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9b90cd707a43148a329439cf93dd2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathExplosion
+  freezeDuration: 1
+  flashInterval: 0.08
+  explosionFrames:
+  - {fileID: -32627859074496401, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -3260179074879666930, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -2241823390196364601, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6828211064989150017, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6147399792674712462, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  explosionFps: 12
+  explosionScale: 1
+  bodyPartSprites:
+  - {fileID: 1288677205517305307, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: 3090632372577624380, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -6826849217548259815, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -1506443680523001762, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -1690120865031316619, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  bodyPartScale: 1
+  launchForce: 6
+  upwardBias: 1.5
+  partRotationSpeed: 220
+  partGravityScale: 1.5
+  partLifetime: 2.2
+  partFadeDuration: 0.8
+  trailTime: 0.4
+  trailStartWidth: 0.12
+  trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}
+  trailEndColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
 --- !u!1 &8386856855678871285
 GameObject:
   m_ObjectHideFlags: 0

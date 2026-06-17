@@ -313,6 +313,7 @@ GameObject:
   - component: {fileID: 8298999538917575035}
   - component: {fileID: 5577287370394050830}
   - component: {fileID: 6666666666666666666}
+  - component: {fileID: 2324013423746907677}
   m_Layer: 7
   m_Name: Tank
   m_TagString: Enemy
@@ -527,6 +528,50 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2324013423746907677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8658080719701645966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9b90cd707a43148a329439cf93dd2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathExplosion
+  freezeDuration: 1
+  flashInterval: 0.08
+  explosionFrames:
+  - {fileID: -32627859074496401, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -3260179074879666930, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -2241823390196364601, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6828211064989150017, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6147399792674712462, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  explosionFps: 12
+  explosionScale: 1
+  bodyPartSprites:
+  - {fileID: 5813579292625937793, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 3045007208601418019, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 7215069173129576707, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 5080248597806717359, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: -5749081779851092085, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 7370016794205641841, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 4558371285880221442, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  - {fileID: 3209447113249876244, guid: df8ca05c9e6c725448c8cf112d9b99d0, type: 3}
+  bodyPartScale: 1
+  launchForce: 6
+  upwardBias: 1.5
+  partRotationSpeed: 220
+  partGravityScale: 1.5
+  partLifetime: 2.2
+  partFadeDuration: 0.8
+  trailTime: 0.4
+  trailStartWidth: 0.12
+  trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}
+  trailEndColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
 --- !u!1 &8789970281847710164
 GameObject:
   m_ObjectHideFlags: 0
