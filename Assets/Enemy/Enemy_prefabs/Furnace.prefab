@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3628812479955192404}
   - component: {fileID: 946617358513943892}
   - component: {fileID: 3743495189645005898}
-  - component: {fileID: -8172469288643704360}
+  - component: {fileID: 5307776503066102702}
   m_Layer: 7
   m_Name: Furnace
   m_TagString: Enemy
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.5, y: -21.59, z: 0}
-  m_LocalScale: {x: 0.7912, y: 0.6867, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1858572540065685220}
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -7024231520303235640, guid: 85db29ca1f820ae42a86209514e228d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -131,8 +131,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.019699063, y: 0}
-  m_Size: {x: 1.1969914, y: 1.3791462}
+  m_Offset: {x: 0.06681502, y: -0.25438702}
+  m_Size: {x: 1.1027596, y: 1.8879201}
   m_Direction: 0
 --- !u!50 &3628812479955192404
 Rigidbody2D:
@@ -208,10 +208,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   enemy: {fileID: 946617358513943892}
   currentState: 0
-  patrolRange: 3
-  patrolSpeed: 0.7
-  idleTimeAtEdge: 2
---- !u!95 &-8172469288643704360
+  patrolSpeed: 1
+  walkDistance: 4
+  noPlayerWalkDelay: 3
+  boundaryPauseTime: 0.8
+--- !u!95 &5307776503066102702
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -260,7 +261,7 @@ Transform:
   m_GameObject: {fileID: 8386856855678871285}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.388, y: 0.479, z: 0}
+  m_LocalPosition: {x: -0.388, y: 1.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -315,5 +316,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.22333558}
-  m_Radius: 0.3061622
+  m_Offset: {x: 0.65606856, y: -0.34789038}
+  m_Radius: 0.5494313

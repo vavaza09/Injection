@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 3091425453479290359}
   - component: {fileID: 6038983749941988433}
   - component: {fileID: 2181151058672896822}
-  - component: {fileID: 4646777161591288815}
   - component: {fileID: 5004083559027577624}
+  - component: {fileID: 1828981738325688227}
+  - component: {fileID: 2048043259003780184}
   m_Layer: 7
   m_Name: Kiki
   m_TagString: Enemy
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 20.575, y: -21.5, z: 0}
-  m_LocalScale: {x: 1, y: 0.9494, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3364772948821830454}
@@ -88,12 +89,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.53032124, g: 0.990566, b: 0.07943219, a: 1}
+  m_Sprite: {fileID: -9011178215853506880, guid: 77a023a24e9cbc14daa7a34eaf2c713c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.2753906, y: 2.5566406}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -113,7 +114,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -139,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KikiEnemy
   characterName: HeadButter
   maxHealth: 20
-  moveSpeed: 0.8
+  moveSpeed: 1
   attackDamage: 20
   movementComponent: {fileID: 0}
   enemyType: 5
@@ -147,30 +148,22 @@ MonoBehaviour:
   attackRange: 5
   playerTransform: {fileID: 0}
   currentState: 0
-  windUpAngle: 30
-  windUpTime: 0.35
-  smashAngle: 65
-  smashSpeed: 15
+  stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  stunBlinkInterval: 0.12
+  stunVfxPrefab: {fileID: 0}
+  patrolRadius: 3
+  floatSpeed: 2.5
+  chaseSpeedMultiplier: 1.6
+  waypointReachDist: 0.4
+  headbuttLaunchDelay: 0.8
+  attackFreezeFrame: 7
+  attackTotalFrames: 14
+  headbuttSpeed: 14
+  headbuttDuration: 1
+  headbuttHitRadius: 0.6
   returnSpeed: 11
-  cooldown: 3.5
-  smashPushForce: 15
---- !u!114 &4646777161591288815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556367457260148969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08427f1fb3147cb4b9d4102eb05193ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  enemy: {fileID: 2181151058672896822}
-  currentState: 1
-  patrolRange: 3
-  patrolSpeed: 0.8
-  idleTimeAtEdge: 2
+  headbuttCooldown: 1.5
+  invertFacing: 1
 --- !u!70 &5004083559027577624
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -208,6 +201,43 @@ CapsuleCollider2D:
   m_Offset: {x: 0.017150879, y: 0.12702638}
   m_Size: {x: 0.63409805, y: 0.88468295}
   m_Direction: 0
+--- !u!95 &1828981738325688227
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556367457260148969}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: eac67da7d14d008428284fc626ee2c95, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2048043259003780184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556367457260148969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9b224a66c831004cb7f04f7f96f4a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemyMovement
+  patrolSpeed: 2
+  chaseSpeed: 4
+  walkDistance: 5
 --- !u!1 &907220950018324735
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,8 +305,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.3169346, y: -0.05677245}
-  m_Radius: 0.23696518
+  m_Offset: {x: 0.098792076, y: 0.05137825}
+  m_Radius: 0.6475563
 --- !u!114 &1951961934626976865
 MonoBehaviour:
   m_ObjectHideFlags: 0
