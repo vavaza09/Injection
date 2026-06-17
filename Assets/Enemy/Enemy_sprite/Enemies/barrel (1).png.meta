@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: fdc016d172130e342a2dc81b800a1990
+guid: b9b462351b82d8b43a4a346cabea41dd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8568042794190644651
-    second: barrel_0
+      213: 6841208733062733170
+    second: barrel (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: barrel_0
+      name: barrel (1)_0
       rect:
         serializedVersion: 2
         x: 418
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 55adbef5972381980800000000000000
-      internalID: -8568042794190644651
+      spriteID: 27d1180b81bd0fe50800000000000000
+      internalID: 6841208733062733170
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      barrel_0: -8568042794190644651
+      barrel (1)_0: 6841208733062733170
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
