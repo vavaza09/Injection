@@ -70,6 +70,8 @@ public class GameLifetime : LifetimeScope
         if (energyHUD != null)
             builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
 
-        builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
+        var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
+        if (empBlastReceiver != null)
+            builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
     }
 }

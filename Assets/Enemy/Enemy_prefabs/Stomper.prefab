@@ -67,8 +67,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.94435525, y: 0.01864338}
-  m_Radius: 1.4113166
+  m_Offset: {x: -0.30635452, y: 0.16327143}
+  m_Radius: 1.0441413
 --- !u!114 &2018005607351942767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,9 +96,9 @@ GameObject:
   - component: {fileID: 2736726744138619286}
   - component: {fileID: 2373342409532700347}
   - component: {fileID: 2443875247897457428}
-  - component: {fileID: 2634534365060636687}
   - component: {fileID: 250965131468786845}
   - component: {fileID: 2888888888888888801}
+  - component: {fileID: 2980075121419006311}
   m_Layer: 7
   m_Name: Stomper
   m_TagString: Enemy
@@ -203,7 +203,7 @@ MonoBehaviour:
   detectionRange: 10
   attackRange: 8
   playerTransform: {fileID: 0}
-  currentState: 0
+  currentState: 1
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
@@ -245,8 +245,48 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &2634534365060636687
-BoxCollider2D:
+--- !u!114 &250965131468786845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6235209925273369146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08427f1fb3147cb4b9d4102eb05193ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  enemy: {fileID: 2373342409532700347}
+  currentState: 0
+  patrolSpeed: 0.4
+  walkDistance: 4
+  noPlayerWalkDelay: 3
+  boundaryPauseTime: 0.8
+--- !u!95 &2888888888888888801
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6235209925273369146}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 24387b25bbb8d644185e5afaf7cec646, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!70 &2980075121419006311
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -279,57 +319,9 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.008741379, y: -0.34845543}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.2460938, y: 2.6272097}
-    newSize: {x: 3.2460938, y: 2.6272097}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 3.5171032, y: 1.6969109}
-  m_EdgeRadius: 0
---- !u!114 &250965131468786845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6235209925273369146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08427f1fb3147cb4b9d4102eb05193ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  enemy: {fileID: 2373342409532700347}
-  currentState: 0
-  patrolRange: 3
-  patrolSpeed: 0.4
-  idleTimeAtEdge: 2
---- !u!95 &2888888888888888801
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6235209925273369146}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 24387b25bbb8d644185e5afaf7cec646, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_Offset: {x: -0.034443855, y: -0.15717697}
+  m_Size: {x: 2.093626, y: 2.093626}
+  m_Direction: 0
 --- !u!1 &7719385527507976808
 GameObject:
   m_ObjectHideFlags: 0
