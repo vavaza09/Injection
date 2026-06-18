@@ -31,14 +31,21 @@ public class FurnaceProjectile : MonoBehaviour
     private void Awake()
     {
         groundLayerMask = LayerMask.GetMask("Ground");
-        damageHitbox = GetComponent<Collider2D>() as BoxCollider2D;
+        damageHitbox = GetComponent<BoxCollider2D>();
+        if (damageHitbox == null)
+            damageHitbox = gameObject.AddComponent<BoxCollider2D>();
 
-        if (damageHitbox != null)
-        {
-            damageHitbox.isTrigger = true;
-            damageHitbox.enabled = false;
-            damageHitbox.size = hitboxSize;
-        }
+        damageHitbox.isTrigger = true;
+        damageHitbox.enabled = false;
+        damageHitbox.size = hitboxSize;
+    }
+
+    private void Start()
+    {
+        if (GetComponent<TrailRenderer>() == null)
+            SetupTrail();
+
+        CreateGroundShadow();
     }
 
     private void Start()
