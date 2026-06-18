@@ -3,123 +3,166 @@ using System.Collections;
 
 public class MuzzleFlashEffect : MonoBehaviour
 {
-    [Header("Flash (pre-shot warning)")]
-    [SerializeField] public float flashDuration = 0.15f;
-    [SerializeField] public float flashMaxScaleX = 0.5f;
-    [SerializeField] public float flashMaxScaleY = 0.4f;
-    [SerializeField] public Color flashStartColor = new Color(1f, 1f, 1f, 1f);
-    [SerializeField] public Color flashPeakColor  = new Color(1f, 0.95f, 0.35f, 1f);
+    [Header("Flash Settings")]
+    [Tooltip("How long the bright flash glow lasts")]
+    [SerializeField] private float flashDuration = 0.15f;
 
-    [Header("Smoke (at-shot lingering)")]
-    [SerializeField] public float smokeDuration    = 0.5f;
-    [SerializeField] public float smokeDriftSpeed  = 1.5f;
-    [SerializeField] public float smokePuffMaxScale = 0.35f;
-    [SerializeField] public Color smokeColor = new Color(0.3f, 0.28f, 0.22f, 0.85f);
+    [Tooltip("Max scale of the flash sprite")]
+    [SerializeField] private float flashMaxScale = 0.5f;
 
-    private SpriteRenderer   _flashSr;
-    private SpriteRenderer[] _puffSrs;
-    private Coroutine        _playCoroutine;
+    [Tooltip("Flash color")]
+    [SerializeField] private Color flashColor = new Color(1f, 0.9f, 0.3f, 1f);
+
+    [Header("Smoke Settings")]
+    [Tooltip("Number of smoke puffs to spawn")]
+    [SerializeField] private int puffCount = 5;
+
+    [Tooltip("How long each smoke puff lasts")]
+    [SerializeField] private float puffLifetime = 0.6f;
+
+    [Tooltip("Spread angle of smoke behind the shot direction (degrees)")]
+    [SerializeField] private float puffSpreadAngle = 120f;
+
+    [Tooltip("Min launch speed of smoke puffs")]
+    [SerializeField] private float puffMinSpeed = 1f;
+
+    [Tooltip("Max launch speed of smoke puffs")]
+    [SerializeField] private float puffMaxSpeed = 3f;
+
+    [Tooltip("Smoke puff start color")]
+    [SerializeField] private Color puffColor = new Color(0.7f, 0.65f, 0.55f, 0.8f);
+
+    [Tooltip("Min starting scale of each puff")]
+    [SerializeField] private float puffMinScale = 0.1f;
+
+    [Tooltip("Max starting scale of each puff")]
+    [SerializeField] private float puffMaxScale = 0.3f;
+
+    [Header("Debug")]
+    [Tooltip("Check this to play a test flash in edit mode")]
+    [SerializeField] private bool testFlash = false;
+
+    private SpriteRenderer _flashSr;
+    private Sprite _circleSprite;
+    private Coroutine _flashCoroutine;
 
     private void Awake()
     {
-        Sprite circle = CreateCircleSprite(32);
+        _circleSprite = CreateCircleSprite(32);
 
         GameObject flashGo = new GameObject("Flash");
         flashGo.transform.SetParent(transform, false);
         _flashSr = flashGo.AddComponent<SpriteRenderer>();
-        _flashSr.sprite = circle;
+        _flashSr.sprite = _circleSprite;
         _flashSr.sortingOrder = 52;
         _flashSr.color = Color.clear;
-
-        _puffSrs = new SpriteRenderer[3];
-        for (int i = 0; i < 3; i++)
-        {
-            GameObject puffGo = new GameObject("SmokePuff" + i);
-            puffGo.transform.SetParent(transform, false);
-            SpriteRenderer sr = puffGo.AddComponent<SpriteRenderer>();
-            sr.sprite = circle;
-            sr.sortingOrder = 50;
-            sr.color = Color.clear;
-            _puffSrs[i] = sr;
-        }
-
-        gameObject.SetActive(false);
     }
 
+    private void OnValidate()
+    {
+        if (testFlash && Application.isPlaying)
+        {
+            PlayFlash(Vector2.right);
+            testFlash = false;
+        }
+    }
+
+    public void PlayFlash(Vector2 direction)
+    {
+        if (_flashSr == null) return;
+        if (_flashCoroutine != null)
+            StopCoroutine(_flashCoroutine);
+        gameObject.SetActive(true);
+        _flashCoroutine = StartCoroutine(FlashRoutine());
+    }
+
+    public void PlaySmoke(Vector2 direction)
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(SmokeRoutine(direction));
+    }
+
+    // Legacy combined play — kept for backward compatibility
     public void Play(Quaternion worldRotation)
     {
-        transform.rotation = worldRotation;
-        if (_playCoroutine != null)
-            StopCoroutine(_playCoroutine);
-        gameObject.SetActive(true);
-        _playCoroutine = StartCoroutine(PlayRoutine());
+        Vector2 dir = worldRotation * Vector2.right;
+        PlayFlash(dir);
+        PlaySmoke(dir);
     }
 
-    private IEnumerator PlayRoutine()
+    private IEnumerator FlashRoutine()
     {
-        // Reset state before animating
         _flashSr.transform.localPosition = Vector3.zero;
         _flashSr.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
         _flashSr.color = Color.clear;
-        for (int i = 0; i < _puffSrs.Length; i++)
-        {
-            _puffSrs[i].transform.localPosition = Vector3.zero;
-            _puffSrs[i].transform.localScale = Vector3.one * 0.05f;
-            _puffSrs[i].color = Color.clear;
-        }
 
-        // Phase 1: flash — scales up then fades, total flashDuration seconds
         float t = 0f;
         while (t < 1f)
         {
             t = Mathf.Min(t + Time.deltaTime / flashDuration, 1f);
-
-            // Scale: quick expand (0→0.6t peak) then hold
             float expandT = Mathf.Clamp01(t / 0.6f);
-            float sx = Mathf.Lerp(0.1f, flashMaxScaleX, expandT);
-            float sy = Mathf.Lerp(0.1f, flashMaxScaleY, expandT);
-            _flashSr.transform.localScale = new Vector3(sx, sy, 1f);
-
-            // Color: white→yellow (0→0.4t), then fade (0.5→1t)
-            Color col = t < 0.4f
-                ? Color.Lerp(flashStartColor, flashPeakColor, t / 0.4f)
-                : flashPeakColor;
+            float s = Mathf.Lerp(0.1f, flashMaxScale, expandT);
+            _flashSr.transform.localScale = new Vector3(s, s, 1f);
+            Color col = flashColor;
             col.a = t < 0.5f ? 1f : Mathf.Lerp(1f, 0f, (t - 0.5f) / 0.5f);
             _flashSr.color = col;
-
             yield return null;
         }
         _flashSr.color = Color.clear;
+    }
 
-        // Phase 2: smoke puffs drift in fire direction (local +X = rotated fire dir)
-        // Parent is already rotated to worldRotation so local right = fire direction.
-        Vector2[] localDrifts =
+    private IEnumerator SmokeRoutine(Vector2 fireDirection)
+    {
+        int count = Mathf.Max(1, puffCount);
+        GameObject[] puffGos = new GameObject[count];
+        SpriteRenderer[] puffSrs = new SpriteRenderer[count];
+        Vector2[] velocities = new Vector2[count];
+        float[] startScales = new float[count];
+
+        float baseAngle = Mathf.Atan2(fireDirection.y, fireDirection.x) * Mathf.Rad2Deg;
+        float backAngle = baseAngle + 180f;
+        Vector3 spawnPos = transform.position;
+
+        for (int i = 0; i < count; i++)
         {
-            Vector2.right,
-            new Vector2(0.86f,  0.5f),   // 30° above fire axis
-            new Vector2(0.86f, -0.5f),   // 30° below fire axis
-        };
+            GameObject puffGo = new GameObject("SmokePuff" + i);
+            puffGo.transform.position = spawnPos;
+            SpriteRenderer sr = puffGo.AddComponent<SpriteRenderer>();
+            sr.sprite = _circleSprite;
+            sr.sortingOrder = 50;
+            sr.color = Color.clear;
+            puffGos[i] = puffGo;
+            puffSrs[i] = sr;
 
-        t = 0f;
+            float spread = Random.Range(-puffSpreadAngle * 0.5f, puffSpreadAngle * 0.5f);
+            float angle = (backAngle + spread) * Mathf.Deg2Rad;
+            float speed = Random.Range(puffMinSpeed, puffMaxSpeed);
+            velocities[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
+            startScales[i] = Random.Range(puffMinScale, puffMaxScale);
+        }
+
+        float t = 0f;
         while (t < 1f)
         {
-            t = Mathf.Min(t + Time.deltaTime / smokeDuration, 1f);
-            for (int i = 0; i < _puffSrs.Length; i++)
+            t = Mathf.Min(t + Time.deltaTime / puffLifetime, 1f);
+            for (int i = 0; i < count; i++)
             {
-                _puffSrs[i].transform.localPosition +=
-                    (Vector3)(localDrifts[i] * smokeDriftSpeed * Time.deltaTime);
-
-                float sc = Mathf.Lerp(0.05f, smokePuffMaxScale, t);
-                _puffSrs[i].transform.localScale = Vector3.one * sc;
-
-                Color c = smokeColor;
-                c.a = Mathf.Lerp(smokeColor.a, 0f, t);
-                _puffSrs[i].color = c;
+                if (puffSrs[i] == null) continue;
+                puffGos[i].transform.position += (Vector3)(velocities[i] * Time.deltaTime);
+                float sc = Mathf.Lerp(startScales[i], startScales[i] * 2f, t);
+                puffGos[i].transform.localScale = Vector3.one * sc;
+                Color c = puffColor;
+                c.a = Mathf.Lerp(puffColor.a, 0f, t);
+                puffSrs[i].color = c;
             }
             yield return null;
         }
 
-        gameObject.SetActive(false);
+        for (int i = 0; i < count; i++)
+        {
+            if (puffGos[i] != null)
+                Destroy(puffGos[i]);
+        }
     }
 
     private static Sprite CreateCircleSprite(int size)
