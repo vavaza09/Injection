@@ -221,6 +221,10 @@ public class StompEnemy : Enemy
             movementComponent.SetCanMove(true);
 
         isAttacking = false;
+
+        if (anim != null)
+            anim.Play("Crab_Idle");
+        SetState(EnemyState.Idle);
     }
 
     private IEnumerator StompDamageWindow()
