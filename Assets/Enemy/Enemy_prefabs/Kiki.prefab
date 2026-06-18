@@ -151,7 +151,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
-  patrolRadius: 3
+  patrolRadius: 8
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6
   waypointReachDist: 0.4
@@ -198,8 +198,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.017150879, y: 0.12702638}
-  m_Size: {x: 0.63409805, y: 0.88468295}
+  m_Offset: {x: 0.027571678, y: 0.121575624}
+  m_Size: {x: 0.9675703, y: 0.9884123}
   m_Direction: 0
 --- !u!95 &1828981738325688227
 Animator:
@@ -387,7 +387,7 @@ Transform:
   m_GameObject: {fileID: 4518119797810744639}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.005, y: -0.215, z: 0}
+  m_LocalPosition: {x: 0.005, y: 0, z: 0}
   m_LocalScale: {x: 1.0189711, y: -0.115205884, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -486,6 +486,6 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.15070185, y: -0.04961056}
-  m_Size: {x: 0.15488867, y: 4.3535247}
+  m_Offset: {x: 0.21747217, y: -0.049610674}
+  m_Size: {x: 0.8912312, y: 7.882746}
   m_Direction: 0
