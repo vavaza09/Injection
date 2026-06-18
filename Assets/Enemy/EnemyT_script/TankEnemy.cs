@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity.Cinemachine;
+using System.Collections;
 
 public class TankEnemy : Enemy
 {
@@ -19,12 +21,21 @@ public class TankEnemy : Enemy
     [SerializeField] private float barrelRotateSpeed = 170f;
     [SerializeField] private float gunArcDegrees = 60f;
 
+    [Header("Barrel Recoil")]
+    [SerializeField] private float recoilDistance = 0.3f;
+    [SerializeField] private float recoilDuration = 0.15f;
+    [SerializeField] private float recoilReturnDuration = 0.2f;
+    [SerializeField] private MuzzleFlashEffect muzzleFlash;
+
     private float lastShootTime = -999f;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private bool canShootAtPlayer;
     private float currentBarrelAngle = 10f;
     private Vector2 lastMoveInput;
+
+    private bool _isRecoiling;
+    private CinemachineImpulseSource _impulseSource;
 
     private bool _currentFacingRight;
     private bool _pendingFacingRight;
@@ -38,6 +49,7 @@ public class TankEnemy : Enemy
         base.Start();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
         _currentFacingRight = spriteRenderer != null && spriteRenderer.flipX;
 
         // Move gunPivot out of the non-uniformly scaled Circle parent so rotation
@@ -181,33 +193,58 @@ public class TankEnemy : Enemy
 
     public override void Attack()
     {
-        if (bulletPrefab == null || attackPoint == null || playerTransform == null)
-        {
-            return;
-        }
-
-        if (!canShootAtPlayer)
-        {
-            return;
-        }
-
-        if (Time.time < lastShootTime + shootCooldown)
-        {
-            return;
-        }
-
-        Vector2 shootDirection = (playerTransform.position - attackPoint.position).normalized;
-
-        Quaternion rotation = Quaternion.FromToRotation(Vector2.right, shootDirection);
-        GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, rotation);
-
-        TankBullet bullet = bulletObject.GetComponent<TankBullet>();
-        if (bullet != null)
-        {
-            bullet.Initialize(shootDirection, attackDamage, bulletSpeed, gameObject);
-        }
+        if (bulletPrefab == null || attackPoint == null || playerTransform == null) return;
+        if (!canShootAtPlayer) return;
+        if (Time.time < lastShootTime + shootCooldown) return;
+        if (_isRecoiling) return;
 
         lastShootTime = Time.time;
+        _isRecoiling = true;
+        StartCoroutine(RecoilAndFireRoutine());
+    }
+
+    private IEnumerator RecoilAndFireRoutine()
+    {
+        Vector2 shootDirection = (playerTransform.position - attackPoint.position).normalized;
+        Vector3 idleLocalPos = gunPivot.localPosition;
+        Vector3 worldBackward = new Vector3(-shootDirection.x, -shootDirection.y, 0f);
+        Vector3 recoilTargetLocalPos = idleLocalPos + transform.InverseTransformDirection(worldBackward) * recoilDistance;
+        Quaternion fireRotation = Quaternion.FromToRotation(Vector2.right, shootDirection);
+
+        // Flash starts now — plays during recoil; smoke auto-starts when recoil ends (~flashDuration)
+        if (muzzleFlash != null)
+            muzzleFlash.Play(fireRotation);
+
+        // Phase 1: recoil back (ease-in)
+        float t = 0f;
+        while (t < 1f)
+        {
+            t = Mathf.Min(t + Time.deltaTime / recoilDuration, 1f);
+            gunPivot.localPosition = Vector3.Lerp(idleLocalPos, recoilTargetLocalPos, t * t);
+            yield return null;
+        }
+
+        // Phase 2: fire — smoke already rolling from the effect above
+        GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, fireRotation);
+        TankBullet bullet = bulletObject.GetComponent<TankBullet>();
+        if (bullet != null)
+            bullet.Initialize(shootDirection, attackDamage, bulletSpeed, gameObject);
+
+        if (_impulseSource != null)
+            _impulseSource.GenerateImpulse(0.3f);
+
+        // Phase 3: barrel return (ease-out)
+        t = 0f;
+        while (t < 1f)
+        {
+            t = Mathf.Min(t + Time.deltaTime / recoilReturnDuration, 1f);
+            float eased = 1f - (1f - t) * (1f - t);
+            gunPivot.localPosition = Vector3.Lerp(recoilTargetLocalPos, idleLocalPos, eased);
+            yield return null;
+        }
+
+        gunPivot.localPosition = idleLocalPos;
+        _isRecoiling = false;
     }
 
     private void FlipTowardsPlayer()

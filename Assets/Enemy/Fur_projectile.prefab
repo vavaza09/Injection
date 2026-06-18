@@ -109,6 +109,11 @@ MonoBehaviour:
   fallSpeed: 20
   hitboxSize: {x: 1.5, y: 1.5}
   damageAmount: 10
+  shadowMaxRadius: 1
+  shadowMinRadius: 0.25
+  shadowMaxAlpha: 0.45
+  shadowMinAlpha: 0.35
+  shadowSortOrder: 2
   hitboxActiveDuration: 0.2
 --- !u!70 &7967248722562302301
 CapsuleCollider2D:
@@ -140,7 +145,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
