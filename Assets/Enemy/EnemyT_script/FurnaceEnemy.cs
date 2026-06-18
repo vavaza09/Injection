@@ -13,6 +13,9 @@ public class FurnaceEnemy : Enemy
     [Tooltip("How long the attack animation plays before the bullet spawns (seconds).")]
     public float attackWindupDuration = 1f;
 
+    [Header("Double Shot")]
+    [SerializeField] private MuzzleFlashEffect muzzleFlash;
+
     [Header("Facing")]
     [Tooltip("Enable if the sprite sheet faces LEFT by default (positive scale = left-facing).")]
     [SerializeField] private bool invertFacing = true;
@@ -21,7 +24,6 @@ public class FurnaceEnemy : Enemy
 
     private float lastAttackTime = -999f;
     private bool _isAttacking;
-    private Vector2 _prevPosition;
 
     protected override void Awake()
     {
@@ -31,21 +33,11 @@ public class FurnaceEnemy : Enemy
     protected override void Start()
     {
         base.Start();
-        _prevPosition = transform.position;
     }
 
     protected override void Update()
     {
         base.Update();
-        if (_isAttacking || _animator == null) return;
-
-        bool isMoving = ((Vector2)transform.position - _prevPosition).sqrMagnitude > 0.00001f;
-        _prevPosition = transform.position;
-
-        if (!isMoving
-            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Idle")
-            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Attack"))
-            _animator.Play("Oven_Idle");
     }
 
     public override void Patrol(Vector2 direction, float speed)
@@ -62,6 +54,10 @@ public class FurnaceEnemy : Enemy
 
     public override void PatrolArea()
     {
+        if (_animator != null
+            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Idle")
+            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Attack"))
+            _animator.Play("Oven_Idle");
         Move(Vector2.zero);
     }
 
@@ -98,18 +94,38 @@ public class FurnaceEnemy : Enemy
         if (_animator != null)
             _animator.SetBool("IsAttacking", true);
 
-        yield return new WaitForSeconds(attackWindupDuration);
+        // Start flash just before the shot — keeps smoke aligned with bullet spawn
+        const float flashPreDelay = 0.15f;
+        float preWait = Mathf.Max(0f, attackWindupDuration - flashPreDelay);
+        yield return new WaitForSeconds(preWait);
+        if (muzzleFlash != null)
+            muzzleFlash.Play(Quaternion.Euler(0f, 0f, 90f));
+        yield return new WaitForSeconds(attackWindupDuration - preWait);
 
-        Vector3 spawnPosition = playerTransform.position + Vector3.up * spawnHeight;
-        GameObject projectileObject = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+        Vector2 playerPos = playerTransform.position;
 
-        FurnaceProjectile projectile = projectileObject.GetComponent<FurnaceProjectile>();
-        if (projectile != null)
-            projectile.Initialize(fallSpeed, hitboxSize, damageAmount);
+        // First projectile — smoke already rolling
+        SpawnProjectile(playerPos + new Vector2(-0.5f, 0f));
+
+        yield return new WaitForSeconds(0.1f);
+
+        // Second projectile — restart flash+smoke cycle for the follow-up shot
+        if (muzzleFlash != null)
+            muzzleFlash.Play(Quaternion.Euler(0f, 0f, 90f));
+        SpawnProjectile(playerPos + new Vector2(0.5f, 0f));
 
         if (_animator != null)
             _animator.SetBool("IsAttacking", false);
 
         _isAttacking = false;
+    }
+
+    private void SpawnProjectile(Vector2 targetPos)
+    {
+        Vector3 spawnPosition = new Vector3(targetPos.x, targetPos.y + spawnHeight, 0f);
+        GameObject projectileObject = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+        FurnaceProjectile projectile = projectileObject.GetComponent<FurnaceProjectile>();
+        if (projectile != null)
+            projectile.Initialize(fallSpeed, hitboxSize, damageAmount);
     }
 }
