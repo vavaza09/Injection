@@ -4626,30 +4626,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 250965131468786845, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: walkDistance
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2373342409532700347, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1274332873}
-    - target: {fileID: 2980075121419006311, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Size.x
-      value: 2.617218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980075121419006311, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Size.y
-      value: 2.808775
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980075121419006311, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Offset.x
-      value: -0.040828705
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980075121419006311, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.49559498
-      objectReference: {fileID: 0}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 27.71
@@ -4690,37 +4670,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4542460271244975366, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Radius
-      value: 1.0822055
-      objectReference: {fileID: 0}
-    - target: {fileID: 4542460271244975366, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Offset.x
-      value: -0.34441876
-      objectReference: {fileID: 0}
     - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_Name
       value: Stomper(Crab)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7842078153956066232, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Size.x
-      value: 6.5452213
-      objectReference: {fileID: 0}
-    - target: {fileID: 7842078153956066232, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Size.y
-      value: 1.6298687
-      objectReference: {fileID: 0}
-    - target: {fileID: 7842078153956066232, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Offset.x
-      value: -0.009671211
-      objectReference: {fileID: 0}
-    - target: {fileID: 7842078153956066232, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.46283853
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4800,10 +4752,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kiki
       objectReference: {fileID: 0}
-    - target: {fileID: 556367457260148969, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2181151058672896822, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: playerTransform
       value: 
@@ -4862,10 +4810,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 946617358513943892, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
-      propertyPath: spawnHeight
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 946617358513943892, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1274332873}
@@ -4912,14 +4856,6 @@ PrefabInstance:
     - target: {fileID: 5928436914197378935, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6067697909927904959, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6067697909927904959, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.97
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

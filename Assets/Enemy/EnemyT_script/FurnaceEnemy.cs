@@ -16,6 +16,19 @@ public class FurnaceEnemy : Enemy
     [Header("Double Shot")]
     [SerializeField] private MuzzleFlashEffect muzzleFlash;
 
+    [Header("Muzzle Flash Timing")]
+    [Tooltip("Seconds into the attack windup before the muzzle flash glow appears")]
+    [SerializeField] private float flashStartDelay = 0.5f;
+
+    [Tooltip("Seconds into the attack windup before the first projectile spawns and smoke appears")]
+    [SerializeField] private float firstShotDelay = 0.8f;
+
+    [Tooltip("Seconds between first and second projectile")]
+    [SerializeField] private float secondShotDelay = 0.15f;
+
+    [Tooltip("Seconds after last shot before attack ends")]
+    [SerializeField] private float postAttackDelay = 0.2f;
+
     [Header("Facing")]
     [Tooltip("Enable if the sprite sheet faces LEFT by default (positive scale = left-facing).")]
     [SerializeField] private bool invertFacing = true;
@@ -94,25 +107,39 @@ public class FurnaceEnemy : Enemy
         if (_animator != null)
             _animator.SetBool("IsAttacking", true);
 
-        // Start flash just before the shot — keeps smoke aligned with bullet spawn
-        const float flashPreDelay = 0.15f;
-        float preWait = Mathf.Max(0f, attackWindupDuration - flashPreDelay);
-        yield return new WaitForSeconds(preWait);
-        if (muzzleFlash != null)
-            muzzleFlash.Play(Quaternion.Euler(0f, 0f, 90f));
-        yield return new WaitForSeconds(attackWindupDuration - preWait);
+        // 1. Wait for flash cue
+        if (flashStartDelay > 0f)
+            yield return new WaitForSeconds(flashStartDelay);
 
+        // 2. Play flash glow
+        if (muzzleFlash != null)
+            muzzleFlash.PlayFlash(Vector2.up);
+
+        // 3. Wait remaining time until first shot
+        float remaining = Mathf.Max(0f, firstShotDelay - flashStartDelay);
+        if (remaining > 0f)
+            yield return new WaitForSeconds(remaining);
+
+        // 4. Spawn first projectile + smoke
         Vector2 playerPos = playerTransform.position;
-
-        // First projectile — smoke already rolling
         SpawnProjectile(playerPos + new Vector2(-0.5f, 0f));
-
-        yield return new WaitForSeconds(0.1f);
-
-        // Second projectile — restart flash+smoke cycle for the follow-up shot
         if (muzzleFlash != null)
-            muzzleFlash.Play(Quaternion.Euler(0f, 0f, 90f));
+            muzzleFlash.PlaySmoke(Vector2.up);
+
+        // 5. Wait between shots
+        if (secondShotDelay > 0f)
+            yield return new WaitForSeconds(secondShotDelay);
+
+        // 6. Flash + second projectile + smoke
+        if (muzzleFlash != null)
+            muzzleFlash.PlayFlash(Vector2.up);
         SpawnProjectile(playerPos + new Vector2(0.5f, 0f));
+        if (muzzleFlash != null)
+            muzzleFlash.PlaySmoke(Vector2.up);
+
+        // 7. Post-attack pause
+        if (postAttackDelay > 0f)
+            yield return new WaitForSeconds(postAttackDelay);
 
         if (_animator != null)
             _animator.SetBool("IsAttacking", false);

@@ -137,12 +137,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MuzzleFlashEffect
   flashDuration: 0.15
-  coreMaxScale: 0.8
-  burstMaxScale: 1.2
-  smokeMaxScale: 1.5
-  coreColor: {r: 1, g: 1, b: 0.8, a: 1}
-  burstColor: {r: 1, g: 0.5, b: 0.1, a: 1}
-  smokeColor: {r: 0.3, g: 0.25, b: 0.2, a: 0.7}
+  flashMaxScale: 0.5
+  flashColor: {r: 1, g: 0.9, b: 0.3, a: 1}
+  puffCount: 5
+  puffLifetime: 0.6
+  puffSpreadAngle: 120
+  puffMinSpeed: 1
+  puffMaxSpeed: 3
+  puffColor: {r: 0.7, g: 0.65, b: 0.55, a: 0.8}
+  puffMinScale: 0.1
+  puffMaxScale: 0.3
+  testFlash: 0
 --- !u!1 &3551897207184432342
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,6 +599,9 @@ MonoBehaviour:
   recoilDuration: 0.45
   recoilReturnDuration: 0.6
   muzzleFlash: {fileID: 6038470916987513748}
+  flashStartDelay: 0
+  fireDelay: 0.15
+  postFirePause: 0.05
 --- !u!95 &6666666666666666666
 Animator:
   serializedVersion: 7

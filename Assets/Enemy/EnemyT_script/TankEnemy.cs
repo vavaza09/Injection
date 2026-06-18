@@ -27,6 +27,16 @@ public class TankEnemy : Enemy
     [SerializeField] private float recoilReturnDuration = 0.2f;
     [SerializeField] private MuzzleFlashEffect muzzleFlash;
 
+    [Header("Muzzle Flash Timing")]
+    [Tooltip("Seconds after attack starts before the muzzle flash glow appears")]
+    [SerializeField] private float flashStartDelay = 0.0f;
+
+    [Tooltip("Seconds after attack starts before the bullet fires and smoke appears")]
+    [SerializeField] private float fireDelay = 0.15f;
+
+    [Tooltip("Seconds after firing before barrel starts returning")]
+    [SerializeField] private float postFirePause = 0.05f;
+
     private float lastShootTime = -999f;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -35,6 +45,7 @@ public class TankEnemy : Enemy
     private Vector2 lastMoveInput;
 
     private bool _isRecoiling;
+    private Coroutine _barrelRecoilCo;
     private CinemachineImpulseSource _impulseSource;
 
     private bool _currentFacingRight;
@@ -211,30 +222,41 @@ public class TankEnemy : Enemy
         Vector3 recoilTargetLocalPos = idleLocalPos + transform.InverseTransformDirection(worldBackward) * recoilDistance;
         Quaternion fireRotation = Quaternion.FromToRotation(Vector2.right, shootDirection);
 
-        // Flash starts now — plays during recoil; smoke auto-starts when recoil ends (~flashDuration)
+        // 1. Start barrel recoil (runs in background while timing proceeds)
+        if (_barrelRecoilCo != null) StopCoroutine(_barrelRecoilCo);
+        _barrelRecoilCo = StartCoroutine(BarrelRecoilRoutine(idleLocalPos, recoilTargetLocalPos));
+
+        // 2. Wait, then play flash glow
+        if (flashStartDelay > 0f)
+            yield return new WaitForSeconds(flashStartDelay);
         if (muzzleFlash != null)
-            muzzleFlash.Play(fireRotation);
+            muzzleFlash.PlayFlash(shootDirection);
 
-        // Phase 1: recoil back (ease-in)
-        float t = 0f;
-        while (t < 1f)
-        {
-            t = Mathf.Min(t + Time.deltaTime / recoilDuration, 1f);
-            gunPivot.localPosition = Vector3.Lerp(idleLocalPos, recoilTargetLocalPos, t * t);
-            yield return null;
-        }
+        // 3. Wait remaining time until fire
+        float remaining = Mathf.Max(0f, fireDelay - flashStartDelay);
+        if (remaining > 0f)
+            yield return new WaitForSeconds(remaining);
 
-        // Phase 2: fire — smoke already rolling from the effect above
+        // 4. Fire bullet + smoke
         GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, fireRotation);
         TankBullet bullet = bulletObject.GetComponent<TankBullet>();
         if (bullet != null)
             bullet.Initialize(shootDirection, attackDamage, bulletSpeed, gameObject);
-
+        if (muzzleFlash != null)
+            muzzleFlash.PlaySmoke(shootDirection);
         if (_impulseSource != null)
             _impulseSource.GenerateImpulse(0.3f);
 
-        // Phase 3: barrel return (ease-out)
-        t = 0f;
+        // 5. Post-fire pause
+        if (postFirePause > 0f)
+            yield return new WaitForSeconds(postFirePause);
+
+        // 6. Ensure barrel is at full recoil before returning
+        if (_barrelRecoilCo != null) { StopCoroutine(_barrelRecoilCo); _barrelRecoilCo = null; }
+        gunPivot.localPosition = recoilTargetLocalPos;
+
+        // 7. Return barrel to idle (ease-out)
+        float t = 0f;
         while (t < 1f)
         {
             t = Mathf.Min(t + Time.deltaTime / recoilReturnDuration, 1f);
@@ -245,6 +267,17 @@ public class TankEnemy : Enemy
 
         gunPivot.localPosition = idleLocalPos;
         _isRecoiling = false;
+    }
+
+    private IEnumerator BarrelRecoilRoutine(Vector3 from, Vector3 to)
+    {
+        float t = 0f;
+        while (t < 1f)
+        {
+            t = Mathf.Min(t + Time.deltaTime / recoilDuration, 1f);
+            gunPivot.localPosition = Vector3.Lerp(from, to, t * t);
+            yield return null;
+        }
     }
 
     private void FlipTowardsPlayer()
