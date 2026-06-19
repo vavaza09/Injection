@@ -50,7 +50,7 @@ public class FurnaceProjectile : MonoBehaviour
 
         CreateGroundShadow();
     }
-
+    
     public void Initialize(float configuredFallSpeed, Vector2 configuredHitboxSize, float configuredDamageAmount)
     {
         fallSpeed = configuredFallSpeed;
