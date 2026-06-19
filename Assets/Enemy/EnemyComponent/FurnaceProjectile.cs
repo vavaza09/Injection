@@ -47,15 +47,7 @@ public class FurnaceProjectile : MonoBehaviour
 
         CreateGroundShadow();
     }
-
-    private void Start()
-    {
-        if (GetComponent<TrailRenderer>() == null)
-            SetupTrail();
-
-        CreateGroundShadow();
-    }
-
+    
     public void Initialize(float configuredFallSpeed, Vector2 configuredHitboxSize, float configuredDamageAmount)
     {
         fallSpeed = configuredFallSpeed;
