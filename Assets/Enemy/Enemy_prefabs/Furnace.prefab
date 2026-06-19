@@ -189,18 +189,23 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
-  projectilePrefab: {fileID: 8716880806875173954, guid: 1741940f20ea9354892af2b1d532f533, type: 3}
-  spawnHeight: 8
-  fallSpeed: 18
-  hitboxSize: {x: 1.5, y: 1.5}
   attackCooldown: 1.5
-  damageAmount: 1
-  attackWindupDuration: 1
   muzzleFlash: {fileID: 6432095653603266072}
   flashStartDelay: 0.7
   firstShotDelay: 0.8
   secondShotDelay: 0.15
   postAttackDelay: 0
+  launchUpSpeed: 20
+  hangTime: 1.2
+  dropSpawnHeight: 15
+  dropFallSpeed: 28
+  explosionRadius: 2
+  explosionDamage: 1.5
+  vfxFlashMultiplier: 2.5
+  vfxFireballCount: 30
+  vfxSmokeCount: 13
+  vfxSparkCount: 27
+  vfxRingMultiplier: 3
   invertFacing: 1
 --- !u!114 &3743495189645005898
 MonoBehaviour:
@@ -328,16 +333,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MuzzleFlashEffect
   flashDuration: 0.15
-  flashMaxScale: 0.5
+  flashMaxScale: 1.2
   flashColor: {r: 1, g: 0.9, b: 0.3, a: 1}
-  puffCount: 5
+  puffCount: 8
   puffLifetime: 0.6
   puffSpreadAngle: 120
   puffMinSpeed: 1
-  puffMaxSpeed: 3
+  puffMaxSpeed: 5
   puffColor: {r: 0.7, g: 0.65, b: 0.55, a: 0.8}
   puffMinScale: 0.1
-  puffMaxScale: 0.3
+  puffMaxScale: 0.5
   testFlash: 0
 --- !u!1 &7985366514119146594
 GameObject:
