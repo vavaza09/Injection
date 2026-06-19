@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298528245570665569}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.009259259, y: 0.009259259, z: 0.009259259}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.07, y: 3.47}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920.0001, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6976269447292781462
@@ -372,7 +372,7 @@ GameObject:
   - component: {fileID: 4885150918750639098}
   - component: {fileID: 1234567890123456789}
   - component: {fileID: 8086246394040665203}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ====PLAYER====
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -593,7 +593,6 @@ MonoBehaviour:
   reverseSpeedThreshold: 0.25
   speedLossOnHit: 0.3
   speedLossOnWallCrash: 0.2
-  wallSlideMaxFallAtMaxSpeedMultiplier: 1.35
   jumpAtMaxSpeedMultiplier: 5
   dashAtMaxSpeedMultiplier: 5
   airAcceleration: 16
@@ -608,12 +607,13 @@ MonoBehaviour:
   gravity: 10
   maxFall: 10
   fallGravityMultiplier: 1.8
-  lowJumpGravityMultiplier: 3
+  risingGravityMultiplier: 3
   fallAirControlMultiplier: 0.65
   wallSlideMaxFallSpeed: 1
   wallSlideAcceleration: 0.1
   wallStickHorizontalBrake: 80
   wallInputThreshold: 0.1
+  wallSlideMaxFallAtMaxSpeedMultiplier: 1.35
   dashSettings:
     dashSpeed: 7
     endDashSpeed: 7
@@ -631,6 +631,7 @@ MonoBehaviour:
     m_Bits: 8
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
+  wallJumpAtMaxSpeedMultiplier: 1.2
   wallJumpLockTime: 0.15
   wallCheckSize: {x: 0.2, y: 0.8}
   wallCheckOffset: {x: 0.73, y: 0}
@@ -644,6 +645,7 @@ MonoBehaviour:
   grabLaunchBaseSpeed: 10
   grabLaunchMinMultiplier: 0.6
   grabLaunchMaxMultiplier: 1.4
+  autoGrab: 1
   airAnimSpeedThreshold: 1
   canMove: 1
 --- !u!114 &7705200461922201765
