@@ -19,6 +19,18 @@ public class KikiEnemy : Enemy
     [SerializeField] private float returnSpeed        = 6f;
     [SerializeField] private float headbuttCooldown   = 1.5f;
 
+    [Header("Headbutt Trail Effect")]
+    [Tooltip("Trail color at the start (near Kiki)")]
+    [SerializeField] private Color trailStartColor = new Color(1f, 0.6f, 0.2f, 0.9f);
+    [Tooltip("Trail color at the end (fading tail)")]
+    [SerializeField] private Color trailEndColor = new Color(1f, 0.3f, 0.05f, 0f);
+    [Tooltip("Trail width at start")]
+    [SerializeField] private float trailStartWidth = 0.5f;
+    [Tooltip("Trail width at end")]
+    [SerializeField] private float trailEndWidth = 0.05f;
+    [Tooltip("How long the trail lingers behind (seconds)")]
+    [SerializeField] private float trailTime = 0.25f;
+
     [Header("Facing")]
     [SerializeField] private bool invertFacing = true;
 
@@ -30,6 +42,8 @@ public class KikiEnemy : Enemy
     private Vector2 _preAttackPos;
     private Coroutine _attackCoroutine;
     private Animator _anim;
+    private TrailRenderer _dashTrail;
+    private ParticleSystem _dashParticles;
 
     protected override void Awake()
     {
@@ -47,6 +61,89 @@ public class KikiEnemy : Enemy
             rb.freezeRotation = true;
         }
         PickWaypoint();
+        SetupDashTrail();
+        SetupDashParticles();
+    }
+
+    private void SetupDashTrail()
+    {
+        _dashTrail = gameObject.AddComponent<TrailRenderer>();
+        _dashTrail.time = trailTime;
+        _dashTrail.startWidth = trailStartWidth;
+        _dashTrail.endWidth = trailEndWidth;
+        _dashTrail.material = new Material(Shader.Find("Sprites/Default"));
+        _dashTrail.numCornerVertices = 4;
+        _dashTrail.numCapVertices = 4;
+        _dashTrail.sortingOrder = GetComponent<SpriteRenderer>() != null
+            ? GetComponent<SpriteRenderer>().sortingOrder - 1 : 0;
+
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] {
+                new GradientColorKey(trailStartColor, 0f),
+                new GradientColorKey(trailEndColor, 1f)
+            },
+            new GradientAlphaKey[] {
+                new GradientAlphaKey(trailStartColor.a, 0f),
+                new GradientAlphaKey(0f, 1f)
+            }
+        );
+        _dashTrail.colorGradient = gradient;
+        _dashTrail.emitting = false;
+    }
+
+    private void SetupDashParticles()
+    {
+        GameObject particleGO = new GameObject("HeadbuttParticles");
+        particleGO.transform.SetParent(transform, false);
+        particleGO.transform.localPosition = Vector3.zero;
+
+        _dashParticles = particleGO.AddComponent<ParticleSystem>();
+        var main = _dashParticles.main;
+        main.loop = true;
+        main.startLifetime = 0.2f;
+        main.startSpeed = 0f;
+        main.startSize = 0.15f;
+        main.startColor = new Color(1f, 0.85f, 0.5f, 0.7f);
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.maxParticles = 30;
+
+        var emission = _dashParticles.emission;
+        emission.rateOverTime = 0f;
+        emission.rateOverDistance = 12f;
+
+        var shape = _dashParticles.shape;
+        shape.shapeType = ParticleSystemShapeType.Circle;
+        shape.radius = 0.2f;
+
+        var sizeOverLifetime = _dashParticles.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, new AnimationCurve(
+            new Keyframe(0f, 1f),
+            new Keyframe(1f, 0f)
+        ));
+
+        var colorOverLifetime = _dashParticles.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        Gradient particleGradient = new Gradient();
+        particleGradient.SetKeys(
+            new GradientColorKey[] {
+                new GradientColorKey(new Color(1f, 0.85f, 0.5f), 0f),
+                new GradientColorKey(new Color(1f, 0.5f, 0.15f), 1f)
+            },
+            new GradientAlphaKey[] {
+                new GradientAlphaKey(0.7f, 0f),
+                new GradientAlphaKey(0f, 1f)
+            }
+        );
+        colorOverLifetime.color = particleGradient;
+
+        var particleRenderer = particleGO.GetComponent<ParticleSystemRenderer>();
+        particleRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        particleRenderer.sortingOrder = GetComponent<SpriteRenderer>() != null
+            ? GetComponent<SpriteRenderer>().sortingOrder - 1 : 0;
+
+        _dashParticles.Stop();
     }
 
     protected override void Update()
@@ -115,28 +212,41 @@ public class KikiEnemy : Enemy
         if (rb != null) rb.linearVelocity = Vector2.zero;
         PlayAnim("Float_Attack");
 
+        // Pre-roll delay (preserves tuned wind-up feel)
         yield return new WaitForSeconds(headbuttLaunchDelay);
 
-        // Wait until the animation reaches the freeze frame
+        // Gate: wait until the animator has actually entered Float_Attack.
+        // The old WaitUntil had a !IsName bail-out that fired immediately when Play() was
+        // still deferred and the state was Float_Idle — this is the root of the unreliability.
+        yield return new WaitUntil(() =>
+        {
+            if (_anim == null) return true;
+            return _anim.GetCurrentAnimatorStateInfo(0).IsName("Float_Attack");
+        });
+
+        // Now safely wait for the freeze frame — no bail-out needed, state is confirmed.
         float freezeNormalized = (float)attackFreezeFrame / attackTotalFrames;
         yield return new WaitUntil(() =>
         {
             if (_anim == null) return true;
-            var info = _anim.GetCurrentAnimatorStateInfo(0);
-            return !info.IsName("Float_Attack") || info.normalizedTime >= freezeNormalized;
+            return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= freezeNormalized;
         });
 
         // Freeze the animator on that frame
         if (_anim != null) _anim.speed = 0f;
 
-        // Lock in player position and launch
+        // Lock in player position and launch direction
         Vector2 target = playerTransform != null ? (Vector2)playerTransform.position : _preAttackPos;
         Vector2 dashDir = target - (Vector2)transform.position;
         if (dashDir.sqrMagnitude < 0.001f) dashDir = Vector2.right;
         dashDir = dashDir.normalized;
         FlipTo(dashDir.x > 0);
 
-        // Dash — animator stays frozen on frame 8 until a hit registers
+        // Enable dash effects
+        if (_dashTrail != null) { _dashTrail.Clear(); _dashTrail.emitting = true; }
+        if (_dashParticles != null) _dashParticles.Play();
+
+        // Dash — animator stays frozen on freeze frame
         float elapsed = 0f;
         while (elapsed < headbuttDuration)
         {
@@ -148,7 +258,11 @@ public class KikiEnemy : Enemy
 
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        // Unfreeze and let the rest of the animation play
+        // Disable dash effects
+        if (_dashTrail != null) _dashTrail.emitting = false;
+        if (_dashParticles != null) _dashParticles.Stop();
+
+        // Unfreeze and let the rest of the attack animation play
         if (_anim != null) _anim.speed = 1f;
 
         yield return new WaitUntil(() =>
@@ -206,6 +320,8 @@ public class KikiEnemy : Enemy
         _isAttacking = false;
         if (_anim != null) _anim.speed = 1f;
         if (rb != null) rb.linearVelocity = Vector2.zero;
+        if (_dashTrail != null) { _dashTrail.emitting = false; _dashTrail.Clear(); }
+        if (_dashParticles != null) _dashParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         PlayAnim("Float_Idle");
         PickWaypoint();
     }
