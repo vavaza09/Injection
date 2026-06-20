@@ -74,6 +74,8 @@ namespace Game.Components.Movement
         [Header("Ground Check")]
         [SerializeField] private Vector2 groundCheckSize = new Vector2(0.4f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
+        [SerializeField] private LayerMask oneWayPlatformMask;
+        [SerializeField] private float dropThroughSafetyTime = 0.75f;
 
         [Header("Knockback Settings")]
         [Tooltip("Seconds after a knockback during which move input and braking are ignored so the knockback velocity carries.")]
@@ -147,6 +149,12 @@ namespace Game.Components.Movement
         [SerializeField] private bool enableHangDashRefresh = true;
         private readonly DashRefreshGate _wallDashGate = new DashRefreshGate();
         private readonly DashRefreshGate _hangDashGate = new DashRefreshGate();
+
+        // Drop-through state
+        private Collider2D _bodyCollider;
+        private Collider2D _currentGroundCollider;
+        private static readonly Collider2D[] _groundHitBuffer = new Collider2D[8];
+        private ContactFilter2D _groundFilter;
 
         // Grab state
         private bool isGrabbing;
@@ -233,6 +241,11 @@ namespace Game.Components.Movement
                 grabbableLayer = LayerMask.GetMask("Grabbable");
             }
 
+            if (oneWayPlatformMask == 0)
+            {
+                oneWayPlatformMask = LayerMask.GetMask("Platform");
+            }
+
             if (_logger == null)
             {
                 Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
@@ -271,6 +284,15 @@ namespace Game.Components.Movement
 
                 _logger?.Log($"Rigidbody2D settings: gravityScale={rb.gravityScale}, bodyType={rb.bodyType}, mass={rb.mass}");
             }
+
+            // Resolve body collider for drop-through filtering
+            _bodyCollider = GetComponent<Collider2D>();
+
+            // Pre-build the ground filter (immutable after init, no per-frame GC)
+            _groundFilter = new ContactFilter2D();
+            _groundFilter.SetLayerMask(groundLayer);
+            _groundFilter.useTriggers = false;
+            _groundFilter.useLayerMask = true;
 
             // Initialize dash handler (composition)
             _dashHandler = new DashHandler(dashSettings);
@@ -821,10 +843,29 @@ namespace Game.Components.Movement
         private void CheckGroundStatus()
         {
             bool previousGrounded = isGrounded;
+            isGrounded = false;
+            _currentGroundCollider = null;
 
             if (groundCheck != null)
             {
-                isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
+                int hitCount = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, _groundFilter, _groundHitBuffer);
+                for (int i = 0; i < hitCount; i++)
+                {
+                    Collider2D hit = _groundHitBuffer[i];
+                    if (_bodyCollider != null && Physics2D.GetIgnoreCollision(_bodyCollider, hit))
+                        continue;
+
+                    bool isOneWay = ((1 << hit.gameObject.layer) & oneWayPlatformMask.value) != 0;
+                    // One-way platform: only counts as ground when feet are at/above the surface.
+                    // If feet are below the top, the player is passing through from below — skip.
+                    if (isOneWay && _bodyCollider != null && _bodyCollider.bounds.min.y < hit.bounds.max.y - 0.02f)
+                        continue;
+
+                    isGrounded = true;
+
+                    if (_currentGroundCollider == null && isOneWay)
+                        _currentGroundCollider = hit;
+                }
             }
 
             if (previousGrounded != isGrounded)
@@ -1016,6 +1057,29 @@ namespace Game.Components.Movement
         #endregion
 
         #region Utility
+
+        public void DropThroughPlatform()
+        {
+            if (!isGrounded || _currentGroundCollider == null || _bodyCollider == null) return;
+            if (Physics2D.GetIgnoreCollision(_bodyCollider, _currentGroundCollider)) return;
+            StartCoroutine(DropRoutine(_currentGroundCollider));
+        }
+
+        private IEnumerator DropRoutine(Collider2D platformCol)
+        {
+            Physics2D.IgnoreCollision(_bodyCollider, platformCol, true);
+
+            float elapsed = 0f;
+            while (elapsed < dropThroughSafetyTime)
+            {
+                if (_bodyCollider.bounds.max.y < platformCol.bounds.min.y)
+                    break;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            Physics2D.IgnoreCollision(_bodyCollider, platformCol, false);
+        }
 
         private void MoveVExact(int amount)
         {
