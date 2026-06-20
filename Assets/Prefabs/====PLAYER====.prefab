@@ -319,7 +319,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: -370.9}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 273.37, y: 246.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1096991204051458568
@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 4885150918750639098}
   - component: {fileID: 1234567890123456789}
   - component: {fileID: 8086246394040665203}
+  - component: {fileID: 9112233445566778800}
   m_Layer: 10
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -628,7 +629,7 @@ MonoBehaviour:
   groundCheckSize: {x: 0.4, y: 2}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 2056
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
   wallJumpAtMaxSpeedMultiplier: 1.2
