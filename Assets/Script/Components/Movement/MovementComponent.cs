@@ -75,6 +75,10 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 groundCheckSize = new Vector2(0.4f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
 
+        [Header("Knockback Settings")]
+        [Tooltip("Seconds after a knockback during which move input and braking are ignored so the knockback velocity carries.")]
+        [SerializeField] private float knockbackLockTime = 0.2f;
+
         [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
@@ -130,12 +134,19 @@ namespace Game.Components.Movement
         private Vector2 moveInput;
         private float _wallEntrySpeedFactor;
         private float _wallJumpLockTimer;
+        private float _knockbackLockTimer;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
         private Coroutine _dashCoroutine;
         private float _postDashAirBrakeTimer;
         private bool _wasDashingLastFrame;
+
+        [Header("Air Dash Refresh")]
+        [SerializeField] private bool enableWallDashRefresh = true;
+        [SerializeField] private bool enableHangDashRefresh = true;
+        private readonly DashRefreshGate _wallDashGate = new DashRefreshGate();
+        private readonly DashRefreshGate _hangDashGate = new DashRefreshGate();
 
         // Grab state
         private bool isGrabbing;
@@ -243,6 +254,7 @@ namespace Game.Components.Movement
             moveInput = Vector2.zero;
             _wallEntrySpeedFactor = 0f;
             _wallJumpLockTimer = 0f;
+            _knockbackLockTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
             isGrabbing = false;
@@ -263,6 +275,8 @@ namespace Game.Components.Movement
             // Initialize dash handler (composition)
             _dashHandler = new DashHandler(dashSettings);
             _dashHandler.Initialize(rb);
+            _wallDashGate.Enabled = enableWallDashRefresh;
+            _hangDashGate.Enabled = enableHangDashRefresh;
 
             SetupGroundCheck();
 
@@ -297,6 +311,11 @@ namespace Game.Components.Movement
                 _wallJumpLockTimer = Mathf.Max(0f, _wallJumpLockTimer - Time.deltaTime);
             }
 
+            if (_knockbackLockTimer > 0f)
+            {
+                _knockbackLockTimer = Mathf.Max(0f, _knockbackLockTimer - Time.deltaTime);
+            }
+
             CheckGroundStatus();
             CheckWallStatus();
 
@@ -307,6 +326,8 @@ namespace Game.Components.Movement
                 if (isGrounded)
                 {
                     _dashHandler.RefillDash();
+                    _wallDashGate.Recharge();
+                    _hangDashGate.Recharge();
                 }
             }
 
@@ -357,6 +378,9 @@ namespace Game.Components.Movement
 
             if (IsDashing) return;
             if (isGrabbing) return;
+            // During the knockback lock, leave velocity untouched so the knockback carries —
+            // skip input force, deceleration, reverse/post-dash braking entirely.
+            if (_knockbackLockTimer > 0f) return;
             if (!canMove || rb == null) return;
 
             // While stuck to a wall, horizontal velocity is owned entirely by
@@ -565,6 +589,8 @@ namespace Game.Components.Movement
 
             _wallJumpLockTimer = wallJumpLockTime;
             WallJumped?.Invoke();
+            if (_wallDashGate.TryConsume(_dashHandler.CurrentDashes, _dashHandler.MaxDashes))
+                _dashHandler.ResetDash();
         }
 
         private bool CanExecuteJump()
@@ -966,6 +992,9 @@ namespace Game.Components.Movement
             isGrabbing = false;
             _autoGrabCooldownTimer = 0.4f;
 
+            if (_hangDashGate.TryConsume(_dashHandler.CurrentDashes, _dashHandler.MaxDashes))
+                _dashHandler.ResetDash();
+
             isJumping = true;
             isFalling = false;
             ResetWallSlideState();
@@ -1052,6 +1081,26 @@ namespace Game.Components.Movement
         {
             if (rb != null)
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x * (1f - speedLossOnHit), rb.linearVelocity.y);
+        }
+
+        // Push the character away from sourcePosition. Horizontal dir is sign(playerX - sourceX);
+        // vertical uses UpSign so upwardBias > 0 always reads as "up" regardless of vertical convention.
+        // Velocity is replaced (not added) for a deterministic knock distance, and the lock window
+        // suppresses Move() braking so the shove actually carries.
+        public void ApplyKnockback(Vector2 sourcePosition, float force, float upwardBias)
+        {
+            if (rb == null || characterTransform == null) return;
+
+            float dir = Mathf.Sign(characterTransform.position.x - sourcePosition.x);
+            if (dir == 0f)
+                dir = characterTransform.localScale.x >= 0f ? 1f : -1f;
+
+            Vector2 kick = new Vector2(dir, UpSign * upwardBias).normalized * force;
+
+            ResetWallSlideState();
+            isGrabbing = false;
+            rb.linearVelocity = kick;
+            _knockbackLockTimer = knockbackLockTime;
         }
 
         private float GetCurrentHorizontalSpeedLimit()
