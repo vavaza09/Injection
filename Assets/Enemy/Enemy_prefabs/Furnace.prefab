@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 3628812479955192404}
   - component: {fileID: 946617358513943892}
   - component: {fileID: 3743495189645005898}
+  - component: {fileID: 5307776503066102702}
+  - component: {fileID: 2940432419409455292}
   m_Layer: 7
   m_Name: Furnace
   m_TagString: Enemy
@@ -31,10 +33,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.5, y: -21.59, z: 0}
-  m_LocalScale: {x: 0.7912, y: 0.6867, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1858572540065685220}
+  - {fileID: 3967254864906861901}
+  - {fileID: 6067697909927904959}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &63073427237265526
@@ -86,7 +90,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -7024231520303235640, guid: 85db29ca1f820ae42a86209514e228d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -130,8 +134,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.019699063, y: 0}
-  m_Size: {x: 1.1969914, y: 1.3791462}
+  m_Offset: {x: 0.06681502, y: -0.25438702}
+  m_Size: {x: 1.1027596, y: 1.8879201}
   m_Direction: 0
 --- !u!50 &3628812479955192404
 Rigidbody2D:
@@ -182,12 +186,27 @@ MonoBehaviour:
   attackRange: 14
   playerTransform: {fileID: 0}
   currentState: 0
-  projectilePrefab: {fileID: 8716880806875173954, guid: 1741940f20ea9354892af2b1d532f533, type: 3}
-  spawnHeight: 5
-  fallSpeed: 18
-  hitboxSize: {x: 1.5, y: 1.5}
-  attackCooldown: 1.25
-  damageAmount: 1
+  stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  stunBlinkInterval: 0.12
+  stunVfxPrefab: {fileID: 0}
+  attackCooldown: 1.5
+  muzzleFlash: {fileID: 6432095653603266072}
+  flashStartDelay: 0.7
+  firstShotDelay: 0.8
+  secondShotDelay: 0.15
+  postAttackDelay: 0
+  launchUpSpeed: 20
+  hangTime: 1.2
+  dropSpawnHeight: 15
+  dropFallSpeed: 28
+  explosionRadius: 2
+  explosionDamage: 1.5
+  vfxFlashMultiplier: 2.5
+  vfxFireballCount: 30
+  vfxSmokeCount: 13
+  vfxSparkCount: 27
+  vfxRingMultiplier: 3
+  invertFacing: 1
 --- !u!114 &3743495189645005898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,9 +221,160 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   enemy: {fileID: 946617358513943892}
   currentState: 0
-  patrolRange: 3
-  patrolSpeed: 0.7
-  idleTimeAtEdge: 2
+  patrolSpeed: 1
+  walkDistance: 4
+  noPlayerWalkDelay: 3
+  boundaryPauseTime: 0.8
+--- !u!95 &5307776503066102702
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375100751388855051}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1be45212914fcdc448e949b90eb5f66d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2940432419409455292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375100751388855051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9b90cd707a43148a329439cf93dd2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathExplosion
+  freezeDuration: 1
+  flashInterval: 0.08
+  explosionFrames:
+  - {fileID: -32627859074496401, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -3260179074879666930, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -2241823390196364601, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6828211064989150017, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6147399792674712462, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  explosionFps: 12
+  explosionScale: 1
+  bodyPartSprites:
+  - {fileID: 1288677205517305307, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: 3090632372577624380, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -6826849217548259815, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -1506443680523001762, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  - {fileID: -1690120865031316619, guid: 262a9b2d4eabc28428462cf7a4fb879b, type: 3}
+  bodyPartScale: 1
+  launchForce: 6
+  upwardBias: 1.5
+  partRotationSpeed: 220
+  partGravityScale: 1.5
+  partLifetime: 2.2
+  partFadeDuration: 0.8
+  trailTime: 0.4
+  trailStartWidth: 0.12
+  trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}
+  trailEndColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
+--- !u!1 &5207970138660802168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3967254864906861901}
+  - component: {fileID: 6432095653603266072}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3967254864906861901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207970138660802168}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5928436914197378935}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6432095653603266072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207970138660802168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191484d7b5b3f8b41844a1fe73bd1946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MuzzleFlashEffect
+  flashDuration: 0.15
+  flashMaxScale: 1.2
+  flashColor: {r: 1, g: 0.9, b: 0.3, a: 1}
+  puffCount: 8
+  puffLifetime: 0.6
+  puffSpreadAngle: 120
+  puffMinSpeed: 1
+  puffMaxSpeed: 5
+  puffColor: {r: 0.7, g: 0.65, b: 0.55, a: 0.8}
+  puffMinScale: 0.1
+  puffMaxScale: 0.5
+  testFlash: 0
+--- !u!1 &7985366514119146594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6067697909927904959}
+  m_Layer: 0
+  m_Name: MuzzleFlashPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6067697909927904959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7985366514119146594}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.25, y: 0.97, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5928436914197378935}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8386856855678871285
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +402,7 @@ Transform:
   m_GameObject: {fileID: 8386856855678871285}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.388, y: 0.479, z: 0}
+  m_LocalPosition: {x: -0.388, y: 1.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -287,5 +457,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.22333558}
-  m_Radius: 0.3061622
+  m_Offset: {x: 0.67169964, y: -0.34789038}
+  m_Radius: 0.53380024

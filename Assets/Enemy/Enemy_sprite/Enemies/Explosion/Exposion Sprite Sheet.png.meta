@@ -1,0 +1,358 @@
+fileFormatVersion: 2
+guid: 808560e78884ebb44a0a9c35569b226e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -32627859074496401
+    second: Exposion Sprite Sheet_0
+  - first:
+      213: -3260179074879666930
+    second: Exposion Sprite Sheet_1
+  - first:
+      213: -2241823390196364601
+    second: Exposion Sprite Sheet_2
+  - first:
+      213: 6828211064989150017
+    second: Exposion Sprite Sheet_3
+  - first:
+      213: 6147399792674712462
+    second: Exposion Sprite Sheet_4
+  - first:
+      213: -531893396636590029
+    second: Exposion Sprite Sheet_5
+  - first:
+      213: 6607407418216790345
+    second: Exposion Sprite Sheet_6
+  - first:
+      213: 1652698215746679604
+    second: Exposion Sprite Sheet_7
+  - first:
+      213: 2497277470801712930
+    second: Exposion Sprite Sheet_8
+  - first:
+      213: -4373962927634012077
+    second: Exposion Sprite Sheet_9
+  - first:
+      213: -4685108063501209046
+    second: Exposion Sprite Sheet_10
+  - first:
+      213: -2911707661923482571
+    second: Exposion Sprite Sheet_11
+  - first:
+      213: -8020538756901405600
+    second: Exposion Sprite Sheet_12
+  - first:
+      213: 3745781609537561942
+    second: Exposion Sprite Sheet_13
+  - first:
+      213: 2808102681530995706
+    second: Exposion Sprite Sheet_14
+  - first:
+      213: 8165523820356213452
+    second: Exposion Sprite Sheet_15
+  - first:
+      213: 3784803692289835265
+    second: Exposion Sprite Sheet_16
+  - first:
+      213: 366026889941110524
+    second: Exposion Sprite Sheet_17
+  - first:
+      213: -962358441804015168
+    second: Exposion Sprite Sheet_18
+  - first:
+      213: 1342705486240641471
+    second: Exposion Sprite Sheet_19
+  - first:
+      213: 9036301721566614255
+    second: Exposion Sprite Sheet_20
+  - first:
+      213: -4166316458399048529
+    second: Exposion Sprite Sheet_21
+  - first:
+      213: -5932720779341566161
+    second: Exposion Sprite Sheet_22
+  - first:
+      213: 6285493241830769743
+    second: Exposion Sprite Sheet_23
+  - first:
+      213: -1213635346727841510
+    second: Exposion Sprite Sheet_24
+  - first:
+      213: -5431238780121764851
+    second: Exposion Sprite Sheet_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1500
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f68451292251c8ff0800000000000000
+      internalID: -32627859074496401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 2000
+        y: 1500
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e05c2a1976481c2d0800000000000000
+      internalID: -3260179074879666930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 4000
+        y: 1500
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ca0f2a118173e0e0800000000000000
+      internalID: -2241823390196364601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 6000
+        y: 1500
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14be11449cda2ce50800000000000000
+      internalID: 6828211064989150017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8bafa68a83ff4550800000000000000
+      internalID: 6147399792674712462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 2000
+        y: 0
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 330a91b16c55e98f0800000000000000
+      internalID: -531893396636590029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Exposion Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 4000
+        y: 0
+        width: 2000
+        height: 1500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 949b7111a0a32bb50800000000000000
+      internalID: 6607407418216790345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 634257440ee56774986aa137bff71050
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":2000.0,"y":1500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Exposion Sprite Sheet_0: -32627859074496401
+      Exposion Sprite Sheet_1: -3260179074879666930
+      Exposion Sprite Sheet_2: -2241823390196364601
+      Exposion Sprite Sheet_3: 6828211064989150017
+      Exposion Sprite Sheet_4: 6147399792674712462
+      Exposion Sprite Sheet_5: -531893396636590029
+      Exposion Sprite Sheet_6: 6607407418216790345
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

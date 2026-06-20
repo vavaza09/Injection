@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: f2b59cf3b28b58f418ef41ae1570cd25
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2466777157168665309
+    second: Crab Attack Sprite Sheet 1_0
+  - first:
+      213: 5824736319472917227
+    second: Crab Attack Sprite Sheet 1_1
+  - first:
+      213: -1776351909211601201
+    second: Crab Attack Sprite Sheet 1_2
+  - first:
+      213: 8412879013230547281
+    second: Crab Attack Sprite Sheet 1_3
+  - first:
+      213: 2051421892919464347
+    second: Crab Attack Sprite Sheet 1_4
+  - first:
+      213: -1860083866600784448
+    second: Crab Attack Sprite Sheet 1_5
+  - first:
+      213: -3798553696158158880
+    second: Crab Attack Sprite Sheet 1_6
+  - first:
+      213: 5454667478019477858
+    second: Crab Attack Sprite Sheet 1_7
+  - first:
+      213: 6773715968161493425
+    second: Crab Attack Sprite Sheet 1_8
+  - first:
+      213: -7190767917540189596
+    second: Crab Attack Sprite Sheet 1_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 350
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_0
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 3200
+        width: 1412
+        height: 1344
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd2161141c0cb3220800000000000000
+      internalID: 2466777157168665309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_1
+      rect:
+        serializedVersion: 2
+        x: 7328
+        y: 3322
+        width: 1420
+        height: 1364
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beadf7062de95d050800000000000000
+      internalID: 5824736319472917227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_2
+      rect:
+        serializedVersion: 2
+        x: 9607
+        y: 4303
+        width: 1454
+        height: 1367
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc60b5f99512957e0800000000000000
+      internalID: -1776351909211601201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_3
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 3104
+        width: 1910
+        height: 1172
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15112f1a3ec80c470800000000000000
+      internalID: 8412879013230547281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_4
+      rect:
+        serializedVersion: 2
+        x: 2408
+        y: 3106
+        width: 2099
+        height: 1120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b919cebb75d187c10800000000000000
+      internalID: 2051421892919464347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_5
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 1384
+        width: 2085
+        height: 1190
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cd33d61497af26e0800000000000000
+      internalID: -1860083866600784448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_6
+      rect:
+        serializedVersion: 2
+        x: 2349
+        y: 1311
+        width: 2210
+        height: 1157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0efee38f983d84bc0800000000000000
+      internalID: -3798553696158158880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_7
+      rect:
+        serializedVersion: 2
+        x: 4857
+        y: 204
+        width: 1760
+        height: 1255
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2611a33db2fd2bb40800000000000000
+      internalID: 5454667478019477858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_8
+      rect:
+        serializedVersion: 2
+        x: 7226
+        y: 103
+        width: 1616
+        height: 1286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b138abc8c2110e50800000000000000
+      internalID: 6773715968161493425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crab Attack Sprite Sheet 1_9
+      rect:
+        serializedVersion: 2
+        x: 9526
+        y: 103
+        width: 1616
+        height: 1286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46addb46da2453c90800000000000000
+      internalID: -7190767917540189596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Crab Attack Sprite Sheet 1_0: 2466777157168665309
+      Crab Attack Sprite Sheet 1_1: 5824736319472917227
+      Crab Attack Sprite Sheet 1_2: -1776351909211601201
+      Crab Attack Sprite Sheet 1_3: 8412879013230547281
+      Crab Attack Sprite Sheet 1_4: 2051421892919464347
+      Crab Attack Sprite Sheet 1_5: -1860083866600784448
+      Crab Attack Sprite Sheet 1_6: -3798553696158158880
+      Crab Attack Sprite Sheet 1_7: 5454667478019477858
+      Crab Attack Sprite Sheet 1_8: 6773715968161493425
+      Crab Attack Sprite Sheet 1_9: -7190767917540189596
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
