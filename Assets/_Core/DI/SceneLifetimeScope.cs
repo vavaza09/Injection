@@ -13,16 +13,19 @@ public class SceneLifetimeScope : LifetimeScope
 {
     protected override void Configure(IContainerBuilder builder)
     {
+        Debug.Log($"[SceneLifetimeScope] Configure running. Parent={(RootLifetimeScope.Instance != null ? "OK" : "NULL")}");
+
         // Enemy factory captures THIS child resolver so spawned enemies are injected
         // from the scope that can see both scene-local and parent (session) registrations.
         builder.Register<EnemyFactory>(Lifetime.Scoped).As<IEnemyFactory>();
 
-        builder.RegisterComponentInHierarchy<RoomSpawner>();
-
-        // Scene-local components that need [Inject] but cannot be RegisterComponentInHierarchy
-        // (there can be many of each per scene): inject them explicitly after build.
+        // Scene-local components that need [Inject] but aren't resolved by anything: inject
+        // them explicitly after build (RegisterComponentInHierarchy only injects on resolve,
+        // so a spawner/trigger that nothing depends on would otherwise never get its deps).
         builder.RegisterBuildCallback(container =>
         {
+            Debug.Log("[SceneLifetimeScope] BuildCallback running.");
+            InjectAll<RoomSpawner>(container);
             InjectAll<SavePointTrigger>(container);
             InjectAll<BossPersistence>(container);
             InjectAll<RoomPortal>(container);
@@ -32,6 +35,7 @@ public class SceneLifetimeScope : LifetimeScope
     private static void InjectAll<T>(IObjectResolver container) where T : Component
     {
         var items = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Debug.Log($"[SceneLifetimeScope] InjectAll<{typeof(T).Name}>: {items.Length} found.");
         foreach (var item in items)
             container.Inject(item);
     }

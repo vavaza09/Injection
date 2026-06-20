@@ -28,6 +28,7 @@ namespace Game.Spawning
 
         public void SpawnAll()
         {
+            Debug.Log($"[RoomSpawner] SpawnAll. factory={(_factory != null ? "OK" : "NULL")}");
             if (_factory == null)
             {
                 _logger?.LogError("[RoomSpawner] No IEnemyFactory injected — child scope not wired?");
@@ -35,6 +36,7 @@ namespace Game.Spawning
             }
 
             var markers = FindObjectsByType<EnemySpawnMarker>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Debug.Log($"[RoomSpawner] markers found: {markers.Length}");
             int spawned = 0;
             foreach (var marker in markers)
             {
