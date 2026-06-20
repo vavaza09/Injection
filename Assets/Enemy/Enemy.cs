@@ -26,11 +26,13 @@ public class Enemy : character
     private float _stunEndTime;
     private Coroutine _stunBlinkRoutine;
     private SpriteRenderer _spriteRenderer;
-    private Animator _animator;
+    protected Animator _animator;
     private Color _originalSpriteColor;
     private GameObject _activeStunVfx;
 
     public bool IsStunned => currentState == EnemyState.Stunned && isAlive;
+
+    public virtual bool SpriteFacesLeft => false;
 
 
     protected override void Start()
@@ -222,7 +224,11 @@ public class Enemy : character
         foreach (Collider2D col in colliders)
             col.enabled = false;
 
-        Destroy(gameObject, 1.5f);
+        EnemyDeathExplosion deathFX = GetComponent<EnemyDeathExplosion>();
+        if (deathFX != null)
+            deathFX.TriggerDeath();
+        else
+            Destroy(gameObject, 1.5f);
     }
 
     protected override void OnTakeDamage()
@@ -273,7 +279,7 @@ public class Enemy : character
         }
         else if (currentState != EnemyState.Idle && currentState != EnemyState.Patrol)
         {
-            currentState = EnemyState.Patrol;
+            currentState = EnemyState.Idle;
         }
     }
 

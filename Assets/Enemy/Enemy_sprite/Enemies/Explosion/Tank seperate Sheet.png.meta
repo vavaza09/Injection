@@ -1,0 +1,538 @@
+fileFormatVersion: 2
+guid: df8ca05c9e6c725448c8cf112d9b99d0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8561315051717360865
+    second: Tank seperate Sheet_0
+  - first:
+      213: 2337875921135463104
+    second: Tank seperate Sheet_1
+  - first:
+      213: 7421229248216553216
+    second: Tank seperate Sheet_2
+  - first:
+      213: -5790558950020446398
+    second: Tank seperate Sheet_3
+  - first:
+      213: 5813579292625937793
+    second: Tank seperate Sheet_4
+  - first:
+      213: -6375867559597122528
+    second: Tank seperate Sheet_5
+  - first:
+      213: 6546472574931555393
+    second: Tank seperate Sheet_6
+  - first:
+      213: 8381061362090589099
+    second: Tank seperate Sheet_7
+  - first:
+      213: 1624185590019062733
+    second: Tank seperate Sheet_8
+  - first:
+      213: -9139344259051642278
+    second: Tank seperate Sheet_9
+  - first:
+      213: 3045007208601418019
+    second: Tank seperate Sheet_10
+  - first:
+      213: 1150749223988649597
+    second: Tank seperate Sheet_11
+  - first:
+      213: -5190797861750304155
+    second: Tank seperate Sheet_12
+  - first:
+      213: -2140305286018767617
+    second: Tank seperate Sheet_13
+  - first:
+      213: 5170030955232786036
+    second: Tank seperate Sheet_14
+  - first:
+      213: -709589974844455288
+    second: Tank seperate Sheet_15
+  - first:
+      213: -5227642128601716590
+    second: Tank seperate Sheet_16
+  - first:
+      213: 8321917615006715338
+    second: Tank seperate Sheet_17
+  - first:
+      213: -8645608004084657657
+    second: Tank seperate Sheet_18
+  - first:
+      213: -372864876192784788
+    second: Tank seperate Sheet_19
+  - first:
+      213: -8131952730892942547
+    second: Tank seperate Sheet_20
+  - first:
+      213: 7215069173129576707
+    second: Tank seperate Sheet_21
+  - first:
+      213: 1567207872604083610
+    second: Tank seperate Sheet_22
+  - first:
+      213: 5080248597806717359
+    second: Tank seperate Sheet_23
+  - first:
+      213: -4073448333677110741
+    second: Tank seperate Sheet_24
+  - first:
+      213: -4794547773687605497
+    second: Tank seperate Sheet_25
+  - first:
+      213: -3799975484683269684
+    second: Tank seperate Sheet_26
+  - first:
+      213: 1968495924317092440
+    second: Tank seperate Sheet_27
+  - first:
+      213: 1767784951253200482
+    second: Tank seperate Sheet_28
+  - first:
+      213: 6650916142207842931
+    second: Tank seperate Sheet_29
+  - first:
+      213: -7615020536271419486
+    second: Tank seperate Sheet_30
+  - first:
+      213: -131233007254352805
+    second: Tank seperate Sheet_31
+  - first:
+      213: 5413869960609086412
+    second: Tank seperate Sheet_32
+  - first:
+      213: -7752514821874070232
+    second: Tank seperate Sheet_33
+  - first:
+      213: 596204703490208718
+    second: Tank seperate Sheet_34
+  - first:
+      213: 3561829623623565813
+    second: Tank seperate Sheet_35
+  - first:
+      213: 1524355445697789181
+    second: Tank seperate Sheet_36
+  - first:
+      213: 8902269049923283464
+    second: Tank seperate Sheet_37
+  - first:
+      213: -548474238474515730
+    second: Tank seperate Sheet_38
+  - first:
+      213: -3541958023046969745
+    second: Tank seperate Sheet_39
+  - first:
+      213: -1492972955361845371
+    second: Tank seperate Sheet_40
+  - first:
+      213: 7660832775574542830
+    second: Tank seperate Sheet_41
+  - first:
+      213: -7931753223423571981
+    second: Tank seperate Sheet_42
+  - first:
+      213: -6430727734110653966
+    second: Tank seperate Sheet_43
+  - first:
+      213: 4922872569507866082
+    second: Tank seperate Sheet_44
+  - first:
+      213: -8212408057142651518
+    second: Tank seperate Sheet_45
+  - first:
+      213: 738667438010176443
+    second: Tank seperate Sheet_46
+  - first:
+      213: 5782999648206392925
+    second: Tank seperate Sheet_47
+  - first:
+      213: 7244819482296241009
+    second: Tank seperate Sheet_48
+  - first:
+      213: -3986105461968983880
+    second: Tank seperate Sheet_49
+  - first:
+      213: 3217696859690747985
+    second: Tank seperate Sheet_50
+  - first:
+      213: 3704501050914143557
+    second: Tank seperate Sheet_51
+  - first:
+      213: -3865785881285397437
+    second: Tank seperate Sheet_52
+  - first:
+      213: -387814734790734722
+    second: Tank seperate Sheet_53
+  - first:
+      213: -5749081779851092085
+    second: Tank seperate Sheet_54
+  - first:
+      213: 7370016794205641841
+    second: Tank seperate Sheet_55
+  - first:
+      213: 4558371285880221442
+    second: Tank seperate Sheet_56
+  - first:
+      213: 3209447113249876244
+    second: Tank seperate Sheet_57
+  - first:
+      213: 898945520175009402
+    second: Tank seperate Sheet_58
+  - first:
+      213: -8163345687139789676
+    second: Tank seperate Sheet_59
+  - first:
+      213: 1884971395972451907
+    second: Tank seperate Sheet_60
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 512
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tank seperate Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 2352
+        y: 2039
+        width: 608
+        height: 799
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1852982a09bfda050800000000000000
+      internalID: 5813579292625937793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 4666
+        y: 2359
+        width: 526
+        height: 351
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 329f03f4ce9024a20800000000000000
+      internalID: 3045007208601418019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 1918
+        width: 1430
+        height: 547
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30182469f23112460800000000000000
+      internalID: 7215069173129576707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 7520
+        y: 2092
+        width: 387
+        height: 285
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa912f2fe2ba08640800000000000000
+      internalID: 5080248597806717359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 1313
+        y: 711
+        width: 353
+        height: 345
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f1e47c4982730b0800000000000000
+      internalID: -5749081779851092085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 2286
+        y: 216
+        width: 454
+        height: 528
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17c5a4fe93f874660800000000000000
+      internalID: 7370016794205641841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_56
+      rect:
+        serializedVersion: 2
+        x: 4780
+        y: 277
+        width: 438
+        height: 467
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20f2b318886924f30800000000000000
+      internalID: 4558371285880221442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tank seperate Sheet_57
+      rect:
+        serializedVersion: 2
+        x: 7263
+        y: 295
+        width: 417
+        height: 449
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41969a6252f3a8c20800000000000000
+      internalID: 3209447113249876244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 555ab774f38a6de41968ab42f56bb4c1
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Tank seperate Sheet_0: -8561315051717360865
+      Tank seperate Sheet_1: 2337875921135463104
+      Tank seperate Sheet_10: 3045007208601418019
+      Tank seperate Sheet_11: 1150749223988649597
+      Tank seperate Sheet_12: -5190797861750304155
+      Tank seperate Sheet_13: -2140305286018767617
+      Tank seperate Sheet_14: 5170030955232786036
+      Tank seperate Sheet_15: -709589974844455288
+      Tank seperate Sheet_16: -5227642128601716590
+      Tank seperate Sheet_17: 8321917615006715338
+      Tank seperate Sheet_18: -8645608004084657657
+      Tank seperate Sheet_19: -372864876192784788
+      Tank seperate Sheet_2: 7421229248216553216
+      Tank seperate Sheet_20: -8131952730892942547
+      Tank seperate Sheet_21: 7215069173129576707
+      Tank seperate Sheet_22: 1567207872604083610
+      Tank seperate Sheet_23: 5080248597806717359
+      Tank seperate Sheet_24: -4073448333677110741
+      Tank seperate Sheet_25: -4794547773687605497
+      Tank seperate Sheet_26: -3799975484683269684
+      Tank seperate Sheet_27: 1968495924317092440
+      Tank seperate Sheet_28: 1767784951253200482
+      Tank seperate Sheet_29: 6650916142207842931
+      Tank seperate Sheet_3: -5790558950020446398
+      Tank seperate Sheet_30: -7615020536271419486
+      Tank seperate Sheet_31: -131233007254352805
+      Tank seperate Sheet_32: 5413869960609086412
+      Tank seperate Sheet_33: -7752514821874070232
+      Tank seperate Sheet_34: 596204703490208718
+      Tank seperate Sheet_35: 3561829623623565813
+      Tank seperate Sheet_36: 1524355445697789181
+      Tank seperate Sheet_37: 8902269049923283464
+      Tank seperate Sheet_38: -548474238474515730
+      Tank seperate Sheet_39: -3541958023046969745
+      Tank seperate Sheet_4: 5813579292625937793
+      Tank seperate Sheet_40: -1492972955361845371
+      Tank seperate Sheet_41: 7660832775574542830
+      Tank seperate Sheet_42: -7931753223423571981
+      Tank seperate Sheet_43: -6430727734110653966
+      Tank seperate Sheet_44: 4922872569507866082
+      Tank seperate Sheet_45: -8212408057142651518
+      Tank seperate Sheet_46: 738667438010176443
+      Tank seperate Sheet_47: 5782999648206392925
+      Tank seperate Sheet_48: 7244819482296241009
+      Tank seperate Sheet_49: -3986105461968983880
+      Tank seperate Sheet_5: -6375867559597122528
+      Tank seperate Sheet_50: 3217696859690747985
+      Tank seperate Sheet_51: 3704501050914143557
+      Tank seperate Sheet_52: -3865785881285397437
+      Tank seperate Sheet_53: -387814734790734722
+      Tank seperate Sheet_54: -5749081779851092085
+      Tank seperate Sheet_55: 7370016794205641841
+      Tank seperate Sheet_56: 4558371285880221442
+      Tank seperate Sheet_57: 3209447113249876244
+      Tank seperate Sheet_58: 898945520175009402
+      Tank seperate Sheet_59: -8163345687139789676
+      Tank seperate Sheet_6: 6546472574931555393
+      Tank seperate Sheet_60: 1884971395972451907
+      Tank seperate Sheet_61: 10333855
+      Tank seperate Sheet_7: 8381061362090589099
+      Tank seperate Sheet_8: 1624185590019062733
+      Tank seperate Sheet_9: -9139344259051642278
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

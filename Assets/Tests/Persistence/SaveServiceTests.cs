@@ -34,19 +34,23 @@ namespace Game.Tests.Persistence
         [Test]
         public void Save_ThenLoad_RoundTripsAllFields()
         {
-            var data = new SaveData
-            {
-                spawnPointId  = "checkpoint_1",
-                playerEnergy  = 2,
-            };
+            var data = new SaveData();
+            data.checkpoint.roomId = "room_harbor";
+            data.checkpoint.spawnPointId = "checkpoint_1";
+            data.checkpoint.energy = 2;
+            data.lastRoom.roomId = "room_caves";
+            data.lastRoom.spawnPointId = "caves_entry";
             data.bossesDefeated.Add("crab_boss");
 
             _sut.Save(data);
             var loaded = _sut.Load();
 
             Assert.IsNotNull(loaded);
-            Assert.AreEqual("checkpoint_1", loaded.spawnPointId);
-            Assert.AreEqual(2, loaded.playerEnergy);
+            Assert.AreEqual("room_harbor", loaded.checkpoint.roomId);
+            Assert.AreEqual("checkpoint_1", loaded.checkpoint.spawnPointId);
+            Assert.AreEqual(2, loaded.checkpoint.energy);
+            Assert.AreEqual("room_caves", loaded.lastRoom.roomId);
+            Assert.AreEqual("caves_entry", loaded.lastRoom.spawnPointId);
             Assert.AreEqual(1, loaded.bossesDefeated.Count);
             Assert.AreEqual("crab_boss", loaded.bossesDefeated[0]);
         }
@@ -96,14 +100,18 @@ namespace Game.Tests.Persistence
         [Test]
         public void MarkBossDefeated_PreservesExistingData()
         {
-            var initial = new SaveData { spawnPointId = "cp1", playerEnergy = 3 };
+            var initial = new SaveData();
+            initial.checkpoint.roomId = "room_harbor";
+            initial.checkpoint.spawnPointId = "cp1";
+            initial.checkpoint.energy = 3;
             _sut.Save(initial);
 
             _sut.MarkBossDefeated("boss_a");
             var data = _sut.Load();
 
-            Assert.AreEqual("cp1", data.spawnPointId);
-            Assert.AreEqual(3, data.playerEnergy);
+            Assert.AreEqual("room_harbor", data.checkpoint.roomId);
+            Assert.AreEqual("cp1", data.checkpoint.spawnPointId);
+            Assert.AreEqual(3, data.checkpoint.energy);
         }
 
         [Test]

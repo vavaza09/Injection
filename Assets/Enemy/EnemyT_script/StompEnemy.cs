@@ -1,56 +1,91 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Cinemachine;
 
 public class StompEnemy : Enemy
 {
     private Animator anim;
-    private SpriteRenderer spriteRenderer;
+
     [Header("Stomp Attack")]
-    [SerializeField] private StompDamageCollider stompDamageCollider;
+    [SerializeField] private StompDamageZone stompDamageZone;
     [SerializeField] private float preJumpDelay = 0.3f;
     [SerializeField] private float jumpHeightAbovePlayer = 3f;
     [SerializeField] private float jumpToPlayerTime = 0.35f;
     [SerializeField] private float stompDownSpeed = 20f;
-    [SerializeField] private float stompDamageDuration = 0.2f;
-    [SerializeField] private Vector2 stompHitboxSize = new Vector2(1.5f, 0.8f);
+    [SerializeField] private float stompDamageDuration = 0.3f;
     [SerializeField] private float stompAttackCooldown = 1.5f;
     [SerializeField] private LayerMask groundLayer;
+
+    [Header("Impact")]
+    [SerializeField] private float shakeAmplitude = 1.5f;
 
     private bool isAttacking;
     private bool isDropping;
     private bool hasGroundImpact;
     private float lastAttackTime = -999f;
-    private BoxCollider2D stompBoxCollider;
     private Coroutine _stompRoutineHandle;
     private Coroutine _damageWindowHandle;
+
+    private Collider2D stomperBodyCollider;
+    private Collider2D _playerCollider;
+    private CinemachineImpulseSource _impulseSource;
 
     protected override void Awake()
     {
         base.Awake();
         anim = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (groundLayer == 0)
-        {
             groundLayer = LayerMask.GetMask("Ground");
+
+        if (stompDamageZone == null)
+            stompDamageZone = GetComponentInChildren<StompDamageZone>();
+
+        stomperBodyCollider = GetComponent<Collider2D>();
+
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+        if (_impulseSource == null)
+            _impulseSource = gameObject.AddComponent<CinemachineImpulseSource>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+        if (playerGO != null)
+            _playerCollider = playerGO.GetComponent<Collider2D>();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+    }
+
+    public override void PatrolArea()
+    {
+        if (isAttacking) return;
+
+        if (anim != null)
+        {
+            anim.SetBool("IsWalking", false);
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Crab_Idle")
+                && !anim.GetCurrentAnimatorStateInfo(0).IsName("Crab_Attack"))
+                anim.Play("Crab_Idle");
         }
 
-        if (stompDamageCollider == null)
-        {
-            stompDamageCollider = GetComponentInChildren<StompDamageCollider>();
-        }
+        base.PatrolArea();
+    }
 
-        if (stompDamageCollider != null)
+    public override void Patrol(Vector2 direction, float speed)
+    {
+        if (anim != null)
         {
-            stompDamageCollider.SetDamage(attackDamage);
-            stompBoxCollider = stompDamageCollider.GetComponent<Collider2D>() as BoxCollider2D;
-            if (stompBoxCollider != null)
-            {
-                stompBoxCollider.isTrigger = true;
-                stompBoxCollider.size = stompHitboxSize;
-                stompBoxCollider.enabled = false;
-            }
+            anim.SetBool("IsWalking", true);
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Crab_Walk"))
+                anim.Play("Crab_Walk");
         }
+        base.Patrol(direction, speed);
     }
 
     public override void Move(Vector2 direction)
@@ -58,15 +93,8 @@ public class StompEnemy : Enemy
         if (isAttacking)
         {
             if (movementComponent != null)
-            {
                 movementComponent.Stop();
-            }
             return;
-        }
-
-        if (spriteRenderer != null && direction.x != 0f)
-        {
-            spriteRenderer.flipX = direction.x < 0f;
         }
 
         base.Move(direction);
@@ -80,25 +108,23 @@ public class StompEnemy : Enemy
             return;
         }
 
+        if (anim != null)
+        {
+            anim.SetBool("IsWalking", true);
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Crab_Walk"))
+                anim.Play("Crab_Walk");
+        }
+
         base.ChasePlayer();
     }
 
     public override void Attack()
     {
-        if (playerTransform == null)
-        {
+        if (playerTransform == null || isAttacking)
             return;
-        }
-
-        if (isAttacking)
-        {
-            return;
-        }
 
         if (Time.time < lastAttackTime + stompAttackCooldown)
-        {
             return;
-        }
 
         _stompRoutineHandle = StartCoroutine(StompAttackRoutine());
     }
@@ -116,11 +142,8 @@ public class StompEnemy : Enemy
             _damageWindowHandle = null;
         }
 
-        if (stompDamageCollider != null)
-        {
-            Collider2D hitbox = stompDamageCollider.GetHitboxCollider();
-            if (hitbox != null) hitbox.enabled = false;
-        }
+        stompDamageZone?.DisableZone();
+        RestoreCollision();
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);
@@ -138,12 +161,8 @@ public class StompEnemy : Enemy
 
         if (anim != null)
         {
+            anim.SetBool("IsWalking", false);
             anim.Play("Crab_Attack");
-        }
-
-        if (spriteRenderer != null && playerTransform != null)
-        {
-            spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
         }
 
         yield return new WaitForSeconds(preJumpDelay);
@@ -160,6 +179,8 @@ public class StompEnemy : Enemy
             playerTransform.position.y + jumpHeightAbovePlayer,
             transform.position.z);
 
+        DisableCollisionWithPlayer();
+
         float timer = 0f;
         while (timer < jumpToPlayerTime)
         {
@@ -171,9 +192,7 @@ public class StompEnemy : Enemy
 
         isDropping = true;
         if (rb != null)
-        {
             rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
-        }
 
         while (!hasGroundImpact)
         {
@@ -182,54 +201,50 @@ public class StompEnemy : Enemy
                 hasGroundImpact = true;
                 break;
             }
-
             yield return null;
         }
 
         isDropping = false;
         if (rb != null)
-        {
             rb.linearVelocity = Vector2.zero;
-        }
 
-        _damageWindowHandle = StartCoroutine(EnableStompDamageWindow());
+        if (_impulseSource != null)
+            _impulseSource.GenerateImpulse(shakeAmplitude);
+
+        _damageWindowHandle = StartCoroutine(StompDamageWindow());
         yield return _damageWindowHandle;
 
-        if (movementComponent != null)
-        {
-            movementComponent.SetCanMove(true);
-        }
+        yield return StartCoroutine(WaitUntilClear());
+        RestoreCollision();
 
-        if (anim != null)
-        {
-            anim.Play("Crab_Walk");
-        }
+        if (movementComponent != null)
+            movementComponent.SetCanMove(true);
 
         isAttacking = false;
+
+        if (anim != null)
+            anim.Play("Crab_Idle");
+        SetState(EnemyState.Idle);
+    }
+
+    private IEnumerator StompDamageWindow()
+    {
+        stompDamageZone?.EnableZone();
+        yield return new WaitForSeconds(stompDamageDuration);
+        stompDamageZone?.DisableZone();
     }
 
     private bool HasLanded()
     {
-        Vector2 origin = transform.position;
-        if (stompBoxCollider != null)
-        {
-            origin = stompBoxCollider.bounds.center;
-            origin.y = stompBoxCollider.bounds.min.y + 0.02f;
-        }
-
-        const float checkDistance = 0.2f;
-        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, checkDistance, groundLayer);
+        Vector2 origin = (Vector2)transform.position + new Vector2(0f, -0.9f);
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 0.2f, groundLayer);
         return hit.collider != null;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision == null)
-        {
-            return;
-        }
-
-        TryMarkGroundImpact(collision.collider);
+        if (collision != null)
+            TryMarkGroundImpact(collision.collider);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -239,22 +254,9 @@ public class StompEnemy : Enemy
 
     private void TryMarkGroundImpact(Collider2D other)
     {
-        if (!isDropping)
-        {
-            return;
-        }
-
-        if (other == null)
-        {
-            return;
-        }
-
-        if (!IsGroundLayer(other.gameObject.layer))
-        {
-            return;
-        }
-
-        hasGroundImpact = true;
+        if (!isDropping || other == null) return;
+        if (IsGroundLayer(other.gameObject.layer))
+            hasGroundImpact = true;
     }
 
     private bool IsGroundLayer(int layer)
@@ -262,49 +264,37 @@ public class StompEnemy : Enemy
         return (groundLayer.value & (1 << layer)) != 0;
     }
 
-    private IEnumerator EnableStompDamageWindow()
+    private void DisableCollisionWithPlayer()
     {
-        if (stompDamageCollider == null)
+        if (stomperBodyCollider != null && _playerCollider != null)
+            Physics2D.IgnoreCollision(stomperBodyCollider, _playerCollider, true);
+    }
+
+    private void RestoreCollision()
+    {
+        if (stomperBodyCollider != null && _playerCollider != null)
+            Physics2D.IgnoreCollision(stomperBodyCollider, _playerCollider, false);
+    }
+
+    private IEnumerator WaitUntilClear()
+    {
+        if (stomperBodyCollider == null || _playerCollider == null) yield break;
+
+        int timeout = 0;
+        while (Physics2D.IsTouching(stomperBodyCollider, _playerCollider))
         {
-            yield break;
+            if (++timeout > 120) break;
+            yield return null;
         }
 
-        stompDamageCollider.SetDamage(attackDamage);
-        stompDamageCollider.ResetForAttack();
-
-        Collider2D hitbox = stompDamageCollider.GetHitboxCollider();
-        if (hitbox == null)
-        {
-            yield break;
-        }
-
-        hitbox.enabled = true;
-        yield return new WaitForSeconds(stompDamageDuration);
-        hitbox.enabled = false;
+        yield return null;
+        yield return null;
     }
 
     private void OnDrawGizmosSelected()
     {
-        Vector3 center = transform.position;
-        Vector3 size = new Vector3(stompHitboxSize.x, stompHitboxSize.y, 0.05f);
-
-        if (stompDamageCollider != null)
-        {
-            BoxCollider2D box = stompDamageCollider.GetComponent<Collider2D>() as BoxCollider2D;
-            if (box != null)
-            {
-                center = box.bounds.center;
-                size = new Vector3(box.size.x, box.size.y, 0.05f);
-            }
-        }
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(center, size);
-
-        if (isDropping)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(center, center + Vector3.down * 0.2f);
-        }
+        if (!isDropping) return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 1.1f);
     }
 }
