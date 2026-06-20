@@ -20,17 +20,20 @@ public class BossGasAttack : MonoBehaviour
     [Tooltip("Gas cloud prefab: BoxCollider2D (isTrigger) + GasCloudHitbox + optional visual.")]
     [SerializeField] private GameObject gasCloudPrefab;
 
+    [Tooltip("Looping smoke ParticleSystem parented to Boss_Fan — plays during the wind-up telegraph, fades out as the cloud releases. loop=true, Play On Awake=false.")]
+    [SerializeField] private ParticleSystem fanVentParticles;
+
     // ── Timing ────────────────────────────────────────────────────────────────
 
     [Header("Timing")]
-    [Tooltip("How long the boss is 'busy' venting before the cloud spawns.")]
-    [SerializeField] private float releaseDuration = 1.5f;
+    [Tooltip("How long the boss pours gas downward before the cloud spawns (FanVent plays here, boss is busy).")]
+    [SerializeField] private float releaseDuration = 3.5f;
 
-    [Tooltip("Cloud lifetime lower bound (seconds).")]
-    [SerializeField] private float minCloudDuration = 8f;
+    [Tooltip("Hitbox lifetime lower bound — gas is invisible but still damages the player.")]
+    [SerializeField] private float minCloudDuration = 10f;
 
-    [Tooltip("Cloud lifetime upper bound (seconds).")]
-    [SerializeField] private float maxCloudDuration = 11f;
+    [Tooltip("Hitbox lifetime upper bound — gas is invisible but still damages the player.")]
+    [SerializeField] private float maxCloudDuration = 12f;
 
     [Tooltip("Seconds after the cloud dissipates before this attack can fire again.")]
     [SerializeField] private float cooldown = 35f;
@@ -85,6 +88,8 @@ public class BossGasAttack : MonoBehaviour
         if (_activeCloud != null) Destroy(_activeCloud);
         _activeCloud = null;
         SetFanSpeed(_fanNormalSpeed);
+        if (fanVentParticles != null)
+            fanVentParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 
     // ── Attack sequence ───────────────────────────────────────────────────────
@@ -93,9 +98,10 @@ public class BossGasAttack : MonoBehaviour
     {
         isAttacking = true;
 
-        // Spin the fan fast during the release window (visual telegraph).
+        // Spin the fan and start the visible vent smoke during the telegraph window.
         SetFanSpeed(fanSpinSpeed);
         OnGasRelease?.Invoke();
+        if (fanVentParticles != null) fanVentParticles.Play();
 
         // Telegraph / release window — boss is "busy" here.
         yield return new WaitForSeconds(releaseDuration);
@@ -107,6 +113,10 @@ public class BossGasAttack : MonoBehaviour
 
         // Spawn the cloud.
         _activeCloud = SpawnCloud(cloudDuration);
+
+        // Fade the vent out as the cloud takes over — let live particles finish fading.
+        if (fanVentParticles != null)
+            fanVentParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
         // Cooldown starts counting from the moment the cloud was spawned;
         // it becomes ready 35s after the cloud would have dissipated.
@@ -133,17 +143,12 @@ public class BossGasAttack : MonoBehaviour
 
         GameObject cloud = Instantiate(gasCloudPrefab, center, Quaternion.identity);
 
-        // Collider size is defined on the prefab — respect the user's manual adjustment, don't override it.
-        // Read back the actual bounds after placement to pass the correct dimensions to the VFX.
         var col = cloud.GetComponent<BoxCollider2D>();
         float vfxW = col != null ? col.size.x : 10f;
         float vfxH = col != null ? col.size.y : 5f;
 
-        // Start the gas VFX — originates at the fan and spreads to fill the zone.
         Vector3 fanWorldPos = fanAnchor != null ? fanAnchor.position : center;
         cloud.GetComponent<GasCloudVFX>()?.Init(vfxW, vfxH, duration, fanWorldPos);
-
-        // Init the hitbox so it knows its lifetime and self-destructs.
         cloud.GetComponent<GasCloudHitbox>()?.Init(duration);
 
         return cloud;

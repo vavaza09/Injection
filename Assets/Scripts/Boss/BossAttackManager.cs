@@ -66,6 +66,8 @@ public class BossAttackManager : MonoBehaviour
     private int           _lastAttackIndex = -1;
     private int           _consecutiveCount;
     private Coroutine     _attackCoroutine;
+    private bool          _hammerUsed;
+    private bool          _clawUsed;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
 
@@ -128,6 +130,10 @@ public class BossAttackManager : MonoBehaviour
 
             // Fire.
             _attacks[index].trigger();
+
+            // Track which attacks have been used (for gas attack sequencing).
+            if (_attacks[index].name == "Hammer") _hammerUsed = true;
+            else if (_attacks[index].name == "Claw") _clawUsed = true;
 
             // Wait one frame for IsAttacking to flip true.
             yield return null;
@@ -194,7 +200,7 @@ public class BossAttackManager : MonoBehaviour
             new AttackEntry
             {
                 name        = "Gas",
-                canAttack   = () => gasAttack != null && gasAttack.CanAttack,
+                canAttack   = () => gasAttack != null && gasAttack.CanAttack && _hammerUsed && _clawUsed,
                 trigger     = () => gasAttack?.TriggerGasAttack(),
                 isAttacking = () => gasAttack != null && gasAttack.IsAttacking
             }
