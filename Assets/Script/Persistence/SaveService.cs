@@ -7,7 +7,7 @@ namespace Game.Persistence
         private readonly ISaveStorage _storage;
         private readonly ILogger _logger;
 
-        private const int CurrentVersion = 1;
+        private const int CurrentVersion = 2;
 
         public SaveService(ISaveStorage storage, ILogger logger)
         {
@@ -30,19 +30,28 @@ namespace Game.Persistence
 
             if (data.version != CurrentVersion)
             {
-                _logger?.LogWarning($"[SaveService] Save version mismatch (found {data.version}, expected {CurrentVersion}). Discarding.");
-                return null;
+                var migrated = Migrate(data);
+                if (migrated == null)
+                {
+                    _logger?.LogWarning($"[SaveService] Save version mismatch (found {data.version}, expected {CurrentVersion}). Discarding.");
+                    return null;
+                }
+                return migrated;
             }
 
             return data;
         }
+
+        // Seam for future schema migrations. No path defined yet (v1 -> v2 changed shape),
+        // so older saves are discarded. Add real migration steps here when needed.
+        private SaveData Migrate(SaveData old) => null;
 
         public void Save(SaveData data)
         {
             if (data == null) return;
             data.version = CurrentVersion;
             _storage.Write(data);
-            _logger?.Log($"[SaveService] Saved at spawn '{data.spawnPointId}'.");
+            _logger?.Log($"[SaveService] Saved (checkpoint room '{data.checkpoint?.roomId}', last room '{data.lastRoom?.roomId}').");
         }
 
         public void Delete()

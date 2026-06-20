@@ -16,6 +16,7 @@ public class MeleeEnemyAttack : MonoBehaviour
     [Header("Knockback")]
     [SerializeField] private bool applyKnockback = true;
     [SerializeField] private float knockbackForce = 8f;
+    [SerializeField] private float knockbackUpward = 0.5f;
 
     [Header("Jump Attack (Optional)")]
     [SerializeField] private bool enableJumpAttack = false;
@@ -124,21 +125,17 @@ public class MeleeEnemyAttack : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            character targetCharacter = hit.GetComponentInParent<character>();
-            if (targetCharacter != null)
+            Player player = hit.GetComponentInParent<Player>();
+            if (player != null)
             {
-                targetCharacter.TakeDamage(meleeDamage);
+                if (player.TakeDamage(meleeDamage) && applyKnockback)
+                    player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
+                continue;
             }
 
-            if (applyKnockback)
-            {
-                Rigidbody2D targetRb = hit.GetComponent<Rigidbody2D>();
-                if (targetRb != null)
-                {
-                    Vector2 knockbackDir = new Vector2(facing, 0.5f).normalized;
-                    targetRb.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
-                }
-            }
+            character targetCharacter = hit.GetComponentInParent<character>();
+            if (targetCharacter != null)
+                targetCharacter.TakeDamage(meleeDamage);
         }
     }
 
