@@ -3,46 +3,35 @@ using System.Collections;
 
 public class TankBullet : MonoBehaviour
 {
+    [Header("Bullet")]
     [SerializeField] private float speed = 12f;
     [SerializeField] private float lifeTime = 4f;
     [SerializeField] private float knockbackForce = 6f;
     [SerializeField] private float knockbackUpward = 0.2f;
 
+    [Header("Impact VFX")]
+    [SerializeField] private float impactFlashScale = 1.5f;
+    [SerializeField] private float impactFireballScale = 1.2f;
+    [SerializeField] private int impactSparkCount = 20;
+    [SerializeField] private float impactSparkSpeed = 10f;
+    [SerializeField] private float impactSparkGravity = 2.5f;
+    [SerializeField] private int impactSmokeCount = 8;
+    [SerializeField] private float impactRingScale = 2f;
+
     private Vector2 direction = Vector2.right;
     private float damage = 1f;
     private GameObject owner;
+    private Vector3 _originalScale;
+
+    private TrailRenderer _trail;
+    private ParticleSystem _sparkPS;
 
     private void Start()
     {
-        if (GetComponent<TrailRenderer>() == null)
-            SetupTrail();
+        _originalScale = transform.localScale;
+        _trail = GetComponentInChildren<TrailRenderer>();
+        _sparkPS = GetComponentInChildren<ParticleSystem>();
         StartCoroutine(BirthFlash());
-    }
-
-    private void SetupTrail()
-    {
-        TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
-        trail.time = 0.3f;
-        trail.startWidth = 0.15f;
-        trail.endWidth = 0.02f;
-        trail.material = new Material(Shader.Find("Sprites/Default"));
-
-        Gradient gradient = new Gradient();
-        gradient.SetKeys(
-            new GradientColorKey[]
-            {
-                new GradientColorKey(new Color(1f, 0.9f, 0.4f), 0f),
-                new GradientColorKey(new Color(1f, 0.5f, 0.1f), 0.5f),
-                new GradientColorKey(new Color(0.8f, 0.2f, 0f),  1f)
-            },
-            new GradientAlphaKey[]
-            {
-                new GradientAlphaKey(1f,  0f),
-                new GradientAlphaKey(0.6f, 0.5f),
-                new GradientAlphaKey(0f,  1f)
-            }
-        );
-        trail.colorGradient = gradient;
     }
 
     private IEnumerator BirthFlash()
@@ -51,10 +40,10 @@ public class TankBullet : MonoBehaviour
         while (t < 1f)
         {
             t = Mathf.Min(t + Time.deltaTime / 0.1f, 1f);
-            transform.localScale = Vector3.one * Mathf.Lerp(1.5f, 1f, t);
+            transform.localScale = _originalScale * Mathf.Lerp(1.5f, 1f, t);
             yield return null;
         }
-        transform.localScale = Vector3.one;
+        transform.localScale = _originalScale;
     }
 
     public void Initialize(Vector2 shootDirection, float bulletDamage, float bulletSpeed, GameObject bulletOwner)
@@ -64,12 +53,26 @@ public class TankBullet : MonoBehaviour
         speed = bulletSpeed;
         owner = bulletOwner;
 
+        // Orient spark emitter immediately so first frame is correct
+        if (_sparkPS != null)
+        {
+            float angle = Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg;
+            _sparkPS.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+        }
+
         Destroy(gameObject, lifeTime);
     }
 
     private void Update()
     {
         transform.position += (Vector3)(direction * speed * Time.deltaTime);
+
+        // Cone emits along local +Y, subtract 90 to convert from X-axis angle to Y-axis
+        if (_sparkPS != null)
+        {
+            float angle = Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg;
+            _sparkPS.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -85,17 +88,13 @@ public class TankBullet : MonoBehaviour
     private void HandleHit(Collider2D other)
     {
         if (other == null)
-        {
             return;
-        }
 
         if (owner != null)
         {
             Transform ownerRoot = owner.transform.root;
             if (other.gameObject == owner || other.transform.root == ownerRoot)
-            {
                 return;
-            }
         }
 
         Player player = other.GetComponentInParent<Player>();
@@ -103,13 +102,43 @@ public class TankBullet : MonoBehaviour
         {
             if (player.TakeDamage(damage) && knockbackForce > 0f)
                 player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
+            SpawnImpactVFX();
             Destroy(gameObject);
             return;
         }
 
         if (!other.isTrigger)
         {
+            SpawnImpactVFX();
             Destroy(gameObject);
         }
+    }
+
+    private void SpawnImpactVFX()
+    {
+        if (_trail != null)
+        {
+            _trail.transform.SetParent(null);
+            Destroy(_trail.gameObject, _trail.time + 0.1f);
+        }
+
+        if (_sparkPS != null)
+        {
+            _sparkPS.transform.SetParent(null);
+            _sparkPS.Stop();
+            Destroy(_sparkPS.gameObject, 0.5f);
+        }
+
+        GameObject impactGO = new GameObject("BulletImpact");
+        impactGO.transform.position = transform.position;
+        var vfx = impactGO.AddComponent<TankBulletImpactVFX>();
+        vfx.flashMaxScale = impactFlashScale;
+        vfx.fireballMaxScale = impactFireballScale;
+        vfx.sparkCount = impactSparkCount;
+        vfx.sparkMaxSpeed = impactSparkSpeed;
+        vfx.sparkGravity = impactSparkGravity;
+        vfx.smokeCount = impactSmokeCount;
+        vfx.ringMaxScale = impactRingScale;
+        vfx.Initialize(direction);
     }
 }
