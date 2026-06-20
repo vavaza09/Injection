@@ -1,18 +1,32 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VContainer;
+using Game.Persistence;
+using Game.Rooms;
+using Game.Components.Skills;
 
+/// <summary>
+/// Session-scoped death handler. The player now persists across scenes, so respawn no
+/// longer recreates it via a scene reload — instead we load the checkpoint room through
+/// <see cref="IRoomLoader"/> and revive the existing player on arrival.
+/// </summary>
 public class RespawnCoordinator : MonoBehaviour
 {
     [SerializeField] private float deathDisplayDuration = 1f;
+    [SerializeField] private float respawnInvincDuration = 2f;
 
     private Player _player;
+    private SaveService _saveService;
+    private IRoomLoader _roomLoader;
+    private IEnergyStore _energy;
 
     [Inject]
-    public void Construct(Player player)
+    public void Construct(Player player, SaveService saveService, IRoomLoader roomLoader, IEnergyStore energy)
     {
         _player = player;
+        _saveService = saveService;
+        _roomLoader = roomLoader;
+        _energy = energy;
     }
 
     private void Start()
@@ -35,16 +49,23 @@ public class RespawnCoordinator : MonoBehaviour
     private IEnumerator RespawnSequence()
     {
         yield return new WaitForSecondsRealtime(deathDisplayDuration);
-
         Time.timeScale = 1f;
 
-        if (ScreenFader.Instance != null)
+        var data = _saveService?.Load();
+
+        // No checkpoint reached yet: revive in place rather than dumping the player nowhere.
+        if (data == null || string.IsNullOrEmpty(data.checkpoint?.roomId))
         {
-            bool fadeComplete = false;
-            ScreenFader.Instance.FadeOut(() => fadeComplete = true);
-            yield return new WaitUntil(() => fadeComplete);
+            _player?.Respawn(respawnInvincDuration);
+            ScreenFader.Instance?.FadeIn();
+            yield break;
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        int energy = data.checkpoint.energy;
+        _roomLoader.LoadRoom(data.checkpoint.roomId, data.checkpoint.spawnPointId, onArrived: () =>
+        {
+            _player?.Respawn(respawnInvincDuration);
+            _energy?.SetCurrent(energy);
+        });
     }
 }

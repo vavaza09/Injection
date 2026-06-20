@@ -76,19 +76,19 @@ public abstract class character : MonoBehaviour
         healthComponent?.UpdateInvincibility(Time.deltaTime);
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual bool TakeDamage(float damage)
     {
         EnsureHealthComponent();
 
         if (!isAlive)
         {
-            return;
+            return false;
         }
 
         bool damageApplied = healthComponent.TakeDamage(damage);
         if (!damageApplied)
         {
-            return;
+            return false;
         }
 
         OnTakeDamage();
@@ -98,6 +98,8 @@ public abstract class character : MonoBehaviour
         {
             Die();
         }
+
+        return true;
     }
 
     public virtual void Die()

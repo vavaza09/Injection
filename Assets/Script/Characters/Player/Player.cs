@@ -66,6 +66,7 @@ public class Player : character
     [SerializeField] private PlayerMovementVFX movementVFX;
 
     private PlayerEnergyCollector _energyCollector;
+    private bool _wasDownHeld;
 
     [Header("Invincibility Visual")]
     [SerializeField] private float invincibilityBlinkInterval = 0.1f;
@@ -206,6 +207,12 @@ public class Player : character
         if (_currentState == PlayerState.Dead) return;
 
         Vector2 moveInput = _inputHandler != null ? _inputHandler.MoveInput : Vector2.zero;
+
+        bool isDownHeld = moveInput.y < -0.5f;
+        if (isDownHeld && !_wasDownHeld && movementComponent != null)
+            movementComponent.DropThroughPlatform();
+        _wasDownHeld = isDownHeld;
+
         Move(moveInput);
     }
 
@@ -269,6 +276,8 @@ public class Player : character
         // Sound and hit-registry clear fire in OnStateEnter(Dashing) when IsDashing becomes true.
     }
 
+    public Vector2 MoveInput => _inputHandler?.MoveInput ?? Vector2.zero;
+
     public void Jump()
     {
         if (_currentState == PlayerState.Dead) return;
@@ -284,9 +293,7 @@ public class Player : character
             Vector2 aimDir = ResolveDashDirection();
             movementComponent.LaunchFromGrab(aimDir);
             _slowMotion?.StopSlowMotion();
-            // Celeste-style refresh: restore dash and jump on launch
             jumpsRemaining = maxJumps;
-            movementComponent.ResetDash();
             return;
         }
 
@@ -474,6 +481,12 @@ public class Player : character
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
+    }
+
+    public void ApplyKnockback(Vector2 sourcePosition, float force, float upwardBias)
+    {
+        if (_currentState == PlayerState.Dead) return;
+        movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
     }
 
     private void OnInvincibilityVisualStart()
