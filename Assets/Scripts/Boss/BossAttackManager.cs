@@ -39,6 +39,7 @@ public class BossAttackManager : MonoBehaviour
     [Header("Attack References")]
     [SerializeField] private BossHammerAttack hammerAttack;
     [SerializeField] private BossClawAttack   clawAttack;
+    [SerializeField] private BossGasAttack    gasAttack;
 
     // ── Debug ─────────────────────────────────────────────────────────────
 
@@ -189,6 +190,13 @@ public class BossAttackManager : MonoBehaviour
                 canAttack   = () => clawAttack != null && clawAttack.CanAttack,
                 trigger     = () => clawAttack?.TriggerClawAttack(),
                 isAttacking = () => clawAttack != null && clawAttack.IsAttacking
+            },
+            new AttackEntry
+            {
+                name        = "Gas",
+                canAttack   = () => gasAttack != null && gasAttack.CanAttack,
+                trigger     = () => gasAttack?.TriggerGasAttack(),
+                isAttacking = () => gasAttack != null && gasAttack.IsAttacking
             }
             // New attacks go here ↑
         };
