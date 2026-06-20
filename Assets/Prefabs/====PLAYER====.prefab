@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 4885150918750639098}
   - component: {fileID: 1234567890123456789}
   - component: {fileID: 8086246394040665203}
+  - component: {fileID: 9112233445566778800}
   m_Layer: 10
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -628,7 +629,7 @@ MonoBehaviour:
   groundCheckSize: {x: 0.4, y: 2}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 2056
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
   wallJumpAtMaxSpeedMultiplier: 1.2
