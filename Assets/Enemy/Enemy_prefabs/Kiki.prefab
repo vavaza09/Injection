@@ -144,25 +144,30 @@ MonoBehaviour:
   attackDamage: 20
   movementComponent: {fileID: 0}
   enemyType: 5
-  detectionRange: 6
-  attackRange: 5
+  detectionRange: 9
+  attackRange: 6
   playerTransform: {fileID: 0}
   currentState: 0
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
-  patrolRadius: 8
+  patrolRadius: 5
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6
-  waypointReachDist: 0.4
-  headbuttLaunchDelay: 0.8
-  attackFreezeFrame: 7
+  waypointReachDist: 0.6
+  headbuttLaunchDelay: 0.9
+  attackFreezeFrame: 8
   attackTotalFrames: 14
   headbuttSpeed: 14
   headbuttDuration: 1
   headbuttHitRadius: 0.6
-  returnSpeed: 11
+  returnSpeed: 7
   headbuttCooldown: 1.5
+  trailStartColor: {r: 1, g: 0.6, b: 0.2, a: 0.9}
+  trailEndColor: {r: 1, g: 0.3, b: 0.05, a: 0}
+  trailStartWidth: 0.5
+  trailEndWidth: 0.05
+  trailTime: 0.25
   invertFacing: 1
 --- !u!70 &5004083559027577624
 CapsuleCollider2D:

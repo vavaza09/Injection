@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 727340565936729513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.53, y: -0.22, z: 0}
+  m_LocalPosition: {x: -0.74, y: -0.22, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -136,17 +136,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 191484d7b5b3f8b41844a1fe73bd1946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MuzzleFlashEffect
-  flashDuration: 0.15
-  flashMaxScale: 0.5
+  flashDuration: 0.5
+  flashMaxScale: 1
   flashColor: {r: 1, g: 0.9, b: 0.3, a: 1}
   puffCount: 5
   puffLifetime: 0.6
   puffSpreadAngle: 120
-  puffMinSpeed: 1
-  puffMaxSpeed: 3
+  puffMinSpeed: 2
+  puffMaxSpeed: 4
   puffColor: {r: 0.7, g: 0.65, b: 0.55, a: 0.8}
-  puffMinScale: 0.1
-  puffMaxScale: 0.3
+  puffMinScale: 0.4
+  puffMaxScale: 0.8
   testFlash: 0
 --- !u!1 &3551897207184432342
 GameObject:
@@ -577,8 +577,8 @@ MonoBehaviour:
   attackDamage: 10
   movementComponent: {fileID: 0}
   enemyType: 6
-  detectionRange: 10
-  attackRange: 10.1
+  detectionRange: 14
+  attackRange: 13.8
   playerTransform: {fileID: 0}
   currentState: 2
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
@@ -587,8 +587,8 @@ MonoBehaviour:
   gunPivot: {fileID: 9090418405512336103}
   attackPoint: {fileID: 3006710706382042102}
   bulletPrefab: {fileID: 201776429204795054, guid: 6749da368af66ab408932f90a7d0e4a5, type: 3}
-  shootCooldown: 2.4
-  bulletSpeed: 12
+  shootCooldown: 2.5
+  bulletSpeed: 20
   rotatePivotWhenIdle: 1
   stopMoveThreshold: 1.5
   backOffRange: 8
@@ -597,10 +597,10 @@ MonoBehaviour:
   gunArcDegrees: 45
   recoilDistance: 0.8
   recoilDuration: 0.45
-  recoilReturnDuration: 0.6
+  recoilReturnDuration: 0.8
   muzzleFlash: {fileID: 6038470916987513748}
-  flashStartDelay: 0
-  fireDelay: 0.15
+  flashStartDelay: 0.8
+  fireDelay: 0.8
   postFirePause: 0.05
 --- !u!95 &6666666666666666666
 Animator:
