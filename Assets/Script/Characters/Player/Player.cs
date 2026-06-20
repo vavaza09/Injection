@@ -284,9 +284,7 @@ public class Player : character
             Vector2 aimDir = ResolveDashDirection();
             movementComponent.LaunchFromGrab(aimDir);
             _slowMotion?.StopSlowMotion();
-            // Celeste-style refresh: restore dash and jump on launch
             jumpsRemaining = maxJumps;
-            movementComponent.ResetDash();
             return;
         }
 
@@ -474,6 +472,12 @@ public class Player : character
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
+    }
+
+    public void ApplyKnockback(Vector2 sourcePosition, float force, float upwardBias)
+    {
+        if (_currentState == PlayerState.Dead) return;
+        movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
     }
 
     private void OnInvincibilityVisualStart()

@@ -44,19 +44,10 @@ public class StompDamageZone : MonoBehaviour
         _hasHit = true;
 
         Player player = other.GetComponentInParent<Player>();
-        if (player != null)
-            player.TakeDamage(damage);
+        if (player == null) return;
 
-        Rigidbody2D playerRb = other.GetComponentInParent<Rigidbody2D>();
-        if (playerRb != null && knockbackForce > 0f)
-        {
-            Vector3 stomperPos = _stomperRoot != null ? _stomperRoot.position : transform.position;
-            float dir = Mathf.Sign(other.transform.position.x - stomperPos.x);
-            if (dir == 0f) dir = 1f;
-
-            Vector2 kick = new Vector2(dir, knockbackUpward).normalized;
-            playerRb.linearVelocity = Vector2.zero;
-            playerRb.AddForce(kick * knockbackForce, ForceMode2D.Impulse);
-        }
+        Vector2 stomperPos = _stomperRoot != null ? _stomperRoot.position : transform.position;
+        if (player.TakeDamage(damage) && knockbackForce > 0f)
+            player.ApplyKnockback(stomperPos, knockbackForce, knockbackUpward);
     }
 }

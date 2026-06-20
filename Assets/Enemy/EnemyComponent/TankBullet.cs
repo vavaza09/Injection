@@ -5,6 +5,8 @@ public class TankBullet : MonoBehaviour
 {
     [SerializeField] private float speed = 12f;
     [SerializeField] private float lifeTime = 4f;
+    [SerializeField] private float knockbackForce = 6f;
+    [SerializeField] private float knockbackUpward = 0.2f;
 
     private Vector2 direction = Vector2.right;
     private float damage = 1f;
@@ -99,7 +101,8 @@ public class TankBullet : MonoBehaviour
         Player player = other.GetComponentInParent<Player>();
         if (player != null)
         {
-            player.TakeDamage(damage);
+            if (player.TakeDamage(damage) && knockbackForce > 0f)
+                player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
             Destroy(gameObject);
             return;
         }
