@@ -240,7 +240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533743054950729744}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.033127017, w: 0.99945116}
+  m_LocalRotation: {x: -0, y: -0, z: -0.014503962, w: 0.99989486}
   m_LocalPosition: {x: 4.44, y: -3.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -272,7 +272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 636250165765349066}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.0011156313, w: 0.9999994}
+  m_LocalRotation: {x: 0, y: 0, z: -0.019401342, w: 0.99981177}
   m_LocalPosition: {x: -3.43, y: -5.57, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -364,7 +364,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 774207260767046349}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.13897319, w: 0.9902961}
+  m_LocalRotation: {x: 0, y: 0, z: -0.16372202, w: 0.9865065}
   m_LocalPosition: {x: 10.11, y: -1.48, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -456,7 +456,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297909827371341864}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.07514211, w: 0.99717283}
+  m_LocalRotation: {x: 0, y: 0, z: 0.07702621, w: 0.99702907}
   m_LocalPosition: {x: -2.65, y: -1.45, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -549,7 +549,7 @@ Transform:
   m_GameObject: {fileID: 1391481788223146640}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.3386993, y: -8.615121, z: 0}
+  m_LocalPosition: {x: -6.3386993, y: -8.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -801,8 +801,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.3, g: 0.85, b: 0.35, a: 0.85}
-      maxColor: {r: 0.2, g: 0.65, b: 0.25, a: 0.5}
+      minColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.85}
+      maxColor: {r: 0.61635214, g: 0.61635214, b: 0.61635214, a: 0.5}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -918,9 +918,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 1
-      minScalar: 1
+      minMaxState: 3
+      scalar: 3
+      minScalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -971,7 +971,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -1887,7 +1887,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.3, g: 0.85, b: 0.35, a: 1}
+        key0: {r: 0.4, g: 0.4, b: 0.4, a: 1}
         key1: {r: 0.2, g: 0.65, b: 0.25, a: 0}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -1912,7 +1912,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minGradient:
@@ -5439,7 +5439,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2247011846778032305}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000011175871, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0815854, w: 0.99666643}
   m_LocalPosition: {x: -6.57, y: -3.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5638,7 +5638,7 @@ Transform:
   m_GameObject: {fileID: 6844908836301156650}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.04, y: -1.48, z: 0}
+  m_LocalPosition: {x: -0.04, y: -1.48, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5784,7 +5784,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7571164772181541324}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.05182027, w: 0.99865645}
+  m_LocalRotation: {x: 0, y: 0, z: -0.0047947383, w: 0.9999885}
   m_LocalPosition: {x: 3.35, y: -5.52, z: -0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5976,7 +5976,7 @@ Transform:
   m_GameObject: {fileID: 8053681472114567103}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.08746907, w: 0.99616724}
-  m_LocalPosition: {x: 7.839225, y: -1.8682263, z: -1.8}
+  m_LocalPosition: {x: 7.25, y: -1.06, z: -1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6008,7 +6008,7 @@ Transform:
   m_GameObject: {fileID: 8273986703223261916}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.7999268, y: 9.24748, z: 0}
+  m_LocalPosition: {x: -0.5, y: -8.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6048,7 +6048,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -4.860779, y: -1.1658707}
+  m_Offset: {x: 1.4769707, y: -0.8489857}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6058,7 +6058,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 10.721558, y: 3.3317413}
+  m_Size: {x: 23.397057, y: 2.6979713}
   m_EdgeRadius: 0
 --- !u!1 &8312251080896375089
 GameObject:
@@ -6085,7 +6085,7 @@ Transform:
   m_GameObject: {fileID: 8312251080896375089}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.043182116, w: 0.9990672}
-  m_LocalPosition: {x: 3.7473297, y: -1.9248524, z: -1.2}
+  m_LocalPosition: {x: 3.67, y: -2.41, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6106,6 +6106,8 @@ GameObject:
   - component: {fileID: 3023072958676408419}
   - component: {fileID: 8430679318927230989}
   - component: {fileID: 5402206340720053047}
+  - component: {fileID: 2348839085497569532}
+  - component: {fileID: 3391342505809039263}
   m_Layer: 0
   m_Name: Boss_script_holder
   m_TagString: Untagged
@@ -6166,7 +6168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
   maxHealth: 100
-  detectionRadius: 35
+  detectionRadius: 50
   hammerLimbSolver: {fileID: 5321569244767979469}
   hammerLeftTarget: {fileID: 8787899939021824243}
 --- !u!114 &9131524647237713673
@@ -6185,7 +6187,7 @@ MonoBehaviour:
   hammerLeftIKTarget: {fileID: 8787899939021824243}
   hammerCollider: {fileID: 8273986703223261916}
   windUpOffset: {x: 3.35, y: 6.5}
-  windUpDuration: 1.6
+  windUpDuration: 2
   windUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -6255,10 +6257,22 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  holdDuration: 0.45
+  holdDuration: 0.55
   OnImpact:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3391342505809039263}
+        m_TargetAssemblyTypeName: HammerShockwave, Assembly-CSharp
+        m_MethodName: OnHammerImpact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   recoveryArcMidOffset: {x: 0.3, y: 0.5}
   recoveryDuration: 0.8
   recoveryCurve:
@@ -6321,8 +6335,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.064590454, y: -0.23683167}
-  m_Radius: 10.133789
+  m_Offset: {x: -0.08683014, y: -0.8150177}
+  m_Radius: 9.533363
 --- !u!114 &8430679318927230989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6439,10 +6453,53 @@ MonoBehaviour:
   maxConsecutiveSameAttack: 2
   hammerAttack: {fileID: 9131524647237713673}
   clawAttack: {fileID: 8430679318927230989}
-  gasAttack: {fileID: 0}
+  gasAttack: {fileID: 2348839085497569532}
   lastAttackName: 
   consecutiveCount: 0
   playerInRange: 0
+--- !u!114 &2348839085497569532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9042511292960336433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a2b112ca210ef46accb486128c023a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossGasAttack
+  fanAnchor: {fileID: 8791141713371714048}
+  arenaCollider: {fileID: 0}
+  gasCloudPrefab: {fileID: 1597789670021620086, guid: 110c56983a58076449795b2b85f2aa73, type: 3}
+  fanVentParticles: {fileID: 303898360327701551}
+  releaseDuration: 3.5
+  minCloudDuration: 10
+  maxCloudDuration: 12
+  cooldown: 35
+  fanSpinSpeed: 5
+  OnGasRelease:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3391342505809039263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9042511292960336433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f14460c63f8026841a3c820dd7b8d18c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HammerShockwave
+  shockWaveManager: {fileID: 0}
+  hammerImpactPoint: {fileID: 4951600500525564104}
+  launchForce: 120
+  upwardBias: 8
+  launchRadius: 8
+  shakeIntensity: 0.4
+  shakeDuration: 0.35
 --- !u!1 &9178126094570704200
 GameObject:
   m_ObjectHideFlags: 0

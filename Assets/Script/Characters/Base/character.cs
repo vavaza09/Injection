@@ -102,6 +102,23 @@ public abstract class character : MonoBehaviour
         return true;
     }
 
+    public virtual bool TakeMultiHit(int hits)
+    {
+        EnsureHealthComponent();
+        if (!isAlive) return false;
+
+        bool applied = healthComponent.TakeMultiHit(hits);
+        if (!applied) return false;
+
+        OnTakeDamage();
+        Damaged?.Invoke(this);
+
+        if (healthComponent.IsDead())
+            Die();
+
+        return true;
+    }
+
     public virtual void Die()
     {
         if (!isAlive) return;

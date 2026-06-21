@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterName: 
-  maxHealth: 2
+  maxHealth: 3
   moveSpeed: 8
   attackDamage: 0
   movementComponent: {fileID: 9206611309243768537}
