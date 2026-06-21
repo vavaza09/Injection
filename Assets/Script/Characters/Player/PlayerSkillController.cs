@@ -2,6 +2,7 @@ using UnityEngine;
 using VContainer;
 using Game.Characters.Player;
 using Game.Components.Skills;
+using Game.Tutorial;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class PlayerSkillController : MonoBehaviour
 
     // Alive check — PlayerSkillController sits on the same GO as Player
     private character _character;
+    private Player    _player;
 
     [Inject]
     public void Construct(
@@ -58,6 +60,7 @@ public class PlayerSkillController : MonoBehaviour
     private void Awake()
     {
         _character      = GetComponent<character>();
+        _player         = _character as Player;
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (_spriteRenderer != null)
             _originalColor = _spriteRenderer.color;
@@ -142,12 +145,14 @@ public class PlayerSkillController : MonoBehaviour
     private void UseEmp()
     {
         if (!IsPlayerAlive()) return;
+        if (_player != null && !_player.IsAbilityUnlocked(TutorialAbilities.Skill1)) return;
         _empSkill?.Activate();
     }
 
     private void UseTrueDamage()
     {
         if (!IsPlayerAlive()) return;
+        if (_player != null && !_player.IsAbilityUnlocked(TutorialAbilities.Skill2)) return;
         _trueDashSkill?.Activate();
     }
 

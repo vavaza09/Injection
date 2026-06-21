@@ -93,6 +93,8 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
         [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
         [SerializeField] private LayerMask climbableLayer;
+        [Tooltip("When false, wall-slide and wall-jump are disabled (used by the tutorial to gate the wall ability). Default true so normal gameplay is unaffected.")]
+        [SerializeField] private bool wallEnabled = true;
 
         [Header("Grab Settings")]
         [SerializeField] private LayerMask grabbableLayer;
@@ -186,7 +188,7 @@ namespace Game.Components.Movement
         private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
         // Wall stick is intentional: holding a direction away from the wall does NOT peel you
         // off. The only ways to leave are a wall jump or sliding all the way down to the ground.
-        public bool IsWallSliding => isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
+        public bool IsWallSliding => wallEnabled && isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
                                      && IsFallingAlongGravity;
         public bool IsAirborne => rb != null && !isGrounded && !IsWallSliding && !isGrabbing && !IsDashing;
         public bool IsRisingAnim => IsAirborne
@@ -1094,6 +1096,12 @@ namespace Game.Components.Movement
         public void SetSpeed(float speed)
         {
             maxSpeed = Mathf.Max(0f, speed);
+        }
+
+        /// <summary>Enable/disable wall-slide and wall-jump (tutorial gating). Default is enabled.</summary>
+        public void SetWallEnabled(bool value)
+        {
+            wallEnabled = value;
         }
 
         public void SetCanMove(bool value)
