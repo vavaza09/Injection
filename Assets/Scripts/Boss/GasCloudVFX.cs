@@ -1,18 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-// Controls the gas cloud visual. All particle appearance (color, opacity, size, texture, material,
-// noise, rotation) is configured on the ParticleSystem in the Inspector — this script only drives
-// the shape size (Box matching the collider) and the emission lifetime so the cloud stays visible
-// for the full damage window then fades out naturally.
+
 public class GasCloudVFX : MonoBehaviour
 {
     [Header("Particle Systems")]
     [Tooltip("Main looping gas cloud. Configure all visuals in Inspector. loop=true, Play On Awake=false.")]
     [SerializeField] private ParticleSystem gasParticles;
 
-    [Tooltip("Optional one-shot burst at the fan when gas first releases. loop=false, Play On Awake=false.")]
-    [SerializeField] private ParticleSystem burstParticles;
 
     [Header("Fade-in")]
     [Tooltip("Seconds to ramp emission from 0 → full rate at cloud spawn. Keeps the fill-in feeling without fan-spread animation.")]
@@ -29,13 +24,6 @@ public class GasCloudVFX : MonoBehaviour
     private IEnumerator PlayGas(float width, float height, float duration, Vector3 fanWorldPos)
     {
         if (gasParticles == null) yield break;
-
-        // Optional burst at the fan.
-        if (burstParticles != null)
-        {
-            burstParticles.transform.position = fanWorldPos;
-            burstParticles.Play();
-        }
 
         // Size the shape to match the damage collider exactly.
         var shape = gasParticles.shape;
