@@ -93,6 +93,8 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
         [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
         [SerializeField] private LayerMask climbableLayer;
+        [Tooltip("When false, wall-slide and wall-jump are disabled (used by the tutorial to gate the wall ability). Default true so normal gameplay is unaffected.")]
+        [SerializeField] private bool wallEnabled = true;
 
         [Header("Grab Settings")]
         [SerializeField] private LayerMask grabbableLayer;
@@ -158,6 +160,8 @@ namespace Game.Components.Movement
 
         // Grab state
         private bool isGrabbing;
+        private bool isCaptured;
+        private float _stunTimer;
         private SwingPoint currentSwingPoint;
         private float grabbedSpeedFactor;
         private float _autoGrabCooldownTimer;
@@ -186,7 +190,7 @@ namespace Game.Components.Movement
         private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
         // Wall stick is intentional: holding a direction away from the wall does NOT peel you
         // off. The only ways to leave are a wall jump or sliding all the way down to the ground.
-        public bool IsWallSliding => isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
+        public bool IsWallSliding => wallEnabled && isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
                                      && IsFallingAlongGravity;
         public bool IsAirborne => rb != null && !isGrounded && !IsWallSliding && !isGrabbing && !IsDashing;
         public bool IsRisingAnim => IsAirborne
@@ -195,7 +199,22 @@ namespace Game.Components.Movement
         public bool IsFallingAnim => IsAirborne && !IsRisingAnim;
 
         public bool IsGrabbing => isGrabbing;
+        public bool IsCaptured => isCaptured;
         public bool CanGrab => !isGrabbing && FindGrabTarget() != null;
+
+        public void SetCaptured(bool value) { isCaptured = value; }
+
+        public void DriveCapturedPosition(Vector2 worldPos)
+        {
+            if (rb != null) rb.MovePosition(worldPos);
+        }
+
+        public bool IsStunned => _stunTimer > 0f;
+
+        public void Stun(float duration)
+        {
+            _stunTimer = Mathf.Max(_stunTimer, duration);
+        }
 
         public float SpeedFactor => GetCurrentSpeedFactorFromVelocity();
         public int WallSideSign => wallSideSign;
@@ -271,6 +290,8 @@ namespace Game.Components.Movement
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
             isGrabbing = false;
+            isCaptured = false;
+            _stunTimer = 0f;
             currentSwingPoint = null;
             grabbedSpeedFactor = 0f;
 
@@ -387,6 +408,20 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (isCaptured)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
+            if (_stunTimer > 0f)
+            {
+                _stunTimer -= Time.deltaTime;
+                if (_stunTimer < 0f) _stunTimer = 0f;
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             UpdateJumpState();
         }
 
@@ -400,6 +435,8 @@ namespace Game.Components.Movement
 
             if (IsDashing) return;
             if (isGrabbing) return;
+            if (isCaptured) return;
+            if (IsStunned) return;
             // During the knockback lock, leave velocity untouched so the knockback carries —
             // skip input force, deceleration, reverse/post-dash braking entirely.
             if (_knockbackLockTimer > 0f) return;
@@ -497,6 +534,8 @@ namespace Game.Components.Movement
         public void Dash(Vector2 direction)
         {
             if (isGrabbing) return;
+            if (isCaptured) return;
+            if (IsStunned) return;
             if (_dashHandler == null || !_dashHandler.CanDash || direction == Vector2.zero) return;
 
             if (_dashCoroutine != null)
@@ -622,6 +661,9 @@ namespace Game.Components.Movement
                 _logger?.LogWarning($"Jump BLOCKED! canMove: {canMove}, rb: {rb != null}");
                 return false;
             }
+
+            if (isCaptured) return false;
+            if (IsStunned) return false;
 
             if (IsWallSliding)
             {
@@ -1094,6 +1136,12 @@ namespace Game.Components.Movement
         public void SetSpeed(float speed)
         {
             maxSpeed = Mathf.Max(0f, speed);
+        }
+
+        /// <summary>Enable/disable wall-slide and wall-jump (tutorial gating). Default is enabled.</summary>
+        public void SetWallEnabled(bool value)
+        {
+            wallEnabled = value;
         }
 
         public void SetCanMove(bool value)

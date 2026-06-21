@@ -65,6 +65,23 @@ namespace Game.Components.Health
         }
 
         /// <summary>
+        /// Subtracts multiple hits in one event, bypassing per-hit invincibility between them.
+        /// </summary>
+        public bool TakeMultiHit(int hits)
+        {
+            if (hits <= 0) return false;
+            if (currentState == HealthState.Invincible || IsDead())
+                return false;
+
+            hitCount += hits;
+            currentHealth -= hits;
+            if (currentHealth < 0f)
+                currentHealth = 0f;
+
+            return true;
+        }
+
+        /// <summary>
         /// Starts the invincibility period for the given duration (in seconds).
         /// </summary>
         public void StartInvincibility(float duration)
