@@ -48,6 +48,7 @@ public class Boss : BossBase
     private void HandleDeath()
     {
         GetComponent<BossHammerSwing>()?.ResetArm();
+        GetComponent<BossGasAttack>()?.ResetGas();
         GetComponent<BossPersistence>()?.MarkDefeated();
         Exit();
         Destroy(gameObject, 1f);
