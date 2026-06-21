@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6044426e71f2f3d40a6e42f2b38b8ebe
+guid: d132c4679f0e6c04b9fd3cd476fbddc3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7173147711223897328
-    second: screenshot-25690618-163311_0
+      213: 4765235319495298241
+    second: SmokeParticle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -57,7 +57,7 @@ TextureImporter:
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 0
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: screenshot-25690618-163311_0
+      name: SmokeParticle_0
       rect:
         serializedVersion: 2
-        x: 34
-        y: 28
-        width: 368
-        height: 198
+        x: 2
+        y: 2
+        width: 125
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 013e71f592cd37c90800000000000000
-      internalID: -7173147711223897328
+      spriteID: 1cc89a99644812240800000000000000
+      internalID: 4765235319495298241
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      screenshot-25690618-163311_0: -7173147711223897328
+      SmokeParticle_0: 4765235319495298241
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

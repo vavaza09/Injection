@@ -16,12 +16,20 @@ public class StompEnemy : Enemy
     [SerializeField] private float stompAttackCooldown = 1.5f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Mid-Air Contact")]
+    [SerializeField] private float airContactDamage = 20f;
+
     [Header("Impact")]
     [SerializeField] private float shakeAmplitude = 1.5f;
+    [SerializeField] private float impactVfxRadius = 2f;
+    [SerializeField] private StompImpactVFX impactVfxPrefab;
+
+    private enum StompPhase { None, Jump, Fall, Land }
+    private StompPhase _stompPhase = StompPhase.None;
 
     private bool isAttacking;
-    private bool isDropping;
     private bool hasGroundImpact;
+    private bool _airContactHasHit;
     private float lastAttackTime = -999f;
     private Coroutine _stompRoutineHandle;
     private Coroutine _damageWindowHandle;
@@ -60,6 +68,54 @@ public class StompEnemy : Enemy
     protected override void Update()
     {
         base.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        if (_stompPhase != StompPhase.Jump && _stompPhase != StompPhase.Fall)
+            return;
+        if (_airContactHasHit || stomperBodyCollider == null)
+            return;
+
+        // Lazily resolve the player collider in case the player spawned after Start().
+        if (_playerCollider == null)
+        {
+            GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+            if (playerGO != null)
+                _playerCollider = playerGO.GetComponent<Collider2D>();
+            if (_playerCollider == null)
+                return;
+        }
+
+        if (stomperBodyCollider.bounds.Intersects(_playerCollider.bounds))
+        {
+            Player player = _playerCollider.GetComponentInParent<Player>();
+            if (player != null)
+            {
+                player.TakeDamage(airContactDamage);
+                _airContactHasHit = true;
+            }
+        }
+    }
+
+    private void SpawnImpactVFX()
+    {
+        Vector3 impactPos = stomperBodyCollider != null
+            ? new Vector3(stomperBodyCollider.bounds.center.x, stomperBodyCollider.bounds.min.y, transform.position.z)
+            : transform.position;
+
+        if (impactVfxPrefab != null)
+        {
+            StompImpactVFX vfx = Instantiate(impactVfxPrefab, impactPos, Quaternion.identity);
+            vfx.Initialize(impactVfxRadius);
+        }
+        else
+        {
+            GameObject go = new GameObject("StompImpactVFX");
+            go.transform.position = impactPos;
+            StompImpactVFX vfx = go.AddComponent<StompImpactVFX>();
+            vfx.Initialize(impactVfxRadius);
+        }
     }
 
     public override void PatrolArea()
@@ -149,14 +205,15 @@ public class StompEnemy : Enemy
             movementComponent.SetCanMove(true);
 
         isAttacking = false;
-        isDropping = false;
+        _stompPhase = StompPhase.None;
     }
 
     private IEnumerator StompAttackRoutine()
     {
         isAttacking = true;
-        isDropping = false;
+        _stompPhase = StompPhase.None;
         hasGroundImpact = false;
+        _airContactHasHit = false;
         lastAttackTime = Time.time;
 
         if (anim != null)
@@ -181,6 +238,8 @@ public class StompEnemy : Enemy
 
         DisableCollisionWithPlayer();
 
+        _stompPhase = StompPhase.Jump;
+
         float timer = 0f;
         while (timer < jumpToPlayerTime)
         {
@@ -190,7 +249,7 @@ public class StompEnemy : Enemy
             yield return null;
         }
 
-        isDropping = true;
+        _stompPhase = StompPhase.Fall;
         if (rb != null)
             rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
 
@@ -204,9 +263,12 @@ public class StompEnemy : Enemy
             yield return null;
         }
 
-        isDropping = false;
+        // STOMP_LAND: halt the fall, slam the ground.
+        _stompPhase = StompPhase.Land;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+
+        SpawnImpactVFX();
 
         if (_impulseSource != null)
             _impulseSource.GenerateImpulse(shakeAmplitude);
@@ -221,6 +283,7 @@ public class StompEnemy : Enemy
             movementComponent.SetCanMove(true);
 
         isAttacking = false;
+        _stompPhase = StompPhase.None;
 
         if (anim != null)
             anim.Play("Crab_Idle");
@@ -254,7 +317,7 @@ public class StompEnemy : Enemy
 
     private void TryMarkGroundImpact(Collider2D other)
     {
-        if (!isDropping || other == null) return;
+        if (_stompPhase != StompPhase.Fall || other == null) return;
         if (IsGroundLayer(other.gameObject.layer))
             hasGroundImpact = true;
     }
@@ -293,7 +356,7 @@ public class StompEnemy : Enemy
 
     private void OnDrawGizmosSelected()
     {
-        if (!isDropping) return;
+        if (_stompPhase != StompPhase.Fall) return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 1.1f);
     }
