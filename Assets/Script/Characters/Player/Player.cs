@@ -489,6 +489,23 @@ public class Player : character
         movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
     }
 
+    public void SetCaptured(bool captured)
+    {
+        if (_currentState == PlayerState.Dead) return;
+        movementComponent?.SetCaptured(captured);
+    }
+
+    public void DriveCapturedPosition(Vector2 worldPos)
+    {
+        movementComponent?.DriveCapturedPosition(worldPos);
+    }
+
+    public void Stun(float duration)
+    {
+        if (_currentState == PlayerState.Dead) return;
+        movementComponent?.Stun(duration);
+    }
+
     private void OnInvincibilityVisualStart()
     {
         if (_invincibilityBlinkCoroutine != null)
@@ -599,7 +616,7 @@ public class Player : character
             return;
         }
 
-        if (movementComponent != null && movementComponent.IsGrabbing)
+        if (movementComponent != null && (movementComponent.IsGrabbing || movementComponent.IsCaptured || movementComponent.IsStunned))
         {
             ChangeState(PlayerState.Grabbing);
             return;
