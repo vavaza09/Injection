@@ -218,7 +218,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  shakeAmplitude: 1.5
+  airContactDamage: 20
+  shakeAmplitude: 2
+  impactVfxRadius: 3
+  impactVfxPrefab: {fileID: 0}
 --- !u!50 &2443875247897457428
 Rigidbody2D:
   serializedVersion: 5

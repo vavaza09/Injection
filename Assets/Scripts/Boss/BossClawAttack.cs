@@ -65,6 +65,39 @@ public class BossClawAttack : MonoBehaviour
     [Tooltip("Fires at the moment of impact. Wire up SFX, screenshake, damage here.")]
     public UnityEvent OnClawImpact;
 
+    // ── Grab & Smash Phase ────────────────────────────────────────────────
+
+    [Header("Grab & Smash Phase  (fires when player is caught)")]
+    [Tooltip("World-space offset from the boss root Transform where the player is held aloft.")]
+    [SerializeField] private Vector2 gripOffset = new Vector2(0f, 4f);
+
+    [Tooltip("Duration to lift the player from the strike point up to the grip position.")]
+    [SerializeField] private float liftDuration = 0.5f;
+
+    [Tooltip("Duration of the downward smash from grip to impact point.")]
+    [SerializeField] private float smashDuration = 0.3f;
+
+    [Tooltip("Y offset below the boss root where the smash ends (negative = below boss).")]
+    [SerializeField] private float smashImpactYOffset = -2f;
+
+    [Tooltip("LayerMask used to raycast for the ground beneath the grip. Defaults to 'Ground' layer.")]
+    [SerializeField] private LayerMask groundLayer;
+
+    [Tooltip("Max distance of the downward raycast from the grip looking for the ground.")]
+    [SerializeField] private float groundRaycastDistance = 30f;
+
+    [Tooltip("Y offset added to the ground hit point so the player's center rests on the surface (tune with player collider size).")]
+    [SerializeField] private float groundRestOffset = 0.5f;
+
+    [Tooltip("Seconds the player is stunned on the ground after the smash impact.")]
+    [SerializeField] private float stunDuration = 0.7f;
+
+    [Tooltip("Optional prefab for the ground-slam VFX (StompImpactVFX). If null, spawns procedurally.")]
+    [SerializeField] private StompImpactVFX impactVfxPrefab;
+    [SerializeField] private float impactVfxRadius = 3f;
+    [SerializeField] private float shakeIntensity = 0.5f;
+    [SerializeField] private float shakeDuration = 0.4f;
+
     // ── Retract Phase ─────────────────────────────────────────────────────
 
     [Header("Retract Phase  (~0.6 s)")]
@@ -92,8 +125,10 @@ public class BossClawAttack : MonoBehaviour
 
     // ── Private state ─────────────────────────────────────────────────────
 
-    private Vector3 _idleClawPos;
-    private bool    _idleSaved;
+    private Vector3    _idleClawPos;
+    private bool       _idleSaved;
+    private Collider2D _clawColliderTrigger;
+    private Player     _player;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
 
@@ -106,7 +141,19 @@ public class BossClawAttack : MonoBehaviour
     private void Start()
     {
         SaveIdlePositions();
-        if (clawCollider != null) clawCollider.SetActive(false);
+        if (clawCollider != null)
+        {
+            clawCollider.SetActive(false);
+            _clawColliderTrigger = clawCollider.GetComponent<Collider2D>();
+        }
+        if (playerTransform != null)
+        {
+            _player = playerTransform.GetComponent<Player>();
+            if (_player == null)
+                Debug.LogWarning("[BossClawAttack] Player component not found on player Transform — grab mechanic disabled.");
+        }
+        if (groundLayer == 0)
+            groundLayer = LayerMask.GetMask("Ground");
     }
 
     // ── Public API ────────────────────────────────────────────────────────
@@ -122,6 +169,7 @@ public class BossClawAttack : MonoBehaviour
     {
         StopAllCoroutines();
         isAttacking = false;
+        _player?.SetCaptured(false);
         if (clawCollider != null) clawCollider.SetActive(false);
         if (!_idleSaved) return;
         if (clawRightIKTarget != null) clawRightIKTarget.position = _idleClawPos;
@@ -167,7 +215,7 @@ public class BossClawAttack : MonoBehaviour
         }
         if (clawRightIKTarget != null) clawRightIKTarget.position = strikeTarget;
 
-        // Move damage collider to exact strike position and activate.
+        // Move catch collider to exact strike position and activate.
         if (clawCollider != null)
         {
             clawCollider.transform.position = new Vector3(strikeTarget.x, strikeTarget.y,
@@ -175,25 +223,113 @@ public class BossClawAttack : MonoBehaviour
             clawCollider.SetActive(true);
         }
 
-        // ── Phase 3: Hold ────────────────────────────────────────────────
-        OnClawImpact?.Invoke();
-        yield return new WaitForSeconds(holdDuration);
+        // ── Phase 3: Catch check → Grab & Smash or Hold ──────────────────
+        bool caught = _clawColliderTrigger != null && playerTransform != null &&
+                      _clawColliderTrigger.OverlapPoint(playerTransform.position);
+
         if (clawCollider != null) clawCollider.SetActive(false);
 
+        if (caught && _player != null)
+        {
+            yield return StartCoroutine(GrabAndSmashRoutine(strikeTarget));
+        }
+        else
+        {
+            // Missed — hold in place, fire feedback event, then retract.
+            OnClawImpact?.Invoke();
+            yield return new WaitForSeconds(holdDuration);
+        }
+
         // ── Phase 4: Retract ─────────────────────────────────────────────
-        Vector3 retractCtrl = (strikeTarget + _idleClawPos) * 0.5f + Vector3.up * 0.4f;
+        // Read the actual current position — grab branch ends at smashTarget, miss ends at strikeTarget.
+        Vector3 retractFrom = clawRightIKTarget != null ? clawRightIKTarget.position : strikeTarget;
+        Vector3 retractCtrl = (retractFrom + _idleClawPos) * 0.5f + Vector3.up * 0.4f;
 
         e = 0f;
         while (e < retractDuration)
         {
             e += Time.deltaTime;
             float c = Eval(retractCurve, e / retractDuration);
-            if (clawRightIKTarget != null) clawRightIKTarget.position = QuadBezier(strikeTarget, retractCtrl, _idleClawPos, c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = QuadBezier(retractFrom, retractCtrl, _idleClawPos, c);
             yield return null;
         }
         if (clawRightIKTarget != null) clawRightIKTarget.position = _idleClawPos;
 
         isAttacking = false;
+    }
+
+    // ── Grab & Smash sequence ─────────────────────────────────────────────
+
+    private IEnumerator GrabAndSmashRoutine(Vector3 strikeTarget)
+    {
+        _player.SetCaptured(true);
+
+        // Grip is a fixed world offset from the boss root Transform.
+        Vector3 gripWorldPos = transform.position + (Vector3)gripOffset;
+        gripWorldPos.z = _idleClawPos.z;
+
+        // Lift: bezier claw IK + player from strikeTarget up to gripWorldPos.
+        float e = 0f;
+        while (e < liftDuration)
+        {
+            e += Time.deltaTime;
+            float c = Mathf.SmoothStep(0f, 1f, e / liftDuration);
+            Vector3 pos = Vector3.Lerp(strikeTarget, gripWorldPos, c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = pos;
+            _player.DriveCapturedPosition(pos);
+            yield return null;
+        }
+        if (clawRightIKTarget != null) clawRightIKTarget.position = gripWorldPos;
+        _player.DriveCapturedPosition(gripWorldPos);
+
+        // Hold at grip.
+        yield return new WaitForSeconds(holdDuration);
+
+        // Determine smash target: raycast straight down from the grip to find the real ground.
+        float smashY = transform.position.y + smashImpactYOffset; // fallback if no ground hit
+        RaycastHit2D groundHit = Physics2D.Raycast(
+            new Vector2(gripWorldPos.x, gripWorldPos.y), Vector2.down, groundRaycastDistance, groundLayer);
+        if (groundHit.collider != null)
+            smashY = groundHit.point.y + groundRestOffset;
+
+        Vector3 smashTarget = new Vector3(gripWorldPos.x, smashY, _idleClawPos.z);
+
+        // Smash: slam claw IK + player straight down to the ground.
+        e = 0f;
+        while (e < smashDuration)
+        {
+            e += Time.deltaTime;
+            float c = Mathf.SmoothStep(0f, 1f, e / smashDuration);
+            Vector3 pos = Vector3.Lerp(gripWorldPos, smashTarget, c);
+            if (clawRightIKTarget != null) clawRightIKTarget.position = pos;
+            _player.DriveCapturedPosition(pos);
+            yield return null;
+        }
+        if (clawRightIKTarget != null) clawRightIKTarget.position = smashTarget;
+
+        // Impact: 2 health in one event, VFX, screenshake, release player, stun on the ground.
+        _player.TakeMultiHit(2);
+        OnClawImpact?.Invoke();
+        SpawnImpactVFX(smashTarget);
+        CameraManager.instance?.Shake(shakeIntensity, shakeDuration);
+        _player.SetCaptured(false);
+        _player.Stun(stunDuration);
+    }
+
+    private void SpawnImpactVFX(Vector3 pos)
+    {
+        if (impactVfxPrefab != null)
+        {
+            StompImpactVFX vfx = Instantiate(impactVfxPrefab, pos, Quaternion.identity);
+            vfx.Initialize(impactVfxRadius);
+        }
+        else
+        {
+            GameObject go = new GameObject("ClawImpactVFX");
+            go.transform.position = pos;
+            StompImpactVFX vfx = go.AddComponent<StompImpactVFX>();
+            vfx.Initialize(impactVfxRadius);
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
