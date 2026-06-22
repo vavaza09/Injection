@@ -33,7 +33,7 @@ namespace Game.Tutorial
         [SerializeField] private float glyphSize = 64f;
 
         private string _description;
-        private string[] _keys;
+        private PromptEntry[] _keys;
         private bool _showingSuccess;
         private readonly List<GameObject> _chips = new List<GameObject>();
 
@@ -53,7 +53,7 @@ namespace Game.Tutorial
             if (deviceTracker != null) deviceTracker.DeviceChanged -= OnDeviceChanged;
         }
 
-        public void Show(string description, string[] actionKeys)
+        public void Show(string description, PromptEntry[] actionKeys)
         {
             _showingSuccess = false;
             _description = description;
@@ -95,14 +95,24 @@ namespace Game.Tutorial
             if (_keys == null || glyphRow == null) return;
 
             bool gamepad = deviceTracker != null && deviceTracker.Current == InputDeviceKind.Gamepad;
-            foreach (var key in _keys)
+            for (int i = 0; i < _keys.Length; i++)
             {
-                var binding = Find(key);
+                var entry = _keys[i];
+                var binding = Find(entry.actionKey);
                 Sprite sprite = binding == null ? null : (gamepad ? binding.gamepadSprite : binding.keyboardSprite);
                 if (sprite != null)
+                {
                     CreateGlyphChip(sprite);
+                }
                 else
-                    CreateTextChip(binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : key);
+                {
+                    string label = binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : null;
+                    if (string.IsNullOrEmpty(label)) label = entry.actionKey;
+                    CreateTextChip(label);
+                }
+
+                if (entry.separatorAfter != SeparatorAfter.None)
+                    CreateSeparatorChip(entry.separatorAfter);
             }
         }
 
@@ -125,6 +135,33 @@ namespace Game.Tutorial
             var le = go.GetComponent<LayoutElement>();
             le.preferredWidth = glyphSize;
             le.preferredHeight = glyphSize;
+
+            _chips.Add(go);
+        }
+
+        private void CreateSeparatorChip(SeparatorAfter kind)
+        {
+            string symbol = kind switch
+            {
+                SeparatorAfter.Plus => "+",
+                SeparatorAfter.Then => "→",
+                SeparatorAfter.Or   => "/",
+                _                   => ""
+            };
+            if (string.IsNullOrEmpty(symbol)) return;
+
+            var go = new GameObject("Separator", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            go.transform.SetParent(glyphRow, false);
+
+            var tmp = go.GetComponent<TextMeshProUGUI>();
+            tmp.text = symbol;
+            tmp.fontSize = 28;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = descriptionColor;
+
+            var le = go.GetComponent<LayoutElement>();
+            le.minHeight = glyphSize;
+            le.preferredWidth = 24f;
 
             _chips.Add(go);
         }

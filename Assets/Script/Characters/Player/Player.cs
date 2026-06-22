@@ -57,9 +57,14 @@ public class Player : character
     [Header("State Machine")]
     [SerializeField] private float attackStateDuration = 0.5f;
 
+    [Header("Footstep Audio")]
+    [SerializeField] private float footstepBaseInterval = 0.4f;
+    [SerializeField] private float footstepMinInterval  = 0.2f;
+
     private PlayerState _currentState  = PlayerState.Idle;
     private PlayerState _previousState = PlayerState.Idle;
     private float       _stateTimer    = 0f;
+    private float       _footstepTimer = 0f;
 
     [Header("Movement Combat")]
     [SerializeField] private PlayerDashImpact dashImpact;
@@ -224,6 +229,8 @@ public class Player : character
         InvincibilityEnded   += OnInvincibilityVisualEnd;
 
         movementVFX?.Initialize(movementComponent);
+        if (movementVFX != null)
+            movementVFX.Landed += OnLanded;
 
         if (movementComponent != null)
         {
@@ -259,6 +266,7 @@ public class Player : character
 
         _stateTimer += Time.deltaTime;
         EvaluateStateTransitions();
+        UpdateFootsteps();
 
         if (_currentState == PlayerState.Dead) return;
 
@@ -314,7 +322,11 @@ public class Player : character
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
 
-        if (_energyCollector != null && _energyCollector.TryCollectNearby()) return;
+        if (_energyCollector != null && _energyCollector.TryCollectNearby())
+        {
+            _audioController?.PlayEnergyPickupSound();
+            return;
+        }
 
         if (!IsAbilityUnlocked(TutorialAbilities.Grab)) return;
 
@@ -396,8 +408,34 @@ public class Player : character
         movementVFX?.PlayWallJumpBurst();
     }
 
+    private void UpdateFootsteps()
+    {
+        if (_currentState == PlayerState.Running && movementComponent != null)
+        {
+            float speedRatio = Mathf.Clamp01(
+                Mathf.Abs(movementComponent.GetVelocity().x) / Mathf.Max(1f, movementComponent.MaxSpeed));
+            float interval = Mathf.Lerp(footstepBaseInterval, footstepMinInterval, speedRatio);
+            _footstepTimer += Time.deltaTime;
+            if (_footstepTimer >= interval)
+            {
+                _footstepTimer = 0f;
+                _audioController?.PlayFootstepSound();
+            }
+        }
+        else
+        {
+            _footstepTimer = 0f;
+        }
+    }
+
+    private void OnLanded()
+    {
+        _audioController?.PlayLandSound();
+    }
+
     private void OnGrabStarted()
     {
+        _audioController?.PlayGrabSound();
         ActivateSlowMotion();
     }
 
@@ -440,6 +478,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
+        _audioController?.PlaySlowMoSound();
         ActivateSlowMotion();
     }
 
@@ -653,6 +692,7 @@ public class Player : character
             case PlayerState.Dead:
                 movementComponent?.SetCanMove(false);
                 _animationController?.PlayDeathAnimation();
+                _audioController?.PlayDeathSound();
                 Collider2D deadCol = GetComponent<Collider2D>();
                 if (deadCol != null) deadCol.enabled = false;
                 _logger?.LogWarning("Player died! Game Over!");
@@ -671,6 +711,10 @@ public class Player : character
             // Jump feedback (sfx + puff/wall-burst) is handled by OnJumped/OnWallJumped,
             // wired to MovementComponent's Jumped/WallJumped events — see Start().
 
+            case PlayerState.WallSliding:
+                _audioController?.StartWallSlideLoop();
+                break;
+
             case PlayerState.Grabbing:
                 // Placeholder: wire grab animation when art is ready
                 break;
@@ -685,6 +729,10 @@ public class Player : character
                 movementComponent?.SetCanMove(true);
                 Collider2D exitCol = GetComponent<Collider2D>();
                 if (exitCol != null) exitCol.enabled = true;
+                break;
+
+            case PlayerState.WallSliding:
+                _audioController?.StopWallSlideLoop();
                 break;
         }
     }
@@ -761,6 +809,9 @@ public class Player : character
             _inputHandler.OnGrabPressed -= HandleGrabInput;
             _inputHandler.Dispose();
         }
+
+        if (movementVFX != null)
+            movementVFX.Landed -= OnLanded;
 
         if (movementComponent != null)
         {
