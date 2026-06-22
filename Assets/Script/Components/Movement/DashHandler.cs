@@ -176,5 +176,16 @@ namespace Game.Components.Movement
             _dashAttackTimer = 0;
             _isDashing = false;
         }
+
+        // Combo refresh: makes the dash available again immediately without touching _isDashing or
+        // _dashAttackTimer. Flipping _isDashing mid-dash would trip the post-dash air-brake logic in
+        // MovementComponent and kill combo momentum, so leave the current dash untouched — the next
+        // Dash() call interrupts it cleanly via StopCoroutine.
+        public void RechargeForCombo()
+        {
+            _currentDashes = _settings.maxDashes;
+            _dashCooldownTimer = 0f;
+            _dashRefillCooldownTimer = 0f;
+        }
     }
 }

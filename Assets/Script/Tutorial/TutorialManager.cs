@@ -34,14 +34,15 @@ namespace Game.Tutorial
         private bool _running;
 
         [Inject]
-        public void Construct(Player player, PlayerInputHandler input, IPlayerSkillEvents skillEvents)
+        public void Construct(Player player, PlayerInputHandler input, IPlayerSkillEvents skillEvents, IEnergyStore energyStore)
         {
             _player = player;
             _context = new TutorialContext
             {
                 Player = player,
                 Input = input,
-                SkillEvents = skillEvents
+                SkillEvents = skillEvents,
+                EnergyStore = energyStore
             };
         }
 

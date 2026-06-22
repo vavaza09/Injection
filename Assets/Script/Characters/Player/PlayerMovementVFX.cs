@@ -53,6 +53,12 @@ public class PlayerMovementVFX : MonoBehaviour
 
     #endregion
 
+    #region Events
+
+    public event System.Action Landed;
+
+    #endregion
+
     #region Private State
 
     private MovementComponent _movement;
@@ -264,11 +270,15 @@ public class PlayerMovementVFX : MonoBehaviour
         if (!_wasGrounded && isGrounded)
         {
             float fall = Mathf.Abs(_lastAirborneVelocity.y);
-            if (fall > landMinFallSpeed && _landBurst != null)
+            if (fall > landMinFallSpeed)
             {
-                float t = Mathf.InverseLerp(landMinFallSpeed, landMaxFallSpeed, fall);
-                int count = Mathf.RoundToInt(Mathf.Lerp(landBurstMin, landBurstMax, t));
-                EmitLandBurst(count);
+                Landed?.Invoke();
+                if (_landBurst != null)
+                {
+                    float t = Mathf.InverseLerp(landMinFallSpeed, landMaxFallSpeed, fall);
+                    int count = Mathf.RoundToInt(Mathf.Lerp(landBurstMin, landBurstMax, t));
+                    EmitLandBurst(count);
+                }
             }
         }
 
