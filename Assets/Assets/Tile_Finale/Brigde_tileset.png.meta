@@ -1,0 +1,1570 @@
+fileFormatVersion: 2
+guid: d0855bcf9db81f84caf1135be19d0f6e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4378330147497551521
+    second: Brigde_tileset_0
+  - first:
+      213: 3451553772668136550
+    second: Brigde_tileset_1
+  - first:
+      213: -9001434726590389130
+    second: Brigde_tileset_2
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 508
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Brigde_tileset_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a6a9fe5214f2cc30800000000000000
+      internalID: 4378330147497551521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66c2b0f7ed166ef20800000000000000
+      internalID: 3451553772668136550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_2
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 674e6bcceca741380800000000000000
+      internalID: -9001434726590389130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_3
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3a87fdf22703b04a9350c23cff0106b
+      internalID: 1734430813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_4
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 163e85f8642546d44abef30283cb8098
+      internalID: -597730505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_5
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 683ea34f15577a048a84de774938d1bc
+      internalID: 1967050731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_6
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aca951411c34e9e488c1a0276652b18f
+      internalID: 641275653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_7
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 384c50ef4adecfa45820f7bcbf6856e1
+      internalID: 193888449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_8
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b67389de3be70445a49d5431949fa5c
+      internalID: 648495014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_9
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9ff5ecbdbdea22499e53c38278c0a53
+      internalID: -47398533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_10
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb759f541ad2c2946aef3941a331c1b5
+      internalID: -1839373031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_11
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0c31310ddb13b84d9d5969c72c56527
+      internalID: -2026431368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_12
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1795c5f2867875844ab4e73342fd203d
+      internalID: -31716011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_13
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41abd3c09f3675944bb5a259162b9062
+      internalID: 1914722024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_14
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 3586
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20a55d474c93962408f366a928e89374
+      internalID: -774148980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9bf9a44d1b11b04da332e232d06d99a
+      internalID: -1189567177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3f04235ead52db4f9666a6a27e47471
+      internalID: 764411112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_17
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dffff51c8a7ae8945a91e512b41ad95e
+      internalID: -936354701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_18
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 733b5d84ce48723488ae42803b16ed27
+      internalID: -593906716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_19
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 262ad48116a5a1a41bee207ca9e3bb7f
+      internalID: 760574092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_20
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e22ad7ba56bfda541b547321e180cbf1
+      internalID: -792855184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_21
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 134f4502e1b795b47a7be68256cc7778
+      internalID: 1327768389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_22
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f87bdbe2dc0b2643a1929735d01609c
+      internalID: -694795848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_23
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a03cea8ee3c06a4589a37f8d2c5ba00
+      internalID: -2112514814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_24
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 869dba7fa9734d24aa5c150366e05a3c
+      internalID: -1930381978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_25
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3970d1198da427346bc5e90caf6e4d92
+      internalID: 116806955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_26
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab16bfc4a18e92a4db5864e2cb18fe45
+      internalID: 1132173133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_27
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5afe77e6735814342a21913b2230a2a9
+      internalID: -1254848658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_28
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c046afb0e46aa5043a9054f298313f2a
+      internalID: -1737196932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_29
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 3074
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8709acfc9939c034e9bc3a487da58691
+      internalID: -1878611168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fa1ff96f660cb546aac4ca2e201d105
+      internalID: 1386042897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_46
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02d16065870de464ca33dac898ad0f63
+      internalID: -253869107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_47
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41794af31e1dbe14eaec9edc5f17a306
+      internalID: -864548810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_48
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d6e4ea7f1d2f1a4b989689f751b3aa8
+      internalID: 1398105993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_49
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95f24948e79c7af448e3bd26306fd763
+      internalID: 1003184508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_51
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de8f6edd7e3778b41b864db65675fe54
+      internalID: 1551678750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_52
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1b095346d117f84d8c336d44f17b702
+      internalID: 1653397133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_53
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2050
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a472a71c455c8354ca44062b48619dbe
+      internalID: 305817358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_55
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79edc71aa793f3f48bf4557db736d3ff
+      internalID: -1976389350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_56
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 491bda5c636b5f741aa7631525a647bb
+      internalID: -1875891843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_57
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dfb36c72d3a260a47a9507b8b6ea5907
+      internalID: -796458756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_58
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eec83dbfcc20ce1488347a6004eda72a
+      internalID: 1986237074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_59
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcb77c012f06ace4e9db6585701b8e26
+      internalID: -534753472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_61
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bc2293d3fb97c74882376d8cce5d2b6
+      internalID: 1426211127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_62
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f9977e35274fdc49b8a68558db4cf51
+      internalID: 1680186890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_63
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1538
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9cd4edc7a57ce44da7eb7ef6c540b70
+      internalID: -140363588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_64
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1026
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c68052009ee6e1468f229f823807aa4
+      internalID: -1986214995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_65
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1026
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7566a4fcd5e2e8c4a90b795df00ef461
+      internalID: 1236683355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_66
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1026
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c128b0b8737bca49906d69986cd7fdf
+      internalID: -1353984813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_67
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1026
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4868fd36c9ca314883527324f0947e8
+      internalID: -1817097864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_71
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 514
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8710ea8c3960541488681352498fd5d2
+      internalID: -1853211569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_72
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 514
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ea98f6eece71e2489273d9bac0fa20f
+      internalID: -2128244449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_73
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 514
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07d3fa13a77401a41abb4df1577d1f3f
+      internalID: -450171278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_74
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 514
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d9f63c0b939ff948b9fd326cad3d232
+      internalID: -260262076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_75
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 514
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 233bfdd4f27cfa447a98567494635240
+      internalID: -2002167353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_77
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 684c32b568980784fa134ddcc777b531
+      internalID: -1987478105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_78
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b328a4a2005fa7743acf527d927353f1
+      internalID: 188375865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_79
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a95b2f047b8b29d4da6007abfc756253
+      internalID: 926562387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_80
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27d49fa1cd7479f4e977da8084e6ee54
+      internalID: -1485621304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brigde_tileset_81
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 101615a5f14035140bf6a53ea97f8c33
+      internalID: 1155528328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: af7e4787bd9673c499b3b863e397082c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Brigde_tileset_0: 4378330147497551521
+      Brigde_tileset_1: 3451553772668136550
+      Brigde_tileset_10: -1839373031
+      Brigde_tileset_11: -2026431368
+      Brigde_tileset_12: -31716011
+      Brigde_tileset_13: 1914722024
+      Brigde_tileset_14: -774148980
+      Brigde_tileset_15: -1189567177
+      Brigde_tileset_16: 764411112
+      Brigde_tileset_17: -936354701
+      Brigde_tileset_18: -593906716
+      Brigde_tileset_19: 760574092
+      Brigde_tileset_2: -9001434726590389130
+      Brigde_tileset_20: -792855184
+      Brigde_tileset_21: 1327768389
+      Brigde_tileset_22: -694795848
+      Brigde_tileset_23: -2112514814
+      Brigde_tileset_24: -1930381978
+      Brigde_tileset_25: 116806955
+      Brigde_tileset_26: 1132173133
+      Brigde_tileset_27: -1254848658
+      Brigde_tileset_28: -1737196932
+      Brigde_tileset_29: -1878611168
+      Brigde_tileset_3: 1734430813
+      Brigde_tileset_30: 393360187
+      Brigde_tileset_31: 1738383468
+      Brigde_tileset_32: -472090921
+      Brigde_tileset_33: -1774521493
+      Brigde_tileset_34: 391977515
+      Brigde_tileset_35: 1062122286
+      Brigde_tileset_36: 997049181
+      Brigde_tileset_37: -958238532
+      Brigde_tileset_38: -1338702958
+      Brigde_tileset_39: -1716665576
+      Brigde_tileset_4: -597730505
+      Brigde_tileset_40: -558589175
+      Brigde_tileset_41: 341169962
+      Brigde_tileset_42: 1476255132
+      Brigde_tileset_43: 966371442
+      Brigde_tileset_44: -612193557
+      Brigde_tileset_45: 1386042897
+      Brigde_tileset_46: -253869107
+      Brigde_tileset_47: -864548810
+      Brigde_tileset_48: 1398105993
+      Brigde_tileset_49: 1003184508
+      Brigde_tileset_5: 1967050731
+      Brigde_tileset_50: -586179454
+      Brigde_tileset_51: 1551678750
+      Brigde_tileset_52: 1653397133
+      Brigde_tileset_53: 305817358
+      Brigde_tileset_54: -340096669
+      Brigde_tileset_55: -1976389350
+      Brigde_tileset_56: -1875891843
+      Brigde_tileset_57: -796458756
+      Brigde_tileset_58: 1986237074
+      Brigde_tileset_59: -534753472
+      Brigde_tileset_6: 641275653
+      Brigde_tileset_60: -944708574
+      Brigde_tileset_61: 1426211127
+      Brigde_tileset_62: 1680186890
+      Brigde_tileset_63: -140363588
+      Brigde_tileset_64: -1986214995
+      Brigde_tileset_65: 1236683355
+      Brigde_tileset_66: -1353984813
+      Brigde_tileset_67: -1817097864
+      Brigde_tileset_68: -1305051997
+      Brigde_tileset_69: -492428343
+      Brigde_tileset_7: 193888449
+      Brigde_tileset_70: 1103314328
+      Brigde_tileset_71: -1853211569
+      Brigde_tileset_72: -2128244449
+      Brigde_tileset_73: -450171278
+      Brigde_tileset_74: -260262076
+      Brigde_tileset_75: -2002167353
+      Brigde_tileset_76: -1076311436
+      Brigde_tileset_77: -1987478105
+      Brigde_tileset_78: 188375865
+      Brigde_tileset_79: 926562387
+      Brigde_tileset_8: 648495014
+      Brigde_tileset_80: -1485621304
+      Brigde_tileset_81: 1155528328
+      Brigde_tileset_82: -1664808815
+      Brigde_tileset_9: -47398533
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
