@@ -14,6 +14,7 @@ namespace Game.Components.Movement
         void UpdateTimers();
         bool RefillDash();
         void ResetDash();
+        void RechargeForCombo();
         void Initialize(Rigidbody2D rb);
     }
 }

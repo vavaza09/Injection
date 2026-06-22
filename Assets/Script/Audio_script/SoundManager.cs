@@ -11,6 +11,15 @@ public enum SoundType
     HURT,
     MAGIC,
     HITSTOP,
+    DEATH,
+    LAND,
+    GRAB,
+    ENERGY,
+    EMP,
+    TRUEDAMAGE_ARM,
+    TRUEDAMAGE_CONSUME,
+    SLOWMO,
+    WALLSLIDE,
 }
 
 public enum MusicType
@@ -36,6 +45,7 @@ public class SoundManager : MonoBehaviour
     private static SoundManager instance;
     private AudioSource sfxSource;
     private AudioSource musicSource;
+    private AudioSource loopSource;
     private Coroutine musicFadeCoroutine;
 
     private void Awake()
@@ -70,6 +80,11 @@ public class SoundManager : MonoBehaviour
         musicSource.loop = true;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
+
+        // Dedicated looping SFX channel (e.g. wall-slide friction)
+        loopSource = gameObject.AddComponent<AudioSource>();
+        loopSource.loop = true;
+        loopSource.playOnAwake = false;
     }
 
     #region Sound Effects
@@ -91,6 +106,27 @@ public class SoundManager : MonoBehaviour
         {
             instance.sfxSource.volume = Mathf.Clamp01(volume);
         }
+    }
+
+    public static void StartLoop(SoundType sound, float volume = 1f)
+    {
+        if (instance == null || instance.loopSource == null) return;
+
+        AudioClip[] clips = instance.soundList[(int)sound].Sounds;
+        if (clips == null || clips.Length == 0) return;
+
+        AudioClip clip = clips[UnityEngine.Random.Range(0, clips.Length)];
+        if (instance.loopSource.isPlaying && instance.loopSource.clip == clip) return;
+
+        instance.loopSource.clip = clip;
+        instance.loopSource.volume = volume;
+        instance.loopSource.Play();
+    }
+
+    public static void StopLoop()
+    {
+        if (instance != null && instance.loopSource != null)
+            instance.loopSource.Stop();
     }
 
     #endregion

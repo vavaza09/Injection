@@ -5,12 +5,24 @@ using Game.Components.Skills;
 
 namespace Game.Tutorial
 {
+    public enum SeparatorAfter { None, Plus, Then, Or }
+
+    [Serializable]
+    public class PromptEntry
+    {
+        [Tooltip("Action key resolved by TutorialPromptUI bindings (e.g. \"Jump\", \"Dash\").")]
+        public string actionKey;
+        [Tooltip("Separator shown after this chip. None = last chip in the row.")]
+        public SeparatorAfter separatorAfter = SeparatorAfter.None;
+    }
+
     /// <summary>Shared services handed to every step when it begins.</summary>
     public class TutorialContext
     {
         public Player Player;
         public PlayerInputHandler Input;
         public IPlayerSkillEvents SkillEvents;
+        public IEnergyStore EnergyStore;
     }
 
     /// <summary>
@@ -23,12 +35,12 @@ namespace Game.Tutorial
     {
         [SerializeField, TextArea] protected string description;
         [Tooltip("Action keys shown as button glyphs in the prompt (resolved by TutorialPromptUI).")]
-        [SerializeField] protected string[] promptKeys;
+        [SerializeField] protected PromptEntry[] promptKeys;
         [Tooltip("Ability key to unlock when this step begins (see TutorialAbilities). Leave empty for steps that gate nothing, e.g. walk/jump.")]
         [SerializeField] protected string abilityToUnlock;
 
         public string Description => description;
-        public string[] PromptKeys => promptKeys;
+        public PromptEntry[] PromptKeys => promptKeys;
         public string AbilityToUnlock => abilityToUnlock;
 
         /// <summary>Raised once the step's objective is met.</summary>
