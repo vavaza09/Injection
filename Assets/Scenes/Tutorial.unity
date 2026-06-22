@@ -150,7 +150,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.CastSkillStep
   description: Collect energy, then press Q to fire EMP Blast.
   promptKeys:
-  - Skill1
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: skill1
   skill: 0
 --- !u!4 &122011385
@@ -200,7 +201,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Cling to the wall, then jump to wall-climb up to the top.
   promptKeys:
-  - Jump
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: wall
 --- !u!61 &133540305
 BoxCollider2D:
@@ -385,7 +387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.CastSkillStep
   description: Collect energy, then press F to use True Damage Dash.
   promptKeys:
-  - Skill2
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: skill2
   skill: 1
 --- !u!4 &172051970
@@ -504,8 +507,10 @@ MonoBehaviour:
   description: Approach the swing point to grab on, then press Jump to launch to
     the target.
   promptKeys:
-  - Grab
-  - Jump
+  - actionKey: 
+    separatorAfter: 0
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: grab
 --- !u!61 &190840572
 BoxCollider2D:
@@ -933,8 +938,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Walk right to reach the flag.
   promptKeys:
-  - Forward
-  - backward
+  - actionKey: 
+    separatorAfter: 0
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: 
 --- !u!61 &542126102
 BoxCollider2D:
@@ -1028,8 +1035,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.KillEnemyStep
   description: Dash into the enemy's weak point (red ring) to take it down.
   promptKeys:
-  - Aim
-  - Dash
+  - actionKey: 
+    separatorAfter: 0
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: 
   dummy: {fileID: 189314239}
   aiBehaviour: {fileID: 189314239}
@@ -1211,7 +1220,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Jump up onto the platform.
   promptKeys:
-  - Jump
+  - actionKey: 
+    separatorAfter: 0
   abilityToUnlock: 
 --- !u!61 &1410120771
 BoxCollider2D:
@@ -1689,8 +1699,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Hold Right Click to aim, then Left Click to Dash across the gap.
   promptKeys:
-  - Aim
-  - Dash
+  - actionKey: Aim
+    separatorAfter: 1
+  - actionKey: Dash
+    separatorAfter: 0
   abilityToUnlock: dash
 --- !u!61 &2005876937
 BoxCollider2D:
