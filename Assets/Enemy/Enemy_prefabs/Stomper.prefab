@@ -210,9 +210,10 @@ MonoBehaviour:
   stunVfxPrefab: {fileID: 0}
   stompDamageZone: {fileID: 2648370668505142157}
   preJumpDelay: 0.6
-  jumpHeightAbovePlayer: 7
+  jumpHeightAbovePlayer: 19
+  jumpUpSpeed: 30
   jumpToPlayerTime: 0.6
-  stompDownSpeed: 22
+  stompDownSpeed: 35
   stompDamageDuration: 0.2
   stompAttackCooldown: 4.2
   groundLayer:
@@ -220,7 +221,7 @@ MonoBehaviour:
     m_Bits: 8
   airContactDamage: 20
   shakeAmplitude: 2
-  impactVfxRadius: 3
+  impactVfxRadius: 3.5
   impactVfxPrefab: {fileID: 0}
 --- !u!50 &2443875247897457428
 Rigidbody2D:
