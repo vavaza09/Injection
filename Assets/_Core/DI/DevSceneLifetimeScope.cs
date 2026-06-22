@@ -7,6 +7,7 @@ using Game.Components.Movement;
 using Game.Components.Combat;
 using Game.Components.Skills;
 using Game.Characters.Player;
+using Game.Tutorial;
 
 /// <summary>
 /// Self-contained scope for dev/practice scenes (e.g. practice-vava).
@@ -95,6 +96,11 @@ public class DevSceneLifetimeScope : LifetimeScope
 
             var eb = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
             if (eb != null) container.Inject(eb);
+
+            // Tutorial orchestrator is a scene sibling (not under this scope GO) — inject it like
+            // the Player components above so its [Inject] Construct() receives Player/input/skills.
+            var tutorial = FindAnyObjectByType<TutorialManager>(FindObjectsInactive.Include);
+            if (tutorial != null) container.Inject(tutorial);
         });
     }
 }
