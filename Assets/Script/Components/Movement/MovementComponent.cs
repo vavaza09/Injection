@@ -1019,10 +1019,14 @@ namespace Game.Components.Movement
             Vector2 tangent = new Vector2(normal.y, -normal.x);
             if (tangent.x < 0f) tangent = -tangent;
 
-            // The horizontal speed Move() produced is the intended ground speed (signed). Redirect it
-            // along the surface: constant ground speed up/down slopes, gravity-aligned component removed
-            // (no idle slide, no flying off the bottom of a ramp).
-            float groundSpeed = rb.linearVelocity.x;
+            // Speed ALONG the surface = project the full velocity onto the tangent. Using only the
+            // horizontal component here would shrink it by cos(slope) every frame (the velocity gets
+            // re-projected each tick), so walking a slope felt sluggish; the dot keeps the ground speed
+            // intact so a slope feels exactly like flat ground. Clamp to the same grounded speed cap as
+            // flat so it never reads faster either. Perpendicular (gravity) component is dropped → no
+            // idle slide, no flying off the bottom of a ramp.
+            float speedLimit = GetCurrentHorizontalSpeedLimit();
+            float groundSpeed = Mathf.Clamp(Vector2.Dot(rb.linearVelocity, tangent), -speedLimit, speedLimit);
             _lastGroundSpeed = groundSpeed;
             Vector2 slopeVel = tangent * groundSpeed;
 
