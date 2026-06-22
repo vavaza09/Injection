@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FurnaceEnemy : Enemy
 {
@@ -45,6 +46,7 @@ public class FurnaceEnemy : Enemy
 
     private float lastAttackTime = -999f;
     private bool _isAttacking;
+    private readonly List<GameObject> _activeMortarVfx = new List<GameObject>();
 
     protected override void Awake() => base.Awake();
     protected override void Start() => base.Start();
@@ -165,6 +167,7 @@ public class FurnaceEnemy : Enemy
         warnSR.sortingOrder = 4;
         warning.transform.localScale = Vector3.one * explosionRadius * 2f;
         warning.AddComponent<WarningPulse>();
+        _activeMortarVfx.Add(warning);
 
         yield return new WaitForSeconds(hangTime - earlyWait);
 
@@ -194,6 +197,7 @@ public class FurnaceEnemy : Enemy
             }
         );
         dropTrail.colorGradient = tg;
+        _activeMortarVfx.Add(dropObj);
 
         // Fall until ground
         while (dropObj != null && dropObj.transform.position.y > groundY)
@@ -202,8 +206,8 @@ public class FurnaceEnemy : Enemy
             yield return null;
         }
 
-        if (dropObj != null) Destroy(dropObj);
-        if (warning != null) Destroy(warning);
+        if (dropObj != null) { Destroy(dropObj); _activeMortarVfx.Remove(dropObj); }
+        if (warning != null) { Destroy(warning); _activeMortarVfx.Remove(warning); }
 
         Vector2 impactPos = new Vector2(savedPos.x, groundY);
 
@@ -264,6 +268,15 @@ public class FurnaceEnemy : Enemy
 
         var launcher = launchObj.AddComponent<FurnaceLaunchBullet>();
         launcher.speed = launchUpSpeed;
+    }
+
+    protected override void CleanupAttackVfx()
+    {
+        foreach (GameObject go in _activeMortarVfx)
+        {
+            if (go != null) Destroy(go);
+        }
+        _activeMortarVfx.Clear();
     }
 
     private static Sprite CircleSprite(int size)
