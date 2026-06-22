@@ -77,6 +77,16 @@ namespace Game.Components.Movement
         [SerializeField] private LayerMask oneWayPlatformMask;
         [SerializeField] private float dropThroughSafetyTime = 0.75f;
 
+        [Header("Slope Handling")]
+        [Tooltip("Surfaces up to this angle (deg) count as walkable ground. Steeper is treated as not-grounded.")]
+        [SerializeField] private float maxSlopeAngle = 45f;
+        [Tooltip("How far below the feet the ground CircleCast probes. Doubles as the snap/forgiveness window that keeps small bumps and slope vertices grounded instead of reading 'fall'.")]
+        [SerializeField] private float groundSnapDistance = 0.12f;
+        [Tooltip("Skin so the ground CircleCast radius sits just inside the capsule width (avoids grabbing side walls).")]
+        [SerializeField] private float groundCheckSkin = 0.02f;
+        [Tooltip("Seconds after a jump/bounce during which slope-stick + snap are suppressed so the launch can actually leave the ground.")]
+        [SerializeField] private float postJumpSnapSuppressTime = 0.1f;
+
         [Header("Knockback Settings")]
         [Tooltip("Seconds after a knockback during which move input and braking are ignored so the knockback velocity carries.")]
         [SerializeField] private float knockbackLockTime = 0.2f;
@@ -93,6 +103,8 @@ namespace Game.Components.Movement
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
         [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
         [SerializeField] private LayerMask climbableLayer;
+        [Tooltip("When false, wall-slide and wall-jump are disabled (used by the tutorial to gate the wall ability). Default true so normal gameplay is unaffected.")]
+        [SerializeField] private bool wallEnabled = true;
 
         [Header("Grab Settings")]
         [SerializeField] private LayerMask grabbableLayer;
@@ -156,6 +168,17 @@ namespace Game.Components.Movement
         private static readonly Collider2D[] _groundHitBuffer = new Collider2D[8];
         private ContactFilter2D _groundFilter;
 
+        // Slope / ground-cast state
+        private static readonly RaycastHit2D[] _groundCastBuffer = new RaycastHit2D[8];
+        private ContactFilter2D _groundCastFilter;
+        private bool _groundCastFilterReady;
+        private Vector2 _groundNormal = Vector2.up;
+        private Vector2 _groundPoint;
+        private float _groundSlopeAngle;
+        private bool _onSlope;
+        private float _snapSuppressTimer;
+        private float _lastGroundSpeed;
+
         // Grab state
         private bool isGrabbing;
         private bool isCaptured;
@@ -188,7 +211,7 @@ namespace Game.Components.Movement
         private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
         // Wall stick is intentional: holding a direction away from the wall does NOT peel you
         // off. The only ways to leave are a wall jump or sliding all the way down to the ground.
-        public bool IsWallSliding => isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
+        public bool IsWallSliding => wallEnabled && isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
                                      && IsFallingAlongGravity;
         public bool IsAirborne => rb != null && !isGrounded && !IsWallSliding && !isGrabbing && !IsDashing;
         public bool IsRisingAnim => IsAirborne
@@ -313,6 +336,17 @@ namespace Game.Components.Movement
             _groundFilter.useTriggers = false;
             _groundFilter.useLayerMask = true;
 
+            // Ground CircleCast filter covers both solid ground and one-way platforms so the
+            // slope-aware check sees every surface the player can stand on.
+            _groundCastFilter = new ContactFilter2D();
+            _groundCastFilter.SetLayerMask(groundLayer | oneWayPlatformMask);
+            _groundCastFilter.useTriggers = false;
+            _groundCastFilter.useLayerMask = true;
+            _groundCastFilterReady = true;
+            _groundNormal = Vector2.up;
+            _snapSuppressTimer = 0f;
+            _lastGroundSpeed = 0f;
+
             // Initialize dash handler (composition)
             _dashHandler = new DashHandler(dashSettings);
             _dashHandler.Initialize(rb);
@@ -355,6 +389,11 @@ namespace Game.Components.Movement
             if (_knockbackLockTimer > 0f)
             {
                 _knockbackLockTimer = Mathf.Max(0f, _knockbackLockTimer - Time.deltaTime);
+            }
+
+            if (_snapSuppressTimer > 0f)
+            {
+                _snapSuppressTimer = Mathf.Max(0f, _snapSuppressTimer - Time.deltaTime);
             }
 
             CheckGroundStatus();
@@ -421,6 +460,7 @@ namespace Game.Components.Movement
             }
 
             UpdateJumpState();
+            ApplyGroundedSlopeMovement();
         }
 
         #endregion
@@ -557,6 +597,13 @@ namespace Game.Components.Movement
             _dashHandler?.ResetDash();
         }
 
+        // Combo refresh — makes the dash immediately available again after a weak-point / true-damage
+        // dash hit. The next Dash() call interrupts the current dash coroutine on its own.
+        public void RechargeDashForCombo()
+        {
+            _dashHandler?.RechargeForCombo();
+        }
+
         #endregion
 
         #region Jump
@@ -610,6 +657,7 @@ namespace Game.Components.Movement
 
             varJumpSpeed = bounceSpeed;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceSpeed);
+            _snapSuppressTimer = postJumpSnapSuppressTime;
 
             _logger?.Log($"Bounced! Speed: {bounceSpeed}");
         }
@@ -706,6 +754,9 @@ namespace Game.Components.Movement
             jumpGraceTimer = 0f;
             varJumpTimer = 0f;
             autoJump = false;
+            // Suppress slope-stick/snap briefly so the launch can leave the ground instead of
+            // being re-glued to the surface on the same/next frame.
+            _snapSuppressTimer = postJumpSnapSuppressTime;
         }
 
         private float ResolveJumpDirection(float currentSpeedX)
@@ -885,27 +936,57 @@ namespace Game.Components.Movement
             bool previousGrounded = isGrounded;
             isGrounded = false;
             _currentGroundCollider = null;
+            _groundNormal = Vector2.up;
+            _groundPoint = Vector2.zero;
+            _groundSlopeAngle = 0f;
+            _onSlope = false;
 
-            if (groundCheck != null)
+            if (_bodyCollider != null && _groundCastFilterReady)
             {
-                int hitCount = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, _groundFilter, _groundHitBuffer);
+                // A wide circle just under the feet: it glides over composite-collider "ghost
+                // vertices" (the source of the floating bump) and returns the real surface normal
+                // so gentle slopes no longer read as a fall. World is +Y up (jumpSpeed > 0).
+                // Cast from the capsule CENTER (not the feet) so the circle does not start already
+                // overlapping the ground — an overlapping start returns a zero normal and would hide
+                // the slope. From the center it clears the surface, then descends to groundSnapDistance
+                // below the feet (the forgiveness window).
+                Bounds b = _bodyCollider.bounds;
+                float radius = Mathf.Max(0.05f, b.extents.x - groundCheckSkin);
+                Vector2 origin = b.center;
+                float castDistance = Mathf.Max(0.01f, b.extents.y - radius + groundSnapDistance);
+
+                int hitCount = Physics2D.CircleCast(origin, radius, Vector2.down, _groundCastFilter, _groundCastBuffer, castDistance);
+                float bestAngle = float.MaxValue;
                 for (int i = 0; i < hitCount; i++)
                 {
-                    Collider2D hit = _groundHitBuffer[i];
-                    if (_bodyCollider != null && Physics2D.GetIgnoreCollision(_bodyCollider, hit))
-                        continue;
+                    RaycastHit2D hit = _groundCastBuffer[i];
+                    if (hit.collider == null) continue;
+                    if (Physics2D.GetIgnoreCollision(_bodyCollider, hit.collider)) continue;
 
-                    bool isOneWay = ((1 << hit.gameObject.layer) & oneWayPlatformMask.value) != 0;
+                    // A cast that begins overlapping returns a zero normal; fall back to "up".
+                    Vector2 n = hit.normal.sqrMagnitude < 0.0001f ? Vector2.up : hit.normal;
+                    float angle = Vector2.Angle(n, Vector2.up);
+                    if (angle > maxSlopeAngle) continue; // too steep to stand on — treat as wall
+
+                    bool isOneWay = ((1 << hit.collider.gameObject.layer) & oneWayPlatformMask.value) != 0;
                     // One-way platform: only counts as ground when feet are at/above the surface.
-                    // If feet are below the top, the player is passing through from below — skip.
-                    if (isOneWay && _bodyCollider != null && _bodyCollider.bounds.min.y < hit.bounds.max.y - 0.02f)
+                    if (isOneWay && b.min.y < hit.collider.bounds.max.y - 0.02f)
                         continue;
 
                     isGrounded = true;
+                    if (angle < bestAngle)
+                    {
+                        bestAngle = angle;
+                        _groundNormal = n;
+                        _groundPoint = hit.point;
+                        _groundSlopeAngle = angle;
+                    }
 
                     if (_currentGroundCollider == null && isOneWay)
-                        _currentGroundCollider = hit;
+                        _currentGroundCollider = hit.collider;
                 }
+
+                _onSlope = isGrounded && _groundSlopeAngle > 0.5f;
             }
 
             if (previousGrounded != isGrounded)
@@ -918,6 +999,45 @@ namespace Game.Components.Movement
                 StartJumpGraceTime();
                 _logger?.Log("Started jump grace time (coyote time)");
             }
+        }
+
+        // Redirect ground movement along the slope and stick the capsule to the surface.
+        // Runs at the end of UpdateMovement (grounded, non-dash, non-grab states only), so it has the
+        // final say over the velocity the physics step will integrate.
+        private void ApplyGroundedSlopeMovement()
+        {
+            if (rb == null || !isGrounded || _bodyCollider == null) return;
+            if (_knockbackLockTimer > 0f) return;   // let a knockback carry untouched
+            if (_snapSuppressTimer > 0f)            // just jumped/bounced: don't re-stick the launch
+            {
+                _lastGroundSpeed = rb.linearVelocity.x;
+                return;
+            }
+
+            // Tangent along the surface, oriented so +x means "moving right".
+            Vector2 normal = _groundNormal;
+            Vector2 tangent = new Vector2(normal.y, -normal.x);
+            if (tangent.x < 0f) tangent = -tangent;
+
+            // The horizontal speed Move() produced is the intended ground speed (signed). Redirect it
+            // along the surface: constant ground speed up/down slopes, gravity-aligned component removed
+            // (no idle slide, no flying off the bottom of a ramp).
+            float groundSpeed = rb.linearVelocity.x;
+            _lastGroundSpeed = groundSpeed;
+            Vector2 slopeVel = tangent * groundSpeed;
+
+            // Hard-stick: close any small vertical gap to the surface this step (within forgiveness),
+            // e.g. when cresting a convex slope. Velocity-based so it plays nice with interpolation and
+            // the Update-driven velocity pipeline; never pushes the player up out of the ground.
+            float dt = Time.deltaTime;
+            if (dt > 0f && _groundPoint != Vector2.zero)
+            {
+                float gap = _bodyCollider.bounds.min.y - _groundPoint.y; // >0: feet above surface
+                if (gap > 0.0001f && gap <= groundSnapDistance)
+                    slopeVel.y -= gap / dt;
+            }
+
+            rb.linearVelocity = slopeVel;
         }
 
         private void CheckWallStatus()
@@ -1136,6 +1256,12 @@ namespace Game.Components.Movement
             maxSpeed = Mathf.Max(0f, speed);
         }
 
+        /// <summary>Enable/disable wall-slide and wall-jump (tutorial gating). Default is enabled.</summary>
+        public void SetWallEnabled(bool value)
+        {
+            wallEnabled = value;
+        }
+
         public void SetCanMove(bool value)
         {
             canMove = value;
@@ -1219,7 +1345,10 @@ namespace Game.Components.Movement
                 return 0f;
             }
 
-            float speedNow = Mathf.Abs(rb.linearVelocity.x);
+            // On a slope the velocity is redirected along the surface, so the horizontal component
+            // understates the real ground speed. Use the slope-projected ground speed there so
+            // momentum (which powers jump/dash/damage) stays constant up/down gentle slopes.
+            float speedNow = (isGrounded && _onSlope) ? Mathf.Abs(_lastGroundSpeed) : Mathf.Abs(rb.linearVelocity.x);
             // Normalize by character max speed, not current cap, to avoid false 1.0 factor while coasting.
             float referenceSpeed = Mathf.Max(0.01f, maxSpeed);
             return Mathf.Clamp01(speedNow / referenceSpeed);
@@ -1295,10 +1424,24 @@ namespace Game.Components.Movement
 
         private void OnDrawGizmosSelected()
         {
-            if (groundCheck != null)
+            // Ground CircleCast probe (matches CheckGroundStatus).
+            Collider2D bodyCol = _bodyCollider != null ? _bodyCollider : GetComponent<Collider2D>();
+            if (bodyCol != null)
             {
+                Bounds b = bodyCol.bounds;
+                float radius = Mathf.Max(0.05f, b.extents.x - groundCheckSkin);
+                Vector3 castStart = new Vector3(b.center.x, b.center.y, transform.position.z);
+                Vector3 castEnd = castStart + Vector3.down * Mathf.Max(0.01f, b.extents.y - radius + groundSnapDistance);
+
                 Gizmos.color = isGrounded ? Color.green : Color.red;
-                Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+                Gizmos.DrawWireSphere(castStart, radius);
+                Gizmos.DrawWireSphere(castEnd, radius);
+
+                if (isGrounded)
+                {
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawLine(_groundPoint, _groundPoint + _groundNormal); // surface normal
+                }
             }
 
             Vector3 worldCenter = transform.position;

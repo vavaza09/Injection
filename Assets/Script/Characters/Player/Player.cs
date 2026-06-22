@@ -3,7 +3,9 @@ using Game.Characters.Player;
 using Core.Logging;
 using VContainer;
 using Game.UI.Movement;
+using Game.Tutorial;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum PlayerState
 {
@@ -55,9 +57,14 @@ public class Player : character
     [Header("State Machine")]
     [SerializeField] private float attackStateDuration = 0.5f;
 
+    [Header("Footstep Audio")]
+    [SerializeField] private float footstepBaseInterval = 0.4f;
+    [SerializeField] private float footstepMinInterval  = 0.2f;
+
     private PlayerState _currentState  = PlayerState.Idle;
     private PlayerState _previousState = PlayerState.Idle;
     private float       _stateTimer    = 0f;
+    private float       _footstepTimer = 0f;
 
     [Header("Movement Combat")]
     [SerializeField] private PlayerDashImpact dashImpact;
@@ -67,6 +74,12 @@ public class Player : character
 
     private PlayerEnergyCollector _energyCollector;
     private bool _wasDownHeld;
+
+    // Tutorial ability gating. Inactive by default — in normal gameplay every ability is
+    // available. The tutorial calls SetAbilityGating(true) then unlocks abilities one step at a
+    // time. Walk/jump are never gated (no keys for them).
+    private readonly HashSet<string> _unlockedAbilities = new HashSet<string>();
+    private bool _abilityGatingActive;
 
     [Header("Invincibility Visual")]
     [SerializeField] private float invincibilityBlinkInterval = 0.1f;
@@ -91,6 +104,63 @@ public class Player : character
         _audioController = audioController;
         _slowMotion = slowMotion;
         _logger?.Log("Player components injected via DI");
+    }
+
+    #endregion
+
+    #region Tutorial Ability Gating
+
+    /// <summary>True if the ability may be used. When gating is inactive (normal gameplay) this
+    /// is always true. Walk/jump are never passed here — they are never gated.</summary>
+    public bool IsAbilityUnlocked(string ability)
+        => !_abilityGatingActive || _unlockedAbilities.Contains(ability);
+
+    /// <summary>Turn the tutorial gate on/off. When turned on, every gated ability starts locked
+    /// until <see cref="UnlockAbility"/> is called for it.</summary>
+    public void SetAbilityGating(bool active)
+    {
+        _abilityGatingActive = active;
+        if (active) _unlockedAbilities.Clear();
+        RefreshMovementGates();
+    }
+
+    /// <summary>Unlock a single ability (see <see cref="TutorialAbilities"/> for keys).</summary>
+    public void UnlockAbility(string ability)
+    {
+        if (string.IsNullOrEmpty(ability)) return;
+        _unlockedAbilities.Add(ability);
+        RefreshMovementGates();
+
+        // Edge case: if the player is already holding right-click when dash unlocks,
+        // BeginDashAimMode already fired and returned early (before unlock). Re-activate now.
+        if (ability == TutorialAbilities.Dash && _inputHandler != null && _inputHandler.IsAimHeld)
+            ActivateSlowMotion();
+    }
+
+    /// <summary>Unlock everything and disable gating (used when the tutorial completes).</summary>
+    public void UnlockAllAbilities()
+    {
+        _abilityGatingActive = false;
+        RefreshMovementGates();
+    }
+
+    // Wall-slide/jump and auto-grab live inside MovementComponent and run automatically, so they
+    // can't be gated by an early-return at a call site — push the current lock state down to it.
+    private void RefreshMovementGates()
+    {
+        if (movementComponent == null) return;
+
+        if (_abilityGatingActive)
+        {
+            movementComponent.SetWallEnabled(_unlockedAbilities.Contains(TutorialAbilities.Wall));
+            movementComponent.AutoGrab = _unlockedAbilities.Contains(TutorialAbilities.Grab);
+        }
+        else
+        {
+            // Restore normal gameplay defaults.
+            movementComponent.SetWallEnabled(true);
+            movementComponent.AutoGrab = true;
+        }
     }
 
     #endregion
@@ -126,6 +196,9 @@ public class Player : character
 
         TryAutoAssignDashAimDisplay();
 
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
         if (_inputHandler != null)
         {
             _inputHandler.SetCamera(mainCamera);
@@ -156,6 +229,8 @@ public class Player : character
         InvincibilityEnded   += OnInvincibilityVisualEnd;
 
         movementVFX?.Initialize(movementComponent);
+        if (movementVFX != null)
+            movementVFX.Landed += OnLanded;
 
         if (movementComponent != null)
         {
@@ -171,8 +246,13 @@ public class Player : character
         if (dashImpact != null)
         {
             dashImpact.Initialize(movementComponent);
-            dashImpact.ImpactLanded += () => ChangeState(PlayerState.Attacking);
+            dashImpact.ImpactLanded += OnDashImpactLanded;
         }
+
+        // Re-apply any tutorial gating now that movementComponent is initialized — Start() ordering
+        // between this and TutorialManager is undefined, so SetAbilityGating() may have run before
+        // movementComponent existed.
+        RefreshMovementGates();
 
         _logger?.Log("Player initialized");
     }
@@ -186,6 +266,7 @@ public class Player : character
 
         _stateTimer += Time.deltaTime;
         EvaluateStateTransitions();
+        UpdateFootsteps();
 
         if (_currentState == PlayerState.Dead) return;
 
@@ -241,7 +322,13 @@ public class Player : character
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
 
-        if (_energyCollector != null && _energyCollector.TryCollectNearby()) return;
+        if (_energyCollector != null && _energyCollector.TryCollectNearby())
+        {
+            _audioController?.PlayEnergyPickupSound();
+            return;
+        }
+
+        if (!IsAbilityUnlocked(TutorialAbilities.Grab)) return;
 
         if (movementComponent.IsGrabbing)
         {
@@ -263,6 +350,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
+        if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
 
         if (requireAimHoldForDash && (_inputHandler == null || !_inputHandler.IsAimHeld))
         {
@@ -320,8 +408,45 @@ public class Player : character
         movementVFX?.PlayWallJumpBurst();
     }
 
+    private void UpdateFootsteps()
+    {
+        if (_currentState == PlayerState.Running && movementComponent != null)
+        {
+            float speedRatio = Mathf.Clamp01(
+                Mathf.Abs(movementComponent.GetVelocity().x) / Mathf.Max(1f, movementComponent.MaxSpeed));
+            float interval = Mathf.Lerp(footstepBaseInterval, footstepMinInterval, speedRatio);
+            _footstepTimer += Time.deltaTime;
+            if (_footstepTimer >= interval)
+            {
+                _footstepTimer = 0f;
+                _audioController?.PlayFootstepSound();
+            }
+        }
+        else
+        {
+            _footstepTimer = 0f;
+        }
+    }
+
+    private void OnLanded()
+    {
+        _audioController?.PlayLandSound();
+    }
+
     private void OnGrabStarted()
     {
+        _audioController?.PlayGrabSound();
+        ActivateSlowMotion();
+    }
+
+    // Dash impact landed on an enemy — either a normal dash hitting a weak point or a True-Damage
+    // dash hitting any enemy. Refresh the dash so the player can chain straight into the next target
+    // mid-air (combo), and re-arm the slow-mo aim window so they get a fresh moment to aim.
+    private void OnDashImpactLanded()
+    {
+        ChangeState(PlayerState.Attacking);
+        if (movementComponent != null)
+            movementComponent.RechargeDashForCombo();
         ActivateSlowMotion();
     }
 
@@ -352,6 +477,8 @@ public class Player : character
     private void BeginDashAimMode()
     {
         if (_currentState == PlayerState.Dead) return;
+        if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
+        _audioController?.PlaySlowMoSound();
         ActivateSlowMotion();
     }
 
@@ -372,7 +499,8 @@ public class Player : character
             return;
         }
 
-        bool isAimHeld = isAlive && _inputHandler != null && _inputHandler.IsAimHeld;
+        bool isAimHeld = isAlive && _inputHandler != null && _inputHandler.IsAimHeld
+            && IsAbilityUnlocked(TutorialAbilities.Dash);
         bool canDashNow = movementComponent != null && movementComponent.CanDash;
         bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
 
@@ -564,6 +692,7 @@ public class Player : character
             case PlayerState.Dead:
                 movementComponent?.SetCanMove(false);
                 _animationController?.PlayDeathAnimation();
+                _audioController?.PlayDeathSound();
                 Collider2D deadCol = GetComponent<Collider2D>();
                 if (deadCol != null) deadCol.enabled = false;
                 _logger?.LogWarning("Player died! Game Over!");
@@ -582,6 +711,10 @@ public class Player : character
             // Jump feedback (sfx + puff/wall-burst) is handled by OnJumped/OnWallJumped,
             // wired to MovementComponent's Jumped/WallJumped events — see Start().
 
+            case PlayerState.WallSliding:
+                _audioController?.StartWallSlideLoop();
+                break;
+
             case PlayerState.Grabbing:
                 // Placeholder: wire grab animation when art is ready
                 break;
@@ -596,6 +729,10 @@ public class Player : character
                 movementComponent?.SetCanMove(true);
                 Collider2D exitCol = GetComponent<Collider2D>();
                 if (exitCol != null) exitCol.enabled = true;
+                break;
+
+            case PlayerState.WallSliding:
+                _audioController?.StopWallSlideLoop();
                 break;
         }
     }
@@ -673,11 +810,19 @@ public class Player : character
             _inputHandler.Dispose();
         }
 
+        if (movementVFX != null)
+            movementVFX.Landed -= OnLanded;
+
         if (movementComponent != null)
         {
             movementComponent.Jumped -= OnJumped;
             movementComponent.WallJumped -= OnWallJumped;
             movementComponent.GrabStarted -= OnGrabStarted;
+        }
+
+        if (dashImpact != null)
+        {
+            dashImpact.ImpactLanded -= OnDashImpactLanded;
         }
 
         InvincibilityStarted -= OnInvincibilityVisualStart;
