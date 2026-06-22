@@ -191,6 +191,9 @@ public class Player : character
 
         TryAutoAssignDashAimDisplay();
 
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
         if (_inputHandler != null)
         {
             _inputHandler.SetCamera(mainCamera);
@@ -236,7 +239,7 @@ public class Player : character
         if (dashImpact != null)
         {
             dashImpact.Initialize(movementComponent);
-            dashImpact.ImpactLanded += () => ChangeState(PlayerState.Attacking);
+            dashImpact.ImpactLanded += OnDashImpactLanded;
         }
 
         // Re-apply any tutorial gating now that movementComponent is initialized — Start() ordering
@@ -395,6 +398,17 @@ public class Player : character
 
     private void OnGrabStarted()
     {
+        ActivateSlowMotion();
+    }
+
+    // Dash impact landed on an enemy — either a normal dash hitting a weak point or a True-Damage
+    // dash hitting any enemy. Refresh the dash so the player can chain straight into the next target
+    // mid-air (combo), and re-arm the slow-mo aim window so they get a fresh moment to aim.
+    private void OnDashImpactLanded()
+    {
+        ChangeState(PlayerState.Attacking);
+        if (movementComponent != null)
+            movementComponent.RechargeDashForCombo();
         ActivateSlowMotion();
     }
 
@@ -753,6 +767,11 @@ public class Player : character
             movementComponent.Jumped -= OnJumped;
             movementComponent.WallJumped -= OnWallJumped;
             movementComponent.GrabStarted -= OnGrabStarted;
+        }
+
+        if (dashImpact != null)
+        {
+            dashImpact.ImpactLanded -= OnDashImpactLanded;
         }
 
         InvincibilityStarted -= OnInvincibilityVisualStart;

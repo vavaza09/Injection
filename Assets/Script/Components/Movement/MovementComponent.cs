@@ -559,6 +559,13 @@ namespace Game.Components.Movement
             _dashHandler?.ResetDash();
         }
 
+        // Combo refresh — makes the dash immediately available again after a weak-point / true-damage
+        // dash hit. The next Dash() call interrupts the current dash coroutine on its own.
+        public void RechargeDashForCombo()
+        {
+            _dashHandler?.RechargeForCombo();
+        }
+
         #endregion
 
         #region Jump

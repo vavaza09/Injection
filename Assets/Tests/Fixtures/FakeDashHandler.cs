@@ -14,6 +14,7 @@ namespace Game.Tests.Fixtures
 
         public int StartDashCallCount { get; private set; }
         public int ResetDashCallCount { get; private set; }
+        public int RechargeForComboCallCount { get; private set; }
         public bool StartDashResult { get; set; } = true;
 
         public bool StartDash(Vector2 direction, bool isGrounded, float speedMultiplier = 1f)
@@ -46,6 +47,13 @@ namespace Game.Tests.Fixtures
             IsDashing = false;
             DashAttacking = false;
             CurrentDashes = MaxDashes;
+        }
+
+        public void RechargeForCombo()
+        {
+            RechargeForComboCallCount++;
+            CurrentDashes = MaxDashes;
+            CanDash = true;
         }
 
         public void Initialize(Rigidbody2D rb) { }
