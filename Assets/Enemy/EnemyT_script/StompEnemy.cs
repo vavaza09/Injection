@@ -10,6 +10,7 @@ public class StompEnemy : Enemy
     [SerializeField] private StompDamageZone stompDamageZone;
     [SerializeField] private float preJumpDelay = 0.3f;
     [SerializeField] private float jumpHeightAbovePlayer = 3f;
+    [SerializeField] private float jumpUpSpeed = 15f;
     [SerializeField] private float jumpToPlayerTime = 0.35f;
     [SerializeField] private float stompDownSpeed = 20f;
     [SerializeField] private float stompDamageDuration = 0.3f;
@@ -200,6 +201,8 @@ public class StompEnemy : Enemy
 
         stompDamageZone?.DisableZone();
         RestoreCollision();
+        if (stomperBodyCollider != null)
+            stomperBodyCollider.enabled = true;
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);
@@ -235,17 +238,33 @@ public class StompEnemy : Enemy
             playerTransform.position.x,
             playerTransform.position.y + jumpHeightAbovePlayer,
             transform.position.z);
+        Vector3 apexAboveStart = new Vector3(startPosition.x, targetAbovePlayer.y, startPosition.z);
 
         DisableCollisionWithPlayer();
 
         _stompPhase = StompPhase.Jump;
+        if (stomperBodyCollider != null)
+            stomperBodyCollider.enabled = false;
 
+        // Phase 1: rise straight up at jumpUpSpeed (units/sec)
+        float riseDistance = Mathf.Abs(apexAboveStart.y - startPosition.y);
+        float riseDuration = jumpUpSpeed > 0f ? riseDistance / jumpUpSpeed : 0f;
         float timer = 0f;
+        while (timer < riseDuration)
+        {
+            timer += Time.deltaTime;
+            float t = riseDuration > 0f ? Mathf.Clamp01(timer / riseDuration) : 1f;
+            transform.position = Vector3.Lerp(startPosition, apexAboveStart, t);
+            yield return null;
+        }
+
+        // Phase 2: slide horizontally over the player over jumpToPlayerTime
+        timer = 0f;
         while (timer < jumpToPlayerTime)
         {
             timer += Time.deltaTime;
             float t = jumpToPlayerTime > 0f ? Mathf.Clamp01(timer / jumpToPlayerTime) : 1f;
-            transform.position = Vector3.Lerp(startPosition, targetAbovePlayer, t);
+            transform.position = Vector3.Lerp(apexAboveStart, targetAbovePlayer, t);
             yield return null;
         }
 
@@ -265,6 +284,8 @@ public class StompEnemy : Enemy
 
         // STOMP_LAND: halt the fall, slam the ground.
         _stompPhase = StompPhase.Land;
+        if (stomperBodyCollider != null)
+            stomperBodyCollider.enabled = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 

@@ -79,8 +79,19 @@ public class EnemyDeathExplosion : MonoBehaviour
         foreach (SpriteRenderer sr in _renderers)
             if (sr != null) sr.enabled = false;
 
-        // Phase 3: Explosion animation (world-space, independent GO)
+        // Phase 3: Explosion animation + body parts launch simultaneously
         Vector3 origin = transform.position;
+
+        // Spawn body parts immediately when explosion fires
+        if (bodyPartSprites != null)
+        {
+            foreach (Sprite part in bodyPartSprites)
+            {
+                if (part == null) continue;
+                SpawnPart(part, origin);
+            }
+        }
+
         if (explosionFrames != null && explosionFrames.Length > 0)
         {
             GameObject exGO = new GameObject("_ExplosionFX");
@@ -100,16 +111,6 @@ public class EnemyDeathExplosion : MonoBehaviour
             }
 
             if (exGO != null) Destroy(exGO);
-        }
-
-        // Phase 4: Spawn separated body parts
-        if (bodyPartSprites != null)
-        {
-            foreach (Sprite part in bodyPartSprites)
-            {
-                if (part == null) continue;
-                SpawnPart(part, origin);
-            }
         }
 
         Destroy(gameObject);

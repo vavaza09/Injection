@@ -150,6 +150,8 @@ public class Enemy : character
 
     protected virtual void OnStunInterrupt() { }
 
+    protected virtual void CleanupAttackVfx() { }
+
     private void EndStun()
     {
         if (_animator != null)
@@ -207,6 +209,7 @@ public class Enemy : character
         currentState = EnemyState.Dead;
 
         StopAllCoroutines();
+        CleanupAttackVfx();
 
         EnemyAI ai = GetComponent<EnemyAI>();
         if (ai != null) ai.enabled = false;
