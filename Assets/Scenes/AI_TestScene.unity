@@ -699,7 +699,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 99.80192, y: -18.769001, z: -8.043858}
+  m_LocalPosition: {x: 2.071916, y: -18.199001, z: -8.043858}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2405,11 +2405,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 99.16
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -21.06
+      value: -20.49
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2456,8 +2456,16 @@ PrefabInstance:
       value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: weakPointKnockbackForce
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: weakPointShakeIntensity
-      value: 0.25
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: weakPointKnockbackUpwardBias
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: knockbackLockTime
@@ -2637,7 +2645,7 @@ Transform:
   m_GameObject: {fileID: 1523242436}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 99.80192, y: -18.769001, z: -8.043858}
+  m_LocalPosition: {x: 2.071916, y: -18.199001, z: -8.043858}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5548,20 +5556,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2373342409532700347, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: impactVfxRadius
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373342409532700347, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1274332873}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29.15
+      value: 27.75
       objectReference: {fileID: 0}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19.99
+      value: -19.97
       objectReference: {fileID: 0}
     - target: {fileID: 3425854261631109455, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5598,10 +5602,6 @@ PrefabInstance:
     - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_Name
       value: Stomper(Crab)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5664,10 +5664,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tank
       objectReference: {fileID: 0}
-    - target: {fileID: 8658080719701645966, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5685,45 +5681,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kiki
       objectReference: {fileID: 0}
-    - target: {fileID: 556367457260148969, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 907220950018324735, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2181151058672896822, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1274332873}
-    - target: {fileID: 4518119797810744639, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5004083559027577624, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_Size.x
-      value: 1.2323208
-      objectReference: {fileID: 0}
-    - target: {fileID: 5004083559027577624, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_Size.y
-      value: 1.4649625
-      objectReference: {fileID: 0}
-    - target: {fileID: 5004083559027577624, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_Offset.x
-      value: 0.027570724
-      objectReference: {fileID: 0}
-    - target: {fileID: 5004083559027577624, guid: 69478948e04ed444199919ce4557c583, type: 3}
-      propertyPath: m_Offset.y
-      value: 0.35985065
-      objectReference: {fileID: 0}
     - target: {fileID: 8782525518642100712, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.81
+      value: 9.036532
       objectReference: {fileID: 0}
     - target: {fileID: 8782525518642100712, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -15.37
+      value: -15.154807
       objectReference: {fileID: 0}
     - target: {fileID: 8782525518642100712, guid: 69478948e04ed444199919ce4557c583, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5777,10 +5745,6 @@ PrefabInstance:
     - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_Name
       value: Furnace
-      objectReference: {fileID: 0}
-    - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5928436914197378935, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_LocalPosition.x
