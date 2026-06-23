@@ -58,13 +58,12 @@ public class Player : character
     [SerializeField] private float attackStateDuration = 0.5f;
 
     [Header("Footstep Audio")]
-    [SerializeField] private float footstepBaseInterval = 0.4f;
-    [SerializeField] private float footstepMinInterval  = 0.2f;
+    [SerializeField] private float[] footfallPhases = { 0f, 0.5f };
 
     private PlayerState _currentState  = PlayerState.Idle;
     private PlayerState _previousState = PlayerState.Idle;
     private float       _stateTimer    = 0f;
-    private float       _footstepTimer = 0f;
+    private float       _lastRunPhase  = -1f;
 
     [Header("Movement Combat")]
     [SerializeField] private PlayerDashImpact dashImpact;
@@ -410,22 +409,39 @@ public class Player : character
 
     private void UpdateFootsteps()
     {
-        if (_currentState == PlayerState.Running && movementComponent != null)
+        if (_currentState != PlayerState.Running || _animationController == null)
         {
-            float speedRatio = Mathf.Clamp01(
-                Mathf.Abs(movementComponent.GetVelocity().x) / Mathf.Max(1f, movementComponent.MaxSpeed));
-            float interval = Mathf.Lerp(footstepBaseInterval, footstepMinInterval, speedRatio);
-            _footstepTimer += Time.deltaTime;
-            if (_footstepTimer >= interval)
+            if (_lastRunPhase >= 0f)
             {
-                _footstepTimer = 0f;
-                _audioController?.PlayFootstepSound(movementComponent.GetGroundTag());
+                _lastRunPhase = -1f;
+                _audioController?.StopFootstepSound();
             }
+            return;
         }
-        else
+
+        if (!_animationController.TryGetRunPhase(out float phase))
         {
-            _footstepTimer = 0f;
+            _lastRunPhase = -1f;
+            return;
         }
+
+        if (_lastRunPhase < 0f)
+        {
+            // First frame in run state — record phase without firing a step.
+            _lastRunPhase = phase;
+            return;
+        }
+
+        foreach (float footfall in footfallPhases)
+        {
+            bool crossed = _lastRunPhase < footfall && phase >= footfall;
+            // Handle cycle wrap-around (e.g. phase went 0.95 → 0.05).
+            bool wrapped = phase < _lastRunPhase && (footfall >= _lastRunPhase || footfall < phase);
+            if (crossed || wrapped)
+                _audioController?.PlayFootstepSound(movementComponent != null ? movementComponent.GetGroundTag() : null);
+        }
+
+        _lastRunPhase = phase;
     }
 
     private void OnLanded()
