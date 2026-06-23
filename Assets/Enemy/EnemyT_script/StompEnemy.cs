@@ -12,6 +12,7 @@ public class StompEnemy : Enemy
     [SerializeField] private float jumpHeightAbovePlayer = 3f;
     [SerializeField] private float jumpUpSpeed = 15f;
     [SerializeField] private float jumpToPlayerTime = 0.35f;
+    [SerializeField] private float telegraphDuration = 0.8f;
     [SerializeField] private float stompDownSpeed = 20f;
     [SerializeField] private float stompDamageDuration = 0.3f;
     [SerializeField] private float stompAttackCooldown = 1.5f;
@@ -67,15 +68,16 @@ public class StompEnemy : Enemy
     {
         base.Start();
 
-        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
-        if (playerGO != null)
-            _playerCollider = playerGO.GetComponent<Collider2D>();
+        // Prefer an existing scene child named "Stomper_shadow" (correctly placed in the scene).
+        // Fall back to the Inspector reference only if no child is found.
+        Transform shadowChild = transform.Find("Stomper_shadow");
+        if (shadowChild != null)
+            shadowObject = shadowChild.gameObject;
+        else if (shadowObject != null && !shadowObject.scene.IsValid())
+            shadowObject = Instantiate(shadowObject, transform.position + new Vector3(0, -2.45f, 0), Quaternion.identity, transform);
 
         if (shadowObject != null)
         {
-            // Capture the scene-placed scale and ground Y/Z once, before the
-            // stomper moves (the shadow is parented to it, so its world position
-            // would otherwise drift). These are the fixed values used at attack time.
             _shadowBaseScale = shadowObject.transform.localScale;
             _shadowGroundY = shadowObject.transform.position.y;
             _shadowZ = shadowObject.transform.position.z;
@@ -211,7 +213,6 @@ public class StompEnemy : Enemy
 
         stompDamageZone?.DisableZone();
         if (shadowObject != null) shadowObject.SetActive(false);
-        RestoreCollision();
         IgnorePlayerCollision(false);
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = true;
@@ -291,11 +292,21 @@ public class StompEnemy : Enemy
             yield return null;
         }
 
+        // Telegraph: lock stomper X and shadow at the player's current position.
+        // Hold for telegraphDuration so the player can see where the stomp lands and dodge.
+        float lockedShadowX = playerTransform != null ? playerTransform.position.x : transform.position.x;
+        transform.position = new Vector3(lockedShadowX, transform.position.y, transform.position.z);
+
+        float telegraphTimer = 0f;
+        while (telegraphTimer < telegraphDuration)
+        {
+            telegraphTimer += Time.deltaTime;
+            UpdateShadow(transform.position.y, apexY, lockedShadowX);
+            yield return null;
+        }
+
         _stompPhase = StompPhase.Fall;
         SoundManager.PlaySound(SoundType.STOMPER_FALL_RUSH);
-        // Lock the shadow at the player's position the instant the drop begins
-        float lockedShadowX = playerTransform != null ? playerTransform.position.x
-            : (shadowObject != null ? shadowObject.transform.position.x : transform.position.x);
         if (rb != null)
             rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
 
