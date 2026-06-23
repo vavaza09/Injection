@@ -3,6 +3,7 @@ using VContainer;
 using VContainer.Unity;
 using Game.Spawning;
 using Game.Rooms;
+using Game.Tutorial;
 
 /// <summary>
 /// Child scope placed once in every room scene. Auto-parents to the session
@@ -30,6 +31,7 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<SavePointTrigger>(container);
             InjectAll<BossPersistence>(container);
             InjectAll<RoomPortal>(container);
+            InjectAll<TutorialManager>(container);
         });
     }
 

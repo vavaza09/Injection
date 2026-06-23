@@ -39,6 +39,10 @@ namespace Game.Tutorial
         [Tooltip("Ability key to unlock when this step begins (see TutorialAbilities). Leave empty for steps that gate nothing, e.g. walk/jump.")]
         [SerializeField] protected string abilityToUnlock;
 
+        [Header("Barriers")]
+        [Tooltip("GameObjects that block the player from advancing past this step. They start active in the scene and are disabled when the step completes or is skipped.")]
+        [SerializeField] private GameObject[] barriers;
+
         public string Description => description;
         public PromptEntry[] PromptKeys => promptKeys;
         public string AbilityToUnlock => abilityToUnlock;
@@ -62,6 +66,7 @@ namespace Game.Tutorial
             if (!IsActive) return;
             IsActive = false;
             OnCleanup();
+            DeactivateBarriers();
         }
 
         /// <summary>Subclasses call this when the objective is satisfied.</summary>
@@ -70,7 +75,15 @@ namespace Game.Tutorial
             if (!IsActive) return;
             IsActive = false;
             OnCleanup();
+            DeactivateBarriers();
             Completed?.Invoke();
+        }
+
+        private void DeactivateBarriers()
+        {
+            if (barriers == null) return;
+            foreach (var b in barriers)
+                if (b != null) b.SetActive(false);
         }
 
         protected virtual void OnBegin() { }
