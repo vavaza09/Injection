@@ -49,7 +49,7 @@ public class RespawnCoordinator : MonoBehaviour
     private IEnumerator RespawnSequence()
     {
         yield return new WaitForSecondsRealtime(deathDisplayDuration);
-        Time.timeScale = 1f;
+        // Time is already restored by Player.OnStateEnter(Dead) -> ISlowMotionController.ResetImmediate().
 
         var data = _saveService?.Load();
 

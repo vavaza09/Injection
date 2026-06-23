@@ -706,6 +706,7 @@ public class Player : character
         switch (state)
         {
             case PlayerState.Dead:
+                _slowMotion?.ResetImmediate();
                 movementComponent?.SetCanMove(false);
                 _animationController?.PlayDeathAnimation();
                 _audioController?.PlayDeathSound();
