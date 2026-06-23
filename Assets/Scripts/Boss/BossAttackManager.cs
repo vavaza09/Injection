@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,6 +61,10 @@ public class BossAttackManager : MonoBehaviour
         public System.Action       trigger;      // call to start the attack
         public System.Func<bool>  isAttacking;  // is the attack still running?
     }
+
+    // Fires after each individual attack finishes (before global cooldown).
+    // BossWeakPointManager subscribes to count completed attacks.
+    public event Action AttackCompleted;
 
     private AttackEntry[] _attacks;
     private bool          _playerInRange;
@@ -142,6 +147,8 @@ public class BossAttackManager : MonoBehaviour
             while (_attacks[index].isAttacking())
                 yield return null;
 
+            AttackCompleted?.Invoke();
+
             // Global cooldown before next attack.
             yield return new WaitForSeconds(globalCooldown);
         }
@@ -161,7 +168,7 @@ public class BossAttackManager : MonoBehaviour
         if (valid.Count == 0) return -1;
 
         // Pick randomly from the valid set.
-        int picked = valid[Random.Range(0, valid.Count)];
+        int picked = valid[UnityEngine.Random.Range(0, valid.Count)];
 
         // Anti-repeat: if the same attack was picked and we've hit the limit,
         // force a different one (if any other valid attack exists).
@@ -169,7 +176,7 @@ public class BossAttackManager : MonoBehaviour
         {
             var others = valid.FindAll(i => i != _lastAttackIndex);
             if (others.Count > 0)
-                picked = others[Random.Range(0, others.Count)];
+                picked = others[UnityEngine.Random.Range(0, others.Count)];
             // If no others are valid, we have to repeat — edge case.
         }
 

@@ -185,6 +185,7 @@ public class BossClawAttack : MonoBehaviour
         Vector2 pullBack   = -toPlayer2D;
 
         // ── Phase 1: Anticipation ────────────────────────────────────────
+        SoundManager.PlaySound(SoundType.BOSS_CLAW_ANTICIPATION);
         Vector3 clawAntPos = _idleClawPos
                            + (Vector3)(pullBack * anticipationDistance)
                            + Vector3.up * anticipationLift;
@@ -200,6 +201,7 @@ public class BossClawAttack : MonoBehaviour
         if (clawRightIKTarget != null) clawRightIKTarget.position = clawAntPos;
 
         // ── Phase 2: Strike ──────────────────────────────────────────────
+        SoundManager.PlaySound(SoundType.BOSS_CLAW_STRIKE);
         Vector3 strikeTarget = playerTransform.position;
         strikeTarget.z = _idleClawPos.z;
 
@@ -236,11 +238,13 @@ public class BossClawAttack : MonoBehaviour
         else
         {
             // Missed — hold in place, fire feedback event, then retract.
+            SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
             OnClawImpact?.Invoke();
             yield return new WaitForSeconds(holdDuration);
         }
 
         // ── Phase 4: Retract ─────────────────────────────────────────────
+        SoundManager.PlaySound(SoundType.BOSS_CLAW_RETRACT);
         // Read the actual current position — grab branch ends at smashTarget, miss ends at strikeTarget.
         Vector3 retractFrom = clawRightIKTarget != null ? clawRightIKTarget.position : strikeTarget;
         Vector3 retractCtrl = (retractFrom + _idleClawPos) * 0.5f + Vector3.up * 0.4f;
@@ -308,6 +312,7 @@ public class BossClawAttack : MonoBehaviour
         if (clawRightIKTarget != null) clawRightIKTarget.position = smashTarget;
 
         // Impact: 2 health in one event, VFX, screenshake, release player, stun on the ground.
+        SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
         _player.TakeMultiHit(2);
         OnClawImpact?.Invoke();
         SpawnImpactVFX(smashTarget);

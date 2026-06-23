@@ -218,6 +218,7 @@ public class KikiEnemy : Enemy
 
         if (rb != null) rb.linearVelocity = Vector2.zero;
         PlayAnim("Float_Attack");
+        SoundManager.PlaySound(SoundType.KIKI_ATTACK_WINDUP);
 
         // Pre-roll delay (preserves tuned wind-up feel)
         yield return new WaitForSeconds(headbuttLaunchDelay);
@@ -253,6 +254,7 @@ public class KikiEnemy : Enemy
         // Enable dash effects
         if (_dashTrail != null) { _dashTrail.Clear(); _dashTrail.emitting = true; }
         if (_dashParticles != null) _dashParticles.Play();
+        SoundManager.PlaySound(SoundType.KIKI_ATTACK_DASH);
 
         IgnorePlayerCollision(true);
 
@@ -319,6 +321,7 @@ public class KikiEnemy : Enemy
             {
                 ch.TakeDamage(attackDamage);
                 _hasDamaged = true;
+                SoundManager.PlaySound(SoundType.KIKI_ATTACK_HIT);
                 if (_anim != null) _anim.speed = 1f;
                 return;
             }
