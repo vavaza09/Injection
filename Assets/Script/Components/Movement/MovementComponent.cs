@@ -1333,6 +1333,37 @@ namespace Game.Components.Movement
             _knockbackLockTimer = knockbackLockTime;
         }
 
+        // Rebound the player opposite the dash direction on hitting an enemy.
+        // Stops the running dash coroutine so its end-of-dash velocity write never fires,
+        // then sets velocity to -dashDir (+ optional upward pop) scaled by dash momentum.
+        // The knockback lock window suppresses Move() braking so the bounce carries.
+        public void BounceFromDashImpact(float force, float upwardBias)
+        {
+            if (rb == null) return;
+
+            Vector2 dashDir = _dashHandler != null ? _dashHandler.DashDir : Vector2.zero;
+            if (dashDir == Vector2.zero)
+                dashDir = new Vector2(characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f, 0f);
+
+            float multiplier = _dashHandler != null ? _dashHandler.DashSpeedMultiplier : 1f;
+
+            if (_dashCoroutine != null)
+            {
+                StopCoroutine(_dashCoroutine);
+                _dashCoroutine = null;
+            }
+            _dashHandler?.ForceEndDash();
+            _wasDashingLastFrame = false;
+
+            Vector2 bounceDir = (-dashDir + Vector2.up * UpSign * upwardBias).normalized;
+            rb.linearVelocity = bounceDir * (force * multiplier);
+
+            _knockbackLockTimer = knockbackLockTime;
+            _postDashAirBrakeTimer = 0f;
+            ResetWallSlideState();
+            isGrabbing = false;
+        }
+
         private float GetCurrentHorizontalSpeedLimit()
         {
             return maxSpeed;
