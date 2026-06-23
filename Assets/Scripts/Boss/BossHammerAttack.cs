@@ -42,12 +42,30 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("Sharp ease-in: explosive start, decelerates at impact.")]
     [SerializeField] private AnimationCurve swingCurve;
 
+    // ── Smash Settings ────────────────────────────────────────────────────
+
+    [Header("Smash Settings")]
+    [Tooltip("How many times the hammer slams down per attack.")]
+    [SerializeField] private int smashCount = 3;
+    [Tooltip("Lift offset between smashes, relative to idle position.")]
+    [SerializeField] private Vector2 interSmashLiftOffset = new Vector2(0f, 1.5f);
+    [SerializeField] private float interSmashDuration = 0.25f;
+    [SerializeField] private AnimationCurve interSmashCurve;
+    [Tooltip("Wind-up and swing duration multiplier applied to smashes 2, 3, ... — lower = faster.")]
+    [SerializeField] private float subsequentSmashSpeedScale = 0.55f;
+
     // ── Impact Hold ───────────────────────────────────────────────────────
 
     [Header("Impact Hold")]
     [SerializeField] private float holdDuration = 0.3f;
     [Tooltip("Fires at the moment of impact.")]
     public UnityEvent OnImpact;
+
+    // ── Contact Damage ────────────────────────────────────────────────────
+
+    [Header("Contact Damage")]
+    [Tooltip("Radius around the hammer impact point that deals 1 hit to the player per smash.")]
+    [SerializeField] private float hammerHitRadius = 1.0f;
 
     // ── Recovery Phase ────────────────────────────────────────────────────
 
@@ -111,29 +129,64 @@ public class BossHammerAttack : MonoBehaviour
     {
         isAttacking = true;
 
-        float xDir    = transform.lossyScale.x >= 0f ? 1f : -1f;
-        Vector3 windUp = _idleHammerPos + new Vector3(windUpOffset.x      * xDir, windUpOffset.y,      0f);
-        Vector3 arcMid = _idleHammerPos + new Vector3(swingArcMidOffset.x * xDir, swingArcMidOffset.y, 0f);
-        Vector3 impact = _idleHammerPos + new Vector3(swingImpactOffset.x * xDir, swingImpactOffset.y, 0f);
-        Vector3 recMid = _idleHammerPos + new Vector3(recoveryArcMidOffset.x * xDir, recoveryArcMidOffset.y, 0f);
+        float xDir      = transform.lossyScale.x >= 0f ? 1f : -1f;
+        Vector3 windUp   = _idleHammerPos + new Vector3(windUpOffset.x          * xDir, windUpOffset.y,          0f);
+        Vector3 arcMid   = _idleHammerPos + new Vector3(swingArcMidOffset.x     * xDir, swingArcMidOffset.y,     0f);
+        Vector3 impact   = _idleHammerPos + new Vector3(swingImpactOffset.x     * xDir, swingImpactOffset.y,     0f);
+        Vector3 recMid   = _idleHammerPos + new Vector3(recoveryArcMidOffset.x  * xDir, recoveryArcMidOffset.y,  0f);
+        Vector3 smashLift = _idleHammerPos + new Vector3(interSmashLiftOffset.x * xDir, interSmashLiftOffset.y, 0f);
 
-        // ── Wind-Up ──────────────────────────────────────────────────────
-        yield return TweenWorld(hammerLeftIKTarget, _idleHammerPos, windUp, windUpDuration, windUpCurve);
+        // ── Smash Loop (smashCount times, each with its own wind-up) ────
+        Vector3 windUpFrom = _idleHammerPos;
+        for (int i = 0; i < smashCount; i++)
+        {
+            float speedScale = i == 0 ? 1f : subsequentSmashSpeedScale;
 
-        // ── Swing ────────────────────────────────────────────────────────
-        yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration, swingCurve);
+            // Wind-Up before every smash
+            SoundManager.PlaySound(SoundType.BOSS_HAMMER_WINDUP);
+            yield return TweenWorld(hammerLeftIKTarget, windUpFrom, windUp, windUpDuration * speedScale, windUpCurve);
 
-        // ── Impact Hold ──────────────────────────────────────────────────
-        if (hammerCollider != null) hammerCollider.SetActive(true);
-        OnImpact?.Invoke();
-        yield return new WaitForSeconds(holdDuration);
-        if (hammerCollider != null) hammerCollider.SetActive(false);
+            // Swing down
+            SoundManager.PlaySound(SoundType.BOSS_HAMMER_SWING);
+            yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration * speedScale, swingCurve);
+
+            // Impact Hold — damage, visual, sound
+            SoundManager.PlaySound(SoundType.BOSS_HAMMER_IMPACT);
+            if (hammerCollider != null) hammerCollider.SetActive(true);
+            ApplyHammerDamage();
+            OnImpact?.Invoke();
+            yield return new WaitForSeconds(holdDuration);
+            if (hammerCollider != null) hammerCollider.SetActive(false);
+
+            // Lift between smashes then wind up again (skip after the last smash)
+            if (i < smashCount - 1)
+            {
+                yield return TweenWorld(hammerLeftIKTarget, impact, smashLift, interSmashDuration, interSmashCurve);
+                windUpFrom = smashLift;
+            }
+        }
 
         // ── Recovery ─────────────────────────────────────────────────────
+        SoundManager.PlaySound(SoundType.BOSS_HAMMER_RECOVER);
         yield return BezierTween(hammerLeftIKTarget, impact, recMid, _idleHammerPos, recoveryDuration, recoveryCurve);
 
         isAttacking = false;
         yield return new WaitForSeconds(cooldown);
+    }
+
+    // Checks overlap at the hammer's current position and deals 1 hit to the player if in range.
+    // Uses GetComponentInParent<Player> (not CompareTag/layer mask) — player lives on Cape layer (10).
+    private void ApplyHammerDamage()
+    {
+        Vector3 hitCenter = hammerCollider != null
+            ? hammerCollider.transform.position
+            : hammerLeftIKTarget.position;
+
+        foreach (var col in Physics2D.OverlapCircleAll(hitCenter, hammerHitRadius))
+        {
+            var player = col.GetComponentInParent<Player>();
+            if (player != null) { player.TakeMultiHit(1); break; }
+        }
     }
 
     // ── Tween helpers ─────────────────────────────────────────────────────
@@ -221,17 +274,20 @@ public class BossHammerAttack : MonoBehaviour
     private void EnsureDefaultCurves()
     {
         if (windUpCurve == null || windUpCurve.length == 0)
-            windUpCurve   = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f), new Keyframe(1f, 1f, 2f, 2f));
+            windUpCurve      = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f), new Keyframe(1f, 1f, 2f, 2f));
         if (swingCurve == null || swingCurve.length == 0)
-            swingCurve    = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
+            swingCurve       = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
         if (recoveryCurve == null || recoveryCurve.length == 0)
-            recoveryCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
+            recoveryCurve    = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
+        if (interSmashCurve == null || interSmashCurve.length == 0)
+            interSmashCurve  = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
     }
 
     private void Reset()
     {
-        windUpCurve   = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f), new Keyframe(1f, 1f, 2f, 2f));
-        swingCurve    = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
-        recoveryCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
+        windUpCurve     = new AnimationCurve(new Keyframe(0f, 0f, 0f, 0f), new Keyframe(1f, 1f, 2f, 2f));
+        swingCurve      = new AnimationCurve(new Keyframe(0f, 0f, 4f, 4f), new Keyframe(1f, 1f, 0f, 0f));
+        recoveryCurve   = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
+        interSmashCurve = new AnimationCurve(new Keyframe(0f, 0f, 2f, 2f), new Keyframe(1f, 1f, 0f, 0f));
     }
 }
