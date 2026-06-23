@@ -21,7 +21,6 @@ namespace Game.Characters.Player
         private readonly int _animAttack;
         private readonly int _animDeath;
         private readonly int _animRunSpeed;
-        private readonly int _animRunStateHash;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
         private readonly bool _hasRunSpeedParameter;
@@ -44,7 +43,6 @@ namespace Game.Characters.Player
             _animAttack = Animator.StringToHash("Attack");
             _animDeath = Animator.StringToHash("Death");
             _animRunSpeed = Animator.StringToHash("RunSpeed");
-            _animRunStateHash = Animator.StringToHash("Run");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
             _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
@@ -83,22 +81,6 @@ namespace Game.Characters.Player
                 float speedRatio = Mathf.Clamp01(moveSpeed / Mathf.Max(1f, _movementComponent.MaxSpeed));
                 _animator.SetFloat(_animRunSpeed, Mathf.Lerp(RunSpeedMultMin, RunSpeedMultMax, speedRatio));
             }
-        }
-
-        /// <summary>
-        /// Returns true and outputs the current run cycle phase [0,1) when the Run state is active.
-        /// Returns false when in any other state (caller should skip footstep logic).
-        /// </summary>
-        public bool TryGetRunPhase(out float phase01)
-        {
-            phase01 = 0f;
-            if (_animator == null) return false;
-
-            AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
-            if (info.shortNameHash != _animRunStateHash) return false;
-
-            phase01 = info.normalizedTime % 1f;
-            return true;
         }
 
         private static bool HasBoolParameter(Animator animator, string parameterName)
