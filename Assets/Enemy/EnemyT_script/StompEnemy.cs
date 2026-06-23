@@ -25,6 +25,10 @@ public class StompEnemy : Enemy
     [SerializeField] private float impactVfxRadius = 2f;
     [SerializeField] private StompImpactVFX impactVfxPrefab;
 
+    [Header("Shadow")]
+    [SerializeField] private GameObject shadowObject;
+    [SerializeField] private Vector3 minShadowScale = new Vector3(2.8f, 0.5f, 1f);
+
     private enum StompPhase { None, Jump, Fall, Land }
     private StompPhase _stompPhase = StompPhase.None;
 
@@ -34,6 +38,9 @@ public class StompEnemy : Enemy
     private float lastAttackTime = -999f;
     private Coroutine _stompRoutineHandle;
     private Coroutine _damageWindowHandle;
+    private Vector3 _shadowBaseScale;
+    private float _shadowGroundY;
+    private float _shadowZ;
 
     private Collider2D stomperBodyCollider;
     private Collider2D _playerCollider;
@@ -64,6 +71,17 @@ public class StompEnemy : Enemy
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
         if (playerGO != null)
             _playerCollider = playerGO.GetComponent<Collider2D>();
+
+        if (shadowObject != null)
+        {
+            // Capture the scene-placed scale and ground Y/Z once, before the
+            // stomper moves (the shadow is parented to it, so its world position
+            // would otherwise drift). These are the fixed values used at attack time.
+            _shadowBaseScale = shadowObject.transform.localScale;
+            _shadowGroundY = shadowObject.transform.position.y;
+            _shadowZ = shadowObject.transform.position.z;
+            shadowObject.SetActive(false);
+        }
     }
 
     protected override void Update()
@@ -200,6 +218,7 @@ public class StompEnemy : Enemy
         }
 
         stompDamageZone?.DisableZone();
+        if (shadowObject != null) shadowObject.SetActive(false);
         RestoreCollision();
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = true;
@@ -242,7 +261,12 @@ public class StompEnemy : Enemy
 
         DisableCollisionWithPlayer();
 
+        float apexY = apexAboveStart.y;
+        if (shadowObject != null)
+            shadowObject.SetActive(true);
+
         _stompPhase = StompPhase.Jump;
+        SoundManager.PlaySound(SoundType.STOMPER_JUMP);
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = false;
 
@@ -255,25 +279,36 @@ public class StompEnemy : Enemy
             timer += Time.deltaTime;
             float t = riseDuration > 0f ? Mathf.Clamp01(timer / riseDuration) : 1f;
             transform.position = Vector3.Lerp(startPosition, apexAboveStart, t);
+            // Shadow tracks the player while the stomper is still airborne
+            UpdateShadow(transform.position.y, apexY, playerTransform.position.x);
             yield return null;
         }
 
-        // Phase 2: slide horizontally over the player over jumpToPlayerTime
+        // Phase 2: slide horizontally to stay above the (live) player so the
+        // stomper ends up directly over the shadow before it drops
         timer = 0f;
         while (timer < jumpToPlayerTime)
         {
             timer += Time.deltaTime;
             float t = jumpToPlayerTime > 0f ? Mathf.Clamp01(timer / jumpToPlayerTime) : 1f;
-            transform.position = Vector3.Lerp(apexAboveStart, targetAbovePlayer, t);
+            float targetX = playerTransform != null ? playerTransform.position.x : targetAbovePlayer.x;
+            Vector3 slideTarget = new Vector3(targetX, apexAboveStart.y, startPosition.z);
+            transform.position = Vector3.Lerp(apexAboveStart, slideTarget, t);
+            UpdateShadow(transform.position.y, apexY, playerTransform.position.x);
             yield return null;
         }
 
         _stompPhase = StompPhase.Fall;
+        SoundManager.PlaySound(SoundType.STOMPER_FALL_RUSH);
+        // Lock the shadow at the player's position the instant the drop begins
+        float lockedShadowX = playerTransform != null ? playerTransform.position.x
+            : (shadowObject != null ? shadowObject.transform.position.x : transform.position.x);
         if (rb != null)
             rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
 
         while (!hasGroundImpact)
         {
+            UpdateShadow(transform.position.y, apexY, lockedShadowX);
             if (HasLanded())
             {
                 hasGroundImpact = true;
@@ -284,12 +319,14 @@ public class StompEnemy : Enemy
 
         // STOMP_LAND: halt the fall, slam the ground.
         _stompPhase = StompPhase.Land;
+        if (shadowObject != null) shadowObject.SetActive(false);
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
         SpawnImpactVFX();
+        SoundManager.PlaySound(SoundType.STOMPER_STOMP_IMPACT);
 
         if (_impulseSource != null)
             _impulseSource.GenerateImpulse(shakeAmplitude);
@@ -373,6 +410,19 @@ public class StompEnemy : Enemy
 
         yield return null;
         yield return null;
+    }
+
+    // Pins the shadow to a fixed ground Y/Z at the given world X, and scales it by
+    // the stomper's height: full base scale at apex, min scale near the ground.
+    // World position is set every frame so the shadow stays put even though it is
+    // parented to the (moving) stomper.
+    private void UpdateShadow(float stomperY, float apexY, float worldX)
+    {
+        if (shadowObject == null) return;
+        shadowObject.transform.position = new Vector3(worldX, _shadowGroundY, _shadowZ);
+        float maxH = apexY - _shadowGroundY;
+        float t = maxH > 0f ? Mathf.Clamp01((stomperY - _shadowGroundY) / maxH) : 0f;
+        shadowObject.transform.localScale = Vector3.Lerp(minShadowScale, _shadowBaseScale, t);
     }
 
     private void OnDrawGizmosSelected()
