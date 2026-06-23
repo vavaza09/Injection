@@ -87,6 +87,25 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         if ((dashDamageLayer.value & (1 << targetCollider.gameObject.layer)) == 0) return;
         if (_attackComponent == null || !_attackComponent.CanAttack()) return;
 
+        // Boss weakpoint path — boss is not a character, so handled before the character lookup.
+        BossWeakPoint bossWeakPoint = targetCollider.GetComponentInParent<BossWeakPoint>();
+        if (bossWeakPoint != null)
+        {
+            int wpId = bossWeakPoint.GetInstanceID();
+            if (_dashHitTargets.Contains(wpId)) return;
+            _dashHitTargets.Add(wpId);
+            if (bossWeakPoint.TryDestroy())
+            {
+                ImpactLanded?.Invoke();
+                SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
+                CameraManager.instance?.Shake(weakPointShakeIntensity);
+                _hitFlash?.Flash();
+                HitFlashFX.Spawn(targetCollider.bounds.center);
+                SoundManager.PlaySound(SoundType.HITSTOP);
+            }
+            return;
+        }
+
         character targetCharacter = targetCollider.GetComponentInParent<character>();
         if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
 
