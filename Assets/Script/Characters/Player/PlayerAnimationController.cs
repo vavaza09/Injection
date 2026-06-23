@@ -20,8 +20,15 @@ namespace Game.Characters.Player
         private readonly int _animIsFalling;
         private readonly int _animAttack;
         private readonly int _animDeath;
+        private readonly int _animRunSpeed;
+        private readonly int _animRunStateHash;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
+        private readonly bool _hasRunSpeedParameter;
+
+        // Run animation playback speed at min/max momentum
+        private const float RunSpeedMultMin = 1.0f;
+        private const float RunSpeedMultMax = 1.6f;
 
         // Constructor - DI via VContainer
         public PlayerAnimationController(Animator animator, LoggerFactory loggerFactory)
@@ -36,8 +43,11 @@ namespace Game.Characters.Player
             _animIsFalling = Animator.StringToHash("IsFalling");
             _animAttack = Animator.StringToHash("Attack");
             _animDeath = Animator.StringToHash("Death");
+            _animRunSpeed = Animator.StringToHash("RunSpeed");
+            _animRunStateHash = Animator.StringToHash("Run");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
+            _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -67,20 +77,43 @@ namespace Game.Characters.Player
             {
                 _animator.SetBool(_animIsFalling, _movementComponent.IsFallingAnim);
             }
+
+            if (_hasRunSpeedParameter)
+            {
+                float speedRatio = Mathf.Clamp01(moveSpeed / Mathf.Max(1f, _movementComponent.MaxSpeed));
+                _animator.SetFloat(_animRunSpeed, Mathf.Lerp(RunSpeedMultMin, RunSpeedMultMax, speedRatio));
+            }
+        }
+
+        /// <summary>
+        /// Returns true and outputs the current run cycle phase [0,1) when the Run state is active.
+        /// Returns false when in any other state (caller should skip footstep logic).
+        /// </summary>
+        public bool TryGetRunPhase(out float phase01)
+        {
+            phase01 = 0f;
+            if (_animator == null) return false;
+
+            AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+            if (info.shortNameHash != _animRunStateHash) return false;
+
+            phase01 = info.normalizedTime % 1f;
+            return true;
         }
 
         private static bool HasBoolParameter(Animator animator, string parameterName)
         {
             if (animator == null) return false;
+            foreach (AnimatorControllerParameter p in animator.parameters)
+                if (p.type == AnimatorControllerParameterType.Bool && p.name == parameterName) return true;
+            return false;
+        }
 
-            foreach (AnimatorControllerParameter parameter in animator.parameters)
-            {
-                if (parameter.type == AnimatorControllerParameterType.Bool && parameter.name == parameterName)
-                {
-                    return true;
-                }
-            }
-
+        private static bool HasFloatParameter(Animator animator, string parameterName)
+        {
+            if (animator == null) return false;
+            foreach (AnimatorControllerParameter p in animator.parameters)
+                if (p.type == AnimatorControllerParameterType.Float && p.name == parameterName) return true;
             return false;
         }
 

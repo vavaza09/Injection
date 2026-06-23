@@ -92,8 +92,14 @@ namespace Game.Characters.Player
         public void PlayFootstepSound(string groundTag = null)
         {
             bool isMetal = groundTag == MetalGroundTag;
-            SoundManager.PlaySound(isMetal ? SoundType.FOOTSTEP_METAL : SoundType.FOOTSTEP);
+            SoundManager.PlayFootstep(isMetal ? SoundType.FOOTSTEP_METAL : SoundType.FOOTSTEP);
             _logger?.Log(isMetal ? "Footstep (metal) sound played" : "Footstep sound played");
+        }
+
+        public void StopFootstepSound()
+        {
+            SoundManager.StopFootstep();
+            _logger?.Log("Footstep sound stopped");
         }
 
         public void StartWallSlideLoop()
@@ -104,7 +110,7 @@ namespace Game.Characters.Player
 
         public void StopWallSlideLoop()
         {
-            SoundManager.StopLoop();
+            SoundManager.StopLoop(SoundType.WALLSLIDE);
             _logger?.Log("Wall slide loop stopped");
         }
     }
