@@ -36,7 +36,6 @@ public class StompEnemy : Enemy
     private Coroutine _damageWindowHandle;
 
     private Collider2D stomperBodyCollider;
-    private Collider2D _playerCollider;
     private CinemachineImpulseSource _impulseSource;
 
     protected override void Awake()
@@ -60,10 +59,6 @@ public class StompEnemy : Enemy
     protected override void Start()
     {
         base.Start();
-
-        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
-        if (playerGO != null)
-            _playerCollider = playerGO.GetComponent<Collider2D>();
     }
 
     protected override void Update()
@@ -78,19 +73,12 @@ public class StompEnemy : Enemy
         if (_airContactHasHit || stomperBodyCollider == null)
             return;
 
-        // Lazily resolve the player collider in case the player spawned after Start().
-        if (_playerCollider == null)
-        {
-            GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
-            if (playerGO != null)
-                _playerCollider = playerGO.GetComponent<Collider2D>();
-            if (_playerCollider == null)
-                return;
-        }
+        if (PlayerCollider == null)
+            return;
 
-        if (stomperBodyCollider.bounds.Intersects(_playerCollider.bounds))
+        if (stomperBodyCollider.bounds.Intersects(PlayerCollider.bounds))
         {
-            Player player = _playerCollider.GetComponentInParent<Player>();
+            Player player = PlayerCollider.GetComponentInParent<Player>();
             if (player != null)
             {
                 player.TakeDamage(airContactDamage);
@@ -200,7 +188,7 @@ public class StompEnemy : Enemy
         }
 
         stompDamageZone?.DisableZone();
-        RestoreCollision();
+        IgnorePlayerCollision(false);
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = true;
 
@@ -240,7 +228,7 @@ public class StompEnemy : Enemy
             transform.position.z);
         Vector3 apexAboveStart = new Vector3(startPosition.x, targetAbovePlayer.y, startPosition.z);
 
-        DisableCollisionWithPlayer();
+        IgnorePlayerCollision(true);
 
         _stompPhase = StompPhase.Jump;
         if (stomperBodyCollider != null)
@@ -297,8 +285,8 @@ public class StompEnemy : Enemy
         _damageWindowHandle = StartCoroutine(StompDamageWindow());
         yield return _damageWindowHandle;
 
-        yield return StartCoroutine(WaitUntilClear());
-        RestoreCollision();
+        yield return StartCoroutine(WaitUntilClearOfPlayer());
+        IgnorePlayerCollision(false);
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);
@@ -346,33 +334,6 @@ public class StompEnemy : Enemy
     private bool IsGroundLayer(int layer)
     {
         return (groundLayer.value & (1 << layer)) != 0;
-    }
-
-    private void DisableCollisionWithPlayer()
-    {
-        if (stomperBodyCollider != null && _playerCollider != null)
-            Physics2D.IgnoreCollision(stomperBodyCollider, _playerCollider, true);
-    }
-
-    private void RestoreCollision()
-    {
-        if (stomperBodyCollider != null && _playerCollider != null)
-            Physics2D.IgnoreCollision(stomperBodyCollider, _playerCollider, false);
-    }
-
-    private IEnumerator WaitUntilClear()
-    {
-        if (stomperBodyCollider == null || _playerCollider == null) yield break;
-
-        int timeout = 0;
-        while (Physics2D.IsTouching(stomperBodyCollider, _playerCollider))
-        {
-            if (++timeout > 120) break;
-            yield return null;
-        }
-
-        yield return null;
-        yield return null;
     }
 
     private void OnDrawGizmosSelected()
