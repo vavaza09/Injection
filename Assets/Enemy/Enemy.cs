@@ -8,6 +8,44 @@ public class Enemy : character
     [Header("Enemy Settings")]
     [SerializeField] protected EnemyType enemyType;
 
+    private Collider2D _bodyCollider;
+    private Collider2D _playerCollider;
+
+    protected Collider2D BodyCollider =>
+        _bodyCollider != null ? _bodyCollider : (_bodyCollider = GetComponent<Collider2D>());
+
+    protected Collider2D PlayerCollider
+    {
+        get
+        {
+            if (_playerCollider == null)
+            {
+                GameObject p = GameObject.FindGameObjectWithTag("Player");
+                if (p != null) _playerCollider = p.GetComponent<Collider2D>();
+            }
+            return _playerCollider;
+        }
+    }
+
+    protected void IgnorePlayerCollision(bool ignore)
+    {
+        if (BodyCollider != null && PlayerCollider != null)
+            Physics2D.IgnoreCollision(BodyCollider, PlayerCollider, ignore);
+    }
+
+    protected IEnumerator WaitUntilClearOfPlayer()
+    {
+        if (BodyCollider == null || PlayerCollider == null) yield break;
+        int timeout = 0;
+        while (Physics2D.IsTouching(BodyCollider, PlayerCollider))
+        {
+            if (++timeout > 120) break;
+            yield return null;
+        }
+        yield return null;
+        yield return null;
+    }
+
     [Header("Detection")]
     [SerializeField] protected float detectionRange = 6f;
     [SerializeField] protected float attackRange = 1.5f;

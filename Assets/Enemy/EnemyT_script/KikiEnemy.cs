@@ -254,6 +254,8 @@ public class KikiEnemy : Enemy
         if (_dashTrail != null) { _dashTrail.Clear(); _dashTrail.emitting = true; }
         if (_dashParticles != null) _dashParticles.Play();
 
+        IgnorePlayerCollision(true);
+
         // Dash — animator stays frozen on freeze frame
         float elapsed = 0f;
         while (elapsed < headbuttDuration)
@@ -297,6 +299,9 @@ public class KikiEnemy : Enemy
         }
         transform.rotation = Quaternion.identity;
 
+        yield return StartCoroutine(WaitUntilClearOfPlayer());
+        IgnorePlayerCollision(false);
+
         _isAttacking = false;
         PickWaypoint();
         SetState(EnemyState.Idle);
@@ -333,6 +338,7 @@ public class KikiEnemy : Enemy
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
+        IgnorePlayerCollision(false);
         _isAttacking = false;
         transform.rotation = Quaternion.identity;
         if (_anim != null) _anim.speed = 1f;
