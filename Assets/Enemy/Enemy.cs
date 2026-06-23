@@ -1,6 +1,7 @@
 using Game.Components.Health;
 using Game.Components.Movement;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : character
@@ -25,12 +26,22 @@ public class Enemy : character
         {
             if (_allBodyColliders == null)
             {
+                // Exclude weak point colliders so they stay hittable during pass-through.
+                var weakPointSet = new HashSet<Collider2D>();
+                foreach (var wp in GetComponentsInChildren<EnemyWeakPoint>())
+                {
+                    foreach (var c in wp.WeakPointColliders)
+                        if (c != null) weakPointSet.Add(c);
+                    var ownCol = wp.GetComponent<Collider2D>();
+                    if (ownCol != null) weakPointSet.Add(ownCol);
+                }
+
                 var all = GetComponentsInChildren<Collider2D>();
                 int count = 0;
-                foreach (var c in all) if (!c.isTrigger) count++;
+                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) count++;
                 _allBodyColliders = new Collider2D[count];
                 int idx = 0;
-                foreach (var c in all) if (!c.isTrigger) _allBodyColliders[idx++] = c;
+                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) _allBodyColliders[idx++] = c;
             }
             return _allBodyColliders;
         }
