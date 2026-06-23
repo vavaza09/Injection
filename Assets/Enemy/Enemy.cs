@@ -9,10 +9,32 @@ public class Enemy : character
     [SerializeField] protected EnemyType enemyType;
 
     private Collider2D _bodyCollider;
+    private Collider2D[] _allBodyColliders;
     private Collider2D _playerCollider;
 
+    // Root-only solid collider — used by Stomp to toggle .enabled directly.
     protected Collider2D BodyCollider =>
         _bodyCollider != null ? _bodyCollider : (_bodyCollider = GetComponent<Collider2D>());
+
+    // All solid (non-trigger) colliders on this enemy including children.
+    // Cached once so IgnorePlayerCollision / WaitUntilClearOfPlayer handle
+    // enemies that have extra child colliders (e.g. Kiki's "floating area").
+    private Collider2D[] AllBodyColliders
+    {
+        get
+        {
+            if (_allBodyColliders == null)
+            {
+                var all = GetComponentsInChildren<Collider2D>();
+                int count = 0;
+                foreach (var c in all) if (!c.isTrigger) count++;
+                _allBodyColliders = new Collider2D[count];
+                int idx = 0;
+                foreach (var c in all) if (!c.isTrigger) _allBodyColliders[idx++] = c;
+            }
+            return _allBodyColliders;
+        }
+    }
 
     protected Collider2D PlayerCollider
     {
@@ -29,19 +51,27 @@ public class Enemy : character
 
     protected void IgnorePlayerCollision(bool ignore)
     {
-        if (BodyCollider != null && PlayerCollider != null)
-            Physics2D.IgnoreCollision(BodyCollider, PlayerCollider, ignore);
+        if (PlayerCollider == null) return;
+        foreach (var col in AllBodyColliders)
+            Physics2D.IgnoreCollision(col, PlayerCollider, ignore);
     }
 
     protected IEnumerator WaitUntilClearOfPlayer()
     {
-        if (BodyCollider == null || PlayerCollider == null) yield break;
+        if (PlayerCollider == null) yield break;
         int timeout = 0;
-        while (Physics2D.IsTouching(BodyCollider, PlayerCollider))
+        bool touching;
+        do
         {
+            touching = false;
+            foreach (var col in AllBodyColliders)
+            {
+                if (Physics2D.IsTouching(col, PlayerCollider)) { touching = true; break; }
+            }
+            if (!touching) break;
             if (++timeout > 120) break;
             yield return null;
-        }
+        } while (true);
         yield return null;
         yield return null;
     }
