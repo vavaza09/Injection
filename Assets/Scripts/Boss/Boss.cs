@@ -36,6 +36,7 @@ public class Boss : BossBase
     {
         currentHealth -= amount;
         currentHealth  = Mathf.Max(0, currentHealth);
+        RaiseHealthChanged();
         if (currentHealth <= 0) HandleDeath();
     }
 

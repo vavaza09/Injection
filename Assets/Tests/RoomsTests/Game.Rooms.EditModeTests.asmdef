@@ -1,0 +1,20 @@
+{
+  "name": "Game.Rooms.EditModeTests",
+  "references": [
+    "Game.Rooms.Objectives.Trackers"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": true
+}
