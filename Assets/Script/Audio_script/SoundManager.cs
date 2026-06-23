@@ -8,6 +8,7 @@ public enum SoundType
     DASH,
     JUMP,
     FOOTSTEP,
+    FOOTSTEP_METAL,
     HURT,
     MAGIC,
     HITSTOP,

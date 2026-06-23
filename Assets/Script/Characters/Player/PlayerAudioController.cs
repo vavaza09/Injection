@@ -87,10 +87,13 @@ namespace Game.Characters.Player
             _logger?.Log("Slow-mo sound played");
         }
 
-        public void PlayFootstepSound()
+        public const string MetalGroundTag = "GroundMetal";
+
+        public void PlayFootstepSound(string groundTag = null)
         {
-            SoundManager.PlaySound(SoundType.FOOTSTEP);
-            _logger?.Log("Footstep sound played");
+            bool isMetal = groundTag == MetalGroundTag;
+            SoundManager.PlaySound(isMetal ? SoundType.FOOTSTEP_METAL : SoundType.FOOTSTEP);
+            _logger?.Log(isMetal ? "Footstep (metal) sound played" : "Footstep sound played");
         }
 
         public void StartWallSlideLoop()
