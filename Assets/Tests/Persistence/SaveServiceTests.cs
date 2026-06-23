@@ -142,5 +142,79 @@ namespace Game.Tests.Persistence
             _sut.Delete();
             Assert.IsNull(_sut.Load());
         }
+
+        // --- v2 → v3 migration ---
+
+        [Test]
+        public void Load_MigratesV2ToV3_ReturnsData()
+        {
+            var v2 = new SaveData { version = 2 };
+            v2.checkpoint.roomId = "room_harbor";
+            v2.checkpoint.spawnPointId = "cp1";
+            v2.checkpoint.energy = 3;
+            v2.bossesDefeated.Add("crab_boss");
+            _storage.Write(v2);
+
+            var result = _sut.Load();
+
+            Assert.IsNotNull(result, "Migrated v2 save should not be discarded.");
+            Assert.AreEqual(3, result.version);
+            Assert.AreEqual("room_harbor", result.checkpoint.roomId);
+            Assert.AreEqual(1, result.bossesDefeated.Count);
+            Assert.IsNotNull(result.objectivesCompleted);
+        }
+
+        // --- objective persistence ---
+
+        [Test]
+        public void MarkObjectiveComplete_AddsId()
+        {
+            _sut.MarkObjectiveComplete("gate1");
+            Assert.IsTrue(_sut.IsObjectiveComplete("gate1"));
+        }
+
+        [Test]
+        public void MarkObjectiveComplete_IsIdempotent()
+        {
+            _sut.MarkObjectiveComplete("gate1");
+            _sut.MarkObjectiveComplete("gate1");
+            var data = _sut.Load();
+            Assert.AreEqual(1, data.objectivesCompleted.Count);
+        }
+
+        [Test]
+        public void IsObjectiveComplete_FalseWhenNotMarked()
+        {
+            Assert.IsFalse(_sut.IsObjectiveComplete("gate1"));
+        }
+
+        [Test]
+        public void MarkObjectiveComplete_EmptyId_IsIgnored()
+        {
+            _sut.MarkObjectiveComplete("");
+            Assert.IsFalse(_sut.HasSave());
+        }
+
+        [Test]
+        public void IsObjectiveComplete_EmptyId_ReturnsFalse()
+        {
+            Assert.IsFalse(_sut.IsObjectiveComplete(""));
+        }
+
+        [Test]
+        public void MarkObjectiveComplete_PreservesCheckpointAndBossData()
+        {
+            var initial = new SaveData();
+            initial.checkpoint.roomId = "room_harbor";
+            initial.bossesDefeated.Add("crab_boss");
+            _sut.Save(initial);
+
+            _sut.MarkObjectiveComplete("gate1");
+            var data = _sut.Load();
+
+            Assert.AreEqual("room_harbor", data.checkpoint.roomId);
+            Assert.IsTrue(data.bossesDefeated.Contains("crab_boss"));
+            Assert.IsTrue(data.objectivesCompleted.Contains("gate1"));
+        }
     }
 }

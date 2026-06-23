@@ -10,6 +10,12 @@ public abstract class BossBase : MonoBehaviour
     protected BossStateBase currentState;
     protected Transform playerTransform;
 
+    public event System.Action<float> HealthChanged;
+
+    public float HealthPercent => maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
+
+    protected void RaiseHealthChanged() => HealthChanged?.Invoke(HealthPercent);
+
     private bool _wasPlayerInRange;
 
     protected virtual void Awake()

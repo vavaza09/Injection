@@ -17,12 +17,17 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     [Header("Weak Point Hit Feedback")]
     [SerializeField] private float weakPointShakeIntensity = 0.1f;
 
+    [Header("Bounce on Hit")]
+    [SerializeField] private float bounceForce = 80f;
+    [SerializeField] private float bounceUpwardBias = 0.2f;
+
     public event Action ImpactLanded;
     public event Action TrueDamageConsumed;
 
     private bool _trueDamageArmed;
     private AttackComponent _attackComponent;
     private MovementComponentRef _movement;
+    private Game.Components.Movement.MovementComponent _mc;
     private HitFlash _hitFlash;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
@@ -38,6 +43,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
     public void Initialize(Game.Components.Movement.MovementComponent movementComponent, float cooldownOverride = -1f)
     {
+        _mc = movementComponent;
         _movement = new MovementComponentRef(movementComponent);
         float cooldown = cooldownOverride >= 0f ? cooldownOverride : dashImpactCooldown;
         _attackComponent = new AttackComponent(cooldown);
@@ -121,7 +127,18 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                 }
             }
 
-            if (weakPoint == null) return;
+            if (weakPoint == null)
+            {
+                // Armored hit: bounce only — no damage, no combo. Guard against double-hit
+                // (multiple colliders on same enemy) since ForceEndDash clears IsDashing.
+                int armoredId = targetCharacter.GetInstanceID();
+                if (!_dashHitTargets.Contains(armoredId))
+                {
+                    _dashHitTargets.Add(armoredId);
+                    _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+                }
+                return;
+            }
             if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return;
             hitWeakPoint = true;
         }
@@ -142,5 +159,10 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
             SoundManager.PlaySound(SoundType.HITSTOP);
             targetCharacter.Die();
         }
+
+        // Bounce player opposite the dash direction for both weakpoint kills and true-damage hits.
+        // ImpactLanded (combo) has already fired above; RechargeDashForCombo does not touch velocity,
+        // so the bounce velocity carries through the slow-mo aim window.
+        _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
     }
 }

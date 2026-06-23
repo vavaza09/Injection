@@ -256,6 +256,8 @@ public class KikiEnemy : Enemy
         if (_dashParticles != null) _dashParticles.Play();
         SoundManager.PlaySound(SoundType.KIKI_ATTACK_DASH);
 
+        IgnorePlayerCollision(true);
+
         // Dash — animator stays frozen on freeze frame
         float elapsed = 0f;
         while (elapsed < headbuttDuration)
@@ -299,6 +301,9 @@ public class KikiEnemy : Enemy
         }
         transform.rotation = Quaternion.identity;
 
+        yield return StartCoroutine(WaitUntilClearOfPlayer());
+        IgnorePlayerCollision(false);
+
         _isAttacking = false;
         PickWaypoint();
         SetState(EnemyState.Idle);
@@ -336,6 +341,7 @@ public class KikiEnemy : Enemy
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
+        IgnorePlayerCollision(false);
         _isAttacking = false;
         transform.rotation = Quaternion.identity;
         if (_anim != null) _anim.speed = 1f;

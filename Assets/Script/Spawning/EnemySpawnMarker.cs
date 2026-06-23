@@ -13,11 +13,14 @@ namespace Game.Spawning
         [Tooltip("Optional override; defaults to this marker's own transform.")]
         [SerializeField] private Transform spawnAt;
         [SerializeField] private bool faceLeft;
+        [Tooltip("Assigns this enemy to an objective group. Leave empty for non-objective enemies.")]
+        [SerializeField] private string objectiveId;
 
         public GameObject EnemyPrefab => enemyPrefab;
         public Vector3 Position => spawnAt != null ? spawnAt.position : transform.position;
         public Quaternion Rotation => spawnAt != null ? spawnAt.rotation : transform.rotation;
         public bool FaceLeft => faceLeft;
+        public string ObjectiveId => objectiveId;
 
         private void OnDrawGizmos()
         {

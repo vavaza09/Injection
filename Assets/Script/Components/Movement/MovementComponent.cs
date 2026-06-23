@@ -165,6 +165,7 @@ namespace Game.Components.Movement
         // Drop-through state
         private Collider2D _bodyCollider;
         private Collider2D _currentGroundCollider;
+        private Collider2D _bestGroundCollider;
         private static readonly Collider2D[] _groundHitBuffer = new Collider2D[8];
         private ContactFilter2D _groundFilter;
 
@@ -936,6 +937,7 @@ namespace Game.Components.Movement
             bool previousGrounded = isGrounded;
             isGrounded = false;
             _currentGroundCollider = null;
+            _bestGroundCollider = null;
             _groundNormal = Vector2.up;
             _groundPoint = Vector2.zero;
             _groundSlopeAngle = 0f;
@@ -980,6 +982,7 @@ namespace Game.Components.Movement
                         _groundNormal = n;
                         _groundPoint = hit.point;
                         _groundSlopeAngle = angle;
+                        _bestGroundCollider = hit.collider;
                     }
 
                     if (_currentGroundCollider == null && isOneWay)
@@ -1019,10 +1022,14 @@ namespace Game.Components.Movement
             Vector2 tangent = new Vector2(normal.y, -normal.x);
             if (tangent.x < 0f) tangent = -tangent;
 
-            // The horizontal speed Move() produced is the intended ground speed (signed). Redirect it
-            // along the surface: constant ground speed up/down slopes, gravity-aligned component removed
-            // (no idle slide, no flying off the bottom of a ramp).
-            float groundSpeed = rb.linearVelocity.x;
+            // Speed ALONG the surface = project the full velocity onto the tangent. Using only the
+            // horizontal component here would shrink it by cos(slope) every frame (the velocity gets
+            // re-projected each tick), so walking a slope felt sluggish; the dot keeps the ground speed
+            // intact so a slope feels exactly like flat ground. Clamp to the same grounded speed cap as
+            // flat so it never reads faster either. Perpendicular (gravity) component is dropped → no
+            // idle slide, no flying off the bottom of a ramp.
+            float speedLimit = GetCurrentHorizontalSpeedLimit();
+            float groundSpeed = Mathf.Clamp(Vector2.Dot(rb.linearVelocity, tangent), -speedLimit, speedLimit);
             _lastGroundSpeed = groundSpeed;
             Vector2 slopeVel = tangent * groundSpeed;
 
@@ -1278,6 +1285,11 @@ namespace Game.Components.Movement
             return isGrounded;
         }
 
+        public string GetGroundTag()
+        {
+            return isGrounded && _bestGroundCollider != null ? _bestGroundCollider.tag : null;
+        }
+
         public bool IsJumping()
         {
             return isJumping;
@@ -1331,6 +1343,37 @@ namespace Game.Components.Movement
             isGrabbing = false;
             rb.linearVelocity = kick;
             _knockbackLockTimer = knockbackLockTime;
+        }
+
+        // Rebound the player opposite the dash direction on hitting an enemy.
+        // Stops the running dash coroutine so its end-of-dash velocity write never fires,
+        // then sets velocity to -dashDir (+ optional upward pop) scaled by dash momentum.
+        // The knockback lock window suppresses Move() braking so the bounce carries.
+        public void BounceFromDashImpact(float force, float upwardBias)
+        {
+            if (rb == null) return;
+
+            Vector2 dashDir = _dashHandler != null ? _dashHandler.DashDir : Vector2.zero;
+            if (dashDir == Vector2.zero)
+                dashDir = new Vector2(characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f, 0f);
+
+            float multiplier = _dashHandler != null ? _dashHandler.DashSpeedMultiplier : 1f;
+
+            if (_dashCoroutine != null)
+            {
+                StopCoroutine(_dashCoroutine);
+                _dashCoroutine = null;
+            }
+            _dashHandler?.ForceEndDash();
+            _wasDashingLastFrame = false;
+
+            Vector2 bounceDir = (-dashDir + Vector2.up * UpSign * upwardBias).normalized;
+            rb.linearVelocity = bounceDir * (force * multiplier);
+
+            _knockbackLockTimer = knockbackLockTime;
+            _postDashAirBrakeTimer = 0f;
+            ResetWallSlideState();
+            isGrabbing = false;
         }
 
         private float GetCurrentHorizontalSpeedLimit()

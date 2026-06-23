@@ -40,6 +40,7 @@ namespace Game.Components.Movement
         public bool IsDashing => _isDashing;
         public bool DashAttacking => _dashAttackTimer > 0;
         public Vector2 DashDir => _dashDir;
+        public float DashSpeedMultiplier => _dashSpeedMultiplier;
         public int CurrentDashes => _currentDashes;
         public int MaxDashes => _settings.maxDashes;
         public bool CanDash => _dashCooldownTimer <= 0 && _currentDashes > 0;
@@ -175,6 +176,15 @@ namespace Game.Components.Movement
             _dashRefillCooldownTimer = 0;
             _dashAttackTimer = 0;
             _isDashing = false;
+        }
+
+        // Hard-stop the dash flag and attack window without touching velocity.
+        // Used by BounceFromDashImpact so the caller can set its own velocity immediately
+        // and the dash coroutine's end-of-dash velocity write never runs.
+        public void ForceEndDash()
+        {
+            _isDashing = false;
+            _dashAttackTimer = 0f;
         }
 
         // Combo refresh: makes the dash available again immediately without touching _isDashing or
