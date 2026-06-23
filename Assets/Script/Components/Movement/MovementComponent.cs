@@ -165,6 +165,7 @@ namespace Game.Components.Movement
         // Drop-through state
         private Collider2D _bodyCollider;
         private Collider2D _currentGroundCollider;
+        private Collider2D _bestGroundCollider;
         private static readonly Collider2D[] _groundHitBuffer = new Collider2D[8];
         private ContactFilter2D _groundFilter;
 
@@ -936,6 +937,7 @@ namespace Game.Components.Movement
             bool previousGrounded = isGrounded;
             isGrounded = false;
             _currentGroundCollider = null;
+            _bestGroundCollider = null;
             _groundNormal = Vector2.up;
             _groundPoint = Vector2.zero;
             _groundSlopeAngle = 0f;
@@ -980,6 +982,7 @@ namespace Game.Components.Movement
                         _groundNormal = n;
                         _groundPoint = hit.point;
                         _groundSlopeAngle = angle;
+                        _bestGroundCollider = hit.collider;
                     }
 
                     if (_currentGroundCollider == null && isOneWay)
@@ -1280,6 +1283,11 @@ namespace Game.Components.Movement
         public bool IsGrounded()
         {
             return isGrounded;
+        }
+
+        public string GetGroundTag()
+        {
+            return isGrounded && _bestGroundCollider != null ? _bestGroundCollider.tag : null;
         }
 
         public bool IsJumping()

@@ -1,14 +1,10 @@
 using UnityEngine;
 using VContainer;
 using Core.Logging;
+using Game.Rooms;
 
 namespace Game.Spawning
 {
-    /// <summary>
-    /// Per-room (lives in the room scene, injected by its child LifetimeScope). On scene
-    /// start it reads every <see cref="EnemySpawnMarker"/> and spawns it via the factory.
-    /// Deterministic + stateless: re-entering a room always yields a fresh population.
-    /// </summary>
     public class RoomSpawner : MonoBehaviour
     {
         private IEnemyFactory _factory;
@@ -28,23 +24,32 @@ namespace Game.Spawning
 
         public void SpawnAll()
         {
-            Debug.Log($"[RoomSpawner] SpawnAll. factory={(_factory != null ? "OK" : "NULL")}");
             if (_factory == null)
             {
                 _logger?.LogError("[RoomSpawner] No IEnemyFactory injected — child scope not wired?");
                 return;
             }
 
+            var manager = FindAnyObjectByType<RoomObjectiveManager>();
+
             var markers = FindObjectsByType<EnemySpawnMarker>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            Debug.Log($"[RoomSpawner] markers found: {markers.Length}");
             int spawned = 0;
             foreach (var marker in markers)
             {
                 if (marker.EnemyPrefab == null) continue;
-                _factory.Create(marker.EnemyPrefab, marker.Position, marker.Rotation);
+
+                var objId = marker.ObjectiveId;
+                if (!string.IsNullOrEmpty(objId) && manager != null && manager.IsObjectiveComplete(objId))
+                    continue;
+
+                var enemy = _factory.Create(marker.EnemyPrefab, marker.Position, marker.Rotation);
                 spawned++;
+
+                if (enemy != null && !string.IsNullOrEmpty(objId) && manager != null)
+                    manager.RegisterObjectiveEnemy(objId, enemy);
             }
 
+            manager?.SealSpawning();
             _logger?.Log($"[RoomSpawner] Spawned {spawned} enemy(ies) from {markers.Length} marker(s).");
         }
     }

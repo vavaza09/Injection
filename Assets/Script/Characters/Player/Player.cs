@@ -419,7 +419,7 @@ public class Player : character
             if (_footstepTimer >= interval)
             {
                 _footstepTimer = 0f;
-                _audioController?.PlayFootstepSound();
+                _audioController?.PlayFootstepSound(movementComponent.GetGroundTag());
             }
         }
         else
