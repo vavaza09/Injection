@@ -7,7 +7,7 @@ namespace Game.Persistence
         private readonly ISaveStorage _storage;
         private readonly ILogger _logger;
 
-        private const int CurrentVersion = 2;
+        private const int CurrentVersion = 3;
 
         public SaveService(ISaveStorage storage, ILogger logger)
         {
@@ -42,9 +42,16 @@ namespace Game.Persistence
             return data;
         }
 
-        // Seam for future schema migrations. No path defined yet (v1 -> v2 changed shape),
-        // so older saves are discarded. Add real migration steps here when needed.
-        private SaveData Migrate(SaveData old) => null;
+        private SaveData Migrate(SaveData old)
+        {
+            if (old.version == 2)
+            {
+                old.version = 3;
+                old.objectivesCompleted ??= new System.Collections.Generic.List<string>();
+                return old;
+            }
+            return null;
+        }
 
         public void Save(SaveData data)
         {
@@ -78,6 +85,26 @@ namespace Game.Persistence
             if (string.IsNullOrEmpty(bossId)) return false;
             var data = Load();
             return data != null && data.bossesDefeated.Contains(bossId);
+        }
+
+        public void MarkObjectiveComplete(string objectiveId)
+        {
+            if (string.IsNullOrEmpty(objectiveId)) return;
+
+            var data = Load() ?? new SaveData();
+            if (!data.objectivesCompleted.Contains(objectiveId))
+            {
+                data.objectivesCompleted.Add(objectiveId);
+                Save(data);
+                _logger?.Log($"[SaveService] Objective '{objectiveId}' marked complete.");
+            }
+        }
+
+        public bool IsObjectiveComplete(string objectiveId)
+        {
+            if (string.IsNullOrEmpty(objectiveId)) return false;
+            var data = Load();
+            return data != null && data.objectivesCompleted.Contains(objectiveId);
         }
     }
 }
