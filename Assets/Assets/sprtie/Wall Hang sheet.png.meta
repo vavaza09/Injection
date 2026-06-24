@@ -109,12 +109,12 @@ TextureImporter:
       name: Wall Hang sheet_0
       rect:
         serializedVersion: 2
-        x: 133
-        y: 88
-        width: 1276
-        height: 1633
+        x: 134
+        y: 89
+        width: 1274
+        height: 1631
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -132,11 +132,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1728
-        y: 88
-        width: 1303
-        height: 1601
+        y: 89
+        width: 1302
+        height: 1599
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +153,12 @@ TextureImporter:
       name: Wall Hang sheet_2
       rect:
         serializedVersion: 2
-        x: 3353
-        y: 87
-        width: 1297
-        height: 1600
+        x: 3354
+        y: 88
+        width: 1295
+        height: 1599
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,7 +175,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 219c8a3c946e3ec47a7ad99985d2a325
     internalID: 0
     vertices: []
     indices: 
@@ -183,7 +183,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Wall Hang sheet_0: 6041951429775263831
       Wall Hang sheet_1: -6481698641961723694
