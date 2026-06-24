@@ -24,13 +24,13 @@ AnimationClip:
       value: {fileID: 5661836666407872079, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
     - time: 0.083333336
       value: {fileID: 1026690240056884786, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
-    - time: 0.15
+    - time: 0.16666667
       value: {fileID: -528503008782959442, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
-    - time: 0.23333333
+    - time: 0.25
       value: {fileID: -4230672881587419238, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
-    - time: 0.35
+    - time: 0.33333334
       value: {fileID: 6311626645133119393, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
-    - time: 0.43333334
+    - time: 0.41666666
       value: {fileID: -773796366044266796, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
     - time: 0.5
       value: {fileID: -5308311492740594087, guid: 7580ab295e695cd45805cde1c457ee52, type: 3}
@@ -90,4 +90,18 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.16666667
+    functionName: OnFootstep
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.5
+    functionName: OnFootstep
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
