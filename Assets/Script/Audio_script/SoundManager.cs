@@ -115,16 +115,12 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
-        instance = this;
-        //DontDestroyOnLoad(gameObject);
-    }
 
-    private void Start()
-    {
-        // Get or create audio sources
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // Get or create the two primary sources (RequireComponent guarantees at least one exists)
         AudioSource[] sources = GetComponents<AudioSource>();
-        
         if (sources.Length >= 2)
         {
             sfxSource = sources[0];
@@ -136,7 +132,6 @@ public class SoundManager : MonoBehaviour
             musicSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // Configure music source
         musicSource.loop = true;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
