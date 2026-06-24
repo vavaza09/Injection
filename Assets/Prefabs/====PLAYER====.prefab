@@ -616,13 +616,13 @@ MonoBehaviour:
   wallInputThreshold: 0.1
   wallSlideMaxFallAtMaxSpeedMultiplier: 1.35
   dashSettings:
-    dashSpeed: 7
-    endDashSpeed: 7
+    dashSpeed: 3.5
+    endDashSpeed: 3.5
     endDashUpMult: 0.75
-    dashTime: 0.15
+    dashTime: 0.3
     dashCooldown: 0.2
     dashRefillCooldown: 0.1
-    dashAttackTime: 0.3
+    dashAttackTime: 0.35
     maxDashes: 1
     stopAtDashEnd: 1
     airEndDashCarryMultiplier: 0.55

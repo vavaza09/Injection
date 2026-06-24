@@ -82,8 +82,7 @@ public class DevSceneLifetimeScope : LifetimeScope
             var p = FindAnyObjectByType<Player>(FindObjectsInactive.Include);
             if (p != null)
             {
-                container.Inject(p);
-
+                // Inject component-level deps first so they are ready regardless of Player injection outcome.
                 var mc = p.GetComponent<MovementComponent>();
                 if (mc != null) container.Inject(mc);
 
@@ -92,6 +91,8 @@ public class DevSceneLifetimeScope : LifetimeScope
 
                 var ec = p.GetComponent<PlayerEnergyCollector>();
                 if (ec != null) container.Inject(ec);
+
+                container.Inject(p);
             }
 
             var eb = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);

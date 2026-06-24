@@ -17,7 +17,8 @@ public enum PlayerState
     Falling     = 5,
     Running     = 6,
     Idle        = 7,
-    Grabbing    = 8
+    Grabbing    = 8,
+    Knockback   = 9
 }
 
 public class Player : character
@@ -47,6 +48,8 @@ public class Player : character
     [Header("Dash Aim")]
     [SerializeField] private bool requireAimHoldForDash = true;
     [SerializeField] private DashAimDirectionDisplay dashAimDisplay;
+    [SerializeField, Range(0f, 1f)] private float dashAnimUpThreshold = 0.5f;
+    [SerializeField, Range(-1f, 0f)] private float dashAnimDownThreshold = -0.5f;
 
     [Header("References for DI")]
     [SerializeField] private Animator animator;
@@ -202,6 +205,7 @@ public class Player : character
         if (_animationController != null && movementComponent != null)
         {
             _animationController.SetMovementComponent(movementComponent);
+            _animationController.SetDashThresholds(dashAnimUpThreshold, dashAnimDownThreshold);
         }
 
         if (_inputHandler != null)
@@ -309,6 +313,19 @@ public class Player : character
         if (_currentState == PlayerState.Dead) return;
 
         movementComponent?.Move(direction);
+
+        // While wall sliding/hanging the sprite must face INTO the wall and cannot be
+        // flipped by horizontal input. WallSideSign is +1 when the wall is on the right,
+        // -1 when on the left, which maps directly onto localScale.x (face toward the wall).
+        if (movementComponent != null && movementComponent.IsWallSliding && movementComponent.WallSideSign != 0)
+        {
+            characterTransform.localScale = new Vector3(
+                movementComponent.WallSideSign,
+                1,
+                1
+            );
+            return;
+        }
 
         if (direction.x != 0)
         {
@@ -552,6 +569,8 @@ public class Player : character
     {
         if (healthComponent == null) return;
         healthComponent.Heal(healthComponent.maxHealth);
+        movementComponent?.ResetState();
+        jumpsRemaining = maxJumps;
         if (!isAlive)
         {
             isAlive = true;
@@ -571,17 +590,14 @@ public class Player : character
         if (healthComponent != null)
             healthComponent.Heal(healthComponent.maxHealth);
 
+        movementComponent?.ResetState();
+        jumpsRemaining = maxJumps;
+
         if (!isAlive)
         {
             isAlive = true;
             ChangeState(PlayerState.Idle);
         }
-
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = true;
-
-        if (movementComponent != null)
-            movementComponent.SetCanMove(true);
 
         if (healthComponent != null)
             healthComponent.StartInvincibility(invincDuration);
@@ -598,6 +614,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
+        ChangeState(PlayerState.Knockback);
     }
 
     public bool IsOnPlatform
@@ -691,10 +708,9 @@ public class Player : character
             case PlayerState.Dead:
                 _slowMotion?.ResetImmediate();
                 movementComponent?.SetCanMove(false);
+                movementComponent?.SetMovementHalted(true);
                 _animationController?.PlayDeathAnimation();
                 _audioController?.PlayDeathSound();
-                Collider2D deadCol = GetComponent<Collider2D>();
-                if (deadCol != null) deadCol.enabled = false;
                 _logger?.LogWarning("Player died! Game Over!");
                 break;
 
@@ -718,6 +734,12 @@ public class Player : character
             case PlayerState.Grabbing:
                 // Placeholder: wire grab animation when art is ready
                 break;
+
+            case PlayerState.Knockback:
+                if (movementComponent != null && movementComponent.IsDamageKnocked)
+                    _animationController?.PlayKnockbackAnimation();
+                // IsBounceKnocked: let IsFalling bool drive Fall animation naturally
+                break;
         }
     }
 
@@ -726,9 +748,6 @@ public class Player : character
         switch (state)
         {
             case PlayerState.Dead:
-                movementComponent?.SetCanMove(true);
-                Collider2D exitCol = GetComponent<Collider2D>();
-                if (exitCol != null) exitCol.enabled = true;
                 break;
 
             case PlayerState.WallSliding:
@@ -743,6 +762,13 @@ public class Player : character
         {
             if (_currentState != PlayerState.Dead)
                 ChangeState(PlayerState.Dead);
+            return;
+        }
+
+        if (movementComponent != null && movementComponent.IsKnocked)
+        {
+            if (_currentState != PlayerState.Knockback)
+                ChangeState(PlayerState.Knockback);
             return;
         }
 

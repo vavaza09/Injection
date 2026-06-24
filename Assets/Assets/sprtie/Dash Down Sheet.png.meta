@@ -127,12 +127,12 @@ TextureImporter:
       name: Dash Down Sheet_0
       rect:
         serializedVersion: 2
-        x: 270
-        y: 85
-        width: 1279
-        height: 1288
+        x: 267
+        y: 140
+        width: 1121
+        height: 1235
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -149,12 +149,12 @@ TextureImporter:
       name: Dash Down Sheet_1
       rect:
         serializedVersion: 2
-        x: 1919
-        y: 371
-        width: 1368
-        height: 1572
+        x: 1917
+        y: 370
+        width: 1371
+        height: 1573
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -172,11 +172,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 3567
-        y: 593
+        y: 592
         width: 906
-        height: 1517
+        height: 1519
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -193,12 +193,12 @@ TextureImporter:
       name: Dash Down Sheet_3
       rect:
         serializedVersion: 2
-        x: 4528
+        x: 4526
         y: 1140
-        width: 7
-        height: 9
+        width: 10
+        height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -216,11 +216,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 5184
-        y: 593
-        width: 877
-        height: 1523
+        y: 592
+        width: 878
+        height: 1525
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -237,12 +237,12 @@ TextureImporter:
       name: Dash Down Sheet_5
       rect:
         serializedVersion: 2
-        x: 6143
+        x: 6142
         y: 1144
-        width: 7
-        height: 10
+        width: 8
+        height: 11
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -259,12 +259,12 @@ TextureImporter:
       name: Dash Down Sheet_6
       rect:
         serializedVersion: 2
-        x: 6779
-        y: 135
-        width: 1214
-        height: 1221
+        x: 6777
+        y: 134
+        width: 1217
+        height: 1224
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -282,11 +282,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 8194
-        y: 54
-        width: 1435
-        height: 940
+        y: 96
+        width: 1436
+        height: 900
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -303,12 +303,12 @@ TextureImporter:
       name: Dash Down Sheet_8
       rect:
         serializedVersion: 2
-        x: 9979
-        y: 77
-        width: 1249
-        height: 958
+        x: 9977
+        y: 123
+        width: 1252
+        height: 914
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -321,11 +321,99 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Dash Down Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 1406
+        y: 85
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dacdbea236f236941a15d67487393a49
+      internalID: -1152223393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Down Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 85
+        width: 7
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcc6e05b5c531984ea46980448c54773
+      internalID: 838842276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Down Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 11071
+        y: 77
+        width: 6
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a88ba6a2258dc04f894e1040efd0659
+      internalID: 1509757500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Down Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 9443
+        y: 53
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf61fca67043f024ea4b540a1deb1c03
+      internalID: -1022295364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8c546baf2fd681a4794aa6186e6bc998
     internalID: 0
     vertices: []
     indices: 
@@ -333,10 +421,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Dash Down Sheet_0: -8489942425247552584
       Dash Down Sheet_1: 3547836435985210827
+      Dash Down Sheet_10: 838842276
+      Dash Down Sheet_11: 1509757500
+      Dash Down Sheet_12: -1022295364
       Dash Down Sheet_2: -6161622226918950097
       Dash Down Sheet_3: -8416454173356324745
       Dash Down Sheet_4: -5240222917967283407
@@ -344,6 +437,7 @@ TextureImporter:
       Dash Down Sheet_6: -8297537003562253284
       Dash Down Sheet_7: 4505800532797528789
       Dash Down Sheet_8: -5154255484172003285
+      Dash Down Sheet_9: -1152223393
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

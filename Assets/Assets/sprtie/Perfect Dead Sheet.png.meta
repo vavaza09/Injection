@@ -1,28 +1,34 @@
 fileFormatVersion: 2
-guid: f4f41fa5481a049439d871fd3045e467
+guid: 68a8f7fec3838ae44b86683b66e63d50
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7595984522972895894
-    second: Dash Sheet_0
+      213: 7304740021091087771
+    second: Perfect Dead Sheet_0
   - first:
-      213: 4552379656714625888
-    second: Dash Sheet_1
+      213: -2319935803314521985
+    second: Perfect Dead Sheet_1
   - first:
-      213: -6031903697165740890
-    second: Dash Sheet_2
+      213: 7022086005580990481
+    second: Perfect Dead Sheet_2
   - first:
-      213: -8888451425168288192
-    second: Dash Sheet_3
+      213: -5213580377110737370
+    second: Perfect Dead Sheet_3
   - first:
-      213: -1605210746406502506
-    second: Dash Sheet_4
+      213: 4515593381652701766
+    second: Perfect Dead Sheet_4
   - first:
-      213: 4715848567397081744
-    second: Dash Sheet_5
+      213: 5994731749514081293
+    second: Perfect Dead Sheet_5
   - first:
-      213: -5496006332512440983
-    second: Dash Sheet_6
+      213: -459249738287829320
+    second: Perfect Dead Sheet_6
+  - first:
+      213: 556343306394810796
+    second: Perfect Dead Sheet_7
+  - first:
+      213: 499926567867464018
+    second: Perfect Dead Sheet_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,13 +124,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dash Sheet_0
+      name: Perfect Dead Sheet_0
       rect:
         serializedVersion: 2
-        x: 54
-        y: 179
-        width: 1462
-        height: 1584
+        x: 0
+        y: 2188
+        width: 1862
+        height: 2132
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -133,20 +139,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69a1a2badab5a6960800000000000000
-      internalID: 7595984522972895894
+      spriteID: b95b6b5d856af5560800000000000000
+      internalID: 7304740021091087771
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_1
+      name: Perfect Dead Sheet_1
       rect:
         serializedVersion: 2
-        x: 1759
-        y: 313
-        width: 1476
-        height: 1411
+        x: 1891
+        y: 2194
+        width: 1999
+        height: 2126
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,20 +161,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 063a031ad2d4d2f30800000000000000
-      internalID: 4552379656714625888
+      spriteID: f783abdadaeedcfd0800000000000000
+      internalID: -2319935803314521985
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_2
+      name: Perfect Dead Sheet_2
       rect:
         serializedVersion: 2
-        x: 3379
-        y: 313
-        width: 1478
-        height: 1405
+        x: 3890
+        y: 2160
+        width: 1945
+        height: 2160
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -177,20 +183,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6a4121bbb8f5a4ca0800000000000000
-      internalID: -6031903697165740890
+      spriteID: 11885e87406737160800000000000000
+      internalID: 7022086005580990481
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_3
+      name: Perfect Dead Sheet_3
       rect:
         serializedVersion: 2
-        x: 4988
-        y: 313
-        width: 1489
-        height: 1405
+        x: 5835
+        y: 2160
+        width: 1945
+        height: 2160
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -199,20 +205,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04697879580e5a480800000000000000
-      internalID: -8888451425168288192
+      spriteID: 62e0e5e0544a5a7b0800000000000000
+      internalID: -5213580377110737370
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_4
+      name: Perfect Dead Sheet_4
       rect:
         serializedVersion: 2
-        x: 6541
-        y: 233
-        width: 1525
-        height: 1523
+        x: 7780
+        y: 2160
+        width: 1945
+        height: 2160
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -221,20 +227,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69ffcc6b45529b9e0800000000000000
-      internalID: -1605210746406502506
+      spriteID: 642a387814c9aae30800000000000000
+      internalID: 4515593381652701766
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_5
+      name: Perfect Dead Sheet_5
       rect:
         serializedVersion: 2
-        x: 8158
-        y: 233
-        width: 1525
-        height: 1523
+        x: 0
+        y: 0
+        width: 1794
+        height: 2160
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -243,20 +249,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 092ec32594f027140800000000000000
-      internalID: 4715848567397081744
+      spriteID: d04fa85c3c0913350800000000000000
+      internalID: 5994731749514081293
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_6
+      name: Perfect Dead Sheet_6
       rect:
         serializedVersion: 2
-        x: 9733
-        y: 226
-        width: 1539
-        height: 1528
+        x: 1788
+        y: 0
+        width: 2102
+        height: 2166
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -265,8 +271,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 96d6c431c534ab3b0800000000000000
-      internalID: -5496006332512440983
+      spriteID: 8bea926dbca60a9f0800000000000000
+      internalID: -459249738287829320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Perfect Dead Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 3890
+        y: 0
+        width: 1945
+        height: 2160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca934de1a4788b700800000000000000
+      internalID: 556343306394810796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Perfect Dead Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 5835
+        y: 0
+        width: 1945
+        height: 2160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2593583909810f600800000000000000
+      internalID: 499926567867464018
       vertices: []
       indices: 
       edges: []
@@ -275,7 +325,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2af846978f045b847ba22b2510d10dab
+    spriteID: 8761c163c8845c242abe6d1f3544b607
     internalID: 0
     vertices: []
     indices: 
@@ -285,15 +335,17 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":2.0},"gridSpriteSize":{"x":1945.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Dash Sheet_0: 7595984522972895894
-      Dash Sheet_1: 4552379656714625888
-      Dash Sheet_2: -6031903697165740890
-      Dash Sheet_3: -8888451425168288192
-      Dash Sheet_4: -1605210746406502506
-      Dash Sheet_5: 4715848567397081744
-      Dash Sheet_6: -5496006332512440983
+      Perfect Dead Sheet_0: 7304740021091087771
+      Perfect Dead Sheet_1: -2319935803314521985
+      Perfect Dead Sheet_2: 7022086005580990481
+      Perfect Dead Sheet_3: -5213580377110737370
+      Perfect Dead Sheet_4: 4515593381652701766
+      Perfect Dead Sheet_5: 5994731749514081293
+      Perfect Dead Sheet_6: -459249738287829320
+      Perfect Dead Sheet_7: 556343306394810796
+      Perfect Dead Sheet_8: 499926567867464018
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
