@@ -577,11 +577,11 @@ Transform:
   m_GameObject: {fileID: 2311618196802630873}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.29, y: 8.15, z: 0}
+  m_LocalPosition: {x: 8.593474, y: 5.47748, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6410950372462499613}
+  m_Father: {fileID: 5124109501245790064}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &3734118502463726433
 CircleCollider2D:
@@ -5710,6 +5710,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6410950372462499613}
+  - {fileID: 373032764731482646}
   - {fileID: 2575378988818590883}
   - {fileID: 2474333533923466084}
   - {fileID: 5132085637135457721}
@@ -5759,7 +5760,6 @@ Transform:
   m_Children:
   - {fileID: 3438773056457508301}
   - {fileID: 1655075375950626784}
-  - {fileID: 373032764731482646}
   - {fileID: 2768306270540274469}
   m_Father: {fileID: 5124109501245790064}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
