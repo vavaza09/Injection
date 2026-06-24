@@ -307,11 +307,18 @@ public class StompEnemy : Enemy
 
         _stompPhase = StompPhase.Fall;
         SoundManager.PlaySound(SoundType.STOMPER_FALL_RUSH);
+        float savedGravityScale = 0f;
         if (rb != null)
+        {
+            savedGravityScale = rb.gravityScale;
+            rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
+        }
 
         while (!hasGroundImpact)
         {
+            if (rb != null)
+                rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
             UpdateShadow(transform.position.y, apexY, lockedShadowX);
             if (HasLanded())
             {
@@ -327,7 +334,10 @@ public class StompEnemy : Enemy
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = true;
         if (rb != null)
+        {
+            rb.gravityScale = savedGravityScale;
             rb.linearVelocity = Vector2.zero;
+        }
 
         SpawnImpactVFX();
         SoundManager.PlaySound(SoundType.STOMPER_STOMP_IMPACT);
