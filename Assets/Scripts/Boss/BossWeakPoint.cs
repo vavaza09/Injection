@@ -1,26 +1,38 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 
-// Attach to each weakpoint child GameObject on the Boss (needs a Collider2D + Light2D).
+// Attach to each weakpoint child GameObject on the Boss (needs a Collider2D + Light2D + SpriteRenderer).
 // BossWeakPointManager drives Show/Hide/TryDestroy — don't call them from elsewhere.
 public class BossWeakPoint : MonoBehaviour
 {
     [SerializeField] private Light2D       pointLight;
     [SerializeField] private Collider2D    hitCollider;
+    [SerializeField] private SpriteRenderer disc;
     [SerializeField] private Color         openColor   = Color.blue;
     [SerializeField] private Color         closedColor = Color.yellow;
+
+    [Header("Platform Events")]
+    [SerializeField] private UnityEvent onBecameAttackable;
+    [SerializeField] private UnityEvent onWindowClosed;
 
     public bool IsDestroyed { get; private set; }
     public event Action OnDestroyed;
 
     private enum WPState { Hidden, Closed, Open, Destroyed }
     private WPState _state;
+    private Color   _defaultDiscColor;
+    private bool    _wasAttackable;
 
     private void Awake()
     {
-        if (pointLight   == null) pointLight   = GetComponentInChildren<Light2D>();
-        if (hitCollider  == null) hitCollider  = GetComponent<Collider2D>();
+        if (pointLight  == null) pointLight  = GetComponentInChildren<Light2D>();
+        if (hitCollider == null) hitCollider = GetComponent<Collider2D>();
+        if (disc        == null) disc        = GetComponent<SpriteRenderer>();
+
+        if (disc != null) _defaultDiscColor = disc.color;
+
         SetLightOff();
         if (hitCollider != null) hitCollider.enabled = false;
     }
@@ -30,12 +42,22 @@ public class BossWeakPoint : MonoBehaviour
     {
         if (IsDestroyed) return;
         _state = attackable ? WPState.Open : WPState.Closed;
+
         if (pointLight != null)
         {
             pointLight.color   = attackable ? openColor : closedColor;
             pointLight.enabled = true;
         }
+
+        SetDisc(attackable ? openColor : closedColor);
+
         if (hitCollider != null) hitCollider.enabled = attackable;
+
+        if (attackable && !_wasAttackable)
+        {
+            _wasAttackable = true;
+            onBecameAttackable?.Invoke();
+        }
     }
 
     // Hide the weakpoint between reveal windows (light off, collider off).
@@ -44,7 +66,14 @@ public class BossWeakPoint : MonoBehaviour
         if (IsDestroyed) return;
         _state = WPState.Hidden;
         SetLightOff();
+        SetDisc(_defaultDiscColor);
         if (hitCollider != null) hitCollider.enabled = false;
+
+        if (_wasAttackable)
+        {
+            _wasAttackable = false;
+            onWindowClosed?.Invoke();
+        }
     }
 
     // Called by PlayerDashImpact when the player hits this collider.
@@ -55,7 +84,15 @@ public class BossWeakPoint : MonoBehaviour
         _state      = WPState.Destroyed;
         IsDestroyed = true;
         SetLightOff();
+        SetDisc(_defaultDiscColor);
         if (hitCollider != null) hitCollider.enabled = false;
+
+        if (_wasAttackable)
+        {
+            _wasAttackable = false;
+            onWindowClosed?.Invoke();
+        }
+
         OnDestroyed?.Invoke();
         return true;
     }
@@ -63,5 +100,11 @@ public class BossWeakPoint : MonoBehaviour
     private void SetLightOff()
     {
         if (pointLight != null) pointLight.enabled = false;
+    }
+
+    private void SetDisc(Color c)
+    {
+        if (disc == null) return;
+        disc.color = new Color(c.r, c.g, c.b, _defaultDiscColor.a);
     }
 }
