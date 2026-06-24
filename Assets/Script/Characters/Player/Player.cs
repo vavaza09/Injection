@@ -600,6 +600,22 @@ public class Player : character
         movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
     }
 
+    public bool IsOnPlatform
+    {
+        get
+        {
+            // Primary: use MovementComponent ground tag if available.
+            if (movementComponent != null && movementComponent.GetGroundTag() == "platform")
+                return true;
+            // Fallback: small overlap at feet against the Platform layer (11).
+            var col = GetComponent<Collider2D>();
+            Vector2 feet = col != null
+                ? new Vector2(col.bounds.center.x, col.bounds.min.y + 0.05f)
+                : (Vector2)transform.position;
+            return Physics2D.OverlapCircle(feet, 0.2f, 1 << 11) != null;
+        }
+    }
+
     public void SetCaptured(bool captured)
     {
         if (_currentState == PlayerState.Dead) return;
