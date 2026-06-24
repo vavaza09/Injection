@@ -6071,8 +6071,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.6213722, y: 0}
-  m_Radius: 0.9889946
+  m_Offset: {x: -0.53121185, y: 0}
+  m_Radius: 1.079155
 --- !u!1 &3694151162053664579
 GameObject:
   m_ObjectHideFlags: 0
@@ -7402,6 +7402,7 @@ GameObject:
   - component: {fileID: 3391342505809039263}
   - component: {fileID: 6099556427525258764}
   - component: {fileID: 5815011559178766764}
+  - component: {fileID: 2152895061215857003}
   m_Layer: 0
   m_Name: Boss_script_holder
   m_TagString: Untagged
@@ -7944,7 +7945,7 @@ MonoBehaviour:
   - {fileID: 5102300679907651435, guid: ff4ab79da7a3add4e9aaff6c6b65c4d3, type: 3}
   - {fileID: 5102300679907651435, guid: 8771a1564d776e74db3e02a97fd816fe, type: 3}
   minJunk: 10
-  maxJunk: 14
+  maxJunk: 15
   spawnHeight: 17
   arenaCollider: {fileID: 0}
   arenaMinX: -10
@@ -7971,6 +7972,21 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   cooldown: 10
+--- !u!114 &2152895061215857003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9042511292960336433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8580d8055ef4d494fb13956877b7c98f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarController
+  healthBarPrefab: {fileID: 4003994373359133227, guid: 49479347721ce534a8324b0953743f1b, type: 3}
+  weakPointManager: {fileID: 6099556427525258764}
+  boss: {fileID: 3631704590971473151}
 --- !u!1 &9178126094570704200
 GameObject:
   m_ObjectHideFlags: 0
