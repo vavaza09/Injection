@@ -386,6 +386,9 @@ public class Player : character
 
     public Vector2 MoveInput => _inputHandler?.MoveInput ?? Vector2.zero;
 
+    public bool IsAimingDash => isAlive && _inputHandler != null && _inputHandler.IsAimHeld
+                                && IsAbilityUnlocked(TutorialAbilities.Dash);
+
     public void Jump()
     {
         if (_currentState == PlayerState.Dead) return;
