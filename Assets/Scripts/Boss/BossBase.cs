@@ -11,8 +11,11 @@ public abstract class BossBase : MonoBehaviour
     protected Transform playerTransform;
 
     public event System.Action<float> HealthChanged;
+    public event System.Action PlayerEnteredRange;
+    public event System.Action PlayerExitedRange;
 
     public float HealthPercent => maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
+    public bool IsPlayerCurrentlyInRange => _wasPlayerInRange;
 
     protected void RaiseHealthChanged() => HealthChanged?.Invoke(HealthPercent);
 
@@ -65,11 +68,13 @@ public abstract class BossBase : MonoBehaviour
         {
             _wasPlayerInRange = true;
             OnPlayerDetected();
+            PlayerEnteredRange?.Invoke();
         }
         else if (!inRange && _wasPlayerInRange)
         {
             _wasPlayerInRange = false;
             OnPlayerLost();
+            PlayerExitedRange?.Invoke();
         }
     }
 
@@ -80,6 +85,7 @@ public abstract class BossBase : MonoBehaviour
             playerTransform = other.transform;
             _wasPlayerInRange = true;
             OnPlayerDetected();
+            PlayerEnteredRange?.Invoke();
         }
     }
 
@@ -89,6 +95,7 @@ public abstract class BossBase : MonoBehaviour
         {
             _wasPlayerInRange = false;
             OnPlayerLost();
+            PlayerExitedRange?.Invoke();
         }
     }
 

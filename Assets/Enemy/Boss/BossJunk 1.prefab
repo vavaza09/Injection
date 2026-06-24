@@ -105,9 +105,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossJunk
   fallSpeed: 14
-  junkScale: 0.3
+  junkScale: 0.8
   shadowMinRadius: 0.4
   shadowMaxRadius: 1.2
   shadowMinAlpha: 0.05
   shadowMaxAlpha: 0.45
   shadowSortOrder: 1
+  spinSpeedMin: 90
+  spinSpeedMax: 270

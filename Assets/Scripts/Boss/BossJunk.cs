@@ -21,10 +21,14 @@ public class BossJunk : MonoBehaviour
     private float         _vfxRadius;
     private float         _damage;
 
+    [SerializeField] private float spinSpeedMin = 90f;
+    [SerializeField] private float spinSpeedMax = 270f;
+
     private float         _landingY;
     private float         _initialHeight;
     private bool          _initialized;
     private bool          _landed;
+    private float         _spinSpeed;
 
     private GameObject    _shadow;
     private SpriteRenderer _shadowSr;
@@ -40,6 +44,7 @@ public class BossJunk : MonoBehaviour
 
         SetupVisual();
         SetupShadow();
+        _spinSpeed   = Random.Range(spinSpeedMin, spinSpeedMax) * (Random.value < 0.5f ? 1f : -1f);
         _initialized = true;
     }
 
@@ -51,12 +56,14 @@ public class BossJunk : MonoBehaviour
 
         UpdateShadow();
 
+        transform.Rotate(0f, 0f, _spinSpeed * Time.deltaTime);
+
         float step = fallSpeed * Time.deltaTime;
 
         // Check if we'll reach the landing Y this frame.
         if (transform.position.y - step <= _landingY)
         {
-            transform.position = new Vector3(transform.position.x, _landingY, 0f);
+            transform.position = new Vector3(transform.position.x, _landingY, transform.position.z);
             Land();
             return;
         }
