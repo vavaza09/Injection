@@ -20,6 +20,10 @@ public class BossWeakPointManager : MonoBehaviour
     [Tooltip("Seconds the player has to destroy the open weakpoint before it closes.")]
     [SerializeField] private float windowTimeout = 10f;
 
+    public event System.Action WeakPointsChanged;
+    public int TotalWeakPoints => weakPoints != null ? weakPoints.Length : 0;
+    public int AliveWeakPoints => CountAlive();
+
     private int           _attackCount;
     private bool          _windowOpen;
     private BossWeakPoint _openWeakPoint;
@@ -30,6 +34,8 @@ public class BossWeakPointManager : MonoBehaviour
     {
         if (attackManager != null)
             attackManager.AttackCompleted += OnAttackCompleted;
+
+        WeakPointsChanged?.Invoke();
     }
 
     private void OnDestroy()
@@ -118,6 +124,8 @@ public class BossWeakPointManager : MonoBehaviour
         _destroyedCount++;
         _windowOpen  = false;
         _attackCount = 0;
+
+        WeakPointsChanged?.Invoke();
 
         if (CountAlive() == 0)
             boss?.TakeDamage(int.MaxValue);
