@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: e3bdf4017b889d548b847bdf78c1cbaa
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7248941216096102488
+    second: Fog4_0
+  - first:
+      213: -5762111005275565321
+    second: Fog4_1
+  - first:
+      213: 3361132917119685078
+    second: Fog4_2
+  - first:
+      213: 345621657991598703
+    second: Fog4_3
+  - first:
+      213: -236420082977856794
+    second: Fog4_4
+  - first:
+      213: -2329661662615302093
+    second: Fog4_5
+  - first:
+      213: 950876824698162566
+    second: Fog4_6
+  - first:
+      213: -3840956495068618571
+    second: Fog4_7
+  - first:
+      213: -105085715487951088
+    second: Fog4_8
+  - first:
+      213: -3944868786102199283
+    second: Fog4_9
+  - first:
+      213: -5824821709265646601
+    second: Fog4_10
+  - first:
+      213: 3801412372569210054
+    second: Fog4_11
+  - first:
+      213: -5691729365453562100
+    second: Fog4_12
+  - first:
+      213: -7806994378045152288
+    second: Fog4_13
+  - first:
+      213: 5941941325492856580
+    second: Fog4_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Fog4_0
+      rect:
+        serializedVersion: 2
+        x: 2084
+        y: 557
+        width: 476
+        height: 523
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 858a81721a9699460800000000000000
+      internalID: 7248941216096102488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_1
+      rect:
+        serializedVersion: 2
+        x: 2092
+        y: 1009
+        width: 53
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f25e26d19ed800b0800000000000000
+      internalID: -5762111005275565321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_2
+      rect:
+        serializedVersion: 2
+        x: 2141
+        y: 1067
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d19acf749425ae20800000000000000
+      internalID: 3361132917119685078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_3
+      rect:
+        serializedVersion: 2
+        x: 2142
+        y: 1046
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6255471115ebc400800000000000000
+      internalID: 345621657991598703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_4
+      rect:
+        serializedVersion: 2
+        x: 2144
+        y: 1053
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e22658ef2118bcf0800000000000000
+      internalID: -236420082977856794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_5
+      rect:
+        serializedVersion: 2
+        x: 2144
+        y: 1033
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33018f89f016bafd0800000000000000
+      internalID: -2329661662615302093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_6
+      rect:
+        serializedVersion: 2
+        x: 2143
+        y: 828
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68d09412f61323d00800000000000000
+      internalID: 950876824698162566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2560
+        height: 784
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b0a4b10b6e22bac0800000000000000
+      internalID: -3840956495068618571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_8
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 748
+        width: 103
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0177f593919aa8ef0800000000000000
+      internalID: -105085715487951088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_9
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 755
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0c1ad66db20149c0800000000000000
+      internalID: -3944868786102199283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_10
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 742
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fbcc3344831a2fa0800000000000000
+      internalID: -5824821709265646601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_11
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 750
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cc33cf796451c430800000000000000
+      internalID: 3801412372569210054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_12
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 752
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0f1b765c4ae201b0800000000000000
+      internalID: -5691729365453562100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_13
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 746
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e3a525f9fbf7a390800000000000000
+      internalID: -7806994378045152288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fog4_14
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 746
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 407273e5724067250800000000000000
+      internalID: 5941941325492856580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Fog4_0: 7248941216096102488
+      Fog4_1: -5762111005275565321
+      Fog4_10: -5824821709265646601
+      Fog4_11: 3801412372569210054
+      Fog4_12: -5691729365453562100
+      Fog4_13: -7806994378045152288
+      Fog4_14: 5941941325492856580
+      Fog4_2: 3361132917119685078
+      Fog4_3: 345621657991598703
+      Fog4_4: -236420082977856794
+      Fog4_5: -2329661662615302093
+      Fog4_6: 950876824698162566
+      Fog4_7: -3840956495068618571
+      Fog4_8: -105085715487951088
+      Fog4_9: -3944868786102199283
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
