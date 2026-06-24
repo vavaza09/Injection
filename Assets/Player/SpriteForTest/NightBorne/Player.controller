@@ -364,37 +364,37 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1000}
-    m_Position: {x: 250, y: 40, z: 0}
+    m_Position: {x: 500, y: -50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1001}
-    m_Position: {x: 570, y: 90, z: 0}
+    m_Position: {x: 750, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1002}
-    m_Position: {x: 320, y: -130, z: 0}
+    m_Position: {x: 330, y: -110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1003}
-    m_Position: {x: 540, y: -330, z: 0}
+    m_Position: {x: 290, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1004}
-    m_Position: {x: 210, y: -190, z: 0}
+    m_Position: {x: 270, y: -200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1005}
-    m_Position: {x: 780, y: -10, z: 0}
+    m_Position: {x: 820, y: -20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1006}
     m_Position: {x: -50, y: -130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5790183007245381649}
-    m_Position: {x: 40, y: 450, z: 0}
+    m_Position: {x: 40, y: 330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1007}
-    m_Position: {x: 510, y: 240, z: 0}
+    m_Position: {x: 520, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1008}
-    m_Position: {x: 580, y: 360, z: 0}
+    m_Position: {x: 570, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1009}
-    m_Position: {x: 310, y: 370, z: 0}
+    m_Position: {x: 320, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7058528496534172847}
     m_Position: {x: 150, y: -300, z: 0}
@@ -403,7 +403,7 @@ AnimatorStateMachine:
     m_Position: {x: 890, y: 350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7901729604367228487}
-    m_Position: {x: 600, y: 480, z: 0}
+    m_Position: {x: 420, y: 470, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 4009}
@@ -418,7 +418,7 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_AnyStatePosition: {x: 30, y: 10, z: 0}
   m_EntryPosition: {x: -50, y: 100, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
