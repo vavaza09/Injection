@@ -110,6 +110,16 @@ public class RootLifetimeScope : LifetimeScope
             Debug.LogWarning("[RootLifetimeScope] RoomCatalog not assigned — room loading will fail.");
         builder.RegisterComponentInHierarchy<RoomManager>().As<IRoomLoader>();
 
+        builder.RegisterBuildCallback(container =>
+        {
+            var p = FindAnyObjectByType<Player>(FindObjectsInactive.Include);
+            if (p != null)
+            {
+                var mc = p.GetComponent<MovementComponent>();
+                if (mc != null) container.Inject(mc);
+            }
+        });
+
         // Death-respawn coordinator (reworked for the persistent player).
         builder.RegisterComponentInHierarchy<RespawnCoordinator>();
 

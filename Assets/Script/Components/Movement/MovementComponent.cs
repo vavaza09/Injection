@@ -65,8 +65,6 @@ namespace Game.Components.Movement
         [SerializeField] private float wallSlideAcceleration = 160f;
         [SerializeField] private float wallStickHorizontalBrake = 120f;
         [SerializeField] private float wallInputThreshold = 0.1f;
-        [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
-        [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
         [Header("Dash Settings")]
         [SerializeField] private DashSettings dashSettings = new DashSettings();
@@ -94,8 +92,6 @@ namespace Game.Components.Movement
         [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
-        [Tooltip("Wall jump launch (both axes) scales from 1x at zero approach speed up to this at full wall-entry momentum, matching the speed-powers-actions pillar.")]
-        [SerializeField] private float wallJumpAtMaxSpeedMultiplier = 1.2f;
         [Tooltip("Seconds after a wall jump during which wall contact is ignored so the launch carries the player away.")]
         [SerializeField] private float wallJumpLockTime = 0.15f;
 
@@ -146,9 +142,10 @@ namespace Game.Components.Movement
         private bool _wasWallSliding;
         private float _currentWallSlideSpeed;
         private Vector2 moveInput;
-        private float _wallEntrySpeedFactor;
         private float _wallJumpLockTimer;
         private float _knockbackLockTimer;
+        private float _bounceKnockbackLockTimer;
+        private bool _isDashAttacking;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
@@ -184,6 +181,7 @@ namespace Game.Components.Movement
         private bool isGrabbing;
         private bool isCaptured;
         private float _stunTimer;
+        private bool _movementHalted;
         private SwingPoint currentSwingPoint;
         private float grabbedSpeedFactor;
         private float _autoGrabCooldownTimer;
@@ -200,7 +198,11 @@ namespace Game.Components.Movement
         public event Action GrabStarted;
 
         public bool IsDashing => _dashHandler != null && _dashHandler.IsDashing;
+        public bool IsDamageKnocked => _knockbackLockTimer > 0f;
+        public bool IsBounceKnocked => _bounceKnockbackLockTimer > 0f;
+        public bool IsKnocked => IsDamageKnocked || IsBounceKnocked;
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
+        public bool IsDashAttacking => _isDashAttacking;
         public bool CanDash => _dashHandler != null && _dashHandler.CanDash;
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
@@ -287,10 +289,12 @@ namespace Game.Components.Movement
                 oneWayPlatformMask = LayerMask.GetMask("Platform");
             }
 
+        }
+
+        private void Start()
+        {
             if (_logger == null)
-            {
-                Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
-            }
+                Debug.LogWarning("[MovementComponent] Logger not injected — check VContainer scope registration");
         }
 
         /// <summary>
@@ -306,9 +310,9 @@ namespace Game.Components.Movement
             _wasWallSliding = false;
             _currentWallSlideSpeed = 0f;
             moveInput = Vector2.zero;
-            _wallEntrySpeedFactor = 0f;
             _wallJumpLockTimer = 0f;
             _knockbackLockTimer = 0f;
+            _bounceKnockbackLockTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
             isGrabbing = false;
@@ -382,6 +386,12 @@ namespace Game.Components.Movement
         /// </summary>
         public void UpdateMovement()
         {
+            if (_movementHalted)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             if (_wallJumpLockTimer > 0f)
             {
                 _wallJumpLockTimer = Mathf.Max(0f, _wallJumpLockTimer - Time.deltaTime);
@@ -390,6 +400,11 @@ namespace Game.Components.Movement
             if (_knockbackLockTimer > 0f)
             {
                 _knockbackLockTimer = Mathf.Max(0f, _knockbackLockTimer - Time.deltaTime);
+            }
+
+            if (_bounceKnockbackLockTimer > 0f)
+            {
+                _bounceKnockbackLockTimer = Mathf.Max(0f, _bounceKnockbackLockTimer - Time.deltaTime);
             }
 
             if (_snapSuppressTimer > 0f)
@@ -460,6 +475,12 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (_isDashAttacking)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             UpdateJumpState();
             ApplyGroundedSlopeMovement();
         }
@@ -478,7 +499,8 @@ namespace Game.Components.Movement
             if (IsStunned) return;
             // During the knockback lock, leave velocity untouched so the knockback carries —
             // skip input force, deceleration, reverse/post-dash braking entirely.
-            if (_knockbackLockTimer > 0f) return;
+            if (_knockbackLockTimer > 0f || _bounceKnockbackLockTimer > 0f) return;
+            if (_isDashAttacking) return;
             if (!canMove || rb == null) return;
 
             // While stuck to a wall, horizontal velocity is owned entirely by
@@ -674,13 +696,6 @@ namespace Game.Components.Movement
                 ? -wallSideSign
                 : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
 
-            // Scale the launch by the speed the player carried INTO the wall, not their
-            // current velocity (wall-stick has already braked horizontal speed to ~0).
-            // This keeps wall jumps on the "speed powers actions" pillar: a fast approach
-            // launches harder. _wallEntrySpeedFactor is still valid here (the wall-jump
-            // lock that zeroes it only takes effect on the next CheckWallStatus).
-            float wallJumpMultiplier = Mathf.Lerp(1f, wallJumpAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
-
             ResetWallSlideState();
 
             BeginJumpWindow();
@@ -689,8 +704,8 @@ namespace Game.Components.Movement
             // regardless of the serialized field's sign — a stale/negative value must never
             // fire the player into the ground.
             rb.linearVelocity = new Vector2(
-                jumpAwayDirection * wallJumpHorizontalSpeed * wallJumpMultiplier,
-                Mathf.Abs(wallJumpVerticalSpeed) * UpSign * wallJumpMultiplier
+                jumpAwayDirection * wallJumpHorizontalSpeed,
+                Mathf.Abs(wallJumpVerticalSpeed) * UpSign
             );
 
             ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
@@ -1010,7 +1025,7 @@ namespace Game.Components.Movement
         private void ApplyGroundedSlopeMovement()
         {
             if (rb == null || !isGrounded || _bodyCollider == null) return;
-            if (_knockbackLockTimer > 0f) return;   // let a knockback carry untouched
+            if (_knockbackLockTimer > 0f || _bounceKnockbackLockTimer > 0f) return;   // let a knockback carry untouched
             if (_snapSuppressTimer > 0f)            // just jumped/bounced: don't re-stick the launch
             {
                 _lastGroundSpeed = rb.linearVelocity.x;
@@ -1063,7 +1078,6 @@ namespace Game.Components.Movement
                 // climb / wall-slide logic on the very next frame.
                 isTouchingWall = false;
                 wallSideSign = 0;
-                _wallEntrySpeedFactor = 0f;
                 return;
             }
 
@@ -1076,13 +1090,7 @@ namespace Game.Components.Movement
             bool leftHit = Physics2D.OverlapBox(leftCheckPos, wallCheckSize, 0f, climbableLayer);
             bool rightHit = Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
 
-            bool wasTouchingWall = isTouchingWall;
             isTouchingWall = !isGrounded && (leftHit || rightHit);
-
-            if (isTouchingWall && !wasTouchingWall)
-                _wallEntrySpeedFactor = GetCurrentSpeedFactorFromVelocity();
-            else if (!isTouchingWall)
-                _wallEntrySpeedFactor = 0f;
 
             if (rightHit)
             {
@@ -1106,12 +1114,12 @@ namespace Game.Components.Movement
             }
 
             float gravityDirection = gravity >= 0f ? -1f : 1f;
-            float maxSlideSpeed = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
+            float maxSlideSpeed = wallSlideMaxFallSpeed;
             float currentGravityAlignedSpeed = rb.linearVelocity.y * gravityDirection;
 
             if (!_wasWallSliding)
             {
-                _currentWallSlideSpeed = Mathf.Max(Mathf.Max(0f, currentGravityAlignedSpeed), _wallEntrySpeedFactor * maxSpeed);
+                _currentWallSlideSpeed = Mathf.Max(0f, currentGravityAlignedSpeed);
             }
             else
             {
@@ -1274,10 +1282,31 @@ namespace Game.Components.Movement
             canMove = value;
             if (!canMove)
             {
-                _wallEntrySpeedFactor = 0f;
                 _postDashAirBrakeTimer = 0f;
                 _wasDashingLastFrame = false;
             }
+        }
+
+        public void SetMovementHalted(bool value)
+        {
+            _movementHalted = value;
+            if (_movementHalted && rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
+        public void ResetState()
+        {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            ResetDash();
+            _knockbackLockTimer = 0f;
+            _bounceKnockbackLockTimer = 0f;
+            _wallJumpLockTimer = 0f;
+            _stunTimer = 0f;
+            _isDashAttacking = false;
+            isCaptured = false;
+            if (isGrabbing) ReleaseGrab();
+            _movementHalted = false;
+            SetCanMove(true);
         }
 
         public bool IsGrounded()
@@ -1345,6 +1374,30 @@ namespace Game.Components.Movement
             _knockbackLockTimer = knockbackLockTime;
         }
 
+        public void BeginDashAttackFreeze()
+        {
+            if (rb == null) return;
+
+            if (_dashCoroutine != null)
+            {
+                StopCoroutine(_dashCoroutine);
+                _dashCoroutine = null;
+            }
+            _dashHandler?.ForceEndDash();
+            _wasDashingLastFrame = false;
+            _postDashAirBrakeTimer = 0f;
+            ResetWallSlideState();
+            isGrabbing = false;
+
+            rb.linearVelocity = Vector2.zero;
+            _isDashAttacking = true;
+        }
+
+        public void EndDashAttackFreeze()
+        {
+            _isDashAttacking = false;
+        }
+
         // Rebound the player opposite the dash direction on hitting an enemy.
         // Stops the running dash coroutine so its end-of-dash velocity write never fires,
         // then sets velocity to -dashDir (+ optional upward pop) scaled by dash momentum.
@@ -1352,6 +1405,8 @@ namespace Game.Components.Movement
         public void BounceFromDashImpact(float force, float upwardBias)
         {
             if (rb == null) return;
+
+            EndDashAttackFreeze();
 
             Vector2 dashDir = _dashHandler != null ? _dashHandler.DashDir : Vector2.zero;
             if (dashDir == Vector2.zero)
@@ -1370,7 +1425,7 @@ namespace Game.Components.Movement
             Vector2 bounceDir = (-dashDir + Vector2.up * UpSign * upwardBias).normalized;
             rb.linearVelocity = bounceDir * (force * multiplier);
 
-            _knockbackLockTimer = knockbackLockTime;
+            _bounceKnockbackLockTimer = knockbackLockTime;
             _postDashAirBrakeTimer = 0f;
             ResetWallSlideState();
             isGrabbing = false;

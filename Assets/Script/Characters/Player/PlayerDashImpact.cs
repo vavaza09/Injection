@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.Components.Combat;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -13,6 +14,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     [Header("Hitstop")]
     [SerializeField] private float hitstopDuration = 1f;
     [SerializeField] private float hitstopTimeScale = 0.2f;
+    [SerializeField] private float dashAttackFreezeDuration = 0.2f;
 
     [Header("Weak Point Hit Feedback")]
     [SerializeField] private float weakPointShakeIntensity = 0.1f;
@@ -30,6 +32,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     private Game.Components.Movement.MovementComponent _mc;
     private HitFlash _hitFlash;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
+    private readonly HashSet<int> _armoredHitTargets = new HashSet<int>();
     private bool _wasDashing;
 
     // Thin wrapper so PlayerDashImpact can read IsDashing/DashAttacking without a hard assembly reference
@@ -58,7 +61,10 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
         bool isDashingNow = _movement.IsDashing;
         if (isDashingNow && !_wasDashing)
+        {
             _dashHitTargets.Clear();
+            _armoredHitTargets.Clear();
+        }
 
         // Dash just ended — consume the armed buff regardless of whether it hit anything
         if (!isDashingNow && _wasDashing && _trueDamageArmed)
@@ -129,12 +135,12 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
             if (weakPoint == null)
             {
-                // Armored hit: bounce only — no damage, no combo. Guard against double-hit
-                // (multiple colliders on same enemy) since ForceEndDash clears IsDashing.
+                // Armored hit: bounce only — no damage, no combo. Uses a separate set so a
+                // body-collider hit on the same frame cannot block a subsequent weak-point hit.
                 int armoredId = targetCharacter.GetInstanceID();
-                if (!_dashHitTargets.Contains(armoredId))
+                if (!_armoredHitTargets.Contains(armoredId))
                 {
-                    _dashHitTargets.Add(armoredId);
+                    _armoredHitTargets.Add(armoredId);
                     _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
                 }
                 return;
@@ -158,11 +164,18 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
             HitFlashFX.Spawn(targetCollider.bounds.center);
             SoundManager.PlaySound(SoundType.HITSTOP);
             targetCharacter.Die();
+            StartCoroutine(DashAttackFreezeAndBounce());
         }
+        else
+        {
+            _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+        }
+    }
 
-        // Bounce player opposite the dash direction for both weakpoint kills and true-damage hits.
-        // ImpactLanded (combo) has already fired above; RechargeDashForCombo does not touch velocity,
-        // so the bounce velocity carries through the slow-mo aim window.
+    private IEnumerator DashAttackFreezeAndBounce()
+    {
+        _mc?.BeginDashAttackFreeze();
+        yield return new WaitForSecondsRealtime(dashAttackFreezeDuration);
         _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
     }
 }

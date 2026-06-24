@@ -131,11 +131,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 93
-        y: 2243
-        width: 1445
-        height: 1497
+        y: 2319
+        width: 1345
+        height: 1421
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,11 +153,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1718
-        y: 2316
-        width: 1351
-        height: 1417
+        y: 2314
+        width: 1352
+        height: 1419
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -174,12 +174,12 @@ TextureImporter:
       name: Dash Up Sheet_2
       rect:
         serializedVersion: 2
-        x: 3417
-        y: 2251
-        width: 1358
-        height: 1533
+        x: 3415
+        y: 2317
+        width: 1334
+        height: 1470
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,11 +197,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4963
-        y: 2260
-        width: 1533
-        height: 1779
+        y: 2300
+        width: 1424
+        height: 1739
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -218,12 +218,12 @@ TextureImporter:
       name: Dash Up Sheet_4
       rect:
         serializedVersion: 2
-        x: 6867
-        y: 2260
-        width: 1246
-        height: 2003
+        x: 6865
+        y: 2378
+        width: 1215
+        height: 1887
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -240,12 +240,12 @@ TextureImporter:
       name: Dash Up Sheet_5
       rect:
         serializedVersion: 2
-        x: 8506
-        y: 2379
-        width: 1189
-        height: 1884
+        x: 8505
+        y: 2378
+        width: 1192
+        height: 1887
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -262,12 +262,12 @@ TextureImporter:
       name: Dash Up Sheet_6
       rect:
         serializedVersion: 2
-        x: 10043
+        x: 10042
         y: 2355
-        width: 1251
-        height: 1835
+        width: 1252
+        height: 1836
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -284,12 +284,12 @@ TextureImporter:
       name: Dash Up Sheet_7
       rect:
         serializedVersion: 2
-        x: 255
-        y: 195
-        width: 1322
-        height: 1835
+        x: 6477
+        y: 2267
+        width: 11
+        height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -306,12 +306,12 @@ TextureImporter:
       name: Dash Up Sheet_8
       rect:
         serializedVersion: 2
-        x: 1857
-        y: 260
-        width: 1274
-        height: 1684
+        x: 6489
+        y: 2258
+        width: 10
+        height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -328,12 +328,12 @@ TextureImporter:
       name: Dash Up Sheet_9
       rect:
         serializedVersion: 2
-        x: 7
-        y: 79
-        width: 6
-        height: 9
+        x: 8094
+        y: 2267
+        width: 11
+        height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -346,11 +346,143 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 8108
+        y: 2258
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e73b70df30ffeba489339301f9998da1
+      internalID: 1999886330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 4770
+        y: 2250
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c827c5c0ce8c4ea41bac1fea8cbcb4c9
+      internalID: -527165755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 2242
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77e11c03fa23b1d4794315e08fc35fd4
+      internalID: 128425503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 195
+        width: 1326
+        height: 1836
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 979d353ee184cdc4bb08e2c197cb6f2e
+      internalID: 1048044045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 1856
+        y: 259
+        width: 1277
+        height: 1686
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6741793b4dd4cd4ebe092ab240491a6
+      internalID: -1683567123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash Up Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 76
+        width: 11
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a9ce1fdba27c4443a69bc5655e109d1
+      internalID: -2040066170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 2704e8613ac22b24c9989c36d260f160
     internalID: 0
     vertices: []
     indices: 
@@ -358,10 +490,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Dash Up Sheet_0: 6185644734392925770
       Dash Up Sheet_1: -2676601413706029215
+      Dash Up Sheet_10: 1999886330
+      Dash Up Sheet_11: -527165755
+      Dash Up Sheet_12: 128425503
+      Dash Up Sheet_13: 1048044045
+      Dash Up Sheet_14: -1683567123
+      Dash Up Sheet_15: -2040066170
       Dash Up Sheet_2: 8523868238298318560
       Dash Up Sheet_3: -6969086077314143246
       Dash Up Sheet_4: -2034493089241051089
