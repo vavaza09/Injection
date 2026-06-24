@@ -4,6 +4,7 @@ using VContainer;
 using Game.Persistence;
 using Game.Rooms;
 using Game.Components.Skills;
+using System.Linq;
 
 /// <summary>
 /// Session-scoped death handler. The player now persists across scenes, so respawn no
@@ -53,9 +54,12 @@ public class RespawnCoordinator : MonoBehaviour
 
         var data = _saveService?.Load();
 
-        // No checkpoint reached yet: revive in place rather than dumping the player nowhere.
+        // No checkpoint reached yet: place at the current scene's default spawn point.
         if (data == null || string.IsNullOrEmpty(data.checkpoint?.roomId))
         {
+            var spawnPoints = Object.FindObjectsByType<SpawnPoint>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (spawnPoints.Length > 0 && _player != null)
+                _player.transform.position = spawnPoints[0].Position;
             _player?.Respawn(respawnInvincDuration);
             ScreenFader.Instance?.FadeIn();
             yield break;

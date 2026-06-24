@@ -1,28 +1,34 @@
 fileFormatVersion: 2
-guid: f4f41fa5481a049439d871fd3045e467
+guid: d3f6ac32a7268c649926244ef455f316
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7595984522972895894
-    second: Dash Sheet_0
+      213: 1824891849351441080
+    second: Dead Sheet_0
   - first:
-      213: 4552379656714625888
-    second: Dash Sheet_1
+      213: 3748154312265218199
+    second: Dead Sheet_1
   - first:
-      213: -6031903697165740890
-    second: Dash Sheet_2
+      213: 6458778776356270484
+    second: Dead Sheet_2
   - first:
-      213: -8888451425168288192
-    second: Dash Sheet_3
+      213: 2872914527242385608
+    second: Dead Sheet_3
   - first:
-      213: -1605210746406502506
-    second: Dash Sheet_4
+      213: 4237305342251498316
+    second: Dead Sheet_4
   - first:
-      213: 4715848567397081744
-    second: Dash Sheet_5
+      213: 7582733063550439585
+    second: Dead Sheet_5
   - first:
-      213: -5496006332512440983
-    second: Dash Sheet_6
+      213: -5990333869097231423
+    second: Dead Sheet_6
+  - first:
+      213: 5056197010314196394
+    second: Dead Sheet_7
+  - first:
+      213: 2829456481278372257
+    second: Dead Sheet_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,13 +124,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dash Sheet_0
+      name: Dead Sheet_0
       rect:
         serializedVersion: 2
-        x: 54
-        y: 179
-        width: 1462
-        height: 1584
+        x: 7679
+        y: 5008
+        width: 1608
+        height: 1386
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -133,20 +139,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69a1a2badab5a6960800000000000000
-      internalID: 7595984522972895894
+      spriteID: 8ba2912e771535910800000000000000
+      internalID: 1824891849351441080
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_1
+      name: Dead Sheet_1
       rect:
         serializedVersion: 2
-        x: 1759
-        y: 313
-        width: 1476
-        height: 1411
+        x: 9354
+        y: 6364
+        width: 5
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,20 +161,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 063a031ad2d4d2f30800000000000000
-      internalID: 4552379656714625888
+      spriteID: 798bae90d7e140430800000000000000
+      internalID: 3748154312265218199
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_2
+      name: Dead Sheet_2
       rect:
         serializedVersion: 2
-        x: 3379
-        y: 313
-        width: 1478
-        height: 1405
+        x: 1643
+        y: 4481
+        width: 1479
+        height: 1548
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -177,20 +183,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6a4121bbb8f5a4ca0800000000000000
-      internalID: -6031903697165740890
+      spriteID: 4913c87b31132a950800000000000000
+      internalID: 6458778776356270484
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_3
+      name: Dead Sheet_3
       rect:
         serializedVersion: 2
-        x: 4988
-        y: 313
-        width: 1489
-        height: 1405
+        x: 4864
+        y: 4476
+        width: 1502
+        height: 1558
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -199,20 +205,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04697879580e5a480800000000000000
-      internalID: -8888451425168288192
+      spriteID: 8c8775a8a84aed720800000000000000
+      internalID: 2872914527242385608
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_4
+      name: Dead Sheet_4
       rect:
         serializedVersion: 2
-        x: 6541
-        y: 233
-        width: 1525
-        height: 1523
+        x: 386
+        y: 3081
+        width: 1696
+        height: 1104
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -221,20 +227,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69ffcc6b45529b9e0800000000000000
-      internalID: -1605210746406502506
+      spriteID: c4bf3c132ceedca30800000000000000
+      internalID: 4237305342251498316
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_5
+      name: Dead Sheet_5
       rect:
         serializedVersion: 2
-        x: 8158
-        y: 233
-        width: 1525
-        height: 1523
+        x: 3561
+        y: 2494
+        width: 1303
+        height: 1649
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -243,20 +249,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 092ec32594f027140800000000000000
-      internalID: 4715848567397081744
+      spriteID: 1a09887db874b3960800000000000000
+      internalID: 7582733063550439585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dash Sheet_6
+      name: Dead Sheet_6
       rect:
         serializedVersion: 2
-        x: 9733
-        y: 226
-        width: 1539
-        height: 1528
+        x: 6676
+        y: 2286
+        width: 1266
+        height: 1354
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -265,8 +271,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 96d6c431c534ab3b0800000000000000
-      internalID: -5496006332512440983
+      spriteID: 1cbd77e851f0edca0800000000000000
+      internalID: -5990333869097231423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 133
+        width: 1828
+        height: 715
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa57b2a54683b2640800000000000000
+      internalID: 5056197010314196394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 3321
+        y: 99
+        width: 1867
+        height: 665
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a9260abdaf344720800000000000000
+      internalID: 2829456481278372257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 6560
+        y: 104
+        width: 1867
+        height: 647
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e39b043cb2a7ad94d9b94caa5c3a99d6
+      internalID: 354705633
       vertices: []
       indices: 
       edges: []
@@ -275,7 +347,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2af846978f045b847ba22b2510d10dab
+    spriteID: 302a70df1863c3840ad3756e37bc9778
     internalID: 0
     vertices: []
     indices: 
@@ -285,15 +357,18 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Dash Sheet_0: 7595984522972895894
-      Dash Sheet_1: 4552379656714625888
-      Dash Sheet_2: -6031903697165740890
-      Dash Sheet_3: -8888451425168288192
-      Dash Sheet_4: -1605210746406502506
-      Dash Sheet_5: 4715848567397081744
-      Dash Sheet_6: -5496006332512440983
+      Dead Sheet_0: 1824891849351441080
+      Dead Sheet_1: 3748154312265218199
+      Dead Sheet_2: 6458778776356270484
+      Dead Sheet_3: 2872914527242385608
+      Dead Sheet_4: 4237305342251498316
+      Dead Sheet_5: 7582733063550439585
+      Dead Sheet_6: -5990333869097231423
+      Dead Sheet_7: 5056197010314196394
+      Dead Sheet_8: 2829456481278372257
+      Dead Sheet_9: 354705633
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

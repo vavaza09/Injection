@@ -118,12 +118,12 @@ TextureImporter:
       name: Bar Hang Sheet_0
       rect:
         serializedVersion: 2
-        x: 106
-        y: 37
-        width: 1227
-        height: 2087
+        x: 0
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,12 +140,12 @@ TextureImporter:
       name: Bar Hang Sheet_1
       rect:
         serializedVersion: 2
-        x: 1714
-        y: 37
-        width: 1241
-        height: 2089
+        x: 1620
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: Bar Hang Sheet_2
       rect:
         serializedVersion: 2
-        x: 3365
-        y: 47
-        width: 1215
-        height: 2079
+        x: 3240
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: Bar Hang Sheet_3
       rect:
         serializedVersion: 2
-        x: 4982
-        y: 68
-        width: 1225
-        height: 2061
+        x: 4860
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: Bar Hang Sheet_4
       rect:
         serializedVersion: 2
-        x: 6580
-        y: 44
-        width: 1240
-        height: 2082
+        x: 6480
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: Bar Hang Sheet_5
       rect:
         serializedVersion: 2
-        x: 8222
-        y: 37
-        width: 1210
-        height: 2089
+        x: 8100
+        y: 0
+        width: 1620
+        height: 2160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d10b5517cba1526408bacabe28ab1235
     internalID: 0
     vertices: []
     indices: 
@@ -258,7 +258,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":1620.0,"y":2160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Bar Hang Sheet_0: -335531390557117852
       Bar Hang Sheet_1: -8428491423937696792

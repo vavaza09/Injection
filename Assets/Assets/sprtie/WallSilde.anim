@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fall
+  m_Name: WallSilde
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,11 +21,11 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -376757300823802920, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
+      value: {fileID: 6041951429775263831, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
     - time: 0.25
-      value: {fileID: -8492824997268690035, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
+      value: {fileID: -6481698641961723694, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
     - time: 0.5
-      value: {fileID: -1072886993925785059, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
+      value: {fileID: -190734085434331120, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -48,9 +48,9 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -376757300823802920, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
-    - {fileID: -8492824997268690035, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
-    - {fileID: -1072886993925785059, guid: 4b16b2cd78f8c2d4fac0f97c66a52226, type: 3}
+    - {fileID: 6041951429775263831, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
+    - {fileID: -6481698641961723694, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
+    - {fileID: -190734085434331120, guid: b2eda983b7864764882f77e8ee8f6b89, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
