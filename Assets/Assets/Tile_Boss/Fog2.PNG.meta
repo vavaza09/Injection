@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: 35a3e045548b9d14db5d190d0ffb8762
+guid: 6339a656b950fc6438d0f007ec245935
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6760107510871270033
-    second: IMG_1521_0
+      213: -7057402732380198899
+    second: Fog2_0
+  - first:
+      213: -5659333288816354858
+    second: Fog2_1
+  - first:
+      213: 738190196657886774
+    second: Fog2_2
+  - first:
+      213: 4994211393000384928
+    second: Fog2_3
+  - first:
+      213: -4953093183485540117
+    second: Fog2_4
+  - first:
+      213: 1269060731975358608
+    second: Fog2_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +87,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,13 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IMG_1521_0
+      name: Fog2_0
       rect:
         serializedVersion: 2
-        x: 1778
-        y: 1512
-        width: 589
-        height: 620
+        x: 5
+        y: 0
+        width: 2555
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6d511319064f22a0800000000000000
-      internalID: -6760107510871270033
+      spriteID: d086b9b4b911f0e90800000000000000
+      internalID: -7057402732380198899
       vertices: []
       indices: 
       edges: []
@@ -125,7 +140,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ce8c888b2d82b924e8093c1d3340098c
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +150,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IMG_1521_0: -6760107510871270033
+      Fog2_0: -7057402732380198899
+      Fog2_1: -5659333288816354858
+      Fog2_2: 738190196657886774
+      Fog2_3: 4994211393000384928
+      Fog2_4: -4953093183485540117
+      Fog2_5: 1269060731975358608
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

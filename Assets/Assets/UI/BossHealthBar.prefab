@@ -58,7 +58,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 50
@@ -126,6 +126,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5874018793207038463}
     m_Modifications:
+    - target: {fileID: 1139517700489234564, guid: c0f9a65d52836f641b8c5fbb62e2c6fb, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399098540246850765, guid: c0f9a65d52836f641b8c5fbb62e2c6fb, type: 3}
+      propertyPath: m_Color.a
+      value: 0.105882354
+      objectReference: {fileID: 0}
     - target: {fileID: 3742638482893727988, guid: c0f9a65d52836f641b8c5fbb62e2c6fb, type: 3}
       propertyPath: m_Name
       value: HPBarArt

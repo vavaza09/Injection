@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 35a3e045548b9d14db5d190d0ffb8762
+guid: ae2f5640921b4e3449d52cc5c37ee93a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6760107510871270033
-    second: IMG_1521_0
+      213: -3139394018675321821
+    second: Foreground-map3-final_0
+  - first:
+      213: -7844050531322855774
+    second: Foreground-map3-final_1
+  - first:
+      213: 5224705396824727423
+    second: Foreground-map3-final_2
+  - first:
+      213: -5457713885761492022
+    second: Foreground-map3-final_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IMG_1521_0
+      name: Foreground-map3-final_0
       rect:
         serializedVersion: 2
-        x: 1778
-        y: 1512
-        width: 589
-        height: 620
+        x: 0
+        y: 692
+        width: 619
+        height: 388
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6d511319064f22a0800000000000000
-      internalID: -6760107510871270033
+      spriteID: 3241fd2f5c1ae64d0800000000000000
+      internalID: -3139394018675321821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Foreground-map3-final_1
+      rect:
+        serializedVersion: 2
+        x: 3765
+        y: 634
+        width: 1337
+        height: 446
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ae7940f995542390800000000000000
+      internalID: -7844050531322855774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Foreground-map3-final_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1795
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7fddc170e1e18840800000000000000
+      internalID: 5224705396824727423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Foreground-map3-final_3
+      rect:
+        serializedVersion: 2
+        x: 4259
+        y: 0
+        width: 843
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acb2879132e4244b0800000000000000
+      internalID: -5457713885761492022
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IMG_1521_0: -6760107510871270033
+      Foreground-map3-final_0: -3139394018675321821
+      Foreground-map3-final_1: -7844050531322855774
+      Foreground-map3-final_2: 5224705396824727423
+      Foreground-map3-final_3: -5457713885761492022
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

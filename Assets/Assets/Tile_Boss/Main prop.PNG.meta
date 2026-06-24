@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 35a3e045548b9d14db5d190d0ffb8762
+guid: 74f1279ed85796348a7ee3a66aeddbcb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6760107510871270033
-    second: IMG_1521_0
+      213: 3379525521274149428
+    second: Main prop_0
+  - first:
+      213: -9043783090896715136
+    second: Main prop_1
+  - first:
+      213: -4699454495733952945
+    second: Main prop_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +57,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +78,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,23 +106,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IMG_1521_0
+      name: Main prop_0
       rect:
         serializedVersion: 2
-        x: 1778
-        y: 1512
-        width: 589
-        height: 620
+        x: 903
+        y: 204
+        width: 757
+        height: 876
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6d511319064f22a0800000000000000
-      internalID: -6760107510871270033
+      spriteID: 43a99ec5e8c76ee20800000000000000
+      internalID: 3379525521274149428
       vertices: []
       indices: 
       edges: []
@@ -125,7 +131,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 2c7a00fb67e42ac429c4b6a7fb175f74
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +141,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IMG_1521_0: -6760107510871270033
+      Main prop_0: 3379525521274149428
+      Main prop_1: -9043783090896715136
+      Main prop_2: -4699454495733952945
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
