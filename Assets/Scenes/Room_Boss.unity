@@ -1884,6 +1884,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &762190632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6111057636079140435, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+  m_PrefabInstance: {fileID: 1069190003}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &821978028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2839,6 +2844,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2585259648304670452, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.42
@@ -2890,13 +2899,42 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6111057636079140435, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1069190016}
   m_SourcePrefab: {fileID: 100100000, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
 --- !u!4 &1069190004 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
   m_PrefabInstance: {fileID: 1069190003}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1069190011 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2585259648304670452, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+  m_PrefabInstance: {fileID: 1069190003}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762190632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29cee0a4f6462f54ba46cd57071dd941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1069190016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762190632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76b2689c4de3f04fa53e9b0eca4cdd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashFocusMarkerSystem
+  player: {fileID: 1069190011}
+  focusMarkerPrefab: {fileID: 8604236926169184982, guid: 620323d8ab557804fb124abd9b846fa8, type: 3}
+  detectRadius: 8
 --- !u!1 &1069716667
 GameObject:
   m_ObjectHideFlags: 0
@@ -11035,6 +11073,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1717319421981066740, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: maxJunk
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717319421981066740, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: minJunk
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717319421981066740, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: spawnHeight
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734118502463726433, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: m_Radius
+      value: 1.2252139
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734118502463726433, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.20965087
+      objectReference: {fileID: 0}
     - target: {fileID: 4164155803926244961, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: onWindowClosed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -11160,9 +11218,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8124893793358264747}
     - target: {fileID: 6538627106942965739, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: launchForce
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 6538627106942965739, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: launchRadius
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6538627106942965739, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: shockWaveManager
       value: 
       objectReference: {fileID: 1175435111}
+    - target: {fileID: 7730117123137862550, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
+      propertyPath: releaseDuration
+      value: 3.7
+      objectReference: {fileID: 0}
     - target: {fileID: 8984074669641682870, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: onWindowClosed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

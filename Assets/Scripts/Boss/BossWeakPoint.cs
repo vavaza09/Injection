@@ -18,6 +18,7 @@ public class BossWeakPoint : MonoBehaviour
     [SerializeField] private UnityEvent onWindowClosed;
 
     public bool IsDestroyed { get; private set; }
+    public bool IsVisible => _state == WPState.Open;
     public event Action OnDestroyed;
 
     private enum WPState { Hidden, Closed, Open, Destroyed }
@@ -29,34 +30,42 @@ public class BossWeakPoint : MonoBehaviour
     {
         if (pointLight  == null) pointLight  = GetComponentInChildren<Light2D>();
         if (hitCollider == null) hitCollider = GetComponent<Collider2D>();
-        if (disc        == null) disc        = GetComponent<SpriteRenderer>();
+        if (disc        == null) disc        = GetComponentInChildren<SpriteRenderer>();
 
         if (disc != null) _defaultDiscColor = disc.color;
 
         SetLightOff();
+        if (disc        != null) disc.enabled        = false;
         if (hitCollider != null) hitCollider.enabled = false;
     }
 
-    // Show the weakpoint. attackable=true → blue (player can hit), false → yellow (display only).
+    // Show the weakpoint. attackable=true → blue (player can hit), false → stay hidden.
     public void Show(bool attackable)
     {
         if (IsDestroyed) return;
         _state = attackable ? WPState.Open : WPState.Closed;
 
-        if (pointLight != null)
+        if (attackable)
         {
-            pointLight.color   = attackable ? openColor : closedColor;
-            pointLight.enabled = true;
+            if (pointLight != null)
+            {
+                pointLight.color   = openColor;
+                pointLight.enabled = true;
+            }
+            if (disc != null) { disc.enabled = true; SetDisc(openColor); }
+            if (hitCollider != null) hitCollider.enabled = true;
+
+            if (!_wasAttackable)
+            {
+                _wasAttackable = true;
+                onBecameAttackable?.Invoke();
+            }
         }
-
-        SetDisc(attackable ? openColor : closedColor);
-
-        if (hitCollider != null) hitCollider.enabled = attackable;
-
-        if (attackable && !_wasAttackable)
+        else
         {
-            _wasAttackable = true;
-            onBecameAttackable?.Invoke();
+            SetLightOff();
+            if (disc != null) disc.enabled = false;
+            if (hitCollider != null) hitCollider.enabled = false;
         }
     }
 
@@ -66,7 +75,7 @@ public class BossWeakPoint : MonoBehaviour
         if (IsDestroyed) return;
         _state = WPState.Hidden;
         SetLightOff();
-        SetDisc(_defaultDiscColor);
+        if (disc != null) disc.enabled = false;
         if (hitCollider != null) hitCollider.enabled = false;
 
         if (_wasAttackable)
@@ -84,7 +93,7 @@ public class BossWeakPoint : MonoBehaviour
         _state      = WPState.Destroyed;
         IsDestroyed = true;
         SetLightOff();
-        SetDisc(_defaultDiscColor);
+        if (disc != null) disc.enabled = false;
         if (hitCollider != null) hitCollider.enabled = false;
 
         if (_wasAttackable)
