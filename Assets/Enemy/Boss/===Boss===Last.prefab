@@ -577,7 +577,7 @@ Transform:
   m_GameObject: {fileID: 2311618196802630873}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.593474, y: 5.47748, z: 0}
+  m_LocalPosition: {x: 1.65, y: -8.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -617,8 +617,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.253044, y: 0.17550206}
-  m_Radius: 1.1818208
+  m_Offset: {x: 0.52758837, y: -0.19736147}
+  m_Radius: 1.793539
 --- !u!1 &2682140526373330829
 GameObject:
   m_ObjectHideFlags: 0
@@ -5680,6 +5680,84 @@ Transform:
   - {fileID: 6777001066264026446}
   m_Father: {fileID: 5124109501245790064}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4938059948166150544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7872258472290624101}
+  - component: {fileID: 7211634938142744751}
+  m_Layer: 0
+  m_Name: Junk_collfall
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7872258472290624101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4938059948166150544}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.40386, y: -8.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5124109501245790064}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &7211634938142744751
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4938059948166150544}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.055236816, y: -0.88377666}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 43.75273, y: 2.7675533}
+  m_EdgeRadius: 0
 --- !u!1 &5051481900289312644
 GameObject:
   m_ObjectHideFlags: 0
@@ -5716,6 +5794,7 @@ Transform:
   - {fileID: 5132085637135457721}
   - {fileID: 739366940663106212}
   - {fileID: 3017698516217972846}
+  - {fileID: 7872258472290624101}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5096402700115067764
@@ -5738,6 +5817,8 @@ GameObject:
   - component: {fileID: 3507535087835618908}
   - component: {fileID: 1717319421981066740}
   - component: {fileID: 4313573941792491132}
+  - component: {fileID: 7054258131755598204}
+  - component: {fileID: 3074127711840918142}
   m_Layer: 0
   m_Name: Boss_script_holder
   m_TagString: Untagged
@@ -5797,7 +5878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
   maxHealth: 100
-  detectionRadius: 35
+  detectionRadius: 25
   hammerLimbSolver: {fileID: 6028134446021594152}
   hammerLeftTarget: {fileID: 5828986183828059829}
 --- !u!114 &7904882032829883795
@@ -5815,6 +5896,7 @@ MonoBehaviour:
   upperLeftIKTarget: {fileID: 6777001066264026446}
   hammerLeftIKTarget: {fileID: 5828986183828059829}
   hammerCollider: {fileID: 940207489994110988}
+  _sfxSource: {fileID: 0}
   windUpOffset: {x: 3.35, y: 6.5}
   windUpDuration: 2
   windUpCurve:
@@ -5975,8 +6057,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.08683014, y: -0.8150177}
-  m_Radius: 9.533363
+  m_Offset: {x: 0.033721924, y: 0}
+  m_Radius: 17.813694
 --- !u!114 &6523722964761317447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6088,6 +6170,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _sfxSource: {fileID: 0}
   isAttacking: 0
 --- !u!114 &937729995651420675
 MonoBehaviour:
@@ -6128,11 +6211,13 @@ MonoBehaviour:
   arenaCollider: {fileID: 2028810910053741051}
   gasCloudPrefab: {fileID: 1597789670021620086, guid: 110c56983a58076449795b2b85f2aa73, type: 3}
   fanVentParticles: {fileID: 7821667813758851652}
-  releaseDuration: 3.5
+  releaseDuration: 3.7
   minCloudDuration: 10
   maxCloudDuration: 12
   cooldown: 35
   fanSpinSpeed: 5
+  _sfxSource: {fileID: 0}
+  _gasLoopSource: {fileID: 0}
   OnGasRelease:
     m_PersistentCalls:
       m_Calls: []
@@ -6150,10 +6235,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HammerShockwave
   shockWaveManager: {fileID: 0}
   hammerImpactPoint: {fileID: 2575378988818590883}
-  launchForce: 120
+  launchForce: 100
   upwardBias: 8
-  launchRadius: 15
-  shakeIntensity: 0.42
+  launchRadius: 18
+  shakeIntensity: 0.45
   shakeDuration: 0.35
 --- !u!114 &3507535087835618908
 MonoBehaviour:
@@ -6278,18 +6363,19 @@ MonoBehaviour:
   - {fileID: 5102300679907651435, guid: 3ef84c9eb5af9114c9180ad595c5744a, type: 3}
   - {fileID: 5102300679907651435, guid: ff4ab79da7a3add4e9aaff6c6b65c4d3, type: 3}
   - {fileID: 5102300679907651435, guid: 8771a1564d776e74db3e02a97fd816fe, type: 3}
-  minJunk: 10
-  maxJunk: 15
-  spawnHeight: 17
+  minJunk: 14
+  maxJunk: 18
+  spawnHeight: 20
   arenaCollider: {fileID: 0}
-  arenaMinX: -10
-  arenaMaxX: 14
+  arenaMinX: -15
+  arenaMaxX: 25
   junkGroundMask:
     serializedVersion: 2
     m_Bits: 2056
   junkImpactVfxPrefab: {fileID: 2550159785638131973, guid: 29d51822945c9204aa5da5eefd51fbea, type: 3}
-  junkImpactRadius: 1.4
+  junkImpactRadius: 2
   junkDamage: 1
+  _sfxSource: {fileID: 0}
   OnImpact:
     m_PersistentCalls:
       m_Calls:
@@ -6305,7 +6391,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  cooldown: 10
+  cooldown: 7
 --- !u!114 &4313573941792491132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6321,6 +6407,150 @@ MonoBehaviour:
   healthBarPrefab: {fileID: 4003994373359133227, guid: 49479347721ce534a8324b0953743f1b, type: 3}
   weakPointManager: {fileID: 3507535087835618908}
   boss: {fileID: 5555249503822820028}
+--- !u!82 &7054258131755598204
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5096402700115067764}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &3074127711840918142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5096402700115067764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68061570d8f8eca429426a37aa888f5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossDeathSequence
+  explosionFrames:
+  - {fileID: -32627859074496401, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -3260179074879666930, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -2241823390196364601, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6828211064989150017, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6147399792674712462, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
+  explosionFps: 12
+  explosionScale: 0.6
+  explosionScaleFinal: 1.6
+  explosionPoints:
+  - {fileID: 1655075375950626784}
+  - {fileID: 3438773056457508301}
+  - {fileID: 3290670563017651560}
+  - {fileID: 6777001066264026446}
+  - {fileID: 6142128934417244120}
+  - {fileID: 1437630545313543947}
+  deathDuration: 10
+  explosionInterval: 0.35
+  sinkRoot: {fileID: 5124109501245790064}
+  sinkDistance: 3
+  clawIKTarget: {fileID: 4593522834025471643}
+  clawLift: 2.5
+  headTransform: {fileID: 3438773056457508301}
+  deadHeadPrefab: {fileID: 6229531436573076514, guid: fc48c737d27a8b248be5add577dd202a, type: 3}
+  headLaunchForce: 9
+  headLaunchAngle: 75
+  headAngularVelocity: 240
+  headGravityScale: 2.5
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 2056
+  groundRayLength: 25
+  sfxSource: {fileID: 7054258131755598204}
 --- !u!1 &5315551159508961890
 GameObject:
   m_ObjectHideFlags: 0
@@ -6963,7 +7193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_LightVolumeEnabled
@@ -7140,7 +7370,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
@@ -7325,7 +7555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
@@ -7454,7 +7684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_LightVolumeEnabled
@@ -7631,7 +7861,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
@@ -7816,7 +8046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
@@ -8001,7 +8231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
@@ -8186,7 +8416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_Intensity
-      value: 1.2
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8456579566115528889, guid: 7da4013ba26f98e4ca138f7e7d0379af, type: 3}
       propertyPath: m_FalloffIntensity
