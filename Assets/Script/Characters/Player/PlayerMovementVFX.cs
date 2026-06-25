@@ -2,10 +2,10 @@ using UnityEngine;
 using Game.Components.Movement;
 
 /// <summary>
-/// Manages all player movement particle effects: wind streaks, run dust, jump/land puffs,
+/// Manages all player movement particle effects: wind trail, run dust, jump/land puffs,
 /// dash burst + afterimages, and wall slide/wall-jump particles.
 /// Attach to the Player root GameObject. Call Initialize() from Player.Start().
-/// All ParticleSystems are built in code at runtime — no prefab authoring needed.
+/// All ParticleSystems are built in code at runtime; wind streak uses Trail.prefab.
 /// </summary>
 public class PlayerMovementVFX : MonoBehaviour
 {
@@ -13,14 +13,7 @@ public class PlayerMovementVFX : MonoBehaviour
 
     [Header("Wind Streaks")]
     [SerializeField, Range(0f, 1f)] private float windSpeedThreshold = 0.5f;
-    [SerializeField] private float windRateMin = 12f;
-    [SerializeField] private float windRateMax = 35f;
-    [SerializeField] private float windLengthScaleMin = 2.5f;
-    [SerializeField] private float windLengthScaleMax = 5f;
-    [SerializeField] private float windBackOffset = 0.4f;
-    [SerializeField, Range(0f, 1f)] private float windAlphaMin = 0.35f;
-    [SerializeField, Range(0f, 1f)] private float windAlphaMax = 0.80f;
-    [SerializeField] private Color windColor = new Color(0.7f, 0.85f, 1f, 0.7f);
+    [SerializeField] private GameObject windTrailPrefab;
 
     [Header("Run Dust")]
     [SerializeField] private float runDustMinSpeed = 1.5f;
@@ -67,8 +60,10 @@ public class PlayerMovementVFX : MonoBehaviour
 
     private Transform _vfxRoot;
 
+    // Wind trail (Trail.prefab)
+    private TrailRenderer _windTrail;
+
     // Looping systems
-    private ParticleSystem _windStreaks;
     private ParticleSystem _runDust;
     private ParticleSystem _wallDust;
 
@@ -88,9 +83,6 @@ public class PlayerMovementVFX : MonoBehaviour
 
     // Wall side cache (valid even after leaving wall)
     private int _lastWallSide = 1;
-
-    // Dash edge detection for wind streak clear
-    private bool _wasDashing;
 
     // Static texture cache
     private static Texture2D _softCircleTex;
@@ -117,7 +109,7 @@ public class PlayerMovementVFX : MonoBehaviour
         _vfxRoot.SetParent(transform, worldPositionStays: false);
         _vfxRoot.localPosition = Vector3.zero;
 
-        BuildWindStreaks();
+        BuildWindTrail();
         BuildRunDust();
         BuildWallDust();
         BuildJumpPuff();
@@ -137,7 +129,7 @@ public class PlayerMovementVFX : MonoBehaviour
         Vector2 vel = _movement.GetVelocity();
         float speedFactor = Mathf.Clamp01(vel.magnitude / Mathf.Max(0.01f, _movement.MaxSpeed));
 
-        UpdateWindStreaks(vel, speedFactor);
+        UpdateWindTrail(speedFactor);
         UpdateRunDust(vel, speedFactor);
         UpdateWallDust();
         UpdateLanding(vel);
@@ -156,57 +148,10 @@ public class PlayerMovementVFX : MonoBehaviour
 
     #region Continuous Effect Updates
 
-    private void UpdateWindStreaks(Vector2 vel, float speedFactor)
+    private void UpdateWindTrail(float speedFactor)
     {
-        if (_windStreaks == null) return;
-        var emission = _windStreaks.emission;
-
-        if (_movement.IsDashing)
-        {
-            if (!_wasDashing)
-                _windStreaks.gameObject.SetActive(false);
-            _wasDashing = true;
-            return;
-        }
-
-        if (_wasDashing)
-        {
-            _windStreaks.gameObject.SetActive(true);
-            _windStreaks.Play();
-        }
-        _wasDashing = false;
-
-        if (speedFactor < windSpeedThreshold)
-        {
-            emission.rateOverTime = 0f;
-            return;
-        }
-
-        float t = Mathf.Clamp01((speedFactor - windSpeedThreshold) / (1f - windSpeedThreshold));
-        emission.rateOverTime = Mathf.Lerp(windRateMin, windRateMax, t);
-
-        var psr = _windStreaks.GetComponent<ParticleSystemRenderer>();
-        psr.lengthScale = Mathf.Lerp(windLengthScaleMin, windLengthScaleMax, t);
-
-        var main = _windStreaks.main;
-        Color c = windColor;
-        c.a = Mathf.Lerp(windAlphaMin, windAlphaMax, t);
-        main.startColor = c;
-
-        // World-space velocity opposite to movement — particles stay in XY plane, visible in 2D
-        if (vel.sqrMagnitude > 0.01f)
-        {
-            float windSpeed = Mathf.Lerp(4f, 8f, t);
-            Vector2 windDir = -vel.normalized * windSpeed;
-            var vol = _windStreaks.velocityOverLifetime;
-            // All axes Constant mode → no MinMaxCurve mode mismatch
-            vol.x = new ParticleSystem.MinMaxCurve(windDir.x);
-            vol.y = new ParticleSystem.MinMaxCurve(windDir.y);
-
-            // Push spawn point backward so the symmetric stretch tip lands on the body, not past the front
-            Vector3 back = (Vector3)(-vel.normalized * windBackOffset);
-            _windStreaks.transform.position = transform.position + back;
-        }
+        if (_windTrail == null) return;
+        _windTrail.emitting = !_movement.IsDashing && speedFactor >= windSpeedThreshold;
     }
 
     private void UpdateRunDust(Vector2 vel, float speedFactor)
@@ -347,54 +292,20 @@ public class PlayerMovementVFX : MonoBehaviour
 
     #endregion
 
-    #region Particle System Builders
+    #region Builders
 
-    private void BuildWindStreaks()
+    private void BuildWindTrail()
     {
-        var go = new GameObject("WindStreaks");
-        go.transform.SetParent(_vfxRoot, false);
-        _windStreaks = go.AddComponent<ParticleSystem>();
-        _windStreaks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-
-        var main = _windStreaks.main;
-        main.loop = true;
-        main.simulationSpace = ParticleSystemSimulationSpace.World;
-        main.startLifetime = new ParticleSystem.MinMaxCurve(0.12f, 0.22f);
-        // startSpeed = 0 — direction comes from velocityOverLifetime (world XY), not local Z
-        main.startSpeed = 0f;
-        main.startSize = new ParticleSystem.MinMaxCurve(0.06f, 0.14f);
-        main.startColor = windColor;
-        main.maxParticles = 80;
-        main.useUnscaledTime = false;
-
-        var emission = _windStreaks.emission;
-        emission.rateOverTime = 0f;
-
-        var shape = _windStreaks.shape;
-        shape.shapeType = ParticleSystemShapeType.Box;
-        shape.scale = new Vector3(0.2f, 1.0f, 0.01f);
-
-        // World-space velocity; UpdateWindStreaks sets x/y per frame to trail opposite movement
-        var vol = _windStreaks.velocityOverLifetime;
-        vol.enabled = true;
-        vol.space = ParticleSystemSimulationSpace.World;
-        vol.x = new ParticleSystem.MinMaxCurve(-6f);
-        vol.y = new ParticleSystem.MinMaxCurve(0f);
-        vol.z = new ParticleSystem.MinMaxCurve(0f);
-
-        var col = _windStreaks.colorOverLifetime;
-        col.enabled = true;
-        col.color = FadeOutGrad(windColor);
-
-        var psr = go.GetComponent<ParticleSystemRenderer>();
-        psr.material = AlphaBlendMat(windColor);
-        psr.renderMode = ParticleSystemRenderMode.Stretch;
-        psr.velocityScale = 0.06f;
-        psr.lengthScale = windLengthScaleMin;
-        psr.sortingLayerName = "Default";
-        psr.sortingOrder = behindPlayerOrder;
-
-        _windStreaks.Play();
+        if (windTrailPrefab == null) return;
+        var go = Instantiate(windTrailPrefab, transform);
+        go.transform.localPosition = Vector3.zero;
+        go.SetActive(true);
+        _windTrail = go.GetComponent<TrailRenderer>();
+        if (_windTrail != null)
+        {
+            _windTrail.autodestruct = false;
+            _windTrail.emitting = false;
+        }
     }
 
     private void BuildRunDust()
