@@ -54,9 +54,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 10
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -91,7 +91,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -255,9 +255,9 @@ MonoBehaviour:
   - name: ENEMY_DEATH
     sounds:
     - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
-    volume: 0.806
-    pitchMin: 0.716
-    pitchMax: 1.016
+    volume: 0.846
+    pitchMin: 0.76
+    pitchMax: 0.9
     loop: 0
   - name: KIKI_FLOAT_IDLE
     sounds: []
@@ -289,7 +289,7 @@ MonoBehaviour:
   - name: TANK_MOTOR
     sounds:
     - {fileID: 8300000, guid: 0c5ce44838b52f64dbeb8ad428cc9da7, type: 3}
-    volume: 1
+    volume: 0.443
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 1
@@ -497,19 +497,33 @@ MonoBehaviour:
     pitchMin: 1.109
     pitchMax: 1.339
     loop: 0
-  - name: UI_HOVER
+  - name: BOSS_JUNK_FALL
     sounds:
     - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
     volume: 1
     pitchMin: 0.546
     pitchMax: 0.855
     loop: 0
-  - name: UI_CLICK
+  - name: BOSS_JUNK_IMPACT
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
     volume: 0.644
     pitchMin: 0.5
     pitchMax: 0.751
+    loop: 0
+  - name: UI_HOVER
+    sounds:
+    - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
+    volume: 1
+    pitchMin: 0
+    pitchMax: 0.72
+    loop: 0
+  - name: UI_CLICK
+    sounds:
+    - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
+    volume: 0.6
+    pitchMin: 0
+    pitchMax: 0.55
     loop: 0
   musicList:
   - name: MENU
@@ -545,9 +559,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 10
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -582,7 +596,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
