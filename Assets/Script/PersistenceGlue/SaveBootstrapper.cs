@@ -19,10 +19,21 @@ public class SaveBootstrapper : MonoBehaviour
     private IEnergyStore _energy;
     private Core.Logging.ILogger _logger;
 
+    private void Awake()
+    {
+        Debug.Log("[DIAG] SaveBootstrapper.Awake called, enabled=" + enabled + " activeInHierarchy=" + gameObject.activeInHierarchy);
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("[DIAG] SaveBootstrapper.OnDestroy called!");
+    }
+
     [Inject]
     public void Construct(SaveService saveService, IRoomLoader roomLoader, RoomCatalog catalog,
         IEnergyStore energy, LoggerFactory loggerFactory)
     {
+        Debug.Log("[DIAG] SaveBootstrapper.Construct called");
         _saveService = saveService;
         _roomLoader = roomLoader;
         _catalog = catalog;
@@ -32,7 +43,9 @@ public class SaveBootstrapper : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log($"[DIAG] SaveBootstrapper.Start: saveService={_saveService != null} roomLoader={_roomLoader != null} catalog={_catalog != null} energy={_energy != null}");
         var data = _saveService?.Load();
+        Debug.Log($"[DIAG] SaveBootstrapper.Start: data={data != null} lastRoom={data?.lastRoom?.roomId} defaultRoom={_catalog?.DefaultRoomId}");
 
         if (data != null && !string.IsNullOrEmpty(data.lastRoom?.roomId))
         {
