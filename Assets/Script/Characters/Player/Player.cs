@@ -142,6 +142,12 @@ public class Player : character
         RefreshMovementGates();
     }
 
+    public void SetInputEnabled(bool enabled)
+    {
+        if (_inputHandler == null) return;
+        if (enabled) _inputHandler.Enable(); else _inputHandler.Disable();
+    }
+
     // Wall-slide/jump and auto-grab live inside MovementComponent and run automatically, so they
     // can't be gated by an early-return at a call site — push the current lock state down to it.
     private void RefreshMovementGates()
