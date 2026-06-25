@@ -291,7 +291,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115910573}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38a9ee4b76476de428c4e34fc321b630, type: 3}
   m_Name: 
@@ -329,10 +329,15 @@ MonoBehaviour:
     loop: 0
   - name: FOOTSTEP_METAL
     sounds:
-    - {fileID: 8300000, guid: 72653842abe9a034c9b5f3bb567da3f8, type: 3}
+    - {fileID: 8300000, guid: ad7d2c7f3c787d54384a25e74a46b827, type: 3}
+    - {fileID: 8300000, guid: 1c353178e3870474aaeb93c7c167ba73, type: 3}
+    - {fileID: 8300000, guid: 55faaabb6bc3cda4e96415581faa293c, type: 3}
+    - {fileID: 8300000, guid: 42dc438b4d82fe947af18f71cf3cbdc8, type: 3}
+    - {fileID: 8300000, guid: cca3f0486ea8db64a8da41599c4e6db8, type: 3}
+    - {fileID: 8300000, guid: e20e6388f93cdf9438599db854a99d78, type: 3}
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: HURT
     sounds: []
@@ -363,8 +368,8 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: b31f60be873d32a418657bdb48991896, type: 3}
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: GRAB
     sounds:
@@ -390,14 +395,15 @@ MonoBehaviour:
   - name: TRUEDAMAGE_ARM
     sounds: []
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: TRUEDAMAGE_CONSUME
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: 842be73c35446ff4481166f2d0c8bd6d, type: 3}
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: SLOWMO
     sounds:
@@ -407,7 +413,8 @@ MonoBehaviour:
     pitchMax: 0.5
     loop: 0
   - name: WALLSLIDE
-    sounds: []
+    sounds:
+    - {fileID: 0}
     volume: 0
     pitchMin: 0
     pitchMax: 0
