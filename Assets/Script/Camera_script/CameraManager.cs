@@ -327,10 +327,14 @@ public class CameraManager : MonoBehaviour
         {
             t += Time.deltaTime;
             float alpha = t / duration;
-            _currentCam.Lens.OrthographicSize = Mathf.Lerp(startSize, targetSize, alpha);
+            var lens = _currentCam.Lens;
+            lens.OrthographicSize = Mathf.Lerp(startSize, targetSize, alpha);
+            _currentCam.Lens = lens;
             yield return null;
         }
-        _currentCam.Lens.OrthographicSize = targetSize;
+        var finalLens = _currentCam.Lens;
+        finalLens.OrthographicSize = targetSize;
+        _currentCam.Lens = finalLens;
         _zoomRoutine = null;
     }
 
