@@ -50,6 +50,11 @@ public class BossJunkSmashAttack : MonoBehaviour
     [SerializeField] private float junkImpactRadius = 1.2f;
     [SerializeField] private float junkDamage       = 1f;
 
+    // ── Audio ─────────────────────────────────────────────────────────────
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     // ── Impact Event ──────────────────────────────────────────────────────
 
     [Header("Impact")]
@@ -89,6 +94,7 @@ public class BossJunkSmashAttack : MonoBehaviour
 
     private void Start()
     {
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
         // Capture idle positions exactly once — CLAUDE.md constraint.
         _idleHammerPos = hammerLeftIKTarget != null ? hammerLeftIKTarget.position : Vector3.zero;
         _idleClawPos   = clawRightIKTarget  != null ? clawRightIKTarget.position  : Vector3.zero;
@@ -129,7 +135,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         IsAttacking = true;
 
         // ── Raise ────────────────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_HAMMER_WINDUP);
+        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_WINDUP, _sfxSource);
 
         Vector3 raisedHammerPos = _idleHammerPos + (Vector3)(Vector2)raiseOffset;
         Vector3 raisedClawPos   = _idleClawPos   + (Vector3)(Vector2)raiseOffset;
@@ -147,7 +153,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         if (clawRightIKTarget  != null) clawRightIKTarget.position  = raisedClawPos;
 
         // ── Slam ─────────────────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_HAMMER_SWING);
+        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_SWING, _sfxSource);
 
         Vector3 slamHammerPos = _idleHammerPos + (Vector3)(Vector2)slamOffset;
         Vector3 slamClawPos   = _idleClawPos   + (Vector3)(Vector2)slamOffset;
@@ -165,7 +171,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         if (clawRightIKTarget  != null) clawRightIKTarget.position  = slamClawPos;
 
         // ── Impact ────────────────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_HAMMER_IMPACT);
+        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_IMPACT, _sfxSource);
         OnImpact?.Invoke();
         SpawnJunkWave(slamHammerPos.y);
         _nextReadyTime = Time.time + cooldown;
@@ -173,7 +179,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         yield return new WaitForSeconds(holdDuration);
 
         // ── Recover ───────────────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_HAMMER_RECOVER);
+        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_RECOVER, _sfxSource);
 
         e = 0f;
         while (e < recoverDuration)

@@ -44,11 +44,18 @@ public class FurnaceEnemy : Enemy
 
     public override bool SpriteFacesLeft => invertFacing;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     private float lastAttackTime = -999f;
     private bool _isAttacking;
     private readonly List<GameObject> _activeMortarVfx = new List<GameObject>();
 
-    protected override void Awake() => base.Awake();
+    protected override void Awake()
+    {
+        base.Awake();
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+    }
     protected override void Start() => base.Start();
     protected override void Update() => base.Update();
 
@@ -111,7 +118,7 @@ public class FurnaceEnemy : Enemy
         // Muzzle flash timing
         if (flashStartDelay > 0f)
             yield return new WaitForSeconds(flashStartDelay);
-        SoundManager.PlaySound(SoundType.FURNACE_ATTACK_CHARGE);
+        SoundManager.PlaySoundOn(SoundType.FURNACE_ATTACK_CHARGE, _sfxSource);
 
         // === FIRST SHOT ===
         if (muzzleFlash != null) muzzleFlash.PlayFlash(Vector2.up);
@@ -201,7 +208,7 @@ public class FurnaceEnemy : Enemy
         _activeMortarVfx.Add(dropObj);
 
         // Fall until ground
-        SoundManager.PlaySound(SoundType.FURNACE_MORTAR_DESCENDING);
+        SoundManager.PlaySoundOn(SoundType.FURNACE_MORTAR_DESCENDING, _sfxSource);
         while (dropObj != null && dropObj.transform.position.y > groundY)
         {
             dropObj.transform.position += Vector3.down * dropFallSpeed * Time.deltaTime;
@@ -213,7 +220,7 @@ public class FurnaceEnemy : Enemy
 
         Vector2 impactPos = new Vector2(savedPos.x, groundY);
 
-        SoundManager.PlaySound(SoundType.FURNACE_EXPLOSION);
+        SoundManager.PlaySoundOn(SoundType.FURNACE_EXPLOSION, _sfxSource);
         GameObject explGO = new GameObject("MortarExplosion");
         explGO.transform.position = new Vector3(impactPos.x, impactPos.y, 0f);
         var explFX = explGO.AddComponent<MortarExplosionVFX>();
@@ -234,7 +241,7 @@ public class FurnaceEnemy : Enemy
 
     private void SpawnLaunchBullet()
     {
-        SoundManager.PlaySound(SoundType.FURNACE_MORTAR_LAUNCH);
+        SoundManager.PlaySoundOn(SoundType.FURNACE_MORTAR_LAUNCH, _sfxSource);
         GameObject launchObj = new GameObject("FurnaceLaunchBullet");
         launchObj.transform.position = transform.position + Vector3.up * 0.5f;
 

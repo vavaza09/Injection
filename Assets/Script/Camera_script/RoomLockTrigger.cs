@@ -8,6 +8,7 @@ public class RoomLockTrigger : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        if (CameraManager.instance == null) return;
         CameraManager.instance.EnterRoomLock(roomAnchor);
         CameraManager.instance.SetRoomOrthoSize(_roomOrthoSize);
     }
@@ -15,6 +16,7 @@ public class RoomLockTrigger : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        if (CameraManager.instance == null) return;
         CameraManager.instance.ExitRoomLock();
         CameraManager.instance.ResetRoomOrthoSize();
     }
