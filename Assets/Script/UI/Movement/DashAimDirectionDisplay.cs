@@ -20,16 +20,15 @@ namespace Game.UI.Movement
         [SerializeField] private bool hideWhileDashing = true;
         [SerializeField, Min(0f)] private float orbitRadius = 0f;
         [SerializeField] private float angleOffset = 0f;
+        [SerializeField, Min(0f)] private float arrowScale = 1f;
 
         [Header("Motion")]
         [SerializeField, Min(0f)] private float orbitSmoothSpeed = 18f;
         [SerializeField] private bool useUnscaledTime = true;
 
-        [Header("Orbit Anchor")]
-        [SerializeField] private bool useArrowAnchorAsRingAttachPoint = true;
-
         [Header("Ring Guide")]
         [SerializeField] private bool autoCreateRingImage = true;
+        [SerializeField, Min(0f)] private float ringRadius = 0f;
         [SerializeField, Min(16)] private int ringResolution = 128;
         [SerializeField, Min(1f)] private float ringThickness = 4f;
         [SerializeField] private Color ringCanDashColor = new Color(1f, 1f, 1f, 0.2f);
@@ -69,20 +68,11 @@ namespace Game.UI.Movement
                 arrowTransform = transform as RectTransform;
             }
 
-            // Use arrowTransform for orbit/rotation so its anchor drives the attach point on the ring.
+            // The arrow's own RectTransform is what we place and rotate. Its pivot is the
+            // rotation axis and the point pinned at the ring center (orbitRadius = 0).
             _orbitTarget = arrowTransform;
 
             _rotationTarget = _orbitTarget;
-
-            if (orbitRadius <= 0f && _orbitTarget != null)
-            {
-                orbitRadius = _orbitTarget.anchoredPosition.magnitude;
-            }
-
-            if (orbitRadius <= 0f)
-            {
-                orbitRadius = 50f;
-            }
 
             if (autoCreateRingImage && ringImage == null)
             {
@@ -140,15 +130,20 @@ namespace Game.UI.Movement
             Vector2 orbitDirection = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
             float appliedAngle = _currentAngle + angleOffset;
 
+            if (arrowTransform != null)
+            {
+                arrowTransform.localScale = new Vector3(arrowScale, arrowScale, 1f);
+            }
+
+            // Rigid rotation about the ring center: place the arrow's pivot at a fixed
+            // radius from center and spin the whole arrow by the same angle, so the
+            // rotation axis stays pinned at the ring center (clock-hand style).
+            // arrowScale scales the radius too, so the arrow grows outward from center
+            // with its base staying at the center.
             if (_orbitTarget != null)
             {
-                Vector2 orbitPosition = orbitDirection * orbitRadius;
-                if (useArrowAnchorAsRingAttachPoint)
-                {
-                    orbitPosition -= GetRotatedAnchorOffset(_orbitTarget, appliedAngle);
-                }
-
-                _orbitTarget.anchoredPosition = ToAnchoredPosition(_orbitTarget, orbitPosition);
+                Vector2 pivotPosition = orbitDirection * (orbitRadius * arrowScale);
+                _orbitTarget.anchoredPosition = ToAnchoredPosition(_orbitTarget, pivotPosition);
             }
 
             if (_rotationTarget != null)
@@ -162,46 +157,6 @@ namespace Game.UI.Movement
             }
 
             UpdateRingVisual(canDash);
-        }
-
-        private Vector2 GetRotatedAnchorOffset(RectTransform rectTransform, float angleDeg)
-        {
-            if (rectTransform == null)
-            {
-                return Vector2.zero;
-            }
-
-            Vector2 localOffset = GetAnchorToPivotLocalOffset(rectTransform);
-            if (localOffset.sqrMagnitude <= 0.000001f)
-            {
-                return Vector2.zero;
-            }
-
-            float angleRad = angleDeg * Mathf.Deg2Rad;
-            float cos = Mathf.Cos(angleRad);
-            float sin = Mathf.Sin(angleRad);
-
-            return new Vector2(
-                localOffset.x * cos - localOffset.y * sin,
-                localOffset.x * sin + localOffset.y * cos
-            );
-        }
-
-        private Vector2 GetAnchorToPivotLocalOffset(RectTransform rectTransform)
-        {
-            Vector2 anchorPoint = (rectTransform.anchorMin + rectTransform.anchorMax) * 0.5f;
-            Vector2 pivot = rectTransform.pivot;
-            Vector2 size = rectTransform.rect.size;
-
-            if (size.sqrMagnitude <= 0.000001f)
-            {
-                size = rectTransform.sizeDelta;
-            }
-
-            return new Vector2(
-                (anchorPoint.x - pivot.x) * size.x,
-                (anchorPoint.y - pivot.y) * size.y
-            );
         }
 
         private Vector2 ToAnchoredPosition(RectTransform rectTransform, Vector2 desiredPivotLocalPosition)
@@ -287,7 +242,8 @@ namespace Game.UI.Movement
             ringRect.pivot = new Vector2(0.5f, 0.5f);
             ringRect.anchoredPosition = Vector2.zero;
 
-            float diameter = Mathf.Max(2f, orbitRadius * 2f);
+            float effectiveRadius = ringRadius > 0f ? ringRadius : orbitRadius;
+            float diameter = Mathf.Max(2f, effectiveRadius * 2f);
             ringRect.sizeDelta = new Vector2(diameter, diameter);
         }
 
