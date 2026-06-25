@@ -294,12 +294,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 35179457}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -54.86, y: -8.38, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 836876778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &50844083
 GameObject:
@@ -2033,6 +2033,9 @@ Transform:
   - {fileID: 2015716987}
   - {fileID: 600218407}
   - {fileID: 749461622}
+  - {fileID: 719152224}
+  - {fileID: 1049285877}
+  - {fileID: 1535194191}
   m_Father: {fileID: 299360632}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &326711110
@@ -4637,12 +4640,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 719152222}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -22.67, y: 4.73, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 314313455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &724632180
 GameObject:
@@ -5478,6 +5481,10 @@ Transform:
   - {fileID: 1904681521}
   - {fileID: 1302268678}
   - {fileID: 452830463}
+  - {fileID: 1126604874}
+  - {fileID: 35179459}
+  - {fileID: 1792915239}
+  - {fileID: 950853411}
   m_Father: {fileID: 299360632}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &838782885
@@ -6371,12 +6378,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950853409}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7196429, w: 0.69434446}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7196429, w: 0.69434446}
   m_LocalPosition: {x: -58.72, y: -8.24, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 836876778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -92.05}
 --- !u!1 &968766745
 GameObject:
@@ -6907,12 +6914,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049285875}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -22.67, y: 4.73, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 314313455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1060977166
 GameObject:
@@ -7816,12 +7823,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126604872}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7196429, w: 0.69434446}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7196429, w: 0.69434446}
   m_LocalPosition: {x: -62.1, y: -8.12, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 836876778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -92.05}
 --- !u!1 &1138303835
 GameObject:
@@ -15185,12 +15192,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1535194189}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -49.4, y: -5.5, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 314313455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1576675188
 GameObject:
@@ -16258,12 +16265,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792915237}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -50.68, y: -8.38, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 836876778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1803438997
 GameObject:
@@ -24318,10 +24325,3 @@ SceneRoots:
   - {fileID: 482104643}
   - {fileID: 99299216}
   - {fileID: 974297629}
-  - {fileID: 1126604874}
-  - {fileID: 35179459}
-  - {fileID: 1792915239}
-  - {fileID: 950853411}
-  - {fileID: 719152224}
-  - {fileID: 1049285877}
-  - {fileID: 1535194191}
