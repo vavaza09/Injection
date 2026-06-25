@@ -77,11 +77,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.67
+      value: -20.2
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.58
+      value: -7.9
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -115,13 +115,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5089500320072910353, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Name
-      value: ====PLAYER==== Variant
+      value: ====PLAYER==== New
       objectReference: {fileID: 0}
     - target: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Layer
@@ -130,6 +134,10 @@ PrefabInstance:
     - target: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6976269447292781462, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceForce
@@ -182,7 +190,24 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8191917052467940755}
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6802284921488119621}
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6979088413670410294}
   m_SourcePrefab: {fileID: 100100000, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+--- !u!114 &2585259648304670452 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+  m_PrefabInstance: {fileID: 1202152371122107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29cee0a4f6462f54ba46cd57071dd941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!70 &2710999510589235540 stripped
 CapsuleCollider2D:
   m_CorrespondingSourceObject: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -238,3 +263,33 @@ MonoBehaviour:
   wallJumpBurstCount: 8
   behindPlayerOrder: 5
   frontOfPlayerOrder: 10
+--- !u!114 &6802284921488119621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76b2689c4de3f04fa53e9b0eca4cdd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashFocusMarkerSystem
+  player: {fileID: 2585259648304670452}
+  focusMarkerPrefab: {fileID: 8604236926169184982, guid: 620323d8ab557804fb124abd9b846fa8, type: 3}
+  detectRadius: 8
+--- !u!114 &6979088413670410294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76b2689c4de3f04fa53e9b0eca4cdd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashFocusMarkerSystem
+  player: {fileID: 2585259648304670452}
+  focusMarkerPrefab: {fileID: 8604236926169184982, guid: 620323d8ab557804fb124abd9b846fa8, type: 3}
+  detectRadius: 8
