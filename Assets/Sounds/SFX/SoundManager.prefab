@@ -1,0 +1,624 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4574929346623430112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5022247570491803525}
+  - component: {fileID: 4126085920814073693}
+  - component: {fileID: 7449680439906938917}
+  - component: {fileID: 8778517580754884786}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5022247570491803525
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574929346623430112}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &4126085920814073693
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574929346623430112}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.18387957
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &7449680439906938917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574929346623430112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38a9ee4b76476de428c4e34fc321b630, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+  soundList:
+  - name: SWORD
+    sounds: []
+    volume: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: DASH
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: JUMP
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FOOTSTEP
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FOOTSTEP_METAL
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: HURT
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: MAGIC
+    sounds: []
+    volume: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: HITSTOP
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: DEATH
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: LAND
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: GRAB
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENERGY
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: EMP
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TRUEDAMAGE_ARM
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TRUEDAMAGE_CONSUME
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: SLOWMO
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: WALLSLIDE
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENEMY_HURT
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENEMY_DEATH
+    sounds:
+    - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
+    volume: 0.806
+    pitchMin: 0.716
+    pitchMax: 1.016
+    loop: 0
+  - name: KIKI_FLOAT_IDLE
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: KIKI_ATTACK_WINDUP
+    sounds:
+    - {fileID: 8300000, guid: 552610755c560344a9c3fab9333d6278, type: 3}
+    volume: 1
+    pitchMin: 0
+    pitchMax: 0.716
+    loop: 0
+  - name: KIKI_ATTACK_DASH
+    sounds:
+    - {fileID: 8300000, guid: f44e03b1a7de683459f285594c1c1026, type: 3}
+    volume: 1
+    pitchMin: 0.688
+    pitchMax: 0.907
+    loop: 0
+  - name: KIKI_ATTACK_HIT
+    sounds:
+    - {fileID: 8300000, guid: c182839c8c933fb4e925bf178f346385, type: 3}
+    volume: 1
+    pitchMin: 0.641
+    pitchMax: 0.809
+    loop: 0
+  - name: TANK_MOTOR
+    sounds:
+    - {fileID: 8300000, guid: 0c5ce44838b52f64dbeb8ad428cc9da7, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 1
+  - name: TANK_FOOTSTEP
+    sounds:
+    - {fileID: 8300000, guid: 35968d5bd9539e0439f5b92652320f5d, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: TANK_CANNON_CHARGE
+    sounds:
+    - {fileID: 8300000, guid: 3b06f0e7de7c12d4a9f41cd2f4500c61, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: TANK_CANNON_FIRE
+    sounds:
+    - {fileID: 8300000, guid: 18f737505eb66f6428cac24d6c9a606e, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: TANK_BULLET_FLY
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_IDLE_CRACKLE
+    sounds:
+    - {fileID: 8300000, guid: 99ff0c3106c9e5e4f8ccf5ecf9917313, type: 3}
+    volume: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: FURNACE_ATTACK_CHARGE
+    sounds:
+    - {fileID: 8300000, guid: e05f265792a9e784691c871336e8a31b, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 1.074
+    loop: 0
+  - name: FURNACE_MORTAR_LAUNCH
+    sounds:
+    - {fileID: 8300000, guid: 5688cfc05e88c7a4ea84ab5819ec1287, type: 3}
+    volume: 1
+    pitchMin: 0.587
+    pitchMax: 1.103
+    loop: 0
+  - name: FURNACE_MORTAR_ASCENDING
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_MORTAR_DESCENDING
+    sounds:
+    - {fileID: 8300000, guid: c8f40526892857f498ed80832c42a692, type: 3}
+    volume: 1
+    pitchMin: 0.63
+    pitchMax: 0.664
+    loop: 0
+  - name: FURNACE_EXPLOSION
+    sounds:
+    - {fileID: 8300000, guid: 88d0d5693b9a91541a034b773e2742a9, type: 3}
+    volume: 1
+    pitchMin: 0.618
+    pitchMax: 0.82
+    loop: 0
+  - name: STOMPER_IDLE_CHITTER
+    sounds: []
+    volume: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: STOMPER_WALK_SCUTTLE
+    sounds:
+    - {fileID: 8300000, guid: 9f9c1e45259dd9249ab3da3c84418cde, type: 3}
+    volume: 1
+    pitchMin: 0.572
+    pitchMax: 0.918
+    loop: 0
+  - name: STOMPER_JUMP
+    sounds:
+    - {fileID: 8300000, guid: e856e55aa7d4bd34f96d94e516b0f455, type: 3}
+    volume: 1
+    pitchMin: 0.739
+    pitchMax: 0.959
+    loop: 0
+  - name: STOMPER_FALL_RUSH
+    sounds:
+    - {fileID: 8300000, guid: 551bf418e7e58844f9eecd25a94c5428, type: 3}
+    volume: 1
+    pitchMin: 0.705
+    pitchMax: 0.872
+    loop: 0
+  - name: STOMPER_STOMP_IMPACT
+    sounds:
+    - {fileID: 8300000, guid: 1ce1e6c080f72a042849fa14b6e9e3fc, type: 3}
+    volume: 1
+    pitchMin: 0.636
+    pitchMax: 0.947
+    loop: 0
+  - name: BOSS_AMBIENT
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HURT
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_DEATH
+    sounds:
+    - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
+    volume: 0.779
+    pitchMin: 0.641
+    pitchMax: 1.166
+    loop: 0
+  - name: BOSS_CLAW_ANTICIPATION
+    sounds:
+    - {fileID: 8300000, guid: 33d90a6c699c8e0429e02015e362f6bb, type: 3}
+    volume: 0.575
+    pitchMin: 0.5
+    pitchMax: 0.976
+    loop: 0
+  - name: BOSS_CLAW_STRIKE
+    sounds:
+    - {fileID: 8300000, guid: 971b5f933fc90a047b2c7c7359495454, type: 3}
+    volume: 0.81
+    pitchMin: 0.5
+    pitchMax: 0.82
+    loop: 0
+  - name: BOSS_CLAW_IMPACT
+    sounds:
+    - {fileID: 8300000, guid: 8974ffbc4249f0040bb478bacd9914cf, type: 3}
+    volume: 0.863
+    pitchMin: 0.532
+    pitchMax: 0.866
+    loop: 0
+  - name: BOSS_CLAW_RETRACT
+    sounds:
+    - {fileID: 8300000, guid: 2530602a90da81c4baaa677e391d8465, type: 3}
+    volume: 0.937
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: BOSS_HAMMER_WINDUP
+    sounds:
+    - {fileID: 8300000, guid: 41f6936a6e78be043b87d9c621b2a275, type: 3}
+    volume: 0.979
+    pitchMin: 0.5
+    pitchMax: 0.768
+    loop: 0
+  - name: BOSS_HAMMER_SWING
+    sounds:
+    - {fileID: 8300000, guid: 8b7a40b5c5022194ea66daf64efcbbdc, type: 3}
+    volume: 0.91
+    pitchMin: 0.555
+    pitchMax: 1.028
+    loop: 0
+  - name: BOSS_HAMMER_IMPACT
+    sounds:
+    - {fileID: 8300000, guid: f64896baedde3b647bc207a78966c521, type: 3}
+    volume: 0.91
+    pitchMin: 0.584
+    pitchMax: 0.843
+    loop: 0
+  - name: BOSS_HAMMER_RECOVER
+    sounds: []
+    volume: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
+    loop: 0
+  - name: BOSS_GAS_RELEASE
+    sounds:
+    - {fileID: 8300000, guid: ca3f8a784626f9241ad5bb689ac58b0d, type: 3}
+    volume: 0.898
+    pitchMin: 0.589
+    pitchMax: 0.768
+    loop: 0
+  - name: BOSS_GAS_LOOP
+    sounds:
+    - {fileID: 8300000, guid: d977b6c1c93df2f4283b73dfe7220ac0, type: 3}
+    volume: 1
+    pitchMin: 0.572
+    pitchMax: 1
+    loop: 0
+  - name: BOSS_WEAKPOINT_REVEAL
+    sounds:
+    - {fileID: 8300000, guid: 7749fe6ad91e4d947b692717931e0ab3, type: 3}
+    volume: 1
+    pitchMin: 0.664
+    pitchMax: 0.67
+    loop: 0
+  - name: BOSS_WEAKPOINT_CLOSE
+    sounds:
+    - {fileID: 8300000, guid: 7749fe6ad91e4d947b692717931e0ab3, type: 3}
+    volume: 1
+    pitchMin: 1.109
+    pitchMax: 1.339
+    loop: 0
+  - name: UI_HOVER
+    sounds:
+    - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
+    volume: 1
+    pitchMin: 0.546
+    pitchMax: 0.855
+    loop: 0
+  - name: UI_CLICK
+    sounds:
+    - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
+    volume: 0.644
+    pitchMin: 0.5
+    pitchMax: 0.751
+    loop: 0
+  musicList:
+  - name: MENU
+    music: {fileID: 8300000, guid: 2da1ca824085cff4ea8983b5b933ad9c, type: 3}
+  - name: GAMEPLAY
+    music: {fileID: 0}
+  - name: BOSS
+    music: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
+  - name: VICTORY
+    music: {fileID: 0}
+  - name: GAMEOVER
+    music: {fileID: 0}
+  musicVolume: 0.024821296
+  musicFadeDuration: 1
+  loopPoolSize: 8
+--- !u!82 &8778517580754884786
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574929346623430112}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.024821296
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

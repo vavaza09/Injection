@@ -34,6 +34,7 @@ public enum SoundType
     KIKI_ATTACK_HIT,
 
     // Tank
+    TANK_MOTOR,
     TANK_FOOTSTEP,
     TANK_CANNON_CHARGE,
     TANK_CANNON_FIRE,
@@ -68,6 +69,8 @@ public enum SoundType
     BOSS_HAMMER_RECOVER,
     BOSS_GAS_RELEASE,
     BOSS_GAS_LOOP,
+    BOSS_WEAKPOINT_REVEAL,
+    BOSS_WEAKPOINT_CLOSE,
 
     // UI
     UI_HOVER,
