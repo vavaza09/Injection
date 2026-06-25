@@ -52,12 +52,15 @@ namespace Game.Rooms
         private IEnumerator LoadRoutine(RoomDefinition def, string arrivalSpawnPointId, Action onArrived)
         {
             _isTransitioning = true;
+            Debug.Log($"[DIAG] RoomManager.LoadRoutine: loading '{def.sceneName}' ScreenFader={ScreenFader.Instance != null}");
 
             if (ScreenFader.Instance != null)
             {
                 bool faded = false;
                 ScreenFader.Instance.FadeOut(() => faded = true);
+                Debug.Log("[DIAG] RoomManager: waiting for fade...");
                 yield return new WaitUntil(() => faded);
+                Debug.Log("[DIAG] RoomManager: fade complete, starting scene load");
             }
 
             var load = SceneManager.LoadSceneAsync(def.sceneName, LoadSceneMode.Single);
@@ -75,6 +78,7 @@ namespace Game.Rooms
 
             CurrentRoomId = def.roomId;
             PlacePlayer(arrivalSpawnPointId);
+            CameraController.instance?.SetTarget(_player.transform);
 
             onArrived?.Invoke();
             RoomEntered?.Invoke(def.roomId, arrivalSpawnPointId);

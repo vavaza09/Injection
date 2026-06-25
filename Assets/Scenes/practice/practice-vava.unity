@@ -9318,7 +9318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10841,6 +10841,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1098050282169628083, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: orbitRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1098050282169628083, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: ringThickness
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1098050282169628083, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: ringResolution
+      value: 1080
+      objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.62162

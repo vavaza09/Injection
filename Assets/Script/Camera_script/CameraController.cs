@@ -62,6 +62,11 @@ public class CameraController : MonoBehaviour
         _cameraZ = transform.position.z;
     }
 
+    private void OnDestroy()
+    {
+        if (instance == this) instance = null;
+    }
+
     private void Start()
     {
         if (target != null) SnapToTarget();
