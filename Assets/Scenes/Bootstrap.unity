@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 115910577}
   - component: {fileID: 115910576}
   - component: {fileID: 115910575}
-  - component: {fileID: 115910639}
   - component: {fileID: 115910574}
   - component: {fileID: 115910582}
   - component: {fileID: 115910583}
@@ -210,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eecd34ff49f2c234db234f74cd79bcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RespawnCoordinator
-  deathDisplayDuration: 3
+  deathDisplayDuration: 1
   respawnInvincDuration: 2
 --- !u!114 &115910575
 MonoBehaviour:
@@ -6087,20 +6086,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &115910639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 115910573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d47891501f5ef9949a7ebd6f80506e22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScreenFader
-  fadeOutDuration: 0.4
-  fadeInDuration: 0.5
 --- !u!1001 &362866589
 PrefabInstance:
   m_ObjectHideFlags: 0

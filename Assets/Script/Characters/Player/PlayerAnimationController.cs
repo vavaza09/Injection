@@ -170,16 +170,6 @@ namespace Game.Characters.Player
         {
             if (_animator != null)
             {
-                // Clear active movement states so the Death trigger isn't blocked.
-                // IsGrounded is set TRUE (not false) to break the AnyState→Jump condition
-                // (!IsGrounded && !IsFalling && ...) — otherwise all bools being false would
-                // immediately pull the animator from Death into Jump.
-                _animator.SetBool(_animIsGrounded, true);
-                if (_hasFallingParameter)      _animator.SetBool(_animIsFalling,        false);
-                if (_hasWallSlideParameter)    _animator.SetBool(_animIsWallSliding,    false);
-                if (_hasHangingParameter)      _animator.SetBool(_animIsHanging,        false);
-                if (_hasDashingParameter)      _animator.SetBool(_animIsDashing,        false);
-                if (_hasDashAttackingParameter)_animator.SetBool(_animIsDashAttacking,  false);
                 _animator.SetTrigger(_animDeath);
                 _logger?.Log("Death animation played");
             }

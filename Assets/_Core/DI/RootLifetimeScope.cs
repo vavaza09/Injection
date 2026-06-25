@@ -9,7 +9,6 @@ using Game.Components.Skills;
 using Game.Characters.Player;
 using Game.Persistence;
 using Game.Rooms;
-using Game.UI;
 
 /// <summary>
 /// Session root. Lives in the Bootstrap scene, survives every room swap
@@ -86,17 +85,12 @@ public class RootLifetimeScope : LifetimeScope
         // Persistent Player + on-object controllers (DontDestroyOnLoad alongside this root)
         builder.RegisterComponentInHierarchy<character>();
         builder.RegisterComponentInHierarchy<Player>();
-        builder.RegisterComponentInHierarchy<PlayerSkillController>()
-            .As<Game.Components.Skills.ISkillReadinessProvider>();
+        builder.RegisterComponentInHierarchy<PlayerSkillController>();
         builder.RegisterComponentInHierarchy<PlayerEnergyCollector>();
 
         var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
         if (energyHUD != null)
             builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
-
-        var playerHUD = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
-        if (playerHUD != null)
-            builder.RegisterComponentInHierarchy<PlayerHUD>();
 
         var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
         if (empBlastReceiver != null)
