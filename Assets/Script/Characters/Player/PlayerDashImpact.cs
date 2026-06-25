@@ -115,8 +115,6 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         character targetCharacter = targetCollider.GetComponentInParent<character>();
         if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
 
-        // True Damage armed: kill any regular Enemy on a body hit, bypassing the weak-point requirement.
-        bool isTrueDamageKill = _trueDamageArmed && targetCharacter is Enemy;
 
         bool hitWeakPoint = false;
         if (targetCharacter is Enemy && !_trueDamageArmed)
@@ -158,7 +156,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         _dashHitTargets.Add(targetId);
         ImpactLanded?.Invoke();
 
-        if (hitWeakPoint || isTrueDamageKill)
+        if (hitWeakPoint)
         {
             SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
             CameraManager.instance?.Shake(weakPointShakeIntensity);
@@ -167,13 +165,6 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
             SoundManager.PlaySound(SoundType.HITSTOP);
             targetCharacter.Die();
             StartCoroutine(DashAttackFreezeAndBounce());
-
-            // Consume the armed buff on the first kill so a single dash kills only one enemy.
-            if (isTrueDamageKill)
-            {
-                _trueDamageArmed = false;
-                TrueDamageConsumed?.Invoke();
-            }
         }
         else
         {
