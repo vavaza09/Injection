@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: ae2f5640921b4e3449d52cc5c37ee93a
+guid: 56c7b09a86d6fd94e8c219461c9be5dc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3139394018675321821
-    second: Foreground-map3-final_0
-  - first:
-      213: -7844050531322855774
-    second: Foreground-map3-final_1
-  - first:
-      213: 5224705396824727423
-    second: Foreground-map3-final_2
-  - first:
-      213: -5457713885761492022
-    second: Foreground-map3-final_3
+      213: 1363968909043427756
+    second: bg-map3-final-new_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -148,57 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Foreground-map3-final_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 692
-        width: 619
-        height: 388
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3241fd2f5c1ae64d0800000000000000
-      internalID: -3139394018675321821
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Foreground-map3-final_1
-      rect:
-        serializedVersion: 2
-        x: 3765
-        y: 634
-        width: 1337
-        height: 446
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2ae7940f995542390800000000000000
-      internalID: -7844050531322855774
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Foreground-map3-final_2
+      name: bg-map3-final-new_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1795
-        height: 158
+        width: 5102
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,30 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f7fddc170e1e18840800000000000000
-      internalID: 5224705396824727423
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Foreground-map3-final_3
-      rect:
-        serializedVersion: 2
-        x: 4259
-        y: 0
-        width: 843
-        height: 421
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: acb2879132e4244b0800000000000000
-      internalID: -5457713885761492022
+      spriteID: ca9e5340f7acde210800000000000000
+      internalID: 1363968909043427756
       vertices: []
       indices: 
       edges: []
@@ -249,10 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Foreground-map3-final_0: -3139394018675321821
-      Foreground-map3-final_1: -7844050531322855774
-      Foreground-map3-final_2: 5224705396824727423
-      Foreground-map3-final_3: -5457713885761492022
+      bg-map3-final-new_0: 1363968909043427756
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
