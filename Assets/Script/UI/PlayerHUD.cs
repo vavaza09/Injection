@@ -13,6 +13,7 @@ namespace Game.UI
     {
         [Header("Health")]
         [SerializeField] private HealthSlotDisplay healthSlots;
+        [SerializeField] private float healHoldDuration = 2f;
 
         [Header("Speed")]
         [SerializeField] private SpeedTextDisplay     speedText;
@@ -26,6 +27,9 @@ namespace Game.UI
         private ISkillReadinessProvider _skills;
         private MovementSpeedProvider   _speedProvider;
         private readonly List<ISpeedDisplay> _speedDisplays = new List<ISpeedDisplay>();
+
+        private bool  _invincible;
+        private float _healHideAt;
 
         [Inject]
         public void Construct(Player player, ISkillReadinessProvider skills)
@@ -46,19 +50,24 @@ namespace Game.UI
                 if (speedDashboard != null) _speedDisplays.Add(speedDashboard);
             }
 
-            _player.Damaged += OnHealthChanged;
-            _player.Healed  += OnHealthChanged;
-            _player.Died    += OnHealthChanged;
+            _player.Damaged             += OnDamaged;
+            _player.Healed              += OnHealed;
+            _player.Died                += OnHealthChanged;
+            _player.InvincibilityStarted += OnInvincStart;
+            _player.InvincibilityEnded   += OnInvincEnd;
 
+            _healHideAt = float.MinValue;
             RefreshHealth(null);
         }
 
         private void OnDestroy()
         {
             if (_player == null) return;
-            _player.Damaged -= OnHealthChanged;
-            _player.Healed  -= OnHealthChanged;
-            _player.Died    -= OnHealthChanged;
+            _player.Damaged             -= OnDamaged;
+            _player.Healed              -= OnHealed;
+            _player.Died                -= OnHealthChanged;
+            _player.InvincibilityStarted -= OnInvincStart;
+            _player.InvincibilityEnded   -= OnInvincEnd;
         }
 
         private void Update()
@@ -75,9 +84,22 @@ namespace Game.UI
                 empDisplay?.Refresh(_skills.Get(SkillId.Emp));
                 trueDamageDisplay?.Refresh(_skills.Get(SkillId.TrueDamage));
             }
+
+            bool wantVisible = _invincible || Time.time < _healHideAt;
+            healthSlots?.Show(wantVisible);
         }
 
+        private void OnInvincStart() => _invincible = true;
+        private void OnInvincEnd()   => _invincible = false;
+
+        private void OnDamaged(character _)     => RefreshHealth(_);
         private void OnHealthChanged(character _) => RefreshHealth(_);
+
+        private void OnHealed(character _)
+        {
+            RefreshHealth(_);
+            _healHideAt = Time.time + healHoldDuration;
+        }
 
         private void RefreshHealth(character _)
         {

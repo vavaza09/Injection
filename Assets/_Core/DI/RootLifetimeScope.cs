@@ -97,11 +97,11 @@ public class RootLifetimeScope : LifetimeScope
 
         var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
         if (energyHUD != null)
-            builder.RegisterComponentInHierarchy<Game.UI.Skills.EnergyHUD>();
+            builder.RegisterInstance(energyHUD);
 
         var playerHUD = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
         if (playerHUD != null)
-            builder.RegisterComponentInHierarchy<PlayerHUD>();
+            builder.RegisterInstance(playerHUD);
 
         var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
         if (empBlastReceiver != null)
@@ -129,6 +129,13 @@ public class RootLifetimeScope : LifetimeScope
                 var mc = p.GetComponent<MovementComponent>();
                 if (mc != null) container.Inject(mc);
             }
+
+            var hud = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
+            if (hud != null) container.Inject(hud);
+
+            foreach (var ehud in FindObjectsByType<Game.UI.Skills.EnergyHUD>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None))
+                container.Inject(ehud);
         });
 
         // Death-respawn coordinator (reworked for the persistent player).
