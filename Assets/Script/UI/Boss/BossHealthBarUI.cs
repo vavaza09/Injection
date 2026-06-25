@@ -33,7 +33,7 @@ public class BossHealthBarUI : MonoBehaviour
         fillImage.fillAmount = total > 0 ? (float)alive / total : 0f;
 
         if (titleLabel != null)
-            titleLabel.text = alive > 0 ? "BOSS" : "DEFEATED";
+            titleLabel.text = alive > 0 ? "THE COLLECTOR" : "DEFEATED";
     }
 
     private void OnDestroy()
