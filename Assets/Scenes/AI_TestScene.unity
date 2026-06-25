@@ -493,11 +493,11 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 92.18
+      value: -1.37
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -20.58
+      value: -20.6
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1353,20 +1353,23 @@ MonoBehaviour:
     pitchMax: 0
     loop: 0
   - name: KIKI_ATTACK_WINDUP
-    sounds: []
-    volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    sounds:
+    - {fileID: 8300000, guid: 552610755c560344a9c3fab9333d6278, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: KIKI_ATTACK_DASH
-    sounds: []
-    volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    sounds:
+    - {fileID: 8300000, guid: f44e03b1a7de683459f285594c1c1026, type: 3}
+    volume: 1
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: KIKI_ATTACK_HIT
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: c182839c8c933fb4e925bf178f346385, type: 3}
+    volume: 1
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -1533,6 +1536,18 @@ MonoBehaviour:
     pitchMax: 0
     loop: 0
   - name: BOSS_GAS_LOOP
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: UI_HOVER
+    sounds: []
+    volume: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: UI_CLICK
     sounds: []
     volume: 0
     pitchMin: 0
@@ -47738,6 +47753,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ===Boss===
       objectReference: {fileID: 0}
+    - target: {fileID: 2342626526882529744, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.16372202
+      objectReference: {fileID: 0}
     - target: {fileID: 2348839085497569532, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
       propertyPath: arenaCollider
       value: 
@@ -47746,6 +47765,10 @@ PrefabInstance:
       propertyPath: shockWaveManager
       value: 
       objectReference: {fileID: 203931422}
+    - target: {fileID: 4438071932697923050, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.07702621
+      objectReference: {fileID: 0}
     - target: {fileID: 4518954732228663814, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 108.6
@@ -47790,6 +47813,14 @@ PrefabInstance:
       propertyPath: arenaCollider
       value: 
       objectReference: {fileID: 1913458801}
+    - target: {fileID: 5925726422141460351, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0815854
+      objectReference: {fileID: 0}
+    - target: {fileID: 6514230079630824960, guid: 643f47bd4638c604cb1a3aa85fb988f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.014503962
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51248,6 +51279,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stomper(Crab)
       objectReference: {fileID: 0}
+    - target: {fileID: 6235209925273369146, guid: c561b51cb7547bd40b473b09c22b388f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51304,6 +51339,10 @@ PrefabInstance:
     - target: {fileID: 8658080719701645966, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_Name
       value: Tank
+      objectReference: {fileID: 0}
+    - target: {fileID: 8658080719701645966, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51378,6 +51417,10 @@ PrefabInstance:
     - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_Name
       value: Furnace
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375100751388855051, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5928436914197378935, guid: 934716307e5f22242a9ba6dc17f92027, type: 3}
       propertyPath: m_LocalPosition.x
