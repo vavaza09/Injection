@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class SlowMotion : MonoBehaviour, ISlowMotionController
@@ -34,6 +35,15 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
         _instance = this;
         _defaultFixedDeltaTime = Time.fixedDeltaTime;
         DontDestroyOnLoad(gameObject);
+
+        // Safety net: never let slowed time leak across a room transition / reload,
+        // regardless of which code path was driving the slow-motion.
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    private void OnSceneUnloaded(Scene scene)
+    {
+        ResetImmediate();
     }
 
     /// <summary>
@@ -43,6 +53,11 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     /// <param name="duration">�������ҷ���ͧ���˹�ǧ (�Թҷ�)</param>
     public void StartSlowMotion(float timeScale, float duration)
     {
+        // Callers hold this via the ISlowMotionController interface, which bypasses Unity's
+        // overloaded null check — so guard against use after the object's native side is
+        // destroyed (e.g. play-mode exit teardown) where Stop/StartCoroutine would throw.
+        if (this == null) return;
+
         if (_slowMotionCoroutine != null)
         {
             StopCoroutine(_slowMotionCoroutine);
@@ -60,6 +75,8 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     /// <param name="easeOutDuration">����㹡�� Fade Out (�Թҷ�)</param>
     public void StartSlowMotionSmooth(float timeScale, float duration, float easeInDuration = 0.2f, float easeOutDuration = 0.2f)
     {
+        if (this == null) return;
+
         if (_slowMotionCoroutine != null)
         {
             StopCoroutine(_slowMotionCoroutine);
@@ -73,6 +90,8 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     /// </summary>
     public void StartHitstop(float timeScale, float duration)
     {
+        if (this == null) return;
+
         if (_hitstopCoroutine != null) StopCoroutine(_hitstopCoroutine);
         if (_slowMotionCoroutine != null) { StopCoroutine(_slowMotionCoroutine); _slowMotionCoroutine = null; }
         _hitstopCoroutine = StartCoroutine(HitstopCoroutine(timeScale, duration));
@@ -96,6 +115,7 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     /// </summary>
     public void StopSlowMotion()
     {
+        if (this == null) return;
         if (_hitstopActive) return;
 
         if (_slowMotionCoroutine != null)
@@ -103,6 +123,30 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
             StopCoroutine(_slowMotionCoroutine);
         }
 
+        ResetTimeScale();
+    }
+
+    /// <summary>
+    /// Hard reset: cancels slow-motion AND hitstop, then restores normal time.
+    /// Bypasses the hitstop guard so lifecycle events (death, scene unload) always win.
+    /// </summary>
+    public void ResetImmediate()
+    {
+        if (this == null) return;
+
+        if (_slowMotionCoroutine != null)
+        {
+            StopCoroutine(_slowMotionCoroutine);
+            _slowMotionCoroutine = null;
+        }
+
+        if (_hitstopCoroutine != null)
+        {
+            StopCoroutine(_hitstopCoroutine);
+            _hitstopCoroutine = null;
+        }
+
+        _hitstopActive = false;
         ResetTimeScale();
     }
 
@@ -171,6 +215,7 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
 
     private void OnDestroy()
     {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
         ResetTimeScale();
     }
 }

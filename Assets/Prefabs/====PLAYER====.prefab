@@ -372,7 +372,7 @@ GameObject:
   - component: {fileID: 4885150918750639098}
   - component: {fileID: 1234567890123456789}
   - component: {fileID: 8086246394040665203}
-  - component: {fileID: 9112233445566778800}
+  - component: {fileID: 3733719893120945035}
   m_Layer: 10
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -489,7 +489,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6700000, guid: 7f3c9a21b4d84e6fa05c1e2d3b4a5c6d, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -568,6 +568,8 @@ MonoBehaviour:
   useSmoothSlowMotion: 1
   requireAimHoldForDash: 1
   dashAimDisplay: {fileID: 0}
+  dashAnimUpThreshold: 0.5
+  dashAnimDownThreshold: -0.5
   animator: {fileID: 519027211526569210}
   invincibilityDuration: 2
   attackStateDuration: 0.5
@@ -614,15 +616,14 @@ MonoBehaviour:
   wallSlideAcceleration: 0.1
   wallStickHorizontalBrake: 80
   wallInputThreshold: 0.1
-  wallSlideMaxFallAtMaxSpeedMultiplier: 1.35
   dashSettings:
-    dashSpeed: 7
-    endDashSpeed: 7
+    dashSpeed: 3.5
+    endDashSpeed: 3.5
     endDashUpMult: 0.75
-    dashTime: 0.15
+    dashTime: 0.3
     dashCooldown: 0.2
     dashRefillCooldown: 0.1
-    dashAttackTime: 0.3
+    dashAttackTime: 0.35
     maxDashes: 1
     stopAtDashEnd: 1
     airEndDashCarryMultiplier: 0.55
@@ -630,15 +631,24 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 2056
+  oneWayPlatformMask:
+    serializedVersion: 2
+    m_Bits: 0
+  dropThroughSafetyTime: 0.75
+  maxSlopeAngle: 45
+  groundSnapDistance: 0.12
+  groundCheckSkin: 0.02
+  postJumpSnapSuppressTime: 0.1
+  knockbackLockTime: 0.2
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
-  wallJumpAtMaxSpeedMultiplier: 1.2
   wallJumpLockTime: 0.15
   wallCheckSize: {x: 0.2, y: 0.8}
   wallCheckOffset: {x: 0.73, y: 0}
   climbableLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallEnabled: 1
   grabbableLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -649,6 +659,8 @@ MonoBehaviour:
   autoGrab: 1
   airAnimSpeedThreshold: 1
   canMove: 1
+  enableWallDashRefresh: 1
+  enableHangDashRefresh: 1
 --- !u!114 &7705200461922201765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,7 +680,10 @@ MonoBehaviour:
     m_Bits: 4294967295
   hitstopDuration: 1
   hitstopTimeScale: 0.2
+  dashAttackFreezeDuration: 0.2
   weakPointShakeIntensity: 0.1
+  bounceForce: 80
+  bounceUpwardBias: 0.2
 --- !u!114 &4885150918750639098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -721,3 +736,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerEnergyCollector
   collectRadius: 1.5
+--- !u!114 &3733719893120945035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2e9322b40429f4384642855a452dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Characters.Player.PlayerFootstepRelay

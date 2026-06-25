@@ -85,6 +85,7 @@ public class BossGasAttack : MonoBehaviour
     {
         StopAllCoroutines();
         isAttacking = false;
+        SoundManager.StopLoop();
         if (_activeCloud != null) Destroy(_activeCloud);
         _activeCloud = null;
         SetFanSpeed(_fanNormalSpeed);
@@ -100,6 +101,7 @@ public class BossGasAttack : MonoBehaviour
 
         // Spin the fan and start the visible vent smoke during the telegraph window.
         SetFanSpeed(fanSpinSpeed);
+        SoundManager.PlaySound(SoundType.BOSS_GAS_RELEASE);
         OnGasRelease?.Invoke();
         if (fanVentParticles != null) fanVentParticles.Play();
 
@@ -113,6 +115,8 @@ public class BossGasAttack : MonoBehaviour
 
         // Spawn the cloud.
         _activeCloud = SpawnCloud(cloudDuration);
+        SoundManager.StartLoop(SoundType.BOSS_GAS_LOOP);
+        StartCoroutine(StopGasLoopAfter(cloudDuration));
 
         // Fade the vent out as the cloud takes over — let live particles finish fading.
         if (fanVentParticles != null)
@@ -125,6 +129,12 @@ public class BossGasAttack : MonoBehaviour
         // Release the manager — boss can now use hammer/claw while the cloud lingers.
         isAttacking = false;
         _activeCloud = null; // cloud is self-managing from here
+    }
+
+    private IEnumerator StopGasLoopAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SoundManager.StopLoop();
     }
 
     private void SetFanSpeed(float speed)

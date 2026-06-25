@@ -65,8 +65,6 @@ namespace Game.Components.Movement
         [SerializeField] private float wallSlideAcceleration = 160f;
         [SerializeField] private float wallStickHorizontalBrake = 120f;
         [SerializeField] private float wallInputThreshold = 0.1f;
-        [FormerlySerializedAs("wallSlideMaxFallAtMaxMomentumMultiplier")]
-        [SerializeField] private float wallSlideMaxFallAtMaxSpeedMultiplier = 1.2f;
 
         [Header("Dash Settings")]
         [SerializeField] private DashSettings dashSettings = new DashSettings();
@@ -77,6 +75,16 @@ namespace Game.Components.Movement
         [SerializeField] private LayerMask oneWayPlatformMask;
         [SerializeField] private float dropThroughSafetyTime = 0.75f;
 
+        [Header("Slope Handling")]
+        [Tooltip("Surfaces up to this angle (deg) count as walkable ground. Steeper is treated as not-grounded.")]
+        [SerializeField] private float maxSlopeAngle = 45f;
+        [Tooltip("How far below the feet the ground CircleCast probes. Doubles as the snap/forgiveness window that keeps small bumps and slope vertices grounded instead of reading 'fall'.")]
+        [SerializeField] private float groundSnapDistance = 0.12f;
+        [Tooltip("Skin so the ground CircleCast radius sits just inside the capsule width (avoids grabbing side walls).")]
+        [SerializeField] private float groundCheckSkin = 0.02f;
+        [Tooltip("Seconds after a jump/bounce during which slope-stick + snap are suppressed so the launch can actually leave the ground.")]
+        [SerializeField] private float postJumpSnapSuppressTime = 0.1f;
+
         [Header("Knockback Settings")]
         [Tooltip("Seconds after a knockback during which move input and braking are ignored so the knockback velocity carries.")]
         [SerializeField] private float knockbackLockTime = 0.2f;
@@ -84,8 +92,6 @@ namespace Game.Components.Movement
         [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
-        [Tooltip("Wall jump launch (both axes) scales from 1x at zero approach speed up to this at full wall-entry momentum, matching the speed-powers-actions pillar.")]
-        [SerializeField] private float wallJumpAtMaxSpeedMultiplier = 1.2f;
         [Tooltip("Seconds after a wall jump during which wall contact is ignored so the launch carries the player away.")]
         [SerializeField] private float wallJumpLockTime = 0.15f;
 
@@ -136,9 +142,10 @@ namespace Game.Components.Movement
         private bool _wasWallSliding;
         private float _currentWallSlideSpeed;
         private Vector2 moveInput;
-        private float _wallEntrySpeedFactor;
         private float _wallJumpLockTimer;
         private float _knockbackLockTimer;
+        private float _bounceKnockbackLockTimer;
+        private bool _isDashAttacking;
 
         // Dash (composed, not inherited)
         private DashHandler _dashHandler;
@@ -155,13 +162,26 @@ namespace Game.Components.Movement
         // Drop-through state
         private Collider2D _bodyCollider;
         private Collider2D _currentGroundCollider;
+        private Collider2D _bestGroundCollider;
         private static readonly Collider2D[] _groundHitBuffer = new Collider2D[8];
         private ContactFilter2D _groundFilter;
+
+        // Slope / ground-cast state
+        private static readonly RaycastHit2D[] _groundCastBuffer = new RaycastHit2D[8];
+        private ContactFilter2D _groundCastFilter;
+        private bool _groundCastFilterReady;
+        private Vector2 _groundNormal = Vector2.up;
+        private Vector2 _groundPoint;
+        private float _groundSlopeAngle;
+        private bool _onSlope;
+        private float _snapSuppressTimer;
+        private float _lastGroundSpeed;
 
         // Grab state
         private bool isGrabbing;
         private bool isCaptured;
         private float _stunTimer;
+        private bool _movementHalted;
         private SwingPoint currentSwingPoint;
         private float grabbedSpeedFactor;
         private float _autoGrabCooldownTimer;
@@ -178,7 +198,11 @@ namespace Game.Components.Movement
         public event Action GrabStarted;
 
         public bool IsDashing => _dashHandler != null && _dashHandler.IsDashing;
+        public bool IsDamageKnocked => _knockbackLockTimer > 0f;
+        public bool IsBounceKnocked => _bounceKnockbackLockTimer > 0f;
+        public bool IsKnocked => IsDamageKnocked || IsBounceKnocked;
         public bool DashAttacking => _dashHandler != null && _dashHandler.DashAttacking;
+        public bool IsDashAttacking => _isDashAttacking;
         public bool CanDash => _dashHandler != null && _dashHandler.CanDash;
         public int CurrentDashes => _dashHandler?.CurrentDashes ?? 0;
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
@@ -265,10 +289,12 @@ namespace Game.Components.Movement
                 oneWayPlatformMask = LayerMask.GetMask("Platform");
             }
 
+        }
+
+        private void Start()
+        {
             if (_logger == null)
-            {
-                Debug.LogWarning("[MovementComponent] Logger not injected, using Debug.Log");
-            }
+                Debug.LogWarning("[MovementComponent] Logger not injected — check VContainer scope registration");
         }
 
         /// <summary>
@@ -284,9 +310,9 @@ namespace Game.Components.Movement
             _wasWallSliding = false;
             _currentWallSlideSpeed = 0f;
             moveInput = Vector2.zero;
-            _wallEntrySpeedFactor = 0f;
             _wallJumpLockTimer = 0f;
             _knockbackLockTimer = 0f;
+            _bounceKnockbackLockTimer = 0f;
             _postDashAirBrakeTimer = 0f;
             _wasDashingLastFrame = false;
             isGrabbing = false;
@@ -314,6 +340,17 @@ namespace Game.Components.Movement
             _groundFilter.SetLayerMask(groundLayer);
             _groundFilter.useTriggers = false;
             _groundFilter.useLayerMask = true;
+
+            // Ground CircleCast filter covers both solid ground and one-way platforms so the
+            // slope-aware check sees every surface the player can stand on.
+            _groundCastFilter = new ContactFilter2D();
+            _groundCastFilter.SetLayerMask(groundLayer | oneWayPlatformMask);
+            _groundCastFilter.useTriggers = false;
+            _groundCastFilter.useLayerMask = true;
+            _groundCastFilterReady = true;
+            _groundNormal = Vector2.up;
+            _snapSuppressTimer = 0f;
+            _lastGroundSpeed = 0f;
 
             // Initialize dash handler (composition)
             _dashHandler = new DashHandler(dashSettings);
@@ -349,6 +386,12 @@ namespace Game.Components.Movement
         /// </summary>
         public void UpdateMovement()
         {
+            if (_movementHalted)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             if (_wallJumpLockTimer > 0f)
             {
                 _wallJumpLockTimer = Mathf.Max(0f, _wallJumpLockTimer - Time.deltaTime);
@@ -357,6 +400,16 @@ namespace Game.Components.Movement
             if (_knockbackLockTimer > 0f)
             {
                 _knockbackLockTimer = Mathf.Max(0f, _knockbackLockTimer - Time.deltaTime);
+            }
+
+            if (_bounceKnockbackLockTimer > 0f)
+            {
+                _bounceKnockbackLockTimer = Mathf.Max(0f, _bounceKnockbackLockTimer - Time.deltaTime);
+            }
+
+            if (_snapSuppressTimer > 0f)
+            {
+                _snapSuppressTimer = Mathf.Max(0f, _snapSuppressTimer - Time.deltaTime);
             }
 
             CheckGroundStatus();
@@ -422,7 +475,14 @@ namespace Game.Components.Movement
                 return;
             }
 
+            if (_isDashAttacking)
+            {
+                if (rb != null) rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             UpdateJumpState();
+            ApplyGroundedSlopeMovement();
         }
 
         #endregion
@@ -439,7 +499,8 @@ namespace Game.Components.Movement
             if (IsStunned) return;
             // During the knockback lock, leave velocity untouched so the knockback carries —
             // skip input force, deceleration, reverse/post-dash braking entirely.
-            if (_knockbackLockTimer > 0f) return;
+            if (_knockbackLockTimer > 0f || _bounceKnockbackLockTimer > 0f) return;
+            if (_isDashAttacking) return;
             if (!canMove || rb == null) return;
 
             // While stuck to a wall, horizontal velocity is owned entirely by
@@ -559,6 +620,13 @@ namespace Game.Components.Movement
             _dashHandler?.ResetDash();
         }
 
+        // Combo refresh — makes the dash immediately available again after a weak-point / true-damage
+        // dash hit. The next Dash() call interrupts the current dash coroutine on its own.
+        public void RechargeDashForCombo()
+        {
+            _dashHandler?.RechargeForCombo();
+        }
+
         #endregion
 
         #region Jump
@@ -612,6 +680,7 @@ namespace Game.Components.Movement
 
             varJumpSpeed = bounceSpeed;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceSpeed);
+            _snapSuppressTimer = postJumpSnapSuppressTime;
 
             _logger?.Log($"Bounced! Speed: {bounceSpeed}");
         }
@@ -627,13 +696,6 @@ namespace Game.Components.Movement
                 ? -wallSideSign
                 : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
 
-            // Scale the launch by the speed the player carried INTO the wall, not their
-            // current velocity (wall-stick has already braked horizontal speed to ~0).
-            // This keeps wall jumps on the "speed powers actions" pillar: a fast approach
-            // launches harder. _wallEntrySpeedFactor is still valid here (the wall-jump
-            // lock that zeroes it only takes effect on the next CheckWallStatus).
-            float wallJumpMultiplier = Mathf.Lerp(1f, wallJumpAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
-
             ResetWallSlideState();
 
             BeginJumpWindow();
@@ -642,8 +704,8 @@ namespace Game.Components.Movement
             // regardless of the serialized field's sign — a stale/negative value must never
             // fire the player into the ground.
             rb.linearVelocity = new Vector2(
-                jumpAwayDirection * wallJumpHorizontalSpeed * wallJumpMultiplier,
-                Mathf.Abs(wallJumpVerticalSpeed) * UpSign * wallJumpMultiplier
+                jumpAwayDirection * wallJumpHorizontalSpeed,
+                Mathf.Abs(wallJumpVerticalSpeed) * UpSign
             );
 
             ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
@@ -708,6 +770,9 @@ namespace Game.Components.Movement
             jumpGraceTimer = 0f;
             varJumpTimer = 0f;
             autoJump = false;
+            // Suppress slope-stick/snap briefly so the launch can leave the ground instead of
+            // being re-glued to the surface on the same/next frame.
+            _snapSuppressTimer = postJumpSnapSuppressTime;
         }
 
         private float ResolveJumpDirection(float currentSpeedX)
@@ -887,27 +952,59 @@ namespace Game.Components.Movement
             bool previousGrounded = isGrounded;
             isGrounded = false;
             _currentGroundCollider = null;
+            _bestGroundCollider = null;
+            _groundNormal = Vector2.up;
+            _groundPoint = Vector2.zero;
+            _groundSlopeAngle = 0f;
+            _onSlope = false;
 
-            if (groundCheck != null)
+            if (_bodyCollider != null && _groundCastFilterReady)
             {
-                int hitCount = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, _groundFilter, _groundHitBuffer);
+                // A wide circle just under the feet: it glides over composite-collider "ghost
+                // vertices" (the source of the floating bump) and returns the real surface normal
+                // so gentle slopes no longer read as a fall. World is +Y up (jumpSpeed > 0).
+                // Cast from the capsule CENTER (not the feet) so the circle does not start already
+                // overlapping the ground — an overlapping start returns a zero normal and would hide
+                // the slope. From the center it clears the surface, then descends to groundSnapDistance
+                // below the feet (the forgiveness window).
+                Bounds b = _bodyCollider.bounds;
+                float radius = Mathf.Max(0.05f, b.extents.x - groundCheckSkin);
+                Vector2 origin = b.center;
+                float castDistance = Mathf.Max(0.01f, b.extents.y - radius + groundSnapDistance);
+
+                int hitCount = Physics2D.CircleCast(origin, radius, Vector2.down, _groundCastFilter, _groundCastBuffer, castDistance);
+                float bestAngle = float.MaxValue;
                 for (int i = 0; i < hitCount; i++)
                 {
-                    Collider2D hit = _groundHitBuffer[i];
-                    if (_bodyCollider != null && Physics2D.GetIgnoreCollision(_bodyCollider, hit))
-                        continue;
+                    RaycastHit2D hit = _groundCastBuffer[i];
+                    if (hit.collider == null) continue;
+                    if (Physics2D.GetIgnoreCollision(_bodyCollider, hit.collider)) continue;
 
-                    bool isOneWay = ((1 << hit.gameObject.layer) & oneWayPlatformMask.value) != 0;
+                    // A cast that begins overlapping returns a zero normal; fall back to "up".
+                    Vector2 n = hit.normal.sqrMagnitude < 0.0001f ? Vector2.up : hit.normal;
+                    float angle = Vector2.Angle(n, Vector2.up);
+                    if (angle > maxSlopeAngle) continue; // too steep to stand on — treat as wall
+
+                    bool isOneWay = ((1 << hit.collider.gameObject.layer) & oneWayPlatformMask.value) != 0;
                     // One-way platform: only counts as ground when feet are at/above the surface.
-                    // If feet are below the top, the player is passing through from below — skip.
-                    if (isOneWay && _bodyCollider != null && _bodyCollider.bounds.min.y < hit.bounds.max.y - 0.02f)
+                    if (isOneWay && b.min.y < hit.collider.bounds.max.y - 0.02f)
                         continue;
 
                     isGrounded = true;
+                    if (angle < bestAngle)
+                    {
+                        bestAngle = angle;
+                        _groundNormal = n;
+                        _groundPoint = hit.point;
+                        _groundSlopeAngle = angle;
+                        _bestGroundCollider = hit.collider;
+                    }
 
                     if (_currentGroundCollider == null && isOneWay)
-                        _currentGroundCollider = hit;
+                        _currentGroundCollider = hit.collider;
                 }
+
+                _onSlope = isGrounded && _groundSlopeAngle > 0.5f;
             }
 
             if (previousGrounded != isGrounded)
@@ -920,6 +1017,49 @@ namespace Game.Components.Movement
                 StartJumpGraceTime();
                 _logger?.Log("Started jump grace time (coyote time)");
             }
+        }
+
+        // Redirect ground movement along the slope and stick the capsule to the surface.
+        // Runs at the end of UpdateMovement (grounded, non-dash, non-grab states only), so it has the
+        // final say over the velocity the physics step will integrate.
+        private void ApplyGroundedSlopeMovement()
+        {
+            if (rb == null || !isGrounded || _bodyCollider == null) return;
+            if (_knockbackLockTimer > 0f || _bounceKnockbackLockTimer > 0f) return;   // let a knockback carry untouched
+            if (_snapSuppressTimer > 0f)            // just jumped/bounced: don't re-stick the launch
+            {
+                _lastGroundSpeed = rb.linearVelocity.x;
+                return;
+            }
+
+            // Tangent along the surface, oriented so +x means "moving right".
+            Vector2 normal = _groundNormal;
+            Vector2 tangent = new Vector2(normal.y, -normal.x);
+            if (tangent.x < 0f) tangent = -tangent;
+
+            // Speed ALONG the surface = project the full velocity onto the tangent. Using only the
+            // horizontal component here would shrink it by cos(slope) every frame (the velocity gets
+            // re-projected each tick), so walking a slope felt sluggish; the dot keeps the ground speed
+            // intact so a slope feels exactly like flat ground. Clamp to the same grounded speed cap as
+            // flat so it never reads faster either. Perpendicular (gravity) component is dropped → no
+            // idle slide, no flying off the bottom of a ramp.
+            float speedLimit = GetCurrentHorizontalSpeedLimit();
+            float groundSpeed = Mathf.Clamp(Vector2.Dot(rb.linearVelocity, tangent), -speedLimit, speedLimit);
+            _lastGroundSpeed = groundSpeed;
+            Vector2 slopeVel = tangent * groundSpeed;
+
+            // Hard-stick: close any small vertical gap to the surface this step (within forgiveness),
+            // e.g. when cresting a convex slope. Velocity-based so it plays nice with interpolation and
+            // the Update-driven velocity pipeline; never pushes the player up out of the ground.
+            float dt = Time.deltaTime;
+            if (dt > 0f && _groundPoint != Vector2.zero)
+            {
+                float gap = _bodyCollider.bounds.min.y - _groundPoint.y; // >0: feet above surface
+                if (gap > 0.0001f && gap <= groundSnapDistance)
+                    slopeVel.y -= gap / dt;
+            }
+
+            rb.linearVelocity = slopeVel;
         }
 
         private void CheckWallStatus()
@@ -938,7 +1078,6 @@ namespace Game.Components.Movement
                 // climb / wall-slide logic on the very next frame.
                 isTouchingWall = false;
                 wallSideSign = 0;
-                _wallEntrySpeedFactor = 0f;
                 return;
             }
 
@@ -951,13 +1090,7 @@ namespace Game.Components.Movement
             bool leftHit = Physics2D.OverlapBox(leftCheckPos, wallCheckSize, 0f, climbableLayer);
             bool rightHit = Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
 
-            bool wasTouchingWall = isTouchingWall;
             isTouchingWall = !isGrounded && (leftHit || rightHit);
-
-            if (isTouchingWall && !wasTouchingWall)
-                _wallEntrySpeedFactor = GetCurrentSpeedFactorFromVelocity();
-            else if (!isTouchingWall)
-                _wallEntrySpeedFactor = 0f;
 
             if (rightHit)
             {
@@ -981,12 +1114,12 @@ namespace Game.Components.Movement
             }
 
             float gravityDirection = gravity >= 0f ? -1f : 1f;
-            float maxSlideSpeed = wallSlideMaxFallSpeed * Mathf.Lerp(1f, wallSlideMaxFallAtMaxSpeedMultiplier, _wallEntrySpeedFactor);
+            float maxSlideSpeed = wallSlideMaxFallSpeed;
             float currentGravityAlignedSpeed = rb.linearVelocity.y * gravityDirection;
 
             if (!_wasWallSliding)
             {
-                _currentWallSlideSpeed = Mathf.Max(Mathf.Max(0f, currentGravityAlignedSpeed), _wallEntrySpeedFactor * maxSpeed);
+                _currentWallSlideSpeed = Mathf.Max(0f, currentGravityAlignedSpeed);
             }
             else
             {
@@ -1149,15 +1282,41 @@ namespace Game.Components.Movement
             canMove = value;
             if (!canMove)
             {
-                _wallEntrySpeedFactor = 0f;
                 _postDashAirBrakeTimer = 0f;
                 _wasDashingLastFrame = false;
             }
         }
 
+        public void SetMovementHalted(bool value)
+        {
+            _movementHalted = value;
+            if (_movementHalted && rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
+        public void ResetState()
+        {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            ResetDash();
+            _knockbackLockTimer = 0f;
+            _bounceKnockbackLockTimer = 0f;
+            _wallJumpLockTimer = 0f;
+            _stunTimer = 0f;
+            _isDashAttacking = false;
+            isCaptured = false;
+            if (isGrabbing) ReleaseGrab();
+            _movementHalted = false;
+            SetCanMove(true);
+        }
+
         public bool IsGrounded()
         {
             return isGrounded;
+        }
+
+        public string GetGroundTag()
+        {
+            return isGrounded && _bestGroundCollider != null ? _bestGroundCollider.tag : null;
         }
 
         public bool IsJumping()
@@ -1215,6 +1374,63 @@ namespace Game.Components.Movement
             _knockbackLockTimer = knockbackLockTime;
         }
 
+        public void BeginDashAttackFreeze()
+        {
+            if (rb == null) return;
+
+            if (_dashCoroutine != null)
+            {
+                StopCoroutine(_dashCoroutine);
+                _dashCoroutine = null;
+            }
+            _dashHandler?.ForceEndDash();
+            _wasDashingLastFrame = false;
+            _postDashAirBrakeTimer = 0f;
+            ResetWallSlideState();
+            isGrabbing = false;
+
+            rb.linearVelocity = Vector2.zero;
+            _isDashAttacking = true;
+        }
+
+        public void EndDashAttackFreeze()
+        {
+            _isDashAttacking = false;
+        }
+
+        // Rebound the player opposite the dash direction on hitting an enemy.
+        // Stops the running dash coroutine so its end-of-dash velocity write never fires,
+        // then sets velocity to -dashDir (+ optional upward pop) scaled by dash momentum.
+        // The knockback lock window suppresses Move() braking so the bounce carries.
+        public void BounceFromDashImpact(float force, float upwardBias)
+        {
+            if (rb == null) return;
+
+            EndDashAttackFreeze();
+
+            Vector2 dashDir = _dashHandler != null ? _dashHandler.DashDir : Vector2.zero;
+            if (dashDir == Vector2.zero)
+                dashDir = new Vector2(characterTransform != null ? Mathf.Sign(characterTransform.localScale.x) : 1f, 0f);
+
+            float multiplier = _dashHandler != null ? _dashHandler.DashSpeedMultiplier : 1f;
+
+            if (_dashCoroutine != null)
+            {
+                StopCoroutine(_dashCoroutine);
+                _dashCoroutine = null;
+            }
+            _dashHandler?.ForceEndDash();
+            _wasDashingLastFrame = false;
+
+            Vector2 bounceDir = (-dashDir + Vector2.up * UpSign * upwardBias).normalized;
+            rb.linearVelocity = bounceDir * (force * multiplier);
+
+            _bounceKnockbackLockTimer = knockbackLockTime;
+            _postDashAirBrakeTimer = 0f;
+            ResetWallSlideState();
+            isGrabbing = false;
+        }
+
         private float GetCurrentHorizontalSpeedLimit()
         {
             return maxSpeed;
@@ -1227,7 +1443,10 @@ namespace Game.Components.Movement
                 return 0f;
             }
 
-            float speedNow = Mathf.Abs(rb.linearVelocity.x);
+            // On a slope the velocity is redirected along the surface, so the horizontal component
+            // understates the real ground speed. Use the slope-projected ground speed there so
+            // momentum (which powers jump/dash/damage) stays constant up/down gentle slopes.
+            float speedNow = (isGrounded && _onSlope) ? Mathf.Abs(_lastGroundSpeed) : Mathf.Abs(rb.linearVelocity.x);
             // Normalize by character max speed, not current cap, to avoid false 1.0 factor while coasting.
             float referenceSpeed = Mathf.Max(0.01f, maxSpeed);
             return Mathf.Clamp01(speedNow / referenceSpeed);
@@ -1303,10 +1522,24 @@ namespace Game.Components.Movement
 
         private void OnDrawGizmosSelected()
         {
-            if (groundCheck != null)
+            // Ground CircleCast probe (matches CheckGroundStatus).
+            Collider2D bodyCol = _bodyCollider != null ? _bodyCollider : GetComponent<Collider2D>();
+            if (bodyCol != null)
             {
+                Bounds b = bodyCol.bounds;
+                float radius = Mathf.Max(0.05f, b.extents.x - groundCheckSkin);
+                Vector3 castStart = new Vector3(b.center.x, b.center.y, transform.position.z);
+                Vector3 castEnd = castStart + Vector3.down * Mathf.Max(0.01f, b.extents.y - radius + groundSnapDistance);
+
                 Gizmos.color = isGrounded ? Color.green : Color.red;
-                Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+                Gizmos.DrawWireSphere(castStart, radius);
+                Gizmos.DrawWireSphere(castEnd, radius);
+
+                if (isGrounded)
+                {
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawLine(_groundPoint, _groundPoint + _groundNormal); // surface normal
+                }
             }
 
             Vector3 worldCenter = transform.position;

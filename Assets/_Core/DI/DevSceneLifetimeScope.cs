@@ -8,6 +8,7 @@ using Game.Components.Combat;
 using Game.Components.Skills;
 using Game.Characters.Player;
 using Game.Tutorial;
+using Game.UI;
 
 /// <summary>
 /// Self-contained scope for dev/practice scenes (e.g. practice-vava).
@@ -60,7 +61,8 @@ public class DevSceneLifetimeScope : LifetimeScope
             builder.RegisterInstance(player).As<character>().As<Player>();
 
             var sc = player.GetComponent<PlayerSkillController>();
-            if (sc != null) builder.RegisterInstance(sc);
+            if (sc != null) builder.RegisterInstance(sc)
+                .As<Game.Components.Skills.ISkillReadinessProvider>();
 
             var ec = player.GetComponent<PlayerEnergyCollector>();
             if (ec != null) builder.RegisterInstance(ec);
@@ -74,6 +76,14 @@ public class DevSceneLifetimeScope : LifetimeScope
         if (empBlast != null)
             builder.RegisterInstance(empBlast);
 
+        var playerHUD = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
+        if (playerHUD != null)
+            builder.RegisterInstance(playerHUD);
+
+        var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
+        if (energyHUD != null)
+            builder.RegisterInstance(energyHUD);
+
         // Inject into every component on the Player GO that has [Inject] methods,
         // plus any scene singletons that need DI. container.Inject() only targets the
         // specific component type passed — sibling components must be injected one by one.
@@ -82,8 +92,7 @@ public class DevSceneLifetimeScope : LifetimeScope
             var p = FindAnyObjectByType<Player>(FindObjectsInactive.Include);
             if (p != null)
             {
-                container.Inject(p);
-
+                // Inject component-level deps first so they are ready regardless of Player injection outcome.
                 var mc = p.GetComponent<MovementComponent>();
                 if (mc != null) container.Inject(mc);
 
@@ -92,6 +101,8 @@ public class DevSceneLifetimeScope : LifetimeScope
 
                 var ec = p.GetComponent<PlayerEnergyCollector>();
                 if (ec != null) container.Inject(ec);
+
+                container.Inject(p);
             }
 
             var eb = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
@@ -101,6 +112,12 @@ public class DevSceneLifetimeScope : LifetimeScope
             // the Player components above so its [Inject] Construct() receives Player/input/skills.
             var tutorial = FindAnyObjectByType<TutorialManager>(FindObjectsInactive.Include);
             if (tutorial != null) container.Inject(tutorial);
+
+            var hud = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
+            if (hud != null) container.Inject(hud);
+
+            var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
+            if (energyHUD != null) container.Inject(energyHUD);
         });
     }
 }

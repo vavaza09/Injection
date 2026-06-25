@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 122011385}
   - component: {fileID: 122011384}
   m_Layer: 0
-  m_Name: Step7_SkillQ
+  m_Name: Step8_SkillQ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,8 +150,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.CastSkillStep
   description: Collect energy, then press Q to fire EMP Blast.
   promptKeys:
-  - Skill1
+  - actionKey: Skill1
+    separatorAfter: 0
   abilityToUnlock: skill1
+  barriers: []
   skill: 0
 --- !u!4 &122011385
 Transform:
@@ -200,8 +202,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Cling to the wall, then jump to wall-climb up to the top.
   promptKeys:
-  - Jump
+  - actionKey: Jump
+    separatorAfter: 0
   abilityToUnlock: wall
+  barriers: []
 --- !u!61 &133540305
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -365,7 +369,7 @@ GameObject:
   - component: {fileID: 172051970}
   - component: {fileID: 172051969}
   m_Layer: 0
-  m_Name: Step8_SkillF
+  m_Name: Step9_SkillF
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -385,8 +389,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.CastSkillStep
   description: Collect energy, then press F to use True Damage Dash.
   promptKeys:
-  - Skill2
+  - actionKey: Skill2
+    separatorAfter: 0
   abilityToUnlock: skill2
+  barriers: []
   skill: 1
 --- !u!4 &172051970
 Transform:
@@ -504,9 +510,14 @@ MonoBehaviour:
   description: Approach the swing point to grab on, then press Jump to launch to
     the target.
   promptKeys:
-  - Grab
-  - Jump
+  - actionKey: Grab
+    separatorAfter: 1
+  - actionKey: Jump
+    separatorAfter: 3
+  - actionKey: Grab
+    separatorAfter: 0
   abilityToUnlock: grab
+  barriers: []
 --- !u!61 &190840572
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -664,6 +675,7 @@ GameObject:
   m_Component:
   - component: {fileID: 380291224}
   - component: {fileID: 380291223}
+  - component: {fileID: 380291225}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -751,6 +763,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &380291225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380291222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &391827230
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,12 +838,12 @@ MonoBehaviour:
   - actionKey: Aim
     keyboardLabel: Right Click
     gamepadLabel: LT
-    keyboardSprite: {fileID: -4914911570186814470, guid: caa9d9f2f9b1a524d88001431852ad63, type: 3}
+    keyboardSprite: {fileID: -3288219961904825860, guid: d1f17debe9aff154289c1f824657eaea, type: 3}
     gamepadSprite: {fileID: -3997850089383228863, guid: 984a23d1b79be9445b9af668c91ef02a, type: 3}
   - actionKey: Dash
     keyboardLabel: Left Click
     gamepadLabel: RT
-    keyboardSprite: {fileID: 4721984945286338058, guid: 4a1ac28bef27c7f43bc5982c3ac97ba4, type: 3}
+    keyboardSprite: {fileID: 316446807246356010, guid: 477be4c9ca52a014590eaed704836534, type: 3}
     gamepadSprite: {fileID: 3336128370510153928, guid: 35e05dfa206c3764d95751f215154faa, type: 3}
   - actionKey: Grab
     keyboardLabel: E
@@ -878,6 +919,7 @@ MonoBehaviour:
   - {fileID: 133540304}
   - {fileID: 190840571}
   - {fileID: 916124907}
+  - {fileID: 802141101}
   - {fileID: 122011384}
   - {fileID: 172051969}
   promptUI: {fileID: 391827231}
@@ -933,9 +975,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Walk right to reach the flag.
   promptKeys:
-  - Forward
-  - backward
+  - actionKey: Forward
+    separatorAfter: 0
+  - actionKey: backward
+    separatorAfter: 0
   abilityToUnlock: 
+  barriers: []
 --- !u!61 &542126102
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -997,6 +1042,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &802141100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 802141102}
+  - component: {fileID: 802141101}
+  m_Layer: 0
+  m_Name: Step7_CollectEnergy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &802141101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802141100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b243a31e115cdb409817c3a4dabc39b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.CollectEnergyStep
+  description: Press Grab near an energy orb to collect it
+  promptKeys:
+  - actionKey: Grab
+    separatorAfter: 0
+  abilityToUnlock: 
+  barriers: []
+--- !u!4 &802141102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802141100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &916124906
 GameObject:
   m_ObjectHideFlags: 0
@@ -1028,9 +1123,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.KillEnemyStep
   description: Dash into the enemy's weak point (red ring) to take it down.
   promptKeys:
-  - Aim
-  - Dash
+  - actionKey: Aim
+    separatorAfter: 1
+  - actionKey: Dash
+    separatorAfter: 0
   abilityToUnlock: 
+  barriers: []
   dummy: {fileID: 189314239}
   aiBehaviour: {fileID: 189314239}
   weakPointIndicator: {fileID: 141912757}
@@ -1211,8 +1309,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Jump up onto the platform.
   promptKeys:
-  - Jump
+  - actionKey: Jump
+    separatorAfter: 0
   abilityToUnlock: 
+  barriers: []
 --- !u!61 &1410120771
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1285,6 +1385,7 @@ GameObject:
   - component: {fileID: 1472841573}
   - component: {fileID: 1472841572}
   - component: {fileID: 1472841571}
+  - component: {fileID: 1472841574}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1334,7 +1435,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -1366,6 +1467,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1472841574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472841570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &1545533410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1375,7 +1520,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1545533412}
-  - component: {fileID: 1545533411}
+  - component: {fileID: 1545533413}
   m_Layer: 0
   m_Name: TutorialDI
   m_TagString: Untagged
@@ -1383,25 +1528,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1545533411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545533410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07fa663fc9e59fa45b8272f1ca425c42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DevSceneLifetimeScope
-  parentReference:
-    TypeName: 
-  autoRun: 1
-  autoInjectGameObjects: []
-  logConfig: {fileID: 11400000, guid: 388bbe7ac7ad84e4590ce785ae507680, type: 2}
-  maxEnergy: 3
-  startEnergy: 0
 --- !u!4 &1545533412
 Transform:
   m_ObjectHideFlags: 0
@@ -1412,6 +1538,67 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1545533413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545533410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39341facf8e86f443a81db4eb0e681d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLifetimeScope
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
+--- !u!1 &1625319188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1625319190}
+  - component: {fileID: 1625319189}
+  m_Layer: 0
+  m_Name: SpawnPoint_TutorialStart
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1625319189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625319188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7842be41fc78ae4449379a98d94c10e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Rooms.SpawnPoint
+  spawnPointId: tutorial_start
+--- !u!4 &1625319190
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625319188}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.03, y: -0.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1555,63 +1742,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1001 &1905153277
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
 --- !u!1 &2005876935
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,9 +1774,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.ReachZoneStep
   description: Hold Right Click to aim, then Left Click to Dash across the gap.
   promptKeys:
-  - Aim
-  - Dash
+  - actionKey: Aim
+    separatorAfter: 1
+  - actionKey: Dash
+    separatorAfter: 0
   abilityToUnlock: dash
+  barriers: []
 --- !u!61 &2005876937
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1708,6 +1841,99 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2092474024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2092474027}
+  - component: {fileID: 2092474026}
+  - component: {fileID: 2092474025}
+  m_Layer: 0
+  m_Name: RoomPortal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2092474025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092474024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d21b0f5fd8bb7842985471e21d54dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Rooms.RoomPortal
+  targetRoomId: roomA
+  targetSpawnPointId: roomA_entry
+--- !u!61 &2092474026
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092474024}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.4033649, y: 0.70588875}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.8067298, y: 8.058886}
+  m_EdgeRadius: 0
+--- !u!4 &2092474027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092474024}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 87.8, y: 0.34192, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1718,9 +1944,9 @@ SceneRoots:
   - {fileID: 1027762438}
   - {fileID: 391827232}
   - {fileID: 392929983}
-  - {fileID: 1905153277}
   - {fileID: 916124908}
   - {fileID: 122011385}
+  - {fileID: 802141102}
   - {fileID: 172051970}
   - {fileID: 542126103}
   - {fileID: 1410120772}
@@ -1732,3 +1958,5 @@ SceneRoots:
   - {fileID: 1188481944}
   - {fileID: 279150769}
   - {fileID: 1710835784}
+  - {fileID: 1625319190}
+  - {fileID: 2092474027}

@@ -10,10 +10,14 @@ namespace Game.Components.Movement
         int CurrentDashes { get; }
         int MaxDashes { get; }
 
+        float DashSpeedMultiplier { get; }
+
         bool StartDash(Vector2 direction, bool isGrounded, float speedMultiplier = 1f);
         void UpdateTimers();
         bool RefillDash();
         void ResetDash();
+        void RechargeForCombo();
+        void ForceEndDash();
         void Initialize(Rigidbody2D rb);
     }
 }
