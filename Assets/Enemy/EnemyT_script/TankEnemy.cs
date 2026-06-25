@@ -21,6 +21,10 @@ public class TankEnemy : Enemy
     [SerializeField] private float barrelRotateSpeed = 170f;
     [SerializeField] private float gunArcDegrees = 60f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+    private AudioSource _motorSource;
+
     [Header("Barrel Recoil")]
     [SerializeField] private float recoilDistance = 0.3f;
     [SerializeField] private float recoilDuration = 0.15f;
@@ -61,6 +65,7 @@ public class TankEnemy : Enemy
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
         _currentFacingRight = spriteRenderer != null && spriteRenderer.flipX;
 
         // Move gunPivot out of the non-uniformly scaled Circle parent so rotation
@@ -78,6 +83,10 @@ public class TankEnemy : Enemy
             movementComponent.SetSpeed(moveSpeed);
             movementComponent.Stop();
         }
+
+        _motorSource = gameObject.AddComponent<AudioSource>();
+        _motorSource.playOnAwake = false;
+        SoundManager.StartLoopOn(SoundType.TANK_MOTOR, _motorSource);
 
         SetState(EnemyState.Idle);
     }
@@ -229,7 +238,7 @@ public class TankEnemy : Enemy
         // 2. Wait, then play flash glow
         if (flashStartDelay > 0f)
             yield return new WaitForSeconds(flashStartDelay);
-        SoundManager.PlaySound(SoundType.TANK_CANNON_CHARGE);
+        SoundManager.PlaySoundOn(SoundType.TANK_CANNON_CHARGE, _sfxSource);
         if (muzzleFlash != null)
             muzzleFlash.PlayFlash(shootDirection);
 
@@ -239,7 +248,7 @@ public class TankEnemy : Enemy
             yield return new WaitForSeconds(remaining);
 
         // 4. Fire bullet + smoke
-        SoundManager.PlaySound(SoundType.TANK_CANNON_FIRE);
+        SoundManager.PlaySoundOn(SoundType.TANK_CANNON_FIRE, _sfxSource);
         GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, fireRotation);
         TankBullet bullet = bulletObject.GetComponent<TankBullet>();
         if (bullet != null)
@@ -349,6 +358,12 @@ public class TankEnemy : Enemy
 
         currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
         gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+    }
+
+    protected override void OnDeath()
+    {
+        SoundManager.StopLoopOn(_motorSource);
+        base.OnDeath();
     }
 
     private void OnDrawGizmosSelected()
