@@ -11,6 +11,9 @@ namespace Game.UI.Skills
         [Header("Pip images (optional — auto-label used if empty)")]
         [SerializeField] private Image[] pips;
 
+        [Header("Energy counter text (two-digit, e.g. 00 01 02)")]
+        [SerializeField] private TextMeshProUGUI counterText;
+
         [Header("Colors")]
         [SerializeField] private Color filledColor = new Color(0.4f, 0.8f, 1f, 1f);
         [SerializeField] private Color emptyColor  = new Color(0.2f, 0.2f, 0.2f, 0.5f);
@@ -57,6 +60,9 @@ namespace Game.UI.Skills
             {
                 _fallbackLabel.text = $"Energy: {_store.Current}/{_store.Max}";
             }
+
+            if (counterText != null)
+                counterText.text = _store.Current.ToString("D2");
         }
 
         private void EnsureFallbackLabel()

@@ -57,6 +57,13 @@ public class RespawnCoordinator : MonoBehaviour
         // No checkpoint reached yet: place at the current scene's default spawn point.
         if (data == null || string.IsNullOrEmpty(data.checkpoint?.roomId))
         {
+            if (ScreenFader.Instance != null)
+            {
+                bool faded = false;
+                ScreenFader.Instance.FadeOut(() => faded = true);
+                yield return new WaitUntil(() => faded);
+            }
+
             var spawnPoints = Object.FindObjectsByType<SpawnPoint>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (spawnPoints.Length > 0 && _player != null)
                 _player.transform.position = spawnPoints[0].Position;
