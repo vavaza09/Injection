@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: ef556d583d2ed3945b949ba655016529
+guid: 6c2f019f7efb16d42bf50227d2a0a135
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6726495791981457629
-    second: under city 1 - bg_0
+      213: -7097637392023572228
+    second: under city 1 - bg bg2 fog_0
+  - first:
+      213: -2470525898470413444
+    second: under city 1 - bg bg2 fog_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -139,13 +142,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: under city 1 - bg_0
+      name: under city 1 - bg bg2 fog_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 3689
         y: 0
-        width: 5282
-        height: 1655
+        width: 2331
+        height: 2056
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +157,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 32f09c737bfa6a2a0800000000000000
-      internalID: -6726495791981457629
+      spriteID: cf0b7e79560208d90800000000000000
+      internalID: -7097637392023572228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - bg bg2 fog_1
+      rect:
+        serializedVersion: 2
+        x: 5844
+        y: 855
+        width: 179
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7ba445e8cde6bdd0800000000000000
+      internalID: -2470525898470413444
       vertices: []
       indices: 
       edges: []
@@ -164,7 +189,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +199,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      under city 1 - bg_0: -6726495791981457629
+      under city 1 - bg bg2 fog_0: -7097637392023572228
+      under city 1 - bg bg2 fog_1: -2470525898470413444
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
