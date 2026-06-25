@@ -4,7 +4,7 @@ using Game.Characters.Player;
 using Game.Components.Skills;
 using Game.Tutorial;
 
-public class PlayerSkillController : MonoBehaviour
+public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkillReadinessProvider
 {
     [Header("EMP Blast")]
     [SerializeField] private float empRadius        = 5f;
@@ -208,6 +208,31 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (_spriteRenderer == null) return;
         _spriteRenderer.color = _trueDamageArmedVisual ? trueDamageArmedColor : _originalColor;
+    }
+
+    // ── ISkillReadinessProvider ────────────────────────────────
+
+    public Game.Components.Skills.SkillReadout Get(Game.Components.Skills.SkillId id)
+    {
+        switch (id)
+        {
+            case Game.Components.Skills.SkillId.Emp:
+            {
+                bool unlocked = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill1);
+                bool canCast  = _empSkill != null && _empSkill.CanActivate && unlocked;
+                float remaining = _empSkill?.CooldownRemaining ?? 0f;
+                return new Game.Components.Skills.SkillReadout(unlocked, canCast, remaining, empCooldown);
+            }
+            case Game.Components.Skills.SkillId.TrueDamage:
+            {
+                bool unlocked = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill2);
+                bool canCast  = _trueDashSkill != null && _trueDashSkill.CanActivate && unlocked;
+                float remaining = _trueDashSkill?.CooldownRemaining ?? 0f;
+                return new Game.Components.Skills.SkillReadout(unlocked, canCast, remaining, trueDamageCooldown);
+            }
+            default:
+                return new Game.Components.Skills.SkillReadout(false, false, 0f, 1f);
+        }
     }
 
     // ── Debug Gizmos ───────────────────────────────────────────

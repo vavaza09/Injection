@@ -57,6 +57,13 @@ public class Player : character
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
 
+    [Header("Health Regeneration")]
+    [SerializeField] private bool enableHealthRegen = true;
+    [SerializeField] private float regenDelay = 5f;
+    [SerializeField] private float regenInterval = 1f;
+    private float _timeSinceLastDamage = 0f;
+    private float _regenTickTimer = 0f;
+
     [Header("State Machine")]
     [SerializeField] private float attackStateDuration = 0.5f;
 
@@ -283,6 +290,7 @@ public class Player : character
 
         if (_currentState == PlayerState.Dead) return;
 
+        UpdateHealthRegen();
         _animationController?.UpdateMovementAnimation();
 
         if (movementComponent != null && movementComponent.IsGrounded())
@@ -580,6 +588,8 @@ public class Player : character
         healthComponent.Heal(healthComponent.maxHealth);
         movementComponent?.ResetState();
         jumpsRemaining = maxJumps;
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
         if (!isAlive)
         {
             isAlive = true;
@@ -601,6 +611,8 @@ public class Player : character
 
         movementComponent?.ResetState();
         jumpsRemaining = maxJumps;
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
 
         if (!isAlive)
         {
@@ -612,8 +624,26 @@ public class Player : character
             healthComponent.StartInvincibility(invincDuration);
     }
 
+    private void UpdateHealthRegen()
+    {
+        if (!enableHealthRegen || healthComponent == null) return;
+        if (healthComponent.currentHealth >= healthComponent.maxHealth) return;
+
+        _timeSinceLastDamage += Time.deltaTime;
+        if (_timeSinceLastDamage < regenDelay) return;
+
+        _regenTickTimer += Time.deltaTime;
+        if (_regenTickTimer >= regenInterval)
+        {
+            _regenTickTimer -= regenInterval;
+            Heal(1f);
+        }
+    }
+
     protected override void OnTakeDamage()
     {
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
@@ -717,7 +747,11 @@ public class Player : character
             case PlayerState.Dead:
                 _slowMotion?.ResetImmediate();
                 movementComponent?.SetCanMove(false);
-                movementComponent?.SetMovementHalted(true);
+                if (movementComponent != null)
+                {
+                    var v = movementComponent.GetVelocity();
+                    movementComponent.SetVelocity(new Vector2(0f, v.y));
+                }
                 _animationController?.PlayDeathAnimation();
                 _audioController?.PlayDeathSound();
                 _logger?.LogWarning("Player died! Game Over!");
