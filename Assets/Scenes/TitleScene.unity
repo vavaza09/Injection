@@ -1673,6 +1673,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.size
+      value: 58
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[54].name
+      value: BOSS_JUNK_FALL
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[55].name
+      value: BOSS_JUNK_IMPACT
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[56].name
+      value: UI_HOVER
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[57].name
+      value: UI_CLICK
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[23].volume
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[10].pitchMax
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[10].pitchMin
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
