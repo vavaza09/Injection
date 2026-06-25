@@ -43,6 +43,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float shakeScale = 1f;
 
     private Camera _cam;
+    public Camera Cam => _cam;
     private Rigidbody2D _targetRb;
     private float _cameraZ;
 
