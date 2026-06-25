@@ -33,20 +33,25 @@ public class RootLifetimeScope : LifetimeScope
 
     protected override void Awake()
     {
+        Debug.Log($"[DIAG] RootLifetimeScope.Awake: this={GetInstanceID()} Instance={Instance?.GetInstanceID().ToString() ?? "null"} scene={gameObject.scene.name}");
         if (Instance != null && Instance != this)
         {
             // A root already exists (e.g. if Bootstrap is ever re-loaded) — never build twice.
+            Debug.LogWarning($"[DIAG] DUPLICATE RootLifetimeScope detected! Destroying this={GetInstanceID()}. Existing={Instance.GetInstanceID()} in scene={Instance.gameObject.scene.name}");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        Debug.Log($"[DIAG] RootLifetimeScope.Awake: DontDestroyOnLoad done, building container...");
         base.Awake();
+        Debug.Log($"[DIAG] RootLifetimeScope.Awake: container built OK");
     }
 
     protected override void OnDestroy()
     {
+        Debug.Log($"[DIAG] RootLifetimeScope.OnDestroy called! scene={gameObject.scene.name}\nSTACK:\n{System.Environment.StackTrace}");
         base.OnDestroy();
         if (Instance == this) Instance = null;
     }
