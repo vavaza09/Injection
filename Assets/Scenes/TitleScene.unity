@@ -1629,18 +1629,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4126085920814073693, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: MaxDistance
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4126085920814073693, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: DopplerLevel
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4126085920814073693, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4574929346623430112, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: m_Name
       value: SoundManager
@@ -1684,86 +1672,6 @@ PrefabInstance:
     - target: {fileID: 5022247570491803525, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.size
-      value: 58
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[54].name
-      value: BOSS_JUNK_FALL
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[55].name
-      value: BOSS_JUNK_IMPACT
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[56].name
-      value: UI_HOVER
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[57].name
-      value: UI_CLICK
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[18].volume
-      value: 0.846
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[23].volume
-      value: 0.443
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[56].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[57].volume
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[18].pitchMax
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[18].pitchMin
-      value: 0.76
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[56].pitchMax
-      value: 0.72
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[57].pitchMax
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[56].sounds.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[57].sounds.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: 'soundList.Array.data[56].sounds.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: 'soundList.Array.data[57].sounds.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    - target: {fileID: 8778517580754884786, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: MaxDistance
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8778517580754884786, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: DopplerLevel
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8778517580754884786, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
