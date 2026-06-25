@@ -23,6 +23,7 @@ public class TankEnemy : Enemy
 
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
+    private AudioSource _motorSource;
 
     [Header("Barrel Recoil")]
     [SerializeField] private float recoilDistance = 0.3f;
@@ -82,6 +83,10 @@ public class TankEnemy : Enemy
             movementComponent.SetSpeed(moveSpeed);
             movementComponent.Stop();
         }
+
+        _motorSource = gameObject.AddComponent<AudioSource>();
+        _motorSource.playOnAwake = false;
+        SoundManager.StartLoopOn(SoundType.TANK_MOTOR, _motorSource);
 
         SetState(EnemyState.Idle);
     }
@@ -353,6 +358,12 @@ public class TankEnemy : Enemy
 
         currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
         gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+    }
+
+    protected override void OnDeath()
+    {
+        SoundManager.StopLoopOn(_motorSource);
+        base.OnDeath();
     }
 
     private void OnDrawGizmosSelected()

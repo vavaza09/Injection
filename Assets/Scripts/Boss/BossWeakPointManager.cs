@@ -63,6 +63,7 @@ public class BossWeakPointManager : MonoBehaviour
         _openWeakPoint = available[Random.Range(0, available.Count)];
         _openWeakPoint.OnDestroyed += OnWeakPointDestroyed;
         _openWeakPoint.Show(attackable: true);
+        SoundManager.PlaySound(SoundType.BOSS_WEAKPOINT_REVEAL);
 
         foreach (var wp in weakPoints)
             if (wp != null && !wp.IsDestroyed && wp != _openWeakPoint)
@@ -101,6 +102,7 @@ public class BossWeakPointManager : MonoBehaviour
             if (wp != null && !wp.IsDestroyed)
                 wp.Hide();
 
+        SoundManager.PlaySound(SoundType.BOSS_WEAKPOINT_CLOSE);
         _windowOpen  = false;
         _attackCount = 0;
     }
