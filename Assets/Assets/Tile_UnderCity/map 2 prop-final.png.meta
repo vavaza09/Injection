@@ -201,7 +201,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 128
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -246,6 +246,45 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -255,7 +294,7 @@ TextureImporter:
         serializedVersion: 2
         x: 175
         y: 3742
-        width: 2624
+        width: 2603
         height: 1654
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -275,9 +314,9 @@ TextureImporter:
       name: map 2 prop-final_1
       rect:
         serializedVersion: 2
-        x: 3022
+        x: 3074
         y: 3740
-        width: 1408
+        width: 1356
         height: 1651
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -341,9 +380,9 @@ TextureImporter:
       name: map 2 prop-final_7
       rect:
         serializedVersion: 2
-        x: 2988
+        x: 3157
         y: 3365
-        width: 1493
+        width: 1321
         height: 154
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -492,34 +531,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: map 2 prop-final_36
-      rect:
-        serializedVersion: 2
-        x: 249
-        y: 1503
-        width: 819
-        height: 587
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 104be3a42cbc28520800000000000000
-      internalID: 2702946761705436161
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: map 2 prop-final_37
       rect:
         serializedVersion: 2
-        x: 1075
+        x: 245
         y: 538
-        width: 1930
+        width: 2760
         height: 1552
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -553,204 +570,6 @@ TextureImporter:
       bones: []
       spriteID: d9b853a30c2953fe0800000000000000
       internalID: -1209899570571146339
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_41
-      rect:
-        serializedVersion: 2
-        x: 6536
-        y: 641
-        width: 11
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a1cf2f7189dd79070800000000000000
-      internalID: 8113196899037805594
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_42
-      rect:
-        serializedVersion: 2
-        x: 6558
-        y: 641
-        width: 20
-        height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7de221f50fbf51350800000000000000
-      internalID: 5986968289464692439
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_43
-      rect:
-        serializedVersion: 2
-        x: 6579
-        y: 630
-        width: 18
-        height: 19
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4d08ce3354822b930800000000000000
-      internalID: 4157429683705381076
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_44
-      rect:
-        serializedVersion: 2
-        x: 6600
-        y: 641
-        width: 8
-        height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 44cd06123e1923670800000000000000
-      internalID: 8517030250014628932
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_45
-      rect:
-        serializedVersion: 2
-        x: 6603
-        y: 634
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c274ff22ed356bfc0800000000000000
-      internalID: -3479501448562129108
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_46
-      rect:
-        serializedVersion: 2
-        x: 4121
-        y: 573
-        width: 12
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c635ce74be48e35d0800000000000000
-      internalID: -3080878949015989396
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_47
-      rect:
-        serializedVersion: 2
-        x: 4136
-        y: 569
-        width: 7
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 59c0f9476f69ebca0800000000000000
-      internalID: -5999191668348220267
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_48
-      rect:
-        serializedVersion: 2
-        x: 1616
-        y: 543
-        width: 12
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 27fe39a96511ef1f0800000000000000
-      internalID: -1009350202826166414
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: map 2 prop-final_49
-      rect:
-        serializedVersion: 2
-        x: 1631
-        y: 539
-        width: 7
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e5bc8b284b45492c0800000000000000
-      internalID: -4425819399534359714
       vertices: []
       indices: 
       edges: []
