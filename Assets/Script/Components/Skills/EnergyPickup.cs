@@ -14,15 +14,45 @@ namespace Game.Components.Skills
         [SerializeField] private float pulseSpeed  = 2f;
         [SerializeField] private float pulseAmount = 0.25f;
 
+        [Header("Proximity Outline")]
+        [SerializeField] private SpriteRenderer outlineTarget;
+        [SerializeField] private Shader  outlineShader;
+        [SerializeField] private Color   outlineColor      = Color.white;
+        [SerializeField] private float   outlineSize       = 2f;
+        [SerializeField] [Range(0f, 1f)] private float outlineAlphaThreshold = 0.5f;
+        [SerializeField] private float   proximityRadius = 1.5f;
+        [SerializeField] private Vector2 colliderOffset  = Vector2.zero;
+        [SerializeField] private Vector2 glowOffset = Vector2.zero;
+        [SerializeField] private float   glowScale  = 1.5f;
+
         public bool IsAvailable { get; private set; } = true;
 
         private SpriteRenderer _glowRenderer;
         private float          _baseAlpha;
+        private Material       _defaultMaterial;
+        private Material       _outlineMaterial;
+
+        private void OnDrawGizmosSelected()
+        {
+            Vector3 glowWorld = transform.position + (Vector3)glowOffset;
+            Gizmos.color = new Color(0.4f, 0.8f, 1f, 0.8f);
+            Gizmos.DrawWireSphere(glowWorld, glowScale * 0.5f);
+        }
+
+        private void OnValidate()
+        {
+            if (!TryGetComponent<CircleCollider2D>(out var col)) return;
+            col.isTrigger = true;
+            col.radius    = proximityRadius;
+            col.offset    = colliderOffset;
+        }
 
         private void Awake()
         {
             var col = GetComponent<CircleCollider2D>();
             col.isTrigger = true;
+            col.radius    = proximityRadius;
+            col.offset    = colliderOffset;
 
             if (glowRoot == null)
                 glowRoot = CreateDefaultGlow();
@@ -30,6 +60,16 @@ namespace Game.Components.Skills
             _glowRenderer = glowRoot.GetComponent<SpriteRenderer>();
             if (_glowRenderer != null)
                 _baseAlpha = _glowRenderer.color.a;
+
+            var outlineSR = outlineTarget != null ? outlineTarget : _glowRenderer;
+            if (outlineShader != null && outlineSR != null)
+            {
+                _defaultMaterial = outlineSR.sharedMaterial;
+                _outlineMaterial = new Material(outlineShader);
+                _outlineMaterial.SetColor("_OutlineColor", outlineColor);
+                _outlineMaterial.SetFloat("_OutlineSize", outlineSize);
+                _outlineMaterial.SetFloat("_AlphaThreshold", outlineAlphaThreshold);
+            }
         }
 
         private void Update()
@@ -47,14 +87,37 @@ namespace Game.Components.Skills
             amount = 0;
             if (!IsAvailable) return false;
 
-            amount    = energyAmount;
+            amount      = energyAmount;
             IsAvailable = false;
+
+            if (_defaultMaterial != null)
+            {
+                var sr = outlineTarget != null ? outlineTarget : _glowRenderer;
+                if (sr != null) sr.material = _defaultMaterial;
+            }
+
             glowRoot.SetActive(false);
 
             if (respawnSeconds > 0f)
                 StartCoroutine(RespawnAfter(respawnSeconds));
 
             return true;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!IsAvailable || _outlineMaterial == null) return;
+            if (!other.CompareTag("Player")) return;
+            var sr = outlineTarget != null ? outlineTarget : _glowRenderer;
+            sr.material = _outlineMaterial;
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (_defaultMaterial == null) return;
+            if (!other.CompareTag("Player")) return;
+            var sr = outlineTarget != null ? outlineTarget : _glowRenderer;
+            sr.material = _defaultMaterial;
         }
 
         private IEnumerator RespawnAfter(float seconds)
@@ -68,13 +131,14 @@ namespace Game.Components.Skills
         {
             var go = new GameObject("Glow");
             go.transform.SetParent(transform, false);
+            go.transform.localPosition = glowOffset;
 
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite      = CreateSoftCircleSprite();
             sr.color       = new Color(0.4f, 0.8f, 1f, 0.6f);
             sr.sortingOrder = 1;
 
-            go.transform.localScale = Vector3.one * 1.5f;
+            go.transform.localScale = Vector3.one * glowScale;
             return go;
         }
 
