@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -255167383455267363, guid: 0cb7064505ffe1248b8102d6e96954ff, type: 3}
+  m_Sprite: {fileID: 35309998693823450, guid: 0cb7064505ffe1248b8102d6e96954ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 7141577925506627699}
   - component: {fileID: 2297151993178736415}
   m_Layer: 8
-  m_Name: SwingPoint
+  m_Name: SwingPoint 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
