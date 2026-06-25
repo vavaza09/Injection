@@ -183,7 +183,7 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>Start a looping SFX on an entity's own 3D AudioSource.</summary>
-    public static void StartLoopOn(SoundType sound, AudioSource source, float volumeOverride = -1f)
+    public static void StartLoopOn(SoundType sound, AudioSource source, float volumeOverride = -1f, float maxDistance = 30f)
     {
         if (instance == null || source == null) return;
 
@@ -195,6 +195,14 @@ public class SoundManager : MonoBehaviour
         source.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
         source.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         source.loop   = true;
+
+        // Force 3D spatialization so looping enemy SFX fade with distance instead
+        // of being audible across the whole map (AddComponent defaults to 2D / 500m).
+        source.spatialBlend = 1f;                       // full 3D
+        source.rolloffMode  = AudioRolloffMode.Linear;  // clean cutoff at maxDistance
+        source.minDistance  = 1f;                       // full volume within 1 unit
+        source.maxDistance  = maxDistance;              // inaudible past this range (default 30)
+
         source.Play();
     }
 
