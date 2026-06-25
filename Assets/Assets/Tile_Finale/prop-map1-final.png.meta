@@ -594,9 +594,9 @@ TextureImporter:
       name: prop-map1-final_25
       rect:
         serializedVersion: 2
-        x: 177
+        x: 259
         y: 101
-        width: 2276
+        width: 2164
         height: 588
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
