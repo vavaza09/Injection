@@ -516,9 +516,12 @@ public class Player : character
             return;
         }
 
-        bool isAimHeld = isAlive && _inputHandler != null && _inputHandler.IsAimHeld
-            && IsAbilityUnlocked(TutorialAbilities.Dash);
-        bool canDashNow = movementComponent != null && movementComponent.CanDash;
+        bool isGrabbing = movementComponent != null && movementComponent.IsGrabbing;
+        bool isAimHeld = isAlive && (
+            isGrabbing ||
+            (_inputHandler != null && _inputHandler.IsAimHeld && IsAbilityUnlocked(TutorialAbilities.Dash))
+        );
+        bool canDashNow = isGrabbing || (movementComponent != null && movementComponent.CanDash);
         bool isDashingNow = movementComponent != null && movementComponent.IsDashing;
 
         dashAimDisplay.Refresh(ResolveDashDirection(), isAimHeld, canDashNow, isDashingNow);
@@ -746,6 +749,7 @@ public class Player : character
         {
             case PlayerState.Dead:
                 _slowMotion?.ResetImmediate();
+                movementComponent?.ReleaseGrab();
                 movementComponent?.SetCanMove(false);
                 if (movementComponent != null)
                 {
