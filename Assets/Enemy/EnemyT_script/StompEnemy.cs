@@ -30,6 +30,9 @@ public class StompEnemy : Enemy
     [SerializeField] private GameObject shadowObject;
     [SerializeField] private Vector3 minShadowScale = new Vector3(2.8f, 0.5f, 1f);
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     private enum StompPhase { None, Jump, Fall, Land }
     private StompPhase _stompPhase = StompPhase.None;
 
@@ -50,6 +53,7 @@ public class StompEnemy : Enemy
     {
         base.Awake();
         anim = GetComponent<Animator>();
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
 
         if (groundLayer == 0)
             groundLayer = LayerMask.GetMask("Ground");
@@ -260,7 +264,7 @@ public class StompEnemy : Enemy
             shadowObject.SetActive(true);
 
         _stompPhase = StompPhase.Jump;
-        SoundManager.PlaySound(SoundType.STOMPER_JUMP);
+        SoundManager.PlaySoundOn(SoundType.STOMPER_JUMP, _sfxSource);
         if (stomperBodyCollider != null)
             stomperBodyCollider.enabled = false;
 
@@ -306,7 +310,7 @@ public class StompEnemy : Enemy
         }
 
         _stompPhase = StompPhase.Fall;
-        SoundManager.PlaySound(SoundType.STOMPER_FALL_RUSH);
+        SoundManager.PlaySoundOn(SoundType.STOMPER_FALL_RUSH, _sfxSource);
         float savedGravityScale = 0f;
         if (rb != null)
         {
@@ -340,7 +344,7 @@ public class StompEnemy : Enemy
         }
 
         SpawnImpactVFX();
-        SoundManager.PlaySound(SoundType.STOMPER_STOMP_IMPACT);
+        SoundManager.PlaySoundOn(SoundType.STOMPER_STOMP_IMPACT, _sfxSource);
 
         if (_impulseSource != null)
             _impulseSource.GenerateImpulse(shakeAmplitude);

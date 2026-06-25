@@ -105,6 +105,11 @@ public class BossClawAttack : MonoBehaviour
     [Tooltip("Ease-out: quick start, gentle deceleration back into idle.")]
     [SerializeField] private AnimationCurve retractCurve;
 
+    // ── Audio ─────────────────────────────────────────────────────────────
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     // ── Debug ─────────────────────────────────────────────────────────────
 
     [Header("Debug — Read Only")]
@@ -140,6 +145,7 @@ public class BossClawAttack : MonoBehaviour
 
     private void Start()
     {
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
         SaveIdlePositions();
         if (clawCollider != null)
         {
@@ -185,7 +191,7 @@ public class BossClawAttack : MonoBehaviour
         Vector2 pullBack   = -toPlayer2D;
 
         // ── Phase 1: Anticipation ────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_CLAW_ANTICIPATION);
+        SoundManager.PlaySoundOn(SoundType.BOSS_CLAW_ANTICIPATION, _sfxSource);
         Vector3 clawAntPos = _idleClawPos
                            + (Vector3)(pullBack * anticipationDistance)
                            + Vector3.up * anticipationLift;
@@ -201,7 +207,7 @@ public class BossClawAttack : MonoBehaviour
         if (clawRightIKTarget != null) clawRightIKTarget.position = clawAntPos;
 
         // ── Phase 2: Strike ──────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_CLAW_STRIKE);
+        SoundManager.PlaySoundOn(SoundType.BOSS_CLAW_STRIKE, _sfxSource);
         Vector3 strikeTarget = playerTransform.position;
         strikeTarget.z = _idleClawPos.z;
 
@@ -238,13 +244,13 @@ public class BossClawAttack : MonoBehaviour
         else
         {
             // Missed — hold in place, fire feedback event, then retract.
-            SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
+            SoundManager.PlaySoundOn(SoundType.BOSS_CLAW_IMPACT, _sfxSource);
             OnClawImpact?.Invoke();
             yield return new WaitForSeconds(holdDuration);
         }
 
         // ── Phase 4: Retract ─────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_CLAW_RETRACT);
+        SoundManager.PlaySoundOn(SoundType.BOSS_CLAW_RETRACT, _sfxSource);
         // Read the actual current position — grab branch ends at smashTarget, miss ends at strikeTarget.
         Vector3 retractFrom = clawRightIKTarget != null ? clawRightIKTarget.position : strikeTarget;
         Vector3 retractCtrl = (retractFrom + _idleClawPos) * 0.5f + Vector3.up * 0.4f;
@@ -312,7 +318,7 @@ public class BossClawAttack : MonoBehaviour
         if (clawRightIKTarget != null) clawRightIKTarget.position = smashTarget;
 
         // Impact: 2 health in one event, VFX, screenshake, release player, stun on the ground.
-        SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
+        SoundManager.PlaySoundOn(SoundType.BOSS_CLAW_IMPACT, _sfxSource);
         _player.TakeMultiHit(2);
         OnClawImpact?.Invoke();
         SpawnImpactVFX(smashTarget);

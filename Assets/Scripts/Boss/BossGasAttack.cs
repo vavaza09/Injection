@@ -44,6 +44,12 @@ public class BossGasAttack : MonoBehaviour
     [Tooltip("Animator speed multiplier while gas is releasing (makes fan spin visibly faster).")]
     [SerializeField] private float fanSpinSpeed = 5f;
 
+    [Header("Audio")]
+    [Tooltip("3D AudioSource on the Boss for gas release one-shot. Auto-found via GetComponent if left empty.")]
+    [SerializeField] private AudioSource _sfxSource;
+    [Tooltip("Separate 3D AudioSource on the Boss for the looping gas cloud sound. Needs its own source so the loop doesn't interrupt one-shot SFX.")]
+    [SerializeField] private AudioSource _gasLoopSource;
+
     [Header("Events")]
     [Tooltip("Fired at the start of the release — hook up fan SFX here.")]
     public UnityEvent OnGasRelease;
@@ -60,6 +66,7 @@ public class BossGasAttack : MonoBehaviour
 
     private void Start()
     {
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
         if (fanAnchor != null)
         {
             _fanAnimator = fanAnchor.GetComponent<Animator>();
@@ -85,7 +92,7 @@ public class BossGasAttack : MonoBehaviour
     {
         StopAllCoroutines();
         isAttacking = false;
-        SoundManager.StopLoop();
+        SoundManager.StopLoopOn(_gasLoopSource);
         if (_activeCloud != null) Destroy(_activeCloud);
         _activeCloud = null;
         SetFanSpeed(_fanNormalSpeed);
@@ -101,7 +108,7 @@ public class BossGasAttack : MonoBehaviour
 
         // Spin the fan and start the visible vent smoke during the telegraph window.
         SetFanSpeed(fanSpinSpeed);
-        SoundManager.PlaySound(SoundType.BOSS_GAS_RELEASE);
+        SoundManager.PlaySoundOn(SoundType.BOSS_GAS_RELEASE, _sfxSource);
         OnGasRelease?.Invoke();
         if (fanVentParticles != null) fanVentParticles.Play();
 
@@ -115,7 +122,7 @@ public class BossGasAttack : MonoBehaviour
 
         // Spawn the cloud.
         _activeCloud = SpawnCloud(cloudDuration);
-        SoundManager.StartLoop(SoundType.BOSS_GAS_LOOP);
+        SoundManager.StartLoopOn(SoundType.BOSS_GAS_LOOP, _gasLoopSource);
         StartCoroutine(StopGasLoopAfter(cloudDuration));
 
         // Fade the vent out as the cloud takes over — let live particles finish fading.
@@ -134,7 +141,7 @@ public class BossGasAttack : MonoBehaviour
     private IEnumerator StopGasLoopAfter(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SoundManager.StopLoop();
+        SoundManager.StopLoopOn(_gasLoopSource);
     }
 
     private void SetFanSpeed(float speed)

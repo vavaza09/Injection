@@ -22,6 +22,9 @@ public class BossHammerAttack : MonoBehaviour
     [Tooltip("'Hammer collider' GameObject — activated during impact hold only.")]
     [SerializeField] private GameObject hammerCollider;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     // ── Wind-Up Phase ─────────────────────────────────────────────────────
 
     [Header("Wind-Up Phase")]
@@ -100,6 +103,7 @@ public class BossHammerAttack : MonoBehaviour
 
     private void Start()
     {
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
         SaveIdlePositions();
         if (hammerCollider != null) hammerCollider.SetActive(false);
     }
@@ -143,15 +147,15 @@ public class BossHammerAttack : MonoBehaviour
             float speedScale = i == 0 ? 1f : subsequentSmashSpeedScale;
 
             // Wind-Up before every smash
-            SoundManager.PlaySound(SoundType.BOSS_HAMMER_WINDUP);
+            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_WINDUP, _sfxSource);
             yield return TweenWorld(hammerLeftIKTarget, windUpFrom, windUp, windUpDuration * speedScale, windUpCurve);
 
             // Swing down
-            SoundManager.PlaySound(SoundType.BOSS_HAMMER_SWING);
+            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_SWING, _sfxSource);
             yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration * speedScale, swingCurve);
 
             // Impact Hold — damage, visual, sound
-            SoundManager.PlaySound(SoundType.BOSS_HAMMER_IMPACT);
+            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_IMPACT, _sfxSource);
             if (hammerCollider != null) hammerCollider.SetActive(true);
             ApplyHammerDamage();
             OnImpact?.Invoke();
@@ -167,7 +171,7 @@ public class BossHammerAttack : MonoBehaviour
         }
 
         // ── Recovery ─────────────────────────────────────────────────────
-        SoundManager.PlaySound(SoundType.BOSS_HAMMER_RECOVER);
+        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_RECOVER, _sfxSource);
         yield return BezierTween(hammerLeftIKTarget, impact, recMid, _idleHammerPos, recoveryDuration, recoveryCurve);
 
         isAttacking = false;

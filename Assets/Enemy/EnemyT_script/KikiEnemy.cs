@@ -34,6 +34,9 @@ public class KikiEnemy : Enemy
     [Header("Facing")]
     [SerializeField] private bool invertFacing = true;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _sfxSource;
+
     [Header("Headbutt Aim")]
     [SerializeField] private bool  aimHeadAtPlayer = true;
     [Tooltip("Calibrate to the sprite's head-forward direction (degrees). Tune live in editor.")]
@@ -57,6 +60,7 @@ public class KikiEnemy : Enemy
         base.Awake();
         _spawnCenter = transform.position;
         _anim = GetComponentInChildren<Animator>();
+        if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
     }
 
     protected override void Start()
@@ -218,7 +222,7 @@ public class KikiEnemy : Enemy
 
         if (rb != null) rb.linearVelocity = Vector2.zero;
         PlayAnim("Float_Attack");
-        SoundManager.PlaySound(SoundType.KIKI_ATTACK_WINDUP);
+        SoundManager.PlaySoundOn(SoundType.KIKI_ATTACK_WINDUP, _sfxSource);
 
         // Pre-roll delay (preserves tuned wind-up feel)
         yield return new WaitForSeconds(headbuttLaunchDelay);
@@ -254,7 +258,7 @@ public class KikiEnemy : Enemy
         // Enable dash effects
         if (_dashTrail != null) { _dashTrail.Clear(); _dashTrail.emitting = true; }
         if (_dashParticles != null) _dashParticles.Play();
-        SoundManager.PlaySound(SoundType.KIKI_ATTACK_DASH);
+        SoundManager.PlaySoundOn(SoundType.KIKI_ATTACK_DASH, _sfxSource);
 
         IgnorePlayerCollision(true);
 
@@ -321,7 +325,7 @@ public class KikiEnemy : Enemy
             {
                 ch.TakeDamage(attackDamage);
                 _hasDamaged = true;
-                SoundManager.PlaySound(SoundType.KIKI_ATTACK_HIT);
+                SoundManager.PlaySoundOn(SoundType.KIKI_ATTACK_HIT, _sfxSource);
                 if (_anim != null) _anim.speed = 1f;
                 return;
             }

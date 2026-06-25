@@ -34,6 +34,7 @@ public enum SoundType
     KIKI_ATTACK_HIT,
 
     // Tank
+    TANK_MOTOR,
     TANK_FOOTSTEP,
     TANK_CANNON_CHARGE,
     TANK_CANNON_FIRE,
@@ -68,6 +69,8 @@ public enum SoundType
     BOSS_HAMMER_RECOVER,
     BOSS_GAS_RELEASE,
     BOSS_GAS_LOOP,
+    BOSS_WEAKPOINT_REVEAL,
+    BOSS_WEAKPOINT_CLOSE,
 
     // UI
     UI_HOVER,
@@ -161,6 +164,43 @@ public class SoundManager : MonoBehaviour
     }
 
     #region Sound Effects
+
+    /// <summary>Play a one-shot SFX through an entity's own 3D AudioSource (positional audio).</summary>
+    public static void PlaySoundOn(SoundType sound, AudioSource source, float volumeOverride = -1f)
+    {
+        if (instance == null || source == null) return;
+
+        SoundList sl = instance.soundList[(int)sound];
+        AudioClip[] clips = sl.Sounds;
+        if (clips == null || clips.Length == 0) return;
+
+        float vol   = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        float pitch = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
+        source.pitch = pitch;
+        source.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Length)], vol);
+    }
+
+    /// <summary>Start a looping SFX on an entity's own 3D AudioSource.</summary>
+    public static void StartLoopOn(SoundType sound, AudioSource source, float volumeOverride = -1f)
+    {
+        if (instance == null || source == null) return;
+
+        SoundList sl = instance.soundList[(int)sound];
+        AudioClip[] clips = sl.Sounds;
+        if (clips == null || clips.Length == 0) return;
+
+        source.clip   = clips[UnityEngine.Random.Range(0, clips.Length)];
+        source.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        source.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
+        source.loop   = true;
+        source.Play();
+    }
+
+    /// <summary>Stop a looping SFX on an entity's own 3D AudioSource.</summary>
+    public static void StopLoopOn(AudioSource source)
+    {
+        if (source != null) source.Stop();
+    }
 
     public static void PlaySound(SoundType sound, float volumeOverride = -1f)
     {
