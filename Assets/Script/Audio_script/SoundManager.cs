@@ -68,6 +68,10 @@ public enum SoundType
     BOSS_HAMMER_RECOVER,
     BOSS_GAS_RELEASE,
     BOSS_GAS_LOOP,
+
+    // UI
+    UI_HOVER,
+    UI_CLICK,
 }
 
 public enum MusicType
@@ -144,6 +148,9 @@ public class SoundManager : MonoBehaviour
             src.playOnAwake = false;
             _loopPool[i] = src;
         }
+
+        // Apply saved settings (PlayerPrefs) so in-game volume matches the player's preference
+        GameSettings.ApplyVolumes();
     }
 
     #region Sound Effects
@@ -184,8 +191,13 @@ public class SoundManager : MonoBehaviour
 
     public static void SetSFXVolume(float volume)
     {
-        if (instance != null && instance.sfxSource != null)
-            instance.sfxSource.volume = Mathf.Clamp01(volume);
+        if (instance == null) return;
+        float v = Mathf.Clamp01(volume);
+        if (instance.sfxSource != null) instance.sfxSource.volume = v;
+        if (instance._footstepSource != null) instance._footstepSource.volume = v;
+        if (instance._loopPool != null)
+            foreach (var src in instance._loopPool)
+                if (src != null) src.volume = v;
     }
 
     /// <summary>Start (or restart) a looping sound. Uses per-sound volume/pitch from the Inspector.</summary>
