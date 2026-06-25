@@ -113,3 +113,5 @@ MonoBehaviour:
   shadowSortOrder: 1
   spinSpeedMin: 90
   spinSpeedMax: 270
+  shakeIntensity: 0.6
+  shakeDuration: 0.3
