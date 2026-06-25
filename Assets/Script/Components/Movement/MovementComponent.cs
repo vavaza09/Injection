@@ -94,6 +94,8 @@ namespace Game.Components.Movement
         [SerializeField] private float wallJumpVerticalSpeed = -105f;
         [Tooltip("Seconds after a wall jump during which wall contact is ignored so the launch carries the player away.")]
         [SerializeField] private float wallJumpLockTime = 0.15f;
+        [Tooltip("Seconds the same wall side is ignored after a straight-up (into-wall) jump, preventing spam climbing.")]
+        [SerializeField] private float sameWallLockTime = 0.35f;
 
         [Header("Wall Check")]
         [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 0.8f);
@@ -109,6 +111,7 @@ namespace Game.Components.Movement
         [SerializeField, Range(0.5f, 1f)] private float grabLaunchMinMultiplier = 0.6f;
         [SerializeField, Range(1f, 2f)] private float grabLaunchMaxMultiplier = 1.4f;
         [SerializeField] private bool autoGrab = true;
+        [SerializeField] private float grabLeapDuration = 0.1f;
 
         [Header("Animation")]
         [Tooltip("Minimum vertical speed (units/s) before the airborne anim counts as rising vs falling.")]
@@ -143,6 +146,8 @@ namespace Game.Components.Movement
         private float _currentWallSlideSpeed;
         private Vector2 moveInput;
         private float _wallJumpLockTimer;
+        private float _leftWallLockTimer;
+        private float _rightWallLockTimer;
         private float _knockbackLockTimer;
         private float _bounceKnockbackLockTimer;
         private bool _isDashAttacking;
@@ -185,6 +190,9 @@ namespace Game.Components.Movement
         private SwingPoint currentSwingPoint;
         private float grabbedSpeedFactor;
         private float _autoGrabCooldownTimer;
+        private bool _isLeapingToGrab;
+        private Vector2 _leapStartPos;
+        private float _leapTimer;
 
         #endregion
 
@@ -311,6 +319,8 @@ namespace Game.Components.Movement
             _currentWallSlideSpeed = 0f;
             moveInput = Vector2.zero;
             _wallJumpLockTimer = 0f;
+            _leftWallLockTimer = 0f;
+            _rightWallLockTimer = 0f;
             _knockbackLockTimer = 0f;
             _bounceKnockbackLockTimer = 0f;
             _postDashAirBrakeTimer = 0f;
@@ -320,6 +330,8 @@ namespace Game.Components.Movement
             _stunTimer = 0f;
             currentSwingPoint = null;
             grabbedSpeedFactor = 0f;
+            _isLeapingToGrab = false;
+            _leapTimer = 0f;
 
             if (rb != null)
             {
@@ -397,6 +409,12 @@ namespace Game.Components.Movement
                 _wallJumpLockTimer = Mathf.Max(0f, _wallJumpLockTimer - Time.deltaTime);
             }
 
+            if (_leftWallLockTimer > 0f)
+                _leftWallLockTimer = Mathf.Max(0f, _leftWallLockTimer - Time.deltaTime);
+
+            if (_rightWallLockTimer > 0f)
+                _rightWallLockTimer = Mathf.Max(0f, _rightWallLockTimer - Time.deltaTime);
+
             if (_knockbackLockTimer > 0f)
             {
                 _knockbackLockTimer = Mathf.Max(0f, _knockbackLockTimer - Time.deltaTime);
@@ -443,6 +461,16 @@ namespace Game.Components.Movement
 
             if (isDashingNow)
             {
+                // Auto-grab interrupts an active dash when a SwingPoint is in range.
+                if (autoGrab && canMove && !isGrabbing && _autoGrabCooldownTimer <= 0f && CanGrab)
+                {
+                    if (_dashCoroutine != null) { StopCoroutine(_dashCoroutine); _dashCoroutine = null; }
+                    _dashHandler?.ForceEndDash();
+                    _wasDashingLastFrame = false;
+                    _postDashAirBrakeTimer = 0f;
+                    TryStartGrab();
+                    return;
+                }
                 ResetWallSlideState();
                 return;
             }
@@ -450,14 +478,15 @@ namespace Game.Components.Movement
             if (_autoGrabCooldownTimer > 0f)
                 _autoGrabCooldownTimer -= Time.deltaTime;
 
-            if (autoGrab && _autoGrabCooldownTimer <= 0f && !isGrabbing && !isGrounded && CanGrab)
+            if (autoGrab && canMove && _autoGrabCooldownTimer <= 0f && !isGrabbing && !isGrounded && CanGrab)
             {
                 TryStartGrab();
             }
 
             if (isGrabbing)
             {
-                if (rb != null) rb.linearVelocity = Vector2.zero;
+                if (_isLeapingToGrab) UpdateGrabLeap();
+                else if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
 
@@ -692,26 +721,43 @@ namespace Game.Components.Movement
 
         private void PerformWallJump()
         {
-            int jumpAwayDirection = wallSideSign != 0
-                ? -wallSideSign
-                : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
+            // If the player is pressing INTO the wall, treat it as a straight-up jump (no push-off).
+            // Pressing away or neutral uses the classic wall-jump launch.
+            bool pressingIntoWall = wallSideSign != 0
+                && Mathf.Abs(moveInput.x) >= wallInputThreshold
+                && Mathf.Sign(moveInput.x) == wallSideSign;
 
             ResetWallSlideState();
-
             BeginJumpWindow();
 
-            // Wall jump always launches in the "up" direction (UpSign, derived from jumpSpeed),
-            // regardless of the serialized field's sign — a stale/negative value must never
-            // fire the player into the ground.
-            rb.linearVelocity = new Vector2(
-                jumpAwayDirection * wallJumpHorizontalSpeed,
-                Mathf.Abs(wallJumpVerticalSpeed) * UpSign
-            );
+            if (pressingIntoWall)
+            {
+                rb.linearVelocity = new Vector2(0f, Mathf.Abs(wallJumpVerticalSpeed) * UpSign);
+                ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
+                _wallJumpLockTimer = wallJumpLockTime;
+                // Lock the same side so the player can't immediately re-grab and spam climb.
+                if (wallSideSign == -1) _leftWallLockTimer  = sameWallLockTime;
+                else if (wallSideSign == 1) _rightWallLockTimer = sameWallLockTime;
+                Jumped?.Invoke();
+            }
+            else
+            {
+                int jumpAwayDirection = wallSideSign != 0
+                    ? -wallSideSign
+                    : (characterTransform != null && characterTransform.localScale.x >= 0 ? -1 : 1);
 
-            ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
+                // Wall jump always launches in the "up" direction (UpSign, derived from jumpSpeed),
+                // regardless of the serialized field's sign — a stale/negative value must never
+                // fire the player into the ground.
+                rb.linearVelocity = new Vector2(
+                    jumpAwayDirection * wallJumpHorizontalSpeed,
+                    Mathf.Abs(wallJumpVerticalSpeed) * UpSign
+                );
+                ApplyJumpStateAfterLaunch(rb.linearVelocity.y);
+                _wallJumpLockTimer = wallJumpLockTime;
+                WallJumped?.Invoke();
+            }
 
-            _wallJumpLockTimer = wallJumpLockTime;
-            WallJumped?.Invoke();
             if (_wallDashGate.TryConsume(_dashHandler.CurrentDashes, _dashHandler.MaxDashes))
                 _dashHandler.ResetDash();
         }
@@ -1087,8 +1133,8 @@ namespace Game.Components.Movement
             Vector2 leftCheckPos = center + new Vector2(-offsetX, wallCheckOffset.y);
             Vector2 rightCheckPos = center + new Vector2(offsetX, wallCheckOffset.y);
 
-            bool leftHit = Physics2D.OverlapBox(leftCheckPos, wallCheckSize, 0f, climbableLayer);
-            bool rightHit = Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
+            bool leftHit  = _leftWallLockTimer  <= 0f && Physics2D.OverlapBox(leftCheckPos,  wallCheckSize, 0f, climbableLayer);
+            bool rightHit = _rightWallLockTimer <= 0f && Physics2D.OverlapBox(rightCheckPos, wallCheckSize, 0f, climbableLayer);
 
             isTouchingWall = !isGrounded && (leftHit || rightHit);
 
@@ -1174,18 +1220,21 @@ namespace Game.Components.Movement
             SwingPoint target = FindGrabTarget();
             if (target == null) return false;
 
-            // Snapshot arrival speed BEFORE zeroing velocity — this is the launch-power source
+            // Snapshot arrival speed BEFORE zeroing velocity — this is the launch-power source.
             grabbedSpeedFactor = GetCurrentSpeedFactorFromVelocity();
 
             currentSwingPoint = target;
             isGrabbing = true;
-            GrabStarted?.Invoke();
 
-            // Pin to anchor
-            rb.position = target.AnchorPosition;
+            // Start a short leap to the anchor instead of teleporting (avoids camera snap).
+            // GrabStarted (slow-mo + sound) fires only when the leap reaches the anchor.
+            _leapStartPos = rb.position;
+            _leapTimer = 0f;
+            _isLeapingToGrab = true;
+
             rb.linearVelocity = Vector2.zero;
 
-            // Clear conflicting states
+            // Clear conflicting states.
             ResetWallSlideState();
             isJumping = false;
             isFalling = false;
@@ -1193,8 +1242,35 @@ namespace Game.Components.Movement
             varJumpTimer = 0f;
             autoJump = false;
 
-            _logger?.Log($"Grab started on {target.name}, speedFactor={grabbedSpeedFactor:F2}");
+            _logger?.Log($"Grab leap started on {target.name}, speedFactor={grabbedSpeedFactor:F2}");
             return true;
+        }
+
+        private void UpdateGrabLeap()
+        {
+            if (currentSwingPoint == null)
+            {
+                _isLeapingToGrab = false;
+                return;
+            }
+
+            _leapTimer += Time.unscaledDeltaTime;
+            float t = grabLeapDuration > 0f ? Mathf.Clamp01(_leapTimer / grabLeapDuration) : 1f;
+            float eased = 1f - (1f - t) * (1f - t); // ease-out quad
+
+            Vector2 anchor = currentSwingPoint.AnchorPosition;
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.position = Vector2.Lerp(_leapStartPos, anchor, eased);
+            }
+
+            if (t >= 1f)
+            {
+                _isLeapingToGrab = false;
+                if (rb != null) rb.position = anchor;
+                GrabStarted?.Invoke(); // triggers slow-mo + grab sound once anchored
+            }
         }
 
         public void LaunchFromGrab(Vector2 aimDir)
@@ -1206,6 +1282,7 @@ namespace Game.Components.Movement
 
             currentSwingPoint = null;
             isGrabbing = false;
+            _isLeapingToGrab = false;
             _autoGrabCooldownTimer = 0.4f;
 
             if (_hangDashGate.TryConsume(_dashHandler.CurrentDashes, _dashHandler.MaxDashes))
@@ -1224,6 +1301,7 @@ namespace Game.Components.Movement
 
             currentSwingPoint = null;
             isGrabbing = false;
+            _isLeapingToGrab = false;
             _autoGrabCooldownTimer = 0.4f;
 
             _logger?.Log("Grab released (drop)");
@@ -1301,10 +1379,13 @@ namespace Game.Components.Movement
             _knockbackLockTimer = 0f;
             _bounceKnockbackLockTimer = 0f;
             _wallJumpLockTimer = 0f;
+            _leftWallLockTimer = 0f;
+            _rightWallLockTimer = 0f;
             _stunTimer = 0f;
             _isDashAttacking = false;
             isCaptured = false;
             if (isGrabbing) ReleaseGrab();
+            _isLeapingToGrab = false;
             _movementHalted = false;
             SetCanMove(true);
         }
@@ -1370,6 +1451,7 @@ namespace Game.Components.Movement
 
             ResetWallSlideState();
             isGrabbing = false;
+            _isLeapingToGrab = false;
             rb.linearVelocity = kick;
             _knockbackLockTimer = knockbackLockTime;
         }
@@ -1388,6 +1470,7 @@ namespace Game.Components.Movement
             _postDashAirBrakeTimer = 0f;
             ResetWallSlideState();
             isGrabbing = false;
+            _isLeapingToGrab = false;
 
             rb.linearVelocity = Vector2.zero;
             _isDashAttacking = true;
@@ -1429,6 +1512,7 @@ namespace Game.Components.Movement
             _postDashAirBrakeTimer = 0f;
             ResetWallSlideState();
             isGrabbing = false;
+            _isLeapingToGrab = false;
         }
 
         private float GetCurrentHorizontalSpeedLimit()
