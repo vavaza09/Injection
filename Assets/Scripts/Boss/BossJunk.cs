@@ -24,12 +24,17 @@ public class BossJunk : MonoBehaviour
     [SerializeField] private float spinSpeedMin = 90f;
     [SerializeField] private float spinSpeedMax = 270f;
 
+    [Header("Audio")]
+    [SerializeField] private float shakeIntensity = 0.25f;
+    [SerializeField] private float shakeDuration  = 0.2f;
+
     private float         _landingY;
     private float         _initialHeight;
     private bool          _initialized;
     private bool          _landed;
     private float         _spinSpeed;
 
+    private AudioSource    _sfxSource;
     private GameObject    _shadow;
     private SpriteRenderer _shadowSr;
 
@@ -42,10 +47,15 @@ public class BossJunk : MonoBehaviour
         _vfxRadius  = vfxRadius;
         _damage     = damage;
 
+        _sfxSource = gameObject.AddComponent<AudioSource>();
+        _sfxSource.spatialBlend = 0f;
+
         SetupVisual();
         SetupShadow();
         _spinSpeed   = Random.Range(spinSpeedMin, spinSpeedMax) * (Random.value < 0.5f ? 1f : -1f);
         _initialized = true;
+
+        SoundManager.PlaySoundOn(SoundType.BOSS_JUNK_FALL, _sfxSource);
     }
 
     // ── Update ────────────────────────────────────────────────────────────
@@ -82,6 +92,9 @@ public class BossJunk : MonoBehaviour
     {
         _landed = true;
         if (_shadow != null) Destroy(_shadow);
+
+        SoundManager.PlaySoundOn(SoundType.BOSS_JUNK_IMPACT, _sfxSource);
+        CameraManager.instance?.Shake(shakeIntensity, shakeDuration);
 
         if (_vfxPrefab != null)
         {

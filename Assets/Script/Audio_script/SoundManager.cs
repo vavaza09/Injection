@@ -71,6 +71,8 @@ public enum SoundType
     BOSS_GAS_LOOP,
     BOSS_WEAKPOINT_REVEAL,
     BOSS_WEAKPOINT_CLOSE,
+    BOSS_JUNK_FALL,
+    BOSS_JUNK_IMPACT,
 
     // UI
     UI_HOVER,
