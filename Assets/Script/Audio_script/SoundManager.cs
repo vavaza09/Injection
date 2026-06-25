@@ -106,6 +106,8 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        if (!Application.isPlaying) return;
+
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -131,6 +133,11 @@ public class SoundManager : MonoBehaviour
         musicSource.loop = true;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
+
+        // Remove any stale AudioSources beyond the 2 we use (accumulated from editor bugs)
+        AudioSource[] allSources = GetComponents<AudioSource>();
+        for (int i = 2; i < allSources.Length; i++)
+            Destroy(allSources[i]);
 
         _footstepSource = gameObject.AddComponent<AudioSource>();
         _footstepSource.playOnAwake = false;
