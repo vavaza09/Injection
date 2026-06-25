@@ -1,12 +1,91 @@
 using Game.Components.Health;
 using Game.Components.Movement;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : character
 {
     [Header("Enemy Settings")]
     [SerializeField] protected EnemyType enemyType;
+
+    private Collider2D _bodyCollider;
+    private Collider2D[] _allBodyColliders;
+    private Collider2D _playerCollider;
+
+    // Root-only solid collider — used by Stomp to toggle .enabled directly.
+    protected Collider2D BodyCollider =>
+        _bodyCollider != null ? _bodyCollider : (_bodyCollider = GetComponent<Collider2D>());
+
+    // All solid (non-trigger) colliders on this enemy including children.
+    // Cached once so IgnorePlayerCollision / WaitUntilClearOfPlayer handle
+    // enemies that have extra child colliders (e.g. Kiki's "floating area").
+    private Collider2D[] AllBodyColliders
+    {
+        get
+        {
+            if (_allBodyColliders == null)
+            {
+                // Exclude weak point colliders so they stay hittable during pass-through.
+                var weakPointSet = new HashSet<Collider2D>();
+                foreach (var wp in GetComponentsInChildren<EnemyWeakPoint>())
+                {
+                    foreach (var c in wp.WeakPointColliders)
+                        if (c != null) weakPointSet.Add(c);
+                    var ownCol = wp.GetComponent<Collider2D>();
+                    if (ownCol != null) weakPointSet.Add(ownCol);
+                }
+
+                var all = GetComponentsInChildren<Collider2D>();
+                int count = 0;
+                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) count++;
+                _allBodyColliders = new Collider2D[count];
+                int idx = 0;
+                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) _allBodyColliders[idx++] = c;
+            }
+            return _allBodyColliders;
+        }
+    }
+
+    protected Collider2D PlayerCollider
+    {
+        get
+        {
+            if (_playerCollider == null)
+            {
+                GameObject p = GameObject.FindGameObjectWithTag("Player");
+                if (p != null) _playerCollider = p.GetComponent<Collider2D>();
+            }
+            return _playerCollider;
+        }
+    }
+
+    protected void IgnorePlayerCollision(bool ignore)
+    {
+        if (PlayerCollider == null) return;
+        foreach (var col in AllBodyColliders)
+            Physics2D.IgnoreCollision(col, PlayerCollider, ignore);
+    }
+
+    protected IEnumerator WaitUntilClearOfPlayer()
+    {
+        if (PlayerCollider == null) yield break;
+        int timeout = 0;
+        bool touching;
+        do
+        {
+            touching = false;
+            foreach (var col in AllBodyColliders)
+            {
+                if (Physics2D.IsTouching(col, PlayerCollider)) { touching = true; break; }
+            }
+            if (!touching) break;
+            if (++timeout > 120) break;
+            yield return null;
+        } while (true);
+        yield return null;
+        yield return null;
+    }
 
     [Header("Detection")]
     [SerializeField] protected float detectionRange = 6f;
@@ -150,6 +229,8 @@ public class Enemy : character
 
     protected virtual void OnStunInterrupt() { }
 
+    protected virtual void CleanupAttackVfx() { }
+
     private void EndStun()
     {
         if (_animator != null)
@@ -207,6 +288,7 @@ public class Enemy : character
         currentState = EnemyState.Dead;
 
         StopAllCoroutines();
+        CleanupAttackVfx();
 
         EnemyAI ai = GetComponent<EnemyAI>();
         if (ai != null) ai.enabled = false;

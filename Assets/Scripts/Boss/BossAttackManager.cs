@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,9 +38,10 @@ public class BossAttackManager : MonoBehaviour
     // ── Attack References ─────────────────────────────────────────────────
 
     [Header("Attack References")]
-    [SerializeField] private BossHammerAttack hammerAttack;
-    [SerializeField] private BossClawAttack   clawAttack;
-    [SerializeField] private BossGasAttack    gasAttack;
+    [SerializeField] private BossHammerAttack    hammerAttack;
+    [SerializeField] private BossClawAttack      clawAttack;
+    [SerializeField] private BossGasAttack       gasAttack;
+    [SerializeField] private BossJunkSmashAttack junkSmashAttack;
 
     // ── Debug ─────────────────────────────────────────────────────────────
 
@@ -60,6 +62,10 @@ public class BossAttackManager : MonoBehaviour
         public System.Action       trigger;      // call to start the attack
         public System.Func<bool>  isAttacking;  // is the attack still running?
     }
+
+    // Fires after each individual attack finishes (before global cooldown).
+    // BossWeakPointManager subscribes to count completed attacks.
+    public event Action AttackCompleted;
 
     private AttackEntry[] _attacks;
     private bool          _playerInRange;
@@ -86,7 +92,12 @@ public class BossAttackManager : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        bool inRange = Vector2.Distance(transform.position, playerTransform.position) <= detectionRadius;
+        // Also consider "in range" when JunkSmash can fire — platforms sit outside the
+        // normal detectionRadius, so without this the attack loop never starts while
+        // the player is on a platform.
+        bool junkReady = junkSmashAttack != null && junkSmashAttack.CanAttack;
+        bool inRange   = junkReady ||
+                         Vector2.Distance(transform.position, playerTransform.position) <= detectionRadius;
 
         if (inRange && !_playerInRange)
         {
@@ -142,6 +153,8 @@ public class BossAttackManager : MonoBehaviour
             while (_attacks[index].isAttacking())
                 yield return null;
 
+            AttackCompleted?.Invoke();
+
             // Global cooldown before next attack.
             yield return new WaitForSeconds(globalCooldown);
         }
@@ -153,6 +166,14 @@ public class BossAttackManager : MonoBehaviour
 
     private int SelectNextAttack()
     {
+        // Forced priority: if JunkSmash can fire, always pick it immediately.
+        // This punishes the player whenever they're on a platform and the cooldown is ready.
+        for (int i = 0; i < _attacks.Length; i++)
+        {
+            if (_attacks[i].name == "JunkSmash" && _attacks[i].canAttack())
+                return i;
+        }
+
         // Build a list of attack indices that can currently fire.
         var valid = new List<int>();
         for (int i = 0; i < _attacks.Length; i++)
@@ -161,7 +182,7 @@ public class BossAttackManager : MonoBehaviour
         if (valid.Count == 0) return -1;
 
         // Pick randomly from the valid set.
-        int picked = valid[Random.Range(0, valid.Count)];
+        int picked = valid[UnityEngine.Random.Range(0, valid.Count)];
 
         // Anti-repeat: if the same attack was picked and we've hit the limit,
         // force a different one (if any other valid attack exists).
@@ -169,7 +190,7 @@ public class BossAttackManager : MonoBehaviour
         {
             var others = valid.FindAll(i => i != _lastAttackIndex);
             if (others.Count > 0)
-                picked = others[Random.Range(0, others.Count)];
+                picked = others[UnityEngine.Random.Range(0, others.Count)];
             // If no others are valid, we have to repeat — edge case.
         }
 
@@ -203,6 +224,13 @@ public class BossAttackManager : MonoBehaviour
                 canAttack   = () => gasAttack != null && gasAttack.CanAttack && _hammerUsed && _clawUsed,
                 trigger     = () => gasAttack?.TriggerGasAttack(),
                 isAttacking = () => gasAttack != null && gasAttack.IsAttacking
+            },
+            new AttackEntry
+            {
+                name        = "JunkSmash",
+                canAttack   = () => junkSmashAttack != null && junkSmashAttack.CanAttack,
+                trigger     = () => junkSmashAttack?.TriggerJunkSmash(),
+                isAttacking = () => junkSmashAttack != null && junkSmashAttack.IsAttacking
             }
             // New attacks go here ↑
         };
@@ -210,7 +238,7 @@ public class BossAttackManager : MonoBehaviour
 
     // ── Gizmos ────────────────────────────────────────────────────────────
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = new Color(0.2f, 1f, 0.2f, 0.12f);
         Gizmos.DrawSphere(transform.position, detectionRadius);

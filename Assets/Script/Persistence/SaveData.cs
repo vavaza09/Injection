@@ -27,9 +27,10 @@ namespace Game.Persistence
     [System.Serializable]
     public class SaveData
     {
-        public int version = 2;
+        public int version = 3;
         public CheckpointAnchor checkpoint = new CheckpointAnchor();
         public LastRoomAnchor lastRoom = new LastRoomAnchor();
         public List<string> bossesDefeated = new List<string>();
+        public List<string> objectivesCompleted = new List<string>();
     }
 }

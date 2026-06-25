@@ -130,7 +130,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -165,10 +165,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -201,7 +201,7 @@ TextureImporter:
         width: 1226
         height: 490
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -215,28 +215,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_1
-      rect:
-        serializedVersion: 2
-        x: 550
-        y: 3440
-        width: 34
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8993eb5fd708c8dc0800000000000000
-      internalID: -3635389520712681064
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_2
       rect:
         serializedVersion: 2
@@ -245,7 +223,7 @@ TextureImporter:
         width: 631
         height: 733
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -259,50 +237,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_3
-      rect:
-        serializedVersion: 2
-        x: 1723
-        y: 2985
-        width: 41
-        height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 532fbc7d7b02894b0800000000000000
-      internalID: -5433556976450932171
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_4
-      rect:
-        serializedVersion: 2
-        x: 1904
-        y: 3045
-        width: 28
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9cd6cf0c07ed558d0800000000000000
-      internalID: -2858133812641239607
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_5
       rect:
         serializedVersion: 2
@@ -311,7 +245,7 @@ TextureImporter:
         width: 361
         height: 875
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -325,50 +259,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_6
-      rect:
-        serializedVersion: 2
-        x: 246
-        y: 2933
-        width: 160
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d255abf045feabe10800000000000000
-      internalID: 2214345311126181165
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_7
-      rect:
-        serializedVersion: 2
-        x: 1301
-        y: 2934
-        width: 160
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d7f0f7ada731b0fa0800000000000000
-      internalID: -5833547473955647619
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_8
       rect:
         serializedVersion: 2
@@ -377,7 +267,7 @@ TextureImporter:
         width: 1644
         height: 549
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -391,94 +281,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_9
-      rect:
-        serializedVersion: 2
-        x: 338
-        y: 2815
-        width: 18
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cdf941f00010dcad0800000000000000
-      internalID: -2680485103450939428
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_10
-      rect:
-        serializedVersion: 2
-        x: 422
-        y: 2815
-        width: 25
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c9fc7497073da4680800000000000000
-      internalID: -8769964844326072420
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_11
-      rect:
-        serializedVersion: 2
-        x: 606
-        y: 2815
-        width: 25
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c1c76eca76261d8e0800000000000000
-      internalID: -1670445789355803620
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_12
-      rect:
-        serializedVersion: 2
-        x: 1785
-        y: 2736
-        width: 8
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 156dee3b79e264e50800000000000000
-      internalID: 6793168317028685393
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_13
       rect:
         serializedVersion: 2
@@ -487,7 +289,7 @@ TextureImporter:
         width: 814
         height: 684
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -501,59 +303,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_14
-      rect:
-        serializedVersion: 2
-        x: 3344
-        y: 2401
-        width: 44
-        height: 116
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 33aedc7acc50145b0800000000000000
-      internalID: -5386017302811645389
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_15
-      rect:
-        serializedVersion: 2
-        x: 2169
-        y: 2291
-        width: 169
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a419a39da6fd020c0800000000000000
-      internalID: -4602433169168625334
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_16
       rect:
         serializedVersion: 2
-        x: 123
-        y: 1321
-        width: 1784
-        height: 794
+        x: 112
+        y: 1562
+        width: 1490
+        height: 557
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -567,116 +325,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_17
-      rect:
-        serializedVersion: 2
-        x: 369
-        y: 2114
-        width: 10
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d2ebec59c859f5050800000000000000
-      internalID: 5791512076863061549
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_18
-      rect:
-        serializedVersion: 2
-        x: 248
-        y: 1565
-        width: 71
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7374c1afe4537f3d0800000000000000
-      internalID: -3173008799139346633
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_19
-      rect:
-        serializedVersion: 2
-        x: 391
-        y: 1564
-        width: 72
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 182a382af869150d0800000000000000
-      internalID: -3435799497055952255
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_20
-      rect:
-        serializedVersion: 2
-        x: 1260
-        y: 1565
-        width: 71
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6973691648d0d4e60800000000000000
-      internalID: 7948023779602872214
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_21
-      rect:
-        serializedVersion: 2
-        x: 1404
-        y: 1528
-        width: 71
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1207ff0094d117c60800000000000000
-      internalID: 7814059027851079713
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_22
       rect:
         serializedVersion: 2
@@ -685,7 +333,7 @@ TextureImporter:
         width: 631
         height: 733
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -703,11 +351,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 2994
-        y: 35
-        width: 416
-        height: 1714
+        y: 176
+        width: 266
+        height: 1573
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -721,138 +369,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prop1(1)_24
-      rect:
-        serializedVersion: 2
-        x: 391
-        y: 1485
-        width: 69
-        height: 47
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b72581aa019830560800000000000000
-      internalID: 7278812127427056251
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_25
-      rect:
-        serializedVersion: 2
-        x: 1310
-        y: 1431
-        width: 19
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0657d18c27127bf40800000000000000
-      internalID: 5744096626601719136
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_26
-      rect:
-        serializedVersion: 2
-        x: 1333
-        y: 1419
-        width: 8
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9d97e713901a408c0800000000000000
-      internalID: -4033922305359971879
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_27
-      rect:
-        serializedVersion: 2
-        x: 1357
-        y: 1374
-        width: 11
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b28eebb89dca2da80800000000000000
-      internalID: -8443496301013833685
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_28
-      rect:
-        serializedVersion: 2
-        x: 1601
-        y: 702
-        width: 25
-        height: 51
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 508fa2867a7a92270800000000000000
-      internalID: 8226290531817945093
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_29
-      rect:
-        serializedVersion: 2
-        x: 1622
-        y: 694
-        width: 6
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 354a4fd6a86671b30800000000000000
-      internalID: 4257984717438362707
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Prop1(1)_30
       rect:
         serializedVersion: 2
@@ -861,7 +377,7 @@ TextureImporter:
         width: 1081
         height: 682
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -874,33 +390,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Prop1(1)_31
-      rect:
-        serializedVersion: 2
-        x: 1701
-        y: 544
-        width: 34
-        height: 79
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 91dd320bd343f2b60800000000000000
-      internalID: 7723449325516479769
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a85294e52b1f0bb4ba0278089cd402ba
     internalID: 0
     vertices: []
     indices: 

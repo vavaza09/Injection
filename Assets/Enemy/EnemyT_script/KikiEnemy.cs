@@ -34,6 +34,13 @@ public class KikiEnemy : Enemy
     [Header("Facing")]
     [SerializeField] private bool invertFacing = true;
 
+    [Header("Headbutt Aim")]
+    [SerializeField] private bool  aimHeadAtPlayer = true;
+    [Tooltip("Calibrate to the sprite's head-forward direction (degrees). Tune live in editor.")]
+    [SerializeField] private float headAngleOffset = 0f;
+    [Tooltip("Degrees per second the head eases back to upright after the dash.")]
+    [SerializeField] private float aimResetSpeed = 720f;
+
     private Vector2 _spawnCenter;
     private Vector2 _waypoint;
     private bool _isAttacking;
@@ -211,6 +218,7 @@ public class KikiEnemy : Enemy
 
         if (rb != null) rb.linearVelocity = Vector2.zero;
         PlayAnim("Float_Attack");
+        SoundManager.PlaySound(SoundType.KIKI_ATTACK_WINDUP);
 
         // Pre-roll delay (preserves tuned wind-up feel)
         yield return new WaitForSeconds(headbuttLaunchDelay);
@@ -241,10 +249,14 @@ public class KikiEnemy : Enemy
         if (dashDir.sqrMagnitude < 0.001f) dashDir = Vector2.right;
         dashDir = dashDir.normalized;
         FlipTo(dashDir.x > 0);
+        AimHeadAlong(dashDir);
 
         // Enable dash effects
         if (_dashTrail != null) { _dashTrail.Clear(); _dashTrail.emitting = true; }
         if (_dashParticles != null) _dashParticles.Play();
+        SoundManager.PlaySound(SoundType.KIKI_ATTACK_DASH);
+
+        IgnorePlayerCollision(true);
 
         // Dash — animator stays frozen on freeze frame
         float elapsed = 0f;
@@ -278,6 +290,7 @@ public class KikiEnemy : Enemy
             if (rb == null) break;
             Vector2 back = ((Vector2)_preAttackPos - (Vector2)transform.position).normalized;
             rb.linearVelocity = back * returnSpeed;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, aimResetSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -286,6 +299,10 @@ public class KikiEnemy : Enemy
             rb.linearVelocity = Vector2.zero;
             rb.position = _preAttackPos;
         }
+        transform.rotation = Quaternion.identity;
+
+        yield return StartCoroutine(WaitUntilClearOfPlayer());
+        IgnorePlayerCollision(false);
 
         _isAttacking = false;
         PickWaypoint();
@@ -304,10 +321,17 @@ public class KikiEnemy : Enemy
             {
                 ch.TakeDamage(attackDamage);
                 _hasDamaged = true;
+                SoundManager.PlaySound(SoundType.KIKI_ATTACK_HIT);
                 if (_anim != null) _anim.speed = 1f;
                 return;
             }
         }
+    }
+
+    protected override void CleanupAttackVfx()
+    {
+        if (_dashTrail != null) { _dashTrail.emitting = false; _dashTrail.Clear(); }
+        if (_dashParticles != null) _dashParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     protected override void OnStunInterrupt()
@@ -317,7 +341,9 @@ public class KikiEnemy : Enemy
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
+        IgnorePlayerCollision(false);
         _isAttacking = false;
+        transform.rotation = Quaternion.identity;
         if (_anim != null) _anim.speed = 1f;
         if (rb != null) rb.linearVelocity = Vector2.zero;
         if (_dashTrail != null) { _dashTrail.emitting = false; _dashTrail.Clear(); }
@@ -344,5 +370,15 @@ public class KikiEnemy : Enemy
         float abs = Mathf.Abs(scale.x);
         scale.x = (faceRight != invertFacing) ? abs : -abs;
         transform.localScale = scale;
+    }
+
+    private void AimHeadAlong(Vector2 dir)
+    {
+        if (!aimHeadAtPlayer) return;
+        // Only tilt vertically — horizontal facing is handled by FlipTo/localScale.x.
+        // Negative localScale.x mirror-inverts Z-rotation, so negate the whole angle (tilt + offset) together.
+        float tilt = Mathf.Atan2(dir.y, Mathf.Abs(dir.x)) * Mathf.Rad2Deg;
+        float sign = transform.localScale.x < 0f ? -1f : 1f;
+        transform.rotation = Quaternion.Euler(0f, 0f, sign * (tilt + headAngleOffset));
     }
 }

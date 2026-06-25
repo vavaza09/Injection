@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FurnaceEnemy : Enemy
 {
@@ -45,6 +46,7 @@ public class FurnaceEnemy : Enemy
 
     private float lastAttackTime = -999f;
     private bool _isAttacking;
+    private readonly List<GameObject> _activeMortarVfx = new List<GameObject>();
 
     protected override void Awake() => base.Awake();
     protected override void Start() => base.Start();
@@ -109,6 +111,7 @@ public class FurnaceEnemy : Enemy
         // Muzzle flash timing
         if (flashStartDelay > 0f)
             yield return new WaitForSeconds(flashStartDelay);
+        SoundManager.PlaySound(SoundType.FURNACE_ATTACK_CHARGE);
 
         // === FIRST SHOT ===
         if (muzzleFlash != null) muzzleFlash.PlayFlash(Vector2.up);
@@ -165,6 +168,7 @@ public class FurnaceEnemy : Enemy
         warnSR.sortingOrder = 4;
         warning.transform.localScale = Vector3.one * explosionRadius * 2f;
         warning.AddComponent<WarningPulse>();
+        _activeMortarVfx.Add(warning);
 
         yield return new WaitForSeconds(hangTime - earlyWait);
 
@@ -194,19 +198,22 @@ public class FurnaceEnemy : Enemy
             }
         );
         dropTrail.colorGradient = tg;
+        _activeMortarVfx.Add(dropObj);
 
         // Fall until ground
+        SoundManager.PlaySound(SoundType.FURNACE_MORTAR_DESCENDING);
         while (dropObj != null && dropObj.transform.position.y > groundY)
         {
             dropObj.transform.position += Vector3.down * dropFallSpeed * Time.deltaTime;
             yield return null;
         }
 
-        if (dropObj != null) Destroy(dropObj);
-        if (warning != null) Destroy(warning);
+        if (dropObj != null) { Destroy(dropObj); _activeMortarVfx.Remove(dropObj); }
+        if (warning != null) { Destroy(warning); _activeMortarVfx.Remove(warning); }
 
         Vector2 impactPos = new Vector2(savedPos.x, groundY);
 
+        SoundManager.PlaySound(SoundType.FURNACE_EXPLOSION);
         GameObject explGO = new GameObject("MortarExplosion");
         explGO.transform.position = new Vector3(impactPos.x, impactPos.y, 0f);
         var explFX = explGO.AddComponent<MortarExplosionVFX>();
@@ -227,6 +234,7 @@ public class FurnaceEnemy : Enemy
 
     private void SpawnLaunchBullet()
     {
+        SoundManager.PlaySound(SoundType.FURNACE_MORTAR_LAUNCH);
         GameObject launchObj = new GameObject("FurnaceLaunchBullet");
         launchObj.transform.position = transform.position + Vector3.up * 0.5f;
 
@@ -264,6 +272,15 @@ public class FurnaceEnemy : Enemy
 
         var launcher = launchObj.AddComponent<FurnaceLaunchBullet>();
         launcher.speed = launchUpSpeed;
+    }
+
+    protected override void CleanupAttackVfx()
+    {
+        foreach (GameObject go in _activeMortarVfx)
+        {
+            if (go != null) Destroy(go);
+        }
+        _activeMortarVfx.Clear();
     }
 
     private static Sprite CircleSprite(int size)

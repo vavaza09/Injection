@@ -17,7 +17,8 @@ public enum PlayerState
     Falling     = 5,
     Running     = 6,
     Idle        = 7,
-    Grabbing    = 8
+    Grabbing    = 8,
+    Knockback   = 9
 }
 
 public class Player : character
@@ -47,12 +48,21 @@ public class Player : character
     [Header("Dash Aim")]
     [SerializeField] private bool requireAimHoldForDash = true;
     [SerializeField] private DashAimDirectionDisplay dashAimDisplay;
+    [SerializeField, Range(0f, 1f)] private float dashAnimUpThreshold = 0.5f;
+    [SerializeField, Range(-1f, 0f)] private float dashAnimDownThreshold = -0.5f;
 
     [Header("References for DI")]
     [SerializeField] private Animator animator;
 
     [Header("Health Settings")]
     [SerializeField] private float invincibilityDuration = 2f;
+
+    [Header("Health Regeneration")]
+    [SerializeField] private bool enableHealthRegen = true;
+    [SerializeField] private float regenDelay = 5f;
+    [SerializeField] private float regenInterval = 1f;
+    private float _timeSinceLastDamage = 0f;
+    private float _regenTickTimer = 0f;
 
     [Header("State Machine")]
     [SerializeField] private float attackStateDuration = 0.5f;
@@ -139,6 +149,12 @@ public class Player : character
         RefreshMovementGates();
     }
 
+    public void SetInputEnabled(bool enabled)
+    {
+        if (_inputHandler == null) return;
+        if (enabled) _inputHandler.Enable(); else _inputHandler.Disable();
+    }
+
     // Wall-slide/jump and auto-grab live inside MovementComponent and run automatically, so they
     // can't be gated by an early-return at a call site — push the current lock state down to it.
     private void RefreshMovementGates()
@@ -191,6 +207,9 @@ public class Player : character
 
         TryAutoAssignDashAimDisplay();
 
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
         if (_inputHandler != null)
         {
             _inputHandler.SetCamera(mainCamera);
@@ -199,6 +218,7 @@ public class Player : character
         if (_animationController != null && movementComponent != null)
         {
             _animationController.SetMovementComponent(movementComponent);
+            _animationController.SetDashThresholds(dashAnimUpThreshold, dashAnimDownThreshold);
         }
 
         if (_inputHandler != null)
@@ -221,6 +241,8 @@ public class Player : character
         InvincibilityEnded   += OnInvincibilityVisualEnd;
 
         movementVFX?.Initialize(movementComponent);
+        if (movementVFX != null)
+            movementVFX.Landed += OnLanded;
 
         if (movementComponent != null)
         {
@@ -236,13 +258,22 @@ public class Player : character
         if (dashImpact != null)
         {
             dashImpact.Initialize(movementComponent);
-            dashImpact.ImpactLanded += () => ChangeState(PlayerState.Attacking);
+            dashImpact.ImpactLanded += OnDashImpactLanded;
         }
 
         // Re-apply any tutorial gating now that movementComponent is initialized — Start() ordering
         // between this and TutorialManager is undefined, so SetAbilityGating() may have run before
         // movementComponent existed.
         RefreshMovementGates();
+
+        if (animator != null)
+        {
+            var relay = animator.GetComponent<PlayerFootstepRelay>();
+            if (relay == null) relay = animator.gameObject.AddComponent<PlayerFootstepRelay>();
+            relay.SetCallback(() =>
+                _audioController?.PlayFootstepSound(
+                    movementComponent != null ? movementComponent.GetGroundTag() : null));
+        }
 
         _logger?.Log("Player initialized");
     }
@@ -259,6 +290,7 @@ public class Player : character
 
         if (_currentState == PlayerState.Dead) return;
 
+        UpdateHealthRegen();
         _animationController?.UpdateMovementAnimation();
 
         if (movementComponent != null && movementComponent.IsGrounded())
@@ -296,6 +328,19 @@ public class Player : character
 
         movementComponent?.Move(direction);
 
+        // While wall sliding/hanging the sprite must face INTO the wall and cannot be
+        // flipped by horizontal input. WallSideSign is +1 when the wall is on the right,
+        // -1 when on the left, which maps directly onto localScale.x (face toward the wall).
+        if (movementComponent != null && movementComponent.IsWallSliding && movementComponent.WallSideSign != 0)
+        {
+            characterTransform.localScale = new Vector3(
+                movementComponent.WallSideSign,
+                1,
+                1
+            );
+            return;
+        }
+
         if (direction.x != 0)
         {
             characterTransform.localScale = new Vector3(
@@ -311,7 +356,11 @@ public class Player : character
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
 
-        if (_energyCollector != null && _energyCollector.TryCollectNearby()) return;
+        if (_energyCollector != null && _energyCollector.TryCollectNearby())
+        {
+            _audioController?.PlayEnergyPickupSound();
+            return;
+        }
 
         if (!IsAbilityUnlocked(TutorialAbilities.Grab)) return;
 
@@ -350,6 +399,9 @@ public class Player : character
     }
 
     public Vector2 MoveInput => _inputHandler?.MoveInput ?? Vector2.zero;
+
+    public bool IsAimingDash => isAlive && _inputHandler != null && _inputHandler.IsAimHeld
+                                && IsAbilityUnlocked(TutorialAbilities.Dash);
 
     public void Jump()
     {
@@ -393,8 +445,25 @@ public class Player : character
         movementVFX?.PlayWallJumpBurst();
     }
 
+    private void OnLanded()
+    {
+        _audioController?.PlayLandSound();
+    }
+
     private void OnGrabStarted()
     {
+        _audioController?.PlayGrabSound();
+        ActivateSlowMotion();
+    }
+
+    // Dash impact landed on an enemy — either a normal dash hitting a weak point or a True-Damage
+    // dash hitting any enemy. Refresh the dash so the player can chain straight into the next target
+    // mid-air (combo), and re-arm the slow-mo aim window so they get a fresh moment to aim.
+    private void OnDashImpactLanded()
+    {
+        ChangeState(PlayerState.Attacking);
+        if (movementComponent != null)
+            movementComponent.RechargeDashForCombo();
         ActivateSlowMotion();
     }
 
@@ -426,6 +495,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
+        _audioController?.PlaySlowMoSound();
         ActivateSlowMotion();
     }
 
@@ -516,6 +586,10 @@ public class Player : character
     {
         if (healthComponent == null) return;
         healthComponent.Heal(healthComponent.maxHealth);
+        movementComponent?.ResetState();
+        jumpsRemaining = maxJumps;
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
         if (!isAlive)
         {
             isAlive = true;
@@ -535,24 +609,41 @@ public class Player : character
         if (healthComponent != null)
             healthComponent.Heal(healthComponent.maxHealth);
 
+        movementComponent?.ResetState();
+        jumpsRemaining = maxJumps;
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
+
         if (!isAlive)
         {
             isAlive = true;
             ChangeState(PlayerState.Idle);
         }
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = true;
-
-        if (movementComponent != null)
-            movementComponent.SetCanMove(true);
-
         if (healthComponent != null)
             healthComponent.StartInvincibility(invincDuration);
     }
 
+    private void UpdateHealthRegen()
+    {
+        if (!enableHealthRegen || healthComponent == null) return;
+        if (healthComponent.currentHealth >= healthComponent.maxHealth) return;
+
+        _timeSinceLastDamage += Time.deltaTime;
+        if (_timeSinceLastDamage < regenDelay) return;
+
+        _regenTickTimer += Time.deltaTime;
+        if (_regenTickTimer >= regenInterval)
+        {
+            _regenTickTimer -= regenInterval;
+            Heal(1f);
+        }
+    }
+
     protected override void OnTakeDamage()
     {
+        _timeSinceLastDamage = 0f;
+        _regenTickTimer = 0f;
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
@@ -562,6 +653,23 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         movementComponent?.ApplyKnockback(sourcePosition, force, upwardBias);
+        ChangeState(PlayerState.Knockback);
+    }
+
+    public bool IsOnPlatform
+    {
+        get
+        {
+            // Primary: use MovementComponent ground tag if available.
+            if (movementComponent != null && movementComponent.GetGroundTag() == "platform")
+                return true;
+            // Fallback: small overlap at feet against the Platform layer (11).
+            var col = GetComponent<Collider2D>();
+            Vector2 feet = col != null
+                ? new Vector2(col.bounds.center.x, col.bounds.min.y + 0.05f)
+                : (Vector2)transform.position;
+            return Physics2D.OverlapCircle(feet, 0.2f, 1 << 11) != null;
+        }
     }
 
     public void SetCaptured(bool captured)
@@ -637,10 +745,15 @@ public class Player : character
         switch (state)
         {
             case PlayerState.Dead:
+                _slowMotion?.ResetImmediate();
                 movementComponent?.SetCanMove(false);
+                if (movementComponent != null)
+                {
+                    var v = movementComponent.GetVelocity();
+                    movementComponent.SetVelocity(new Vector2(0f, v.y));
+                }
                 _animationController?.PlayDeathAnimation();
-                Collider2D deadCol = GetComponent<Collider2D>();
-                if (deadCol != null) deadCol.enabled = false;
+                _audioController?.PlayDeathSound();
                 _logger?.LogWarning("Player died! Game Over!");
                 break;
 
@@ -657,8 +770,18 @@ public class Player : character
             // Jump feedback (sfx + puff/wall-burst) is handled by OnJumped/OnWallJumped,
             // wired to MovementComponent's Jumped/WallJumped events — see Start().
 
+            case PlayerState.WallSliding:
+                _audioController?.StartWallSlideLoop();
+                break;
+
             case PlayerState.Grabbing:
                 // Placeholder: wire grab animation when art is ready
+                break;
+
+            case PlayerState.Knockback:
+                if (movementComponent != null && movementComponent.IsDamageKnocked)
+                    _animationController?.PlayKnockbackAnimation();
+                // IsBounceKnocked: let IsFalling bool drive Fall animation naturally
                 break;
         }
     }
@@ -668,9 +791,10 @@ public class Player : character
         switch (state)
         {
             case PlayerState.Dead:
-                movementComponent?.SetCanMove(true);
-                Collider2D exitCol = GetComponent<Collider2D>();
-                if (exitCol != null) exitCol.enabled = true;
+                break;
+
+            case PlayerState.WallSliding:
+                _audioController?.StopWallSlideLoop();
                 break;
         }
     }
@@ -681,6 +805,13 @@ public class Player : character
         {
             if (_currentState != PlayerState.Dead)
                 ChangeState(PlayerState.Dead);
+            return;
+        }
+
+        if (movementComponent != null && movementComponent.IsKnocked)
+        {
+            if (_currentState != PlayerState.Knockback)
+                ChangeState(PlayerState.Knockback);
             return;
         }
 
@@ -748,11 +879,19 @@ public class Player : character
             _inputHandler.Dispose();
         }
 
+        if (movementVFX != null)
+            movementVFX.Landed -= OnLanded;
+
         if (movementComponent != null)
         {
             movementComponent.Jumped -= OnJumped;
             movementComponent.WallJumped -= OnWallJumped;
             movementComponent.GrabStarted -= OnGrabStarted;
+        }
+
+        if (dashImpact != null)
+        {
+            dashImpact.ImpactLanded -= OnDashImpactLanded;
         }
 
         InvincibilityStarted -= OnInvincibilityVisualStart;

@@ -38,5 +38,80 @@ namespace Game.Characters.Player
             SoundManager.PlaySound(SoundType.DASH);
             _logger?.Log("Dash sound played");
         }
+
+        public void PlayDeathSound()
+        {
+            SoundManager.PlaySound(SoundType.DEATH);
+            _logger?.Log("Death sound played");
+        }
+
+        public void PlayLandSound()
+        {
+            SoundManager.PlaySound(SoundType.LAND);
+            _logger?.Log("Land sound played");
+        }
+
+        public void PlayGrabSound()
+        {
+            SoundManager.PlaySound(SoundType.GRAB);
+            _logger?.Log("Grab sound played");
+        }
+
+        public void PlayEnergyPickupSound()
+        {
+            SoundManager.PlaySound(SoundType.ENERGY);
+            _logger?.Log("Energy pickup sound played");
+        }
+
+        public void PlayEmpSound()
+        {
+            SoundManager.PlaySound(SoundType.EMP);
+            _logger?.Log("EMP sound played");
+        }
+
+        public void PlayTrueDamageArmSound()
+        {
+            SoundManager.PlaySound(SoundType.TRUEDAMAGE_ARM);
+            _logger?.Log("True damage arm sound played");
+        }
+
+        public void PlayTrueDamageConsumeSound()
+        {
+            SoundManager.PlaySound(SoundType.TRUEDAMAGE_CONSUME);
+            _logger?.Log("True damage consume sound played");
+        }
+
+        public void PlaySlowMoSound()
+        {
+            SoundManager.PlaySound(SoundType.SLOWMO);
+            _logger?.Log("Slow-mo sound played");
+        }
+
+        public const string MetalGroundTag = "GroundMetal";
+
+        public void PlayFootstepSound(string groundTag = null)
+        {
+            bool isMetal = groundTag == MetalGroundTag;
+            SoundManager.PlayFootstep(isMetal ? SoundType.FOOTSTEP_METAL : SoundType.FOOTSTEP);
+            _logger?.Log(isMetal ? "Footstep (metal) sound played" : "Footstep sound played");
+        }
+
+        public void StopFootstepSound()
+        {
+            SoundManager.StopFootstep();
+            _logger?.Log("Footstep sound stopped");
+        }
+
+        public void StartWallSlideLoop()
+        {
+            SoundManager.StartLoop(SoundType.WALLSLIDE);
+            _logger?.Log("Wall slide loop started");
+        }
+
+        public void StopWallSlideLoop()
+        {
+            SoundManager.StopLoop(SoundType.WALLSLIDE);
+            _logger?.Log("Wall slide loop stopped");
+        }
     }
 }

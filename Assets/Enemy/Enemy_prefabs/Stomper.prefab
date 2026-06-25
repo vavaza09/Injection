@@ -122,6 +122,7 @@ Transform:
   m_Children:
   - {fileID: 1339515741052374163}
   - {fileID: 3414882500126219687}
+  - {fileID: 6654155916318769611}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2736726744138619286
@@ -210,9 +211,11 @@ MonoBehaviour:
   stunVfxPrefab: {fileID: 0}
   stompDamageZone: {fileID: 2648370668505142157}
   preJumpDelay: 0.6
-  jumpHeightAbovePlayer: 7
+  jumpHeightAbovePlayer: 19
+  jumpUpSpeed: 30
   jumpToPlayerTime: 0.6
-  stompDownSpeed: 22
+  telegraphDuration: 0.8
+  stompDownSpeed: 35
   stompDamageDuration: 0.2
   stompAttackCooldown: 4.2
   groundLayer:
@@ -220,8 +223,10 @@ MonoBehaviour:
     m_Bits: 8
   airContactDamage: 20
   shakeAmplitude: 2
-  impactVfxRadius: 3
+  impactVfxRadius: 3.5
   impactVfxPrefab: {fileID: 0}
+  shadowObject: {fileID: 8065132223933855877, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+  minShadowScale: {x: 2.8, y: 0.5, z: 1}
 --- !u!50 &2443875247897457428
 Rigidbody2D:
   serializedVersion: 5
@@ -464,3 +469,69 @@ MonoBehaviour:
   damage: 20
   knockbackForce: 12
   knockbackUpward: 0.5
+--- !u!1001 &629200794644091307
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3425854261631109455}
+    m_Modifications:
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065132223933855877, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_Name
+      value: Stomper_shadow
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065132223933855877, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+--- !u!4 &6654155916318769611 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6116751715423817824, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
+  m_PrefabInstance: {fileID: 629200794644091307}
+  m_PrefabAsset: {fileID: 0}

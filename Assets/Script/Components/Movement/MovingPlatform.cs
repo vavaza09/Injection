@@ -125,6 +125,9 @@ namespace Game.Components.Movement
             _state = PlatformState.Moving;
         }
 
+        public void MoveUp()   { _targetIsB = true;  _state = PlatformState.Moving; }
+        public void MoveDown() { _targetIsB = false; _state = PlatformState.Moving; }
+
         private void CarryRiders(Vector2 platformDelta, Vector2 platformNewPos)
         {
             Bounds bounds = _col.bounds;

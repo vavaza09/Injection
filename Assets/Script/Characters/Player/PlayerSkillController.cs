@@ -4,7 +4,7 @@ using Game.Characters.Player;
 using Game.Components.Skills;
 using Game.Tutorial;
 
-public class PlayerSkillController : MonoBehaviour
+public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkillReadinessProvider
 {
     [Header("EMP Blast")]
     [SerializeField] private float empRadius        = 5f;
@@ -29,8 +29,9 @@ public class PlayerSkillController : MonoBehaviour
 
     private Core.Logging.ILogger _logger;
     private PlayerInputHandler   _inputHandler;
-    private PlayerSkillEvents  _bus;
-    private IEnergyPool        _energyPool;
+    private PlayerSkillEvents    _bus;
+    private IEnergyPool          _energyPool;
+    private PlayerAudioController _audioController;
 
     private EmpBlastSkill      _empSkill;
     private TrueDamageDashSkill _trueDashSkill;
@@ -49,12 +50,14 @@ public class PlayerSkillController : MonoBehaviour
         Core.Logging.LoggerFactory loggerFactory,
         PlayerInputHandler inputHandler,
         IPlayerSkillEvents skillEvents,
-        IEnergyPool energyPool)
+        IEnergyPool energyPool,
+        PlayerAudioController audioController)
     {
-        _logger       = loggerFactory?.CreateLogger<PlayerSkillController>();
-        _inputHandler = inputHandler;
-        _bus          = (PlayerSkillEvents)skillEvents;
-        _energyPool   = energyPool;
+        _logger          = loggerFactory?.CreateLogger<PlayerSkillController>();
+        _inputHandler    = inputHandler;
+        _bus             = (PlayerSkillEvents)skillEvents;
+        _energyPool      = energyPool;
+        _audioController = audioController;
     }
 
     private void Awake()
@@ -160,11 +163,12 @@ public class PlayerSkillController : MonoBehaviour
 
     private void OnEmpDetonated(EmpBlastEvent e)
     {
-        _drawEmpGizmo  = true;
-        _empGizmoTimer = 0.5f;
+        _drawEmpGizmo   = true;
+        _empGizmoTimer  = 0.5f;
         _empGizmoRadius = e.Radius;
         _empGizmoPos    = transform.position;
 
+        _audioController?.PlayEmpSound();
         FlashColor(empFlashColor, empFlashDuration);
     }
 
@@ -173,12 +177,14 @@ public class PlayerSkillController : MonoBehaviour
         _trueDamageArmedVisual = true;
         if (_spriteRenderer != null)
             _spriteRenderer.color = trueDamageArmedColor;
+        _audioController?.PlayTrueDamageArmSound();
     }
 
     private void OnTrueDamageConsumed()
     {
         _trueDamageArmedVisual = false;
         RestoreColor();
+        _audioController?.PlayTrueDamageConsumeSound();
     }
 
     private void FlashColor(Color color, float duration)
@@ -202,6 +208,31 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (_spriteRenderer == null) return;
         _spriteRenderer.color = _trueDamageArmedVisual ? trueDamageArmedColor : _originalColor;
+    }
+
+    // ── ISkillReadinessProvider ────────────────────────────────
+
+    public Game.Components.Skills.SkillReadout Get(Game.Components.Skills.SkillId id)
+    {
+        switch (id)
+        {
+            case Game.Components.Skills.SkillId.Emp:
+            {
+                bool unlocked = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill1);
+                bool canCast  = _empSkill != null && _empSkill.CanActivate && unlocked;
+                float remaining = _empSkill?.CooldownRemaining ?? 0f;
+                return new Game.Components.Skills.SkillReadout(unlocked, canCast, remaining, empCooldown);
+            }
+            case Game.Components.Skills.SkillId.TrueDamage:
+            {
+                bool unlocked = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill2);
+                bool canCast  = _trueDashSkill != null && _trueDashSkill.CanActivate && unlocked;
+                float remaining = _trueDashSkill?.CooldownRemaining ?? 0f;
+                return new Game.Components.Skills.SkillReadout(unlocked, canCast, remaining, trueDamageCooldown);
+            }
+            default:
+                return new Game.Components.Skills.SkillReadout(false, false, 0f, 1f);
+        }
     }
 
     // ── Debug Gizmos ───────────────────────────────────────────

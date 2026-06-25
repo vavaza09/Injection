@@ -229,6 +229,7 @@ public class TankEnemy : Enemy
         // 2. Wait, then play flash glow
         if (flashStartDelay > 0f)
             yield return new WaitForSeconds(flashStartDelay);
+        SoundManager.PlaySound(SoundType.TANK_CANNON_CHARGE);
         if (muzzleFlash != null)
             muzzleFlash.PlayFlash(shootDirection);
 
@@ -238,6 +239,7 @@ public class TankEnemy : Enemy
             yield return new WaitForSeconds(remaining);
 
         // 4. Fire bullet + smoke
+        SoundManager.PlaySound(SoundType.TANK_CANNON_FIRE);
         GameObject bulletObject = Instantiate(bulletPrefab, attackPoint.position, fireRotation);
         TankBullet bullet = bulletObject.GetComponent<TankBullet>();
         if (bullet != null)
