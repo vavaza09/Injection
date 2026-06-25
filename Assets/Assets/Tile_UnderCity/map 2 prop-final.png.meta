@@ -1,0 +1,668 @@
+fileFormatVersion: 2
+guid: 8ec3e34c521c5ee42917b61a85c5f0ee
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5415652289552507794
+    second: map 2 prop-final_0
+  - first:
+      213: 3470384228045340618
+    second: map 2 prop-final_1
+  - first:
+      213: -7387002533353115131
+    second: map 2 prop-final_2
+  - first:
+      213: 188153229510115782
+    second: map 2 prop-final_3
+  - first:
+      213: -3620312835098398851
+    second: map 2 prop-final_4
+  - first:
+      213: 1089695416911083012
+    second: map 2 prop-final_5
+  - first:
+      213: 3575602908836161366
+    second: map 2 prop-final_6
+  - first:
+      213: 2626789267664291553
+    second: map 2 prop-final_7
+  - first:
+      213: 2754709598148383045
+    second: map 2 prop-final_8
+  - first:
+      213: 2604457029556683724
+    second: map 2 prop-final_9
+  - first:
+      213: -1405183221837177519
+    second: map 2 prop-final_10
+  - first:
+      213: 9215506159223395171
+    second: map 2 prop-final_11
+  - first:
+      213: -1083706421871750674
+    second: map 2 prop-final_12
+  - first:
+      213: 893802701051680832
+    second: map 2 prop-final_13
+  - first:
+      213: -2448860812842688185
+    second: map 2 prop-final_14
+  - first:
+      213: -4160532261791508009
+    second: map 2 prop-final_15
+  - first:
+      213: 4047505324005953768
+    second: map 2 prop-final_16
+  - first:
+      213: 1466461141024552702
+    second: map 2 prop-final_17
+  - first:
+      213: -7956490198149966563
+    second: map 2 prop-final_18
+  - first:
+      213: -5220666520980302749
+    second: map 2 prop-final_19
+  - first:
+      213: -706738481108687071
+    second: map 2 prop-final_20
+  - first:
+      213: 5907047456538927364
+    second: map 2 prop-final_21
+  - first:
+      213: 5268273804050792032
+    second: map 2 prop-final_22
+  - first:
+      213: -114371750573999344
+    second: map 2 prop-final_23
+  - first:
+      213: 4788747533161340538
+    second: map 2 prop-final_24
+  - first:
+      213: 8073600743926967837
+    second: map 2 prop-final_25
+  - first:
+      213: -3267614807133318933
+    second: map 2 prop-final_26
+  - first:
+      213: -5215996878172358338
+    second: map 2 prop-final_27
+  - first:
+      213: -7259329195177069768
+    second: map 2 prop-final_28
+  - first:
+      213: 9171069838495435753
+    second: map 2 prop-final_29
+  - first:
+      213: 4356905513984877083
+    second: map 2 prop-final_30
+  - first:
+      213: -3626251790051681486
+    second: map 2 prop-final_31
+  - first:
+      213: 8334224178973494128
+    second: map 2 prop-final_32
+  - first:
+      213: -5313114404923502257
+    second: map 2 prop-final_33
+  - first:
+      213: -475435587694998631
+    second: map 2 prop-final_34
+  - first:
+      213: 7694905240852404891
+    second: map 2 prop-final_35
+  - first:
+      213: 2702946761705436161
+    second: map 2 prop-final_36
+  - first:
+      213: -3981998646159421412
+    second: map 2 prop-final_37
+  - first:
+      213: 6280244465651335278
+    second: map 2 prop-final_38
+  - first:
+      213: -1209899570571146339
+    second: map 2 prop-final_39
+  - first:
+      213: -5225206721309210482
+    second: map 2 prop-final_40
+  - first:
+      213: 8113196899037805594
+    second: map 2 prop-final_41
+  - first:
+      213: 5986968289464692439
+    second: map 2 prop-final_42
+  - first:
+      213: 4157429683705381076
+    second: map 2 prop-final_43
+  - first:
+      213: 8517030250014628932
+    second: map 2 prop-final_44
+  - first:
+      213: -3479501448562129108
+    second: map 2 prop-final_45
+  - first:
+      213: -3080878949015989396
+    second: map 2 prop-final_46
+  - first:
+      213: -5999191668348220267
+    second: map 2 prop-final_47
+  - first:
+      213: -1009350202826166414
+    second: map 2 prop-final_48
+  - first:
+      213: -4425819399534359714
+    second: map 2 prop-final_49
+  - first:
+      213: -9138239836788931921
+    second: map 2 prop-final_50
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: map 2 prop-final_0
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 3742
+        width: 2603
+        height: 1654
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 293eec16013482b40800000000000000
+      internalID: 5415652289552507794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_1
+      rect:
+        serializedVersion: 2
+        x: 3074
+        y: 3740
+        width: 1356
+        height: 1651
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acfb2ca8118492030800000000000000
+      internalID: 3470384228045340618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_2
+      rect:
+        serializedVersion: 2
+        x: 4558
+        y: 3730
+        width: 3185
+        height: 1657
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 502b39c75581c7990800000000000000
+      internalID: -7387002533353115131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_5
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 3362
+        width: 2439
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4063b5e45306f1f00800000000000000
+      internalID: 1089695416911083012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_7
+      rect:
+        serializedVersion: 2
+        x: 3157
+        y: 3365
+        width: 1321
+        height: 154
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e640feebea347420800000000000000
+      internalID: 2626789267664291553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_9
+      rect:
+        serializedVersion: 2
+        x: 4642
+        y: 3347
+        width: 3060
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc3ce7f8ed3e42420800000000000000
+      internalID: 2604457029556683724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_26
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 2599
+        width: 2986
+        height: 470
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be0130e35a917a2d0800000000000000
+      internalID: -3267614807133318933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_27
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 2610
+        width: 1747
+        height: 457
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e397dfe897e0d97b0800000000000000
+      internalID: -5215996878172358338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_29
+      rect:
+        serializedVersion: 2
+        x: 6062
+        y: 642
+        width: 805
+        height: 2272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ebc1dd7d6f264f70800000000000000
+      internalID: 9171069838495435753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_32
+      rect:
+        serializedVersion: 2
+        x: 3283
+        y: 2224
+        width: 1745
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07bcf22fbbc19a370800000000000000
+      internalID: 8334224178973494128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_34
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 2182
+        width: 2840
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99b4cd91ad9e669f0800000000000000
+      internalID: -475435587694998631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_37
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 538
+        width: 2760
+        height: 1552
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c10d49f24591db8c0800000000000000
+      internalID: -3981998646159421412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_39
+      rect:
+        serializedVersion: 2
+        x: 3322
+        y: 565
+        width: 1560
+        height: 1555
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9b853a30c2953fe0800000000000000
+      internalID: -1209899570571146339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: map 2 prop-final_50
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 47
+        width: 4996
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa24fdfe8437e2180800000000000000
+      internalID: -9138239836788931921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: fc82ca0ee2666c54cae1126475c927d3
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      map 2 prop-final_0: 5415652289552507794
+      map 2 prop-final_1: 3470384228045340618
+      map 2 prop-final_10: -1405183221837177519
+      map 2 prop-final_11: 9215506159223395171
+      map 2 prop-final_12: -1083706421871750674
+      map 2 prop-final_13: 893802701051680832
+      map 2 prop-final_14: -2448860812842688185
+      map 2 prop-final_15: -4160532261791508009
+      map 2 prop-final_16: 4047505324005953768
+      map 2 prop-final_17: 1466461141024552702
+      map 2 prop-final_18: -7956490198149966563
+      map 2 prop-final_19: -5220666520980302749
+      map 2 prop-final_2: -7387002533353115131
+      map 2 prop-final_20: -706738481108687071
+      map 2 prop-final_21: 5907047456538927364
+      map 2 prop-final_22: 5268273804050792032
+      map 2 prop-final_23: -114371750573999344
+      map 2 prop-final_24: 4788747533161340538
+      map 2 prop-final_25: 8073600743926967837
+      map 2 prop-final_26: -3267614807133318933
+      map 2 prop-final_27: -5215996878172358338
+      map 2 prop-final_28: -7259329195177069768
+      map 2 prop-final_29: 9171069838495435753
+      map 2 prop-final_3: 188153229510115782
+      map 2 prop-final_30: 4356905513984877083
+      map 2 prop-final_31: -3626251790051681486
+      map 2 prop-final_32: 8334224178973494128
+      map 2 prop-final_33: -5313114404923502257
+      map 2 prop-final_34: -475435587694998631
+      map 2 prop-final_35: 7694905240852404891
+      map 2 prop-final_36: 2702946761705436161
+      map 2 prop-final_37: -3981998646159421412
+      map 2 prop-final_38: 6280244465651335278
+      map 2 prop-final_39: -1209899570571146339
+      map 2 prop-final_4: -3620312835098398851
+      map 2 prop-final_40: -5225206721309210482
+      map 2 prop-final_41: 8113196899037805594
+      map 2 prop-final_42: 5986968289464692439
+      map 2 prop-final_43: 4157429683705381076
+      map 2 prop-final_44: 8517030250014628932
+      map 2 prop-final_45: -3479501448562129108
+      map 2 prop-final_46: -3080878949015989396
+      map 2 prop-final_47: -5999191668348220267
+      map 2 prop-final_48: -1009350202826166414
+      map 2 prop-final_49: -4425819399534359714
+      map 2 prop-final_5: 1089695416911083012
+      map 2 prop-final_50: -9138239836788931921
+      map 2 prop-final_6: 3575602908836161366
+      map 2 prop-final_7: 2626789267664291553
+      map 2 prop-final_8: 2754709598148383045
+      map 2 prop-final_9: 2604457029556683724
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
