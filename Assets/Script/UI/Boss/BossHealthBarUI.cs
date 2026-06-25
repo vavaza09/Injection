@@ -21,8 +21,8 @@ public class BossHealthBarUI : MonoBehaviour
         Hide();
     }
 
-    public void Show() => barRoot?.SetActive(true);
-    public void Hide() => barRoot?.SetActive(false);
+    public void Show() { if (barRoot != null) barRoot.SetActive(true); }
+    public void Hide() { if (barRoot != null) barRoot.SetActive(false); }
 
     private void Refresh()
     {

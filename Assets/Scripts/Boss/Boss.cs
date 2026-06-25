@@ -32,8 +32,11 @@ public class Boss : BossBase
         Debug.Log("[Boss] Player lost → IdleState");
     }
 
+    private bool _dying;
+
     public override void TakeDamage(int amount)
     {
+        if (_dying) return;
         currentHealth -= amount;
         currentHealth  = Mathf.Max(0, currentHealth);
         RaiseHealthChanged();
@@ -48,11 +51,15 @@ public class Boss : BossBase
 
     private void HandleDeath()
     {
-        GetComponent<BossHammerSwing>()?.ResetArm();
-        GetComponent<BossGasAttack>()?.ResetGas();
+        _dying = true;
         GetComponent<BossPersistence>()?.MarkDefeated();
         Exit();
-        Destroy(gameObject, 1f);
+
+        var deathSeq = GetComponent<BossDeathSequence>();
+        if (deathSeq != null)
+            deathSeq.Play();
+        else
+            Destroy(gameObject, 1f); // fallback if component not wired
     }
 
     private void ResolveReferences()
