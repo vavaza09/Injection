@@ -139,8 +139,24 @@ PrefabInstance:
       value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: arrowGraphic
+      value: 
+      objectReference: {fileID: 5287925883489929685}
+    - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: ringThickness
       value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: canDashColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: canDashColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: canDashColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1096991204051458568, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: ringResolution
@@ -371,6 +387,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
   m_PrefabInstance: {fileID: 1202152371122107}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5287925883489929685 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5288978355981985390, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+  m_PrefabInstance: {fileID: 1202152371122107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &6111057636079140435 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}

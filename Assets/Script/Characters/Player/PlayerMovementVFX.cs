@@ -533,7 +533,9 @@ public class PlayerMovementVFX : MonoBehaviour
         for (int i = 0; i < _ghostPool.Length; i++)
         {
             var go = new GameObject("SpriteGhost_" + i);
-            // Unparented so player flip/scale never distorts the ghost
+            // Unparented so player flip/scale never distorts the ghost.
+            // DontDestroyOnLoad keeps them alive when the player crosses scene boundaries.
+            DontDestroyOnLoad(go);
             _ghostPool[i] = go.AddComponent<SpriteAfterimage>();
             go.SetActive(false);
         }
