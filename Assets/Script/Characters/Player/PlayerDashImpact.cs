@@ -104,7 +104,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
             {
                 ImpactLanded?.Invoke();
                 SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
-                CameraManager.instance?.Shake(weakPointShakeIntensity);
+                CameraShake.Shake(weakPointShakeIntensity);
                 _hitFlash?.Flash();
                 HitFlashFX.Spawn(targetCollider.bounds.center);
                 SoundManager.PlaySound(SoundType.HITSTOP);
@@ -161,7 +161,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         if (hitWeakPoint || isTrueDamageKill)
         {
             SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
-            CameraManager.instance?.Shake(weakPointShakeIntensity);
+            CameraShake.Shake(weakPointShakeIntensity);
             _hitFlash?.Flash();
             HitFlashFX.Spawn(targetCollider.bounds.center);
             SoundManager.PlaySound(SoundType.HITSTOP);

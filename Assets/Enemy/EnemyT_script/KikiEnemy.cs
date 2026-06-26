@@ -370,19 +370,18 @@ public class KikiEnemy : Enemy
 
     private void FlipTo(bool faceRight)
     {
-        Vector3 scale = transform.localScale;
-        float abs = Mathf.Abs(scale.x);
-        scale.x = (faceRight != invertFacing) ? abs : -abs;
-        transform.localScale = scale;
+        Vector3 euler = transform.eulerAngles;
+        euler.y = (faceRight != invertFacing) ? 0f : 180f;
+        transform.eulerAngles = euler;
     }
 
     private void AimHeadAlong(Vector2 dir)
     {
         if (!aimHeadAtPlayer) return;
-        // Only tilt vertically — horizontal facing is handled by FlipTo/localScale.x.
-        // Negative localScale.x mirror-inverts Z-rotation, so negate the whole angle (tilt + offset) together.
+        // Only tilt vertically — horizontal facing is handled by FlipTo/eulerAngles.y.
+        // Y=180 mirror-inverts Z-rotation in world space, so negate the whole angle (tilt + offset) together.
         float tilt = Mathf.Atan2(dir.y, Mathf.Abs(dir.x)) * Mathf.Rad2Deg;
-        float sign = transform.localScale.x < 0f ? -1f : 1f;
+        float sign = (transform.eulerAngles.y > 90f && transform.eulerAngles.y < 270f) ? -1f : 1f;
         transform.rotation = Quaternion.Euler(0f, 0f, sign * (tilt + headAngleOffset));
     }
 }

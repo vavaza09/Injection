@@ -29,13 +29,10 @@ public class HammerShockwave : MonoBehaviour
     [SerializeField] private float shakeIntensity = 0.4f;
     [SerializeField] private float shakeDuration  = 0.35f;
 
-    private CameraManager _cameraManager;
-    private Player        _player;
+    private Player _player;
 
     private void Start()
     {
-        _cameraManager = CameraManager.instance;
-
         // Player is tagged "Player" but is on layer 10 "Cape" — find by tag only.
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
         if (playerGO != null) _player = playerGO.GetComponent<Player>();
@@ -67,6 +64,6 @@ public class HammerShockwave : MonoBehaviour
         }
 
         // 3. Camera shake
-        _cameraManager?.Shake(shakeIntensity, shakeDuration);
+        CameraShake.Shake(shakeIntensity, shakeDuration);
     }
 }

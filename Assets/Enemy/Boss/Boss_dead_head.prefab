@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 2785060680115955132}
   - component: {fileID: 1148046132813623299}
   - component: {fileID: 2163572370459479586}
-  - component: {fileID: 7020391696971270347}
+  - component: {fileID: 6028397769067787382}
   m_Layer: 3
   m_Name: Boss_dead_head
   m_TagString: Untagged
@@ -197,7 +197,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 20
+  m_Mass: 10
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -212,8 +212,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &7020391696971270347
-BoxCollider2D:
+--- !u!58 &6028397769067787382
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -246,15 +246,5 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.060364723, y: 0.052819252}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4.6015625, y: 4.84375}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 3.847004, y: 3.953371}
-  m_EdgeRadius: 0
+  m_Offset: {x: 0, y: -0.096383095}
+  m_Radius: 2.0100603

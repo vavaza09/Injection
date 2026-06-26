@@ -54,6 +54,10 @@ public class BossJunkSmashAttack : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
+    [SerializeField] private SfxCue windUpSfx;
+    [SerializeField] private SfxCue swingSfx;
+    [SerializeField] private SfxCue impactSfx;
+    [SerializeField] private SfxCue recoverSfx;
 
     // ── Impact Event ──────────────────────────────────────────────────────
 
@@ -135,7 +139,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         IsAttacking = true;
 
         // ── Raise ────────────────────────────────────────────────────────
-        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_WINDUP, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_HAMMER_WINDUP, windUpSfx, _sfxSource);
 
         Vector3 raisedHammerPos = _idleHammerPos + (Vector3)(Vector2)raiseOffset;
         Vector3 raisedClawPos   = _idleClawPos   + (Vector3)(Vector2)raiseOffset;
@@ -153,7 +157,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         if (clawRightIKTarget  != null) clawRightIKTarget.position  = raisedClawPos;
 
         // ── Slam ─────────────────────────────────────────────────────────
-        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_SWING, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_HAMMER_SWING, swingSfx, _sfxSource);
 
         Vector3 slamHammerPos = _idleHammerPos + (Vector3)(Vector2)slamOffset;
         Vector3 slamClawPos   = _idleClawPos   + (Vector3)(Vector2)slamOffset;
@@ -171,7 +175,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         if (clawRightIKTarget  != null) clawRightIKTarget.position  = slamClawPos;
 
         // ── Impact ────────────────────────────────────────────────────────
-        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_IMPACT, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_HAMMER_IMPACT, impactSfx, _sfxSource);
         OnImpact?.Invoke();
         SpawnJunkWave(slamHammerPos.y);
         _nextReadyTime = Time.time + cooldown;
@@ -179,7 +183,7 @@ public class BossJunkSmashAttack : MonoBehaviour
         yield return new WaitForSeconds(holdDuration);
 
         // ── Recover ───────────────────────────────────────────────────────
-        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_RECOVER, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_HAMMER_RECOVER, recoverSfx, _sfxSource);
 
         e = 0f;
         while (e < recoverDuration)

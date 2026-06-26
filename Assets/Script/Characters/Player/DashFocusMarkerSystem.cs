@@ -33,7 +33,10 @@ public class DashFocusMarkerSystem : MonoBehaviour
             if (_activeMarkers.ContainsKey(wp.transform)) continue;
             if (Vector2.Distance(transform.position, wp.transform.position) > detectRadius) continue;
 
-            _activeMarkers[wp.transform] = Instantiate(focusMarkerPrefab, wp.transform.position, Quaternion.identity, wp.transform);
+            var marker = Instantiate(focusMarkerPrefab, wp.transform.position, Quaternion.identity, wp.transform);
+            _activeMarkers[wp.transform] = marker;
+            var refCol = wp.WeakPointColliders.Count > 0 ? wp.WeakPointColliders[0] : wp.GetComponent<Collider2D>();
+            ScaleMarkerToWeakpoint(marker, refCol, 0.8f);
         }
 
         foreach (BossWeakPoint bwp in FindObjectsOfType<BossWeakPoint>())
@@ -42,7 +45,9 @@ public class DashFocusMarkerSystem : MonoBehaviour
             if (_activeMarkers.ContainsKey(bwp.transform)) continue;
             if (Vector2.Distance(transform.position, bwp.transform.position) > detectRadius) continue;
 
-            _activeMarkers[bwp.transform] = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+            var marker = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+            _activeMarkers[bwp.transform] = marker;
+            ScaleMarkerToWeakpoint(marker, bwp.GetComponent<Collider2D>(), 1.5f);
         }
     }
 
@@ -58,7 +63,9 @@ public class DashFocusMarkerSystem : MonoBehaviour
 
             if (shouldShow && !hasMarker)
             {
-                _activeMarkers[bwp.transform] = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+                var marker = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+                _activeMarkers[bwp.transform] = marker;
+                ScaleMarkerToWeakpoint(marker, bwp.GetComponent<Collider2D>(), 1.5f);
             }
             else if (!shouldShow && hasMarker)
             {
@@ -67,6 +74,19 @@ public class DashFocusMarkerSystem : MonoBehaviour
                 _activeMarkers.Remove(bwp.transform);
             }
         }
+    }
+
+    private void ScaleMarkerToWeakpoint(GameObject marker, Collider2D referenceCollider, float multiplier)
+    {
+        if (referenceCollider == null) return;
+        var sr = marker.GetComponent<SpriteRenderer>();
+        if (sr == null || sr.sprite == null) return;
+
+        float spriteWorldSize = sr.sprite.bounds.size.x;
+        float weakpointWorldDiameter = referenceCollider.bounds.size.x;
+        float parentLossyScale = marker.transform.parent != null ? marker.transform.parent.lossyScale.x : 1f;
+        float localScale = (weakpointWorldDiameter * multiplier) / (spriteWorldSize * parentLossyScale);
+        marker.transform.localScale = Vector3.one * localScale;
     }
 
     private void HideMarkers()

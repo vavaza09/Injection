@@ -66,7 +66,7 @@ public class TankEnemy : Enemy
         spriteRenderer = GetComponent<SpriteRenderer>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
-        _currentFacingRight = spriteRenderer != null && spriteRenderer.flipX;
+        _currentFacingRight = false;
 
         // Move gunPivot out of the non-uniformly scaled Circle parent so rotation
         // doesn't cause visual width distortion (Circle has scale 0.55 x 1.04).
@@ -130,7 +130,7 @@ public class TankEnemy : Enemy
             float idleAngle = _currentFacingRight ? 0f : 180f;
             currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, idleAngle, barrelRotateSpeed * Time.deltaTime);
             if (gunPivot != null)
-                gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+                gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
         }
 
         if (GetState() == EnemyState.Chase)
@@ -319,23 +319,11 @@ public class TankEnemy : Enemy
 
     private void ApplyFlip(bool facingRight)
     {
-        spriteRenderer.flipX = facingRight;
-
-        // Flip the Circle mount visual
-        if (_gunMountParent != null)
-        {
-            Vector3 s = _gunMountParent.localScale;
-            s.x = facingRight ? -Mathf.Abs(s.x) : Mathf.Abs(s.x);
-            _gunMountParent.localScale = s;
-        }
-
-        // Mirror the pivot to the correct side — no scale change, so rotation stays undistorted
-        if (gunPivot != null)
-        {
-            Vector3 pos = gunPivot.localPosition;
-            pos.x = facingRight ? -_gunPivotDefaultLocalX : _gunPivotDefaultLocalX;
-            gunPivot.localPosition = pos;
-        }
+        // Rotate root so all children (weakpoint, gun mount, etc.) flip automatically.
+        // Default sprite faces left (Y=0); Y=180 flips it right.
+        Vector3 euler = transform.eulerAngles;
+        euler.y = facingRight ? 180f : 0f;
+        transform.eulerAngles = euler;
 
         // Snap barrel to new facing direction so it doesn't spin 180° on flip
         currentBarrelAngle = facingRight ? 0f : 180f;
@@ -357,7 +345,7 @@ public class TankEnemy : Enemy
         float targetAngle = facingAngle + Mathf.Clamp(angleDiff, -halfArc, halfArc);
 
         currentBarrelAngle = Mathf.MoveTowards(currentBarrelAngle, targetAngle, barrelRotateSpeed * Time.deltaTime);
-        gunPivot.localRotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
+        gunPivot.rotation = Quaternion.Euler(0f, 0f, currentBarrelAngle + 185f);
     }
 
     protected override void OnDeath()
