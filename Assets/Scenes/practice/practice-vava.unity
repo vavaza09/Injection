@@ -4565,7 +4565,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5186,38 +5186,38 @@ MonoBehaviour:
     loop: 0
   - name: EMP
     sounds:
-    - {fileID: 8300000, guid: 4ffcca719e11db24289521b2308365c2, type: 3}
+    - {fileID: 8300000, guid: eb66518d11eec224ba3aaa282f74f18f, type: 3}
     volume: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
   - name: TRUEDAMAGE_ARM
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: 9931d735692fba14e945e07c1689df06, type: 3}
     volume: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
   - name: TRUEDAMAGE_CONSUME
     sounds:
-    - {fileID: 8300000, guid: 842be73c35446ff4481166f2d0c8bd6d, type: 3}
+    - {fileID: 8300000, guid: b438839aaee8e7d4aa0338e006ddfcaa, type: 3}
     volume: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
   - name: SLOWMO
-    sounds:
-    - {fileID: 8300000, guid: e7113a735c671d745890ed0f7060ec31, type: 3}
+    sounds: []
     volume: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
   - name: WALLSLIDE
     sounds:
-    - {fileID: 0}
-    volume: 0
+    - {fileID: 8300000, guid: b08051607d5b53042a09f27b31f5f9c1, type: 3}
+    volume: 0.2
     pitchMin: 0
     pitchMax: 0
-    loop: 0
+    loop: 1
   - name: ENEMY_HURT
     sounds: []
     volume: 0
@@ -5257,8 +5257,8 @@ MonoBehaviour:
   - name: TANK_FOOTSTEP
     sounds: []
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: TANK_CANNON_CHARGE
     sounds: []
@@ -5533,6 +5533,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1254494224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254494217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5057c939c774a448e77bb536d852c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Spawning.RoomSpawner
 --- !u!1 &1281478097
 GameObject:
   m_ObjectHideFlags: 0
@@ -7351,7 +7363,67 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4374263928164468531, guid: 5dc45fa18ef2c3a42b8f993af13ee744, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1254494221}
+    - targetCorrespondingSourceObject: {fileID: 4374263928164468531, guid: 5dc45fa18ef2c3a42b8f993af13ee744, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1254494224}
   m_SourcePrefab: {fileID: 100100000, guid: 5dc45fa18ef2c3a42b8f993af13ee744, type: 3}
+--- !u!1001 &1228341979910135879
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2501174847916255040, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_Name
+      value: EnemySpawnPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.80473
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -19.07996
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494340275624316890, guid: 70121918a5c46644899fff265241f75a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 70121918a5c46644899fff265241f75a, type: 3}
 --- !u!1001 &1766169075902350953
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7777,3 +7849,4 @@ SceneRoots:
   - {fileID: 1439835069}
   - {fileID: 884316914}
   - {fileID: 7754577156544176915}
+  - {fileID: 1228341979910135879}

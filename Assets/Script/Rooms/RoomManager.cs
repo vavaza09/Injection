@@ -50,18 +50,25 @@ namespace Game.Rooms
             StartCoroutine(LoadRoutine(def, arrivalSpawnPointId, onArrived));
         }
 
+        [SerializeField] private float holdBlackDuration = 0.15f;
+
         private IEnumerator LoadRoutine(RoomDefinition def, string arrivalSpawnPointId, Action onArrived)
         {
             _isTransitioning = true;
-            Debug.Log($"[DIAG] RoomManager.LoadRoutine: loading '{def.sceneName}' ScreenFader={ScreenFader.Instance != null}");
 
-            if (ScreenFader.Instance != null)
+            // Fade in the loading screen if available, otherwise fall back to plain black fade.
+            bool useLoadingScreen = Game.UI.LoadingScreen.Instance != null;
+            if (useLoadingScreen)
+            {
+                bool shown = false;
+                Game.UI.LoadingScreen.Instance.Show(() => shown = true);
+                yield return new WaitUntil(() => shown);
+            }
+            else if (ScreenFader.Instance != null)
             {
                 bool faded = false;
                 ScreenFader.Instance.FadeOut(() => faded = true);
-                Debug.Log("[DIAG] RoomManager: waiting for fade...");
                 yield return new WaitUntil(() => faded);
-                Debug.Log("[DIAG] RoomManager: fade complete, starting scene load");
             }
 
             var load = SceneManager.LoadSceneAsync(def.sceneName, LoadSceneMode.Single);
@@ -69,7 +76,8 @@ namespace Game.Rooms
             {
                 _logger?.LogError($"[RoomManager] Scene '{def.sceneName}' failed to load (not in Build Settings?).");
                 _isTransitioning = false;
-                ScreenFader.Instance?.FadeIn();
+                if (useLoadingScreen) Game.UI.LoadingScreen.Instance.Hide();
+                else ScreenFader.Instance?.FadeIn();
                 yield break;
             }
 
@@ -91,7 +99,21 @@ namespace Game.Rooms
             onArrived?.Invoke();
             RoomEntered?.Invoke(def.roomId, arrivalSpawnPointId);
 
-            ScreenFader.Instance?.FadeIn();
+            if (holdBlackDuration > 0f)
+                yield return new WaitForSecondsRealtime(holdBlackDuration);
+
+            // Fade out the loading screen / fade in the game view.
+            if (useLoadingScreen)
+            {
+                bool hidden = false;
+                Game.UI.LoadingScreen.Instance.Hide(() => hidden = true);
+                yield return new WaitUntil(() => hidden);
+            }
+            else if (ScreenFader.Instance != null)
+            {
+                ScreenFader.Instance.FadeIn();
+            }
+
             _isTransitioning = false;
         }
 

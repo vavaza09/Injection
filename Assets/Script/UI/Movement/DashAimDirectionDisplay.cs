@@ -16,7 +16,7 @@ namespace Game.UI.Movement
 
         [Header("Style")]
         [SerializeField] private Color canDashColor = Color.white;
-        [SerializeField] private Color cannotDashColor = new Color(1f, 1f, 1f, 0.35f);
+        [SerializeField] private Color cannotDashColor = new Color(1f, 0.25f, 0.25f, 0.8f);
         [SerializeField] private bool hideWhileDashing = true;
         [SerializeField, Min(0f)] private float orbitRadius = 0f;
         [SerializeField] private float angleOffset = 0f;
