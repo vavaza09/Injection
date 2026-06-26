@@ -485,8 +485,8 @@ MonoBehaviour:
   dashBurstCount: 7
   dashStreakLengthScale: 4
   dashColor: {r: 1, g: 1, b: 1, a: 0.5}
-  ghostInterval: 0.04
-  ghostFadeDuration: 0.25
+  ghostInterval: 0.1
+  ghostFadeDuration: 0.5
   ghostStartAlpha: 0.45
   ghostTint: {r: 1, g: 1, b: 1, a: 1}
   wallDustRate: 8
