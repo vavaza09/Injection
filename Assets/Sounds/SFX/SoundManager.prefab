@@ -508,16 +508,16 @@ MonoBehaviour:
     loop: 0
   - name: BOSS_JUNK_IMPACT
     sounds:
-    - {fileID: 8300000, guid: 25e985124196c894d946554ae4b1b527, type: 3}
-    volume: 0.7
-    pitchMin: 0.715
-    pitchMax: 0.833
+    - {fileID: 8300000, guid: 3a30582b1c2c3ce4c922f5dd0478adb2, type: 3}
+    volume: 0.2
+    pitchMin: 0.54
+    pitchMax: 0.76
     loop: 0
   - name: UI_HOVER
     sounds:
     - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
     volume: 0.893
-    pitchMin: 0
+    pitchMin: 0.5
     pitchMax: 0.72
     loop: 0
   - name: UI_CLICK
@@ -533,14 +533,27 @@ MonoBehaviour:
   - name: GAMEPLAY
     music: {fileID: 0}
   - name: BOSS
-    music: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
+    music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: VICTORY
     music: {fileID: 0}
   - name: GAMEOVER
     music: {fileID: 0}
-  musicVolume: 0.024821296
+  musicVolume: 0.5
   musicFadeDuration: 1
   loopPoolSize: 8
+  sceneAudio:
+  - sceneName: TitleScene
+    music: 0
+    musicVolume: 0
+    musicStart: 0
+    ambient: {fileID: 0}
+    ambientVolume: 0
+  - sceneName: Room_Boss
+    music: 2
+    musicVolume: 0.45
+    musicStart: 1
+    ambient: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
+    ambientVolume: 0.073
 --- !u!82 &8778517580754884786
 AudioSource:
   m_ObjectHideFlags: 0
