@@ -1853,54 +1853,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &343548830
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 343548832}
-  - component: {fileID: 343548831}
-  m_Layer: 0
-  m_Name: SceneLifetime
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &343548831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 343548830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39341facf8e86f443a81db4eb0e681d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SceneLifetimeScope
-  parentReference:
-    TypeName: 
-  autoRun: 1
-  autoInjectGameObjects: []
---- !u!4 &343548832
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 343548830}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &391590896
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17904,8 +17856,8 @@ MonoBehaviour:
   startDelay: 2
   warpOnComplete: 1
   completionDelay: 2
-  nextRoomId: roomA
-  nextSpawnPointId: roomA_save
+  nextRoomId: under_1
+  nextSpawnPointId: 1_Upper_City_Bridge
   enableDevSkip: 1
   devSkipKey: 12
 --- !u!4 &1751099903
@@ -48174,6 +48126,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41eca80a6914e2c40aa26091263f5136, type: 3}
+--- !u!1001 &7987961606638522792
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587933733209709888, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8585729226748956519, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      propertyPath: m_Name
+      value: SceneLifetime
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
 --- !u!114 &8658080719071365271 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8672183930915337131, guid: 643ceb6565cc1354eb8650556d3529df, type: 3}
@@ -48228,4 +48237,4 @@ SceneRoots:
   - {fileID: 565433856}
   - {fileID: 452144847971772854}
   - {fileID: 88985680}
-  - {fileID: 343548832}
+  - {fileID: 7987961606638522792}

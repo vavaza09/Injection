@@ -1,7 +1,6 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class CameraManager : MonoBehaviour
 {
@@ -45,10 +44,9 @@ public class CameraManager : MonoBehaviour
     private CinemachinePositionComposer _composer;
 
     private Coroutine _lerpRoutine;
-    private Coroutine _shakeRoutine;
-    private Vector3 _shakeOffset;
     private bool _isFallingCommitted;
     private float _fallTimer;
+    private bool _offsetControlSuspended;
 
     private enum State { Normal, Falling }
     private State _state = State.Normal;
@@ -65,23 +63,6 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        RenderPipelineManager.beginCameraRendering += ApplyShakeBeforeRender;
-    }
-
-    private void OnDisable()
-    {
-        RenderPipelineManager.beginCameraRendering -= ApplyShakeBeforeRender;
-    }
-
-    // Runs after Cinemachine's LateUpdate but before the draw call — correct timing for shake.
-    private void ApplyShakeBeforeRender(ScriptableRenderContext ctx, Camera cam)
-    {
-        if (cam != Camera.main || _shakeOffset == Vector3.zero) return;
-        cam.transform.position += _shakeOffset;
-    }
-
     private void Start()
     {
         ResolveCurrentCamera();
@@ -95,9 +76,23 @@ public class CameraManager : MonoBehaviour
 
     }
 
+    public void SuspendOffsetControl()
+    {
+        _offsetControlSuspended = true;
+    }
+
+    public void ResumeOffsetControl()
+    {
+        _offsetControlSuspended = false;
+        _isFallingCommitted = false;
+        _fallTimer = 0f;
+        _state = State.Normal;
+    }
+
     private void Update()
     {
         if (_playerRb == null || _composer == null) return;
+        if (_offsetControlSuspended) return;
 
         float vy = _playerRb.linearVelocity.y;
 
@@ -235,27 +230,9 @@ public class CameraManager : MonoBehaviour
         Debug.Log($"Entered room with bounds: {roomBounds}");
     }
 
-    public void Shake(float intensity, float duration = 0.3f)
+    public void Shake(float intensity, float duration = 0.25f)
     {
-        if (_shakeRoutine != null) StopCoroutine(_shakeRoutine);
-        _shakeRoutine = StartCoroutine(ShakeRoutine(intensity, duration));
-    }
-
-    private IEnumerator ShakeRoutine(float intensity, float duration)
-    {
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float strength = intensity * (1f - Mathf.Clamp01(elapsed / duration));
-            _shakeOffset = new Vector3(
-                Random.Range(-1f, 1f) * strength,
-                Random.Range(-1f, 1f) * strength,
-                0f);
-            yield return null;
-        }
-        _shakeOffset = Vector3.zero;
-        _shakeRoutine = null;
+        CameraShake.Shake(intensity, duration);
     }
 
     public void SetFollowTarget(Transform target)

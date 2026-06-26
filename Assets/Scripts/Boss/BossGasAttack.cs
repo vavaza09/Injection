@@ -47,6 +47,7 @@ public class BossGasAttack : MonoBehaviour
     [Header("Audio")]
     [Tooltip("3D AudioSource on the Boss for gas release one-shot. Auto-found via GetComponent if left empty.")]
     [SerializeField] private AudioSource _sfxSource;
+    [SerializeField] private SfxCue releaseSfx;
     [Tooltip("Separate 3D AudioSource on the Boss for the looping gas cloud sound. Needs its own source so the loop doesn't interrupt one-shot SFX.")]
     [SerializeField] private AudioSource _gasLoopSource;
 
@@ -108,7 +109,7 @@ public class BossGasAttack : MonoBehaviour
 
         // Spin the fan and start the visible vent smoke during the telegraph window.
         SetFanSpeed(fanSpinSpeed);
-        SoundManager.PlaySoundOn(SoundType.BOSS_GAS_RELEASE, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_GAS_RELEASE, releaseSfx, _sfxSource);
         OnGasRelease?.Invoke();
         if (fanVentParticles != null) fanVentParticles.Play();
 
