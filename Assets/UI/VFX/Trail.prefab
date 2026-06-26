@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3703429325690321826}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2, y: 0, z: 15.7}
+  m_LocalPosition: {x: 0, y: -0.2, z: 15.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -87,7 +87,7 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 6
+    widthMultiplier: 2.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -246,8 +246,20 @@ PrefabInstance:
       value: -68.472
       objectReference: {fileID: 0}
     - target: {fileID: 8611953328765810375, guid: 90fb4825351b11942ae4c749dac36cff, type: 3}
+      propertyPath: lengthInSec
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611953328765810375, guid: 90fb4825351b11942ae4c749dac36cff, type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611953328765810375, guid: 90fb4825351b11942ae4c749dac36cff, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.5
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611953328765810375, guid: 90fb4825351b11942ae4c749dac36cff, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[1].time
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
