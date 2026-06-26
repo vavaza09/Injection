@@ -151,28 +151,43 @@ MonoBehaviour:
     pitchMax: 0.5
     loop: 0
   - name: DASH
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: 36a32e23dcee08943beb16024a30e0ff, type: 3}
+    - {fileID: 8300000, guid: 120fa56a6a41deb47b1454022926b663, type: 3}
+    volume: 0.7
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: JUMP
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: 8faa4f0e64c2bf74dbdb6a4c680103e9, type: 3}
+    volume: 0.637
     pitchMin: 0
-    pitchMax: 0
+    pitchMax: 0.664
     loop: 0
   - name: FOOTSTEP
-    sounds: []
-    volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    sounds:
+    - {fileID: 8300000, guid: 92488e010d7d99142ad6f0161113f456, type: 3}
+    - {fileID: 8300000, guid: af376796c8b58d44891a69272ee9bd00, type: 3}
+    - {fileID: 8300000, guid: 4fcfa6ebe8adc9c49a225dc178c10c1d, type: 3}
+    - {fileID: 8300000, guid: 4ea10d8fe3d1d454a838ba6b885f54a7, type: 3}
+    - {fileID: 8300000, guid: ed435233539fef440857798b1857c99b, type: 3}
+    - {fileID: 8300000, guid: 5f970a3ef6ceabb45bece43016a1773d, type: 3}
+    volume: 0.5
+    pitchMin: 0.5
+    pitchMax: 0.603
     loop: 0
   - name: FOOTSTEP_METAL
-    sounds: []
-    volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    sounds:
+    - {fileID: 8300000, guid: ad7d2c7f3c787d54384a25e74a46b827, type: 3}
+    - {fileID: 8300000, guid: 1c353178e3870474aaeb93c7c167ba73, type: 3}
+    - {fileID: 8300000, guid: 55faaabb6bc3cda4e96415581faa293c, type: 3}
+    - {fileID: 8300000, guid: 42dc438b4d82fe947af18f71cf3cbdc8, type: 3}
+    - {fileID: 8300000, guid: cca3f0486ea8db64a8da41599c4e6db8, type: 3}
+    - {fileID: 8300000, guid: e20e6388f93cdf9438599db854a99d78, type: 3}
+    volume: 0.6
+    pitchMin: 0.5
+    pitchMax: 0.6
     loop: 0
   - name: HURT
     sounds: []
@@ -189,7 +204,7 @@ MonoBehaviour:
   - name: HITSTOP
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    volume: 0.594
+    volume: 0.8
     pitchMin: 0.549
     pitchMax: 0.668
     loop: 0
