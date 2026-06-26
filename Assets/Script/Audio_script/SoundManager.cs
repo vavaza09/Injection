@@ -175,6 +175,8 @@ public class SoundManager : MonoBehaviour
 
         // Apply saved settings (PlayerPrefs) so in-game volume matches the player's preference
         GameSettings.ApplyVolumes();
+        // Apply saved/default display resolution (defaults to 1920x1080 on first run)
+        GameSettings.ApplyResolution();
 
         // Drive per-scene music/ambient from the central map.
         SceneManager.sceneLoaded += OnSceneLoaded;

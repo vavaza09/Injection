@@ -48,6 +48,7 @@ jobs:
         with:
           unityVersion: 6000.3.8f1
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildName: BlueSteam
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
