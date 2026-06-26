@@ -152,6 +152,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   patrolRadius: 5
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6

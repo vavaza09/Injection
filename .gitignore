@@ -70,3 +70,6 @@ CLAUDE.md
 .claude-code/
 qa_testing_config.json
 .output/
+
+# Raw audio backups created by Tools/normalize_audio.py
+_AudioBackup_raw/

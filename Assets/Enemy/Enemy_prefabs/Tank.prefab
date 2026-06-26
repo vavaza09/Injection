@@ -585,6 +585,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   gunPivot: {fileID: 9090418405512336103}
   attackPoint: {fileID: 3006710706382042102}
   bulletPrefab: {fileID: 201776429204795054, guid: 6749da368af66ab408932f90a7d0e4a5, type: 3}
