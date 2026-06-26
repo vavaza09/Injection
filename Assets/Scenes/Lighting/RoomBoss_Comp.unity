@@ -5853,7 +5853,7 @@ Transform:
   m_GameObject: {fileID: 746726198}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -52.28382, y: -5.5607605, z: -10}
+  m_LocalPosition: {x: 1.4761798, y: -5.500761, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12358,6 +12358,7 @@ MonoBehaviour:
   roomAnchor: {fileID: 949176642}
   _roomOrthoSize: 13
   zoomDuration: 4
+  panDuration: 2
   targetEnemies:
   - {fileID: 695278337}
   walls:
@@ -13517,11 +13518,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -52.5
+      value: 1.26
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.9
+      value: -7.84
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23399,7 +23400,7 @@ Transform:
   m_GameObject: {fileID: 1696028958}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -52.28382, y: -5.5607605, z: -10}
+  m_LocalPosition: {x: 1.4761798, y: -5.500761, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
