@@ -1204,6 +1204,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: bounceForce
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: maxFall
       value: 14
