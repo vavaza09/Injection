@@ -3833,6 +3833,10 @@ PrefabInstance:
       value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[7].boostDb
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: sceneAudio.Array.data[1].ambient
       value: 
       objectReference: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
@@ -3844,46 +3848,6 @@ PrefabInstance:
       propertyPath: sceneAudio.Array.data[3].ambient
       value: 
       objectReference: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[13].pitchMax
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[13].pitchMin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[14].pitchMax
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[14].pitchMin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[15].pitchMax
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[15].pitchMin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[16].pitchMax
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[16].pitchMin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[20].pitchMin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[7].boostDb
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: soundList.Array.data[18].boostDb
       value: 12
@@ -3922,6 +3886,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: soundList.Array.data[16].pitchMin
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[20].pitchMin
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
@@ -9447,12 +9415,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

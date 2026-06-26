@@ -52,16 +52,18 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.ClearOptions();
         var options = new List<string>();
         int savedIdx = GameSettings.ResolutionIndex;
-        int selectIdx = 0;
+        int defaultIdx = 0;
 
         for (int i = 0; i < _resolutions.Length; i++)
         {
             options.Add($"{_resolutions[i].width} x {_resolutions[i].height}");
-            if (savedIdx >= 0 && _resolutions[i].width == Screen.currentResolution.width
-                              && _resolutions[i].height == Screen.currentResolution.height)
-                selectIdx = i;
+            // No saved choice yet -> default the selection to 1920x1080 if available.
+            if (_resolutions[i].width == GameSettings.DefaultWidth
+                && _resolutions[i].height == GameSettings.DefaultHeight)
+                defaultIdx = i;
         }
-        if (savedIdx >= 0 && savedIdx < _resolutions.Length) selectIdx = savedIdx;
+
+        int selectIdx = (savedIdx >= 0 && savedIdx < _resolutions.Length) ? savedIdx : defaultIdx;
 
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = selectIdx;
