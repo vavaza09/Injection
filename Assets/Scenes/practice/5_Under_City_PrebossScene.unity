@@ -16192,6 +16192,7 @@ MonoBehaviour:
   roomAnchor: {fileID: 1508334458}
   _roomOrthoSize: 7
   zoomDuration: 0.4
+  panDuration: 2
   targetEnemies: []
   walls: []
   impactVfxPrefab: {fileID: 0}

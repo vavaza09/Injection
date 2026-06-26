@@ -212,7 +212,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   logConfig: {fileID: 11400000, guid: 388bbe7ac7ad84e4590ce785ae507680, type: 2}
   maxEnergy: 3
-  startEnergy: 0
+  startEnergy: 2
   roomCatalog: {fileID: 11400000, guid: 2102bab3becf51b4988b4a04bff8f0bf, type: 2}
 --- !u!4 &115910579
 Transform:
