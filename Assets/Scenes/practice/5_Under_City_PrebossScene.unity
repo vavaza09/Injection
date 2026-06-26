@@ -3763,33 +3763,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnergyPickup
       objectReference: {fileID: 0}
-    - target: {fileID: 4414844864607223043, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_FlipX
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4414844864607223043, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_FlipY
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4414844864607223043, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_SortingOrder
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8574954283099973332, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.04
-      objectReference: {fileID: 0}
-    - target: {fileID: 8574954283099973332, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.69
-      objectReference: {fileID: 0}
     - target: {fileID: 9143310381569675810, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.73
       objectReference: {fileID: 0}
     - target: {fileID: 9143310381569675810, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -61.08
+      value: -62.21
       objectReference: {fileID: 0}
     - target: {fileID: 9143310381569675810, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
       propertyPath: m_LocalPosition.z
