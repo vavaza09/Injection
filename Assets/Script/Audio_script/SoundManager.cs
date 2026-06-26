@@ -142,6 +142,8 @@ public class SoundManager : MonoBehaviour
         musicSource.loop = true;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
+        musicSource.spatialBlend = 0f;   // force 2D — never spatialize music (fixes right-ear-only bug)
+        musicSource.panStereo = 0f;      // center pan, guard against authored stereo offset
 
         // Remove any stale AudioSources beyond the 2 we use (accumulated from editor bugs)
         AudioSource[] allSources = GetComponents<AudioSource>();

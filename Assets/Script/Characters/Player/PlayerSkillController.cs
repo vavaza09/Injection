@@ -13,9 +13,9 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     [SerializeField] private float empEnergyCost    = 1f;
     [SerializeField] private GameObject empVFXPrefab;
     [Tooltip("How long (s) the EMP VFX spawner emits before being stopped — keeps it a single instant burst. Lower = fewer overlapping meshes.")]
-    [SerializeField] private float empVfxBurstWindow = 0.06f;
+    [SerializeField] private float empVfxBurstWindow = 4f;
     [Tooltip("How long (s) the EMP VFX instance lives before being destroyed (lets meshes finish dissolving).")]
-    [SerializeField] private float empVfxLifetime = 3f;
+    [SerializeField] private float empVfxLifetime = 2f;
 
     [Header("True Damage Dash")]
     [SerializeField] private float trueDamageCooldown   = 5f;
