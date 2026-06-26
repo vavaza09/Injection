@@ -8,6 +8,7 @@ using Game.Components.Combat;
 using Game.Components.Skills;
 using Game.Characters.Player;
 using Game.Tutorial;
+using Game.Spawning;
 using Game.UI;
 
 /// <summary>
@@ -45,6 +46,8 @@ public class DevSceneLifetimeScope : LifetimeScope
             return new PlayerAnimationController(anim, resolver.Resolve<LoggerFactory>());
         }, Lifetime.Singleton);
         builder.Register<PlayerAudioController>(Lifetime.Singleton);
+
+        builder.Register<EnemyFactory>(Lifetime.Singleton).As<IEnemyFactory>();
 
         builder.Register<PlayerSkillEvents>(Lifetime.Singleton).As<IPlayerSkillEvents>();
         builder.Register<EnergyPool>(_ => new EnergyPool(maxEnergy, startEnergy), Lifetime.Singleton)
@@ -112,6 +115,15 @@ public class DevSceneLifetimeScope : LifetimeScope
             // the Player components above so its [Inject] Construct() receives Player/input/skills.
             var tutorial = FindAnyObjectByType<TutorialManager>(FindObjectsInactive.Include);
             if (tutorial != null) container.Inject(tutorial);
+
+            var roomSpawners = FindObjectsByType<RoomSpawner>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var rs in roomSpawners) container.Inject(rs);
+
+            if (p != null)
+            {
+                CameraController.instance?.SetTarget(p.transform);
+                CameraManager.instance?.SetFollowTarget(p.transform);
+            }
 
             var hud = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
             if (hud != null) container.Inject(hud);
