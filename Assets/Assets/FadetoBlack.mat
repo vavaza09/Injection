@@ -42,9 +42,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _FadeAngle: 0
+    - _FadeAngle: 90
     - _FadeEnd: 1
-    - _FadeStart: 0.2
+    - _FadeStart: 0.4
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

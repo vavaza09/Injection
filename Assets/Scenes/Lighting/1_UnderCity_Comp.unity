@@ -6096,10 +6096,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0.396
       objectReference: {fileID: 0}
-    - target: {fileID: 9143310381569675810, guid: efbce3faca68d9d42b0ddba600a21171, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21234,6 +21230,7 @@ MonoBehaviour:
   roomAnchor: {fileID: 1508334458}
   _roomOrthoSize: 7
   zoomDuration: 0.4
+  panDuration: 2
   targetEnemies: []
   walls: []
   impactVfxPrefab: {fileID: 0}

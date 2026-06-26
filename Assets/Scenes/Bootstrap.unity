@@ -212,7 +212,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   logConfig: {fileID: 11400000, guid: 388bbe7ac7ad84e4590ce785ae507680, type: 2}
   maxEnergy: 3
-  startEnergy: 0
+  startEnergy: 2
   roomCatalog: {fileID: 11400000, guid: 2102bab3becf51b4988b4a04bff8f0bf, type: 2}
 --- !u!4 &115910579
 Transform:
@@ -1208,6 +1208,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: bounceForce
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: maxFall
       value: 14
@@ -1235,6 +1239,10 @@ PrefabInstance:
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: reverseGroundBrake
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: grabLaunchBaseSpeed
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: wallJumpVerticalSpeed
