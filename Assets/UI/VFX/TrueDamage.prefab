@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4840061476386469435}
   - component: {fileID: 5018192445961753676}
   m_Layer: 0
-  m_Name: Trail 1
+  m_Name: TrueDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 1f5aeeee2ba9b724ea9411d40b237dbd, type: 3}
+  - {fileID: -876546973899608171, guid: a8bc743e40715614ca9b390c9a8d4c4d, type: 3}
   - {fileID: -876546973899608171, guid: 1da7511f7facb974ba0f2f17f4b517d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0

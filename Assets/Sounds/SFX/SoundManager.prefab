@@ -187,10 +187,11 @@ MonoBehaviour:
     pitchMax: 0.5
     loop: 0
   - name: HITSTOP
-    sounds: []
-    volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    sounds:
+    - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
+    volume: 0.594
+    pitchMin: 0.549
+    pitchMax: 0.668
     loop: 0
   - name: DEATH
     sounds: []
@@ -317,8 +318,8 @@ MonoBehaviour:
   - name: TANK_BULLET_FLY
     sounds: []
     volume: 0
-    pitchMin: 0
-    pitchMax: 0
+    pitchMin: 0.5
+    pitchMax: 0.5
     loop: 0
   - name: FURNACE_IDLE_CRACKLE
     sounds:
@@ -416,106 +417,107 @@ MonoBehaviour:
     loop: 0
   - name: BOSS_CLAW_ANTICIPATION
     sounds:
-    - {fileID: 8300000, guid: 33d90a6c699c8e0429e02015e362f6bb, type: 3}
-    volume: 0.575
+    - {fileID: 8300000, guid: 6f4059b2f942ecb4c813a206711dc91e, type: 3}
+    volume: 0.643
     pitchMin: 0.5
     pitchMax: 0.976
     loop: 0
   - name: BOSS_CLAW_STRIKE
     sounds:
-    - {fileID: 8300000, guid: 971b5f933fc90a047b2c7c7359495454, type: 3}
-    volume: 0.81
+    - {fileID: 8300000, guid: 33d90a6c699c8e0429e02015e362f6bb, type: 3}
+    volume: 0.781
     pitchMin: 0.5
-    pitchMax: 0.82
+    pitchMax: 0.704
     loop: 0
   - name: BOSS_CLAW_IMPACT
     sounds:
-    - {fileID: 8300000, guid: 8974ffbc4249f0040bb478bacd9914cf, type: 3}
-    volume: 0.863
+    - {fileID: 8300000, guid: 971b5f933fc90a047b2c7c7359495454, type: 3}
+    volume: 0.813
     pitchMin: 0.532
     pitchMax: 0.866
     loop: 0
   - name: BOSS_CLAW_RETRACT
     sounds:
-    - {fileID: 8300000, guid: 2530602a90da81c4baaa677e391d8465, type: 3}
-    volume: 0.937
+    - {fileID: 8300000, guid: 8974ffbc4249f0040bb478bacd9914cf, type: 3}
+    volume: 0.842
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
   - name: BOSS_HAMMER_WINDUP
     sounds:
-    - {fileID: 8300000, guid: 41f6936a6e78be043b87d9c621b2a275, type: 3}
-    volume: 0.979
+    - {fileID: 8300000, guid: 2530602a90da81c4baaa677e391d8465, type: 3}
+    volume: 0.799
     pitchMin: 0.5
     pitchMax: 0.768
     loop: 0
   - name: BOSS_HAMMER_SWING
     sounds:
-    - {fileID: 8300000, guid: 8b7a40b5c5022194ea66daf64efcbbdc, type: 3}
+    - {fileID: 8300000, guid: 41f6936a6e78be043b87d9c621b2a275, type: 3}
     volume: 0.91
     pitchMin: 0.555
-    pitchMax: 1.028
+    pitchMax: 0.785
     loop: 0
   - name: BOSS_HAMMER_IMPACT
     sounds:
-    - {fileID: 8300000, guid: f64896baedde3b647bc207a78966c521, type: 3}
-    volume: 0.91
+    - {fileID: 8300000, guid: 8b7a40b5c5022194ea66daf64efcbbdc, type: 3}
+    volume: 0.886
     pitchMin: 0.584
     pitchMax: 0.843
     loop: 0
   - name: BOSS_HAMMER_RECOVER
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: f64896baedde3b647bc207a78966c521, type: 3}
+    volume: 0.813
     pitchMin: 0.5
-    pitchMax: 0.5
+    pitchMax: 0.633
     loop: 0
   - name: BOSS_GAS_RELEASE
     sounds:
     - {fileID: 8300000, guid: ca3f8a784626f9241ad5bb689ac58b0d, type: 3}
-    volume: 0.898
+    volume: 0.533
     pitchMin: 0.589
     pitchMax: 0.768
     loop: 0
   - name: BOSS_GAS_LOOP
     sounds:
     - {fileID: 8300000, guid: d977b6c1c93df2f4283b73dfe7220ac0, type: 3}
-    volume: 1
+    volume: 0.708
     pitchMin: 0.572
     pitchMax: 1
     loop: 0
   - name: BOSS_WEAKPOINT_REVEAL
     sounds:
     - {fileID: 8300000, guid: 7749fe6ad91e4d947b692717931e0ab3, type: 3}
-    volume: 1
+    volume: 0.904
     pitchMin: 0.664
     pitchMax: 0.67
     loop: 0
   - name: BOSS_WEAKPOINT_CLOSE
     sounds:
     - {fileID: 8300000, guid: 7749fe6ad91e4d947b692717931e0ab3, type: 3}
-    volume: 1
+    volume: 0.929
     pitchMin: 1.109
     pitchMax: 1.339
     loop: 0
   - name: BOSS_JUNK_FALL
     sounds:
     - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
-    volume: 1
+    volume: 0.862
     pitchMin: 0.546
     pitchMax: 0.855
     loop: 0
   - name: BOSS_JUNK_IMPACT
     sounds:
-    - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    volume: 0.644
-    pitchMin: 0.5
-    pitchMax: 0.751
+    - {fileID: 8300000, guid: 3a30582b1c2c3ce4c922f5dd0478adb2, type: 3}
+    volume: 0.2
+    pitchMin: 0.54
+    pitchMax: 0.76
     loop: 0
   - name: UI_HOVER
     sounds:
     - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
-    volume: 1
-    pitchMin: 0
+    volume: 0.893
+    pitchMin: 0.5
     pitchMax: 0.72
     loop: 0
   - name: UI_CLICK
@@ -531,14 +533,27 @@ MonoBehaviour:
   - name: GAMEPLAY
     music: {fileID: 0}
   - name: BOSS
-    music: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
+    music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: VICTORY
     music: {fileID: 0}
   - name: GAMEOVER
     music: {fileID: 0}
-  musicVolume: 0.024821296
+  musicVolume: 0.5
   musicFadeDuration: 1
   loopPoolSize: 8
+  sceneAudio:
+  - sceneName: TitleScene
+    music: 0
+    musicVolume: 0
+    musicStart: 0
+    ambient: {fileID: 0}
+    ambientVolume: 0
+  - sceneName: Room_Boss
+    music: 2
+    musicVolume: 0.45
+    musicStart: 1
+    ambient: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
+    ambientVolume: 0.073
 --- !u!82 &8778517580754884786
 AudioSource:
   m_ObjectHideFlags: 0

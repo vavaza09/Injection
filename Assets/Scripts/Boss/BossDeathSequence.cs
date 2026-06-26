@@ -46,6 +46,8 @@ public class BossDeathSequence : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource sfxSource;
 
+    public static event System.Action Completed;
+
     private bool _playing;
 
     public void Play()
@@ -134,6 +136,8 @@ public class BossDeathSequence : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.3f);
+
+        Completed?.Invoke();
 
         // Destroy the entire boss hierarchy (BossDeathSequence dies with it — that's fine, we're done)
         Destroy(sinkRoot.gameObject);
