@@ -1152,6 +1152,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 115910579}
     m_Modifications:
+    - target: {fileID: 2585259648304670452, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: maxJumps
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2585259648304670452, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: moveSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20
@@ -1195,6 +1203,66 @@ PrefabInstance:
     - target: {fileID: 6111057636079140435, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: maxFall
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: maxSpeed
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: jumpSpeed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: acceleration
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: deceleration
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: sameWallLockTime
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: reverseGroundBrake
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: wallJumpVerticalSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashSettings.dashSpeed
+      value: 8.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: wallJumpHorizontalSpeed
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashAtMaxSpeedMultiplier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: jumpAtMaxSpeedMultiplier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashSettings.endDashSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashSettings.endDashUpMult
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashSettings.airEndDashCarryMultiplier
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
