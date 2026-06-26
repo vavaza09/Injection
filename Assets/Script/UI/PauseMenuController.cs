@@ -81,6 +81,15 @@ public class PauseMenuController : MonoBehaviour
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
         Time.timeScale = 1f;
+        // Destroy HUD canvas first so PlayerHUD.OnDestroy can unsubscribe from Player
+        // events while Player still exists.
+        if (Game.UI.HudCameraBinder.Instance != null)
+            Destroy(Game.UI.HudCameraBinder.Instance.gameObject);
+        // Destroy session root so Bootstrap can build a fresh RootLifetimeScope on the
+        // next play. Without this, the old DontDestroyOnLoad scope blocks the new one
+        // from initializing and SaveBootstrapper never calls LoadRoom().
+        if (RootLifetimeScope.Instance != null)
+            Destroy(RootLifetimeScope.Instance.gameObject);
         SceneManager.LoadScene(titleSceneName);
     }
 

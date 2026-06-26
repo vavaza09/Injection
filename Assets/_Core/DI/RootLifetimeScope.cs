@@ -103,9 +103,7 @@ public class RootLifetimeScope : LifetimeScope
         if (playerHUD != null)
             builder.RegisterInstance(playerHUD);
 
-        var empBlastReceiver = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);
-        if (empBlastReceiver != null)
-            builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
+        builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
 
         // Persistence (session singletons)
         builder.Register<ISaveStorage>(_ => new JsonFileSaveStorage("save.json"), Lifetime.Singleton);
