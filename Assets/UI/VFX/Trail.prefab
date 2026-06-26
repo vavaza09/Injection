@@ -80,7 +80,7 @@ TrailRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Time: 1
   m_PreviewTimeScale: 1
@@ -101,7 +101,7 @@ TrailRenderer:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 0.98761046
+        value: 0.53086853
         inSlope: 0
         outSlope: 0
         tangentMode: 0

@@ -36,6 +36,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     private SpriteRenderer _spriteRenderer;
     private Color          _originalColor;
     private bool           _trueDamageArmedVisual;
+    private PlayerMovementVFX _movementVFX;
 
     // Alive check — PlayerSkillController sits on the same GO as Player
     private character _character;
@@ -63,6 +64,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (_spriteRenderer != null)
             _originalColor = _spriteRenderer.color;
+        _movementVFX = GetComponent<PlayerMovementVFX>();
     }
 
     private void Start()
@@ -175,16 +177,15 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     private void OnTrueDamageArmed()
     {
         _trueDamageArmedVisual = true;
-        if (_spriteRenderer != null)
-            _spriteRenderer.color = trueDamageArmedColor;
         _audioController?.PlayTrueDamageArmSound();
+        _movementVFX?.EnableTrueDamageTrail();
     }
 
     private void OnTrueDamageConsumed()
     {
         _trueDamageArmedVisual = false;
-        RestoreColor();
         _audioController?.PlayTrueDamageConsumeSound();
+        _movementVFX?.DisableTrueDamageTrail();
     }
 
     private void RestoreColor()

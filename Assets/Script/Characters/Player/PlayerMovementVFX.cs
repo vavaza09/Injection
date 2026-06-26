@@ -14,6 +14,7 @@ public class PlayerMovementVFX : MonoBehaviour
     [Header("Wind Streaks")]
     [SerializeField, Range(0f, 1f)] private float windSpeedThreshold = 0.5f;
     [SerializeField] private GameObject windTrailPrefab;
+    [SerializeField] private GameObject trueDamageTrailPrefab;
 
     [Header("Run Dust")]
     [SerializeField] private float runDustMinSpeed = 1.5f;
@@ -62,6 +63,8 @@ public class PlayerMovementVFX : MonoBehaviour
 
     // Wind trail (Trail.prefab)
     private TrailRenderer _windTrail;
+    private TrailRenderer _trueDamageTrail;
+    private bool _trueDamageTrailActive;
 
     // Looping systems
     private ParticleSystem _runDust;
@@ -110,6 +113,7 @@ public class PlayerMovementVFX : MonoBehaviour
         _vfxRoot.localPosition = Vector3.zero;
 
         BuildWindTrail();
+        BuildTrueDamageTrail();
         BuildRunDust();
         BuildWallDust();
         BuildJumpPuff();
@@ -151,6 +155,11 @@ public class PlayerMovementVFX : MonoBehaviour
     private void UpdateWindTrail(float speedFactor)
     {
         if (_windTrail == null) return;
+        if (_trueDamageTrailActive)
+        {
+            _windTrail.emitting = false;
+            return;
+        }
         _windTrail.emitting = !_movement.IsDashing && speedFactor >= windSpeedThreshold;
     }
 
@@ -306,6 +315,33 @@ public class PlayerMovementVFX : MonoBehaviour
             _windTrail.autodestruct = false;
             _windTrail.emitting = false;
         }
+    }
+
+    private void BuildTrueDamageTrail()
+    {
+        if (trueDamageTrailPrefab == null) return;
+        var go = Instantiate(trueDamageTrailPrefab, transform);
+        go.transform.localPosition = Vector3.zero;
+        go.SetActive(true);
+        _trueDamageTrail = go.GetComponent<TrailRenderer>();
+        if (_trueDamageTrail != null)
+        {
+            _trueDamageTrail.autodestruct = false;
+            _trueDamageTrail.emitting = false;
+        }
+    }
+
+    public void EnableTrueDamageTrail()
+    {
+        _trueDamageTrailActive = true;
+        if (_windTrail != null) _windTrail.emitting = false;
+        if (_trueDamageTrail != null) _trueDamageTrail.emitting = true;
+    }
+
+    public void DisableTrueDamageTrail()
+    {
+        _trueDamageTrailActive = false;
+        if (_trueDamageTrail != null) _trueDamageTrail.emitting = false;
     }
 
     private void BuildRunDust()
