@@ -1241,6 +1241,10 @@ PrefabInstance:
       value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: grabLaunchBaseSpeed
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: wallJumpVerticalSpeed
       value: 8
       objectReference: {fileID: 0}

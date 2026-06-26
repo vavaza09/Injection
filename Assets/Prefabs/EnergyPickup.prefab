@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: -19.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8574954283099973332}
   m_Father: {fileID: 0}
@@ -151,6 +151,7 @@ MonoBehaviour:
   outlineShader: {fileID: 4800000, guid: 898b134cb588e2b47a1534e46728abff, type: 3}
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineSize: 2
+  outlineAlphaThreshold: 0.5
   proximityRadius: 2.64
   colliderOffset: {x: -0.01, y: -0.01}
   glowOffset: {x: -0.01, y: 1.96}
