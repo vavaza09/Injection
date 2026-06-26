@@ -354,6 +354,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c766b672535e9040bbd03a0ca9694ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpBlastReceiver
+--- !u!114 &150087130 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 472937494653464937, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+  m_PrefabInstance: {fileID: 1651845524}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40db0182d0eb901438611abc84da418d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.UI.Health.HealthSlotDisplay
 --- !u!1 &994121399
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,7 +755,7 @@ PrefabInstance:
     - target: {fileID: 6676751336256949755, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: healthSlots
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 150087130}
     - target: {fileID: 6907315984255756304, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1201,6 +1212,10 @@ PrefabInstance:
     - target: {fileID: 2331492995036795794, guid: 8dd4c80f2096cc548a3af5fed71f30c2, type: 3}
       propertyPath: m_Name
       value: LoadingScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 2543158167830424680, guid: 8dd4c80f2096cc548a3af5fed71f30c2, type: 3}
+      propertyPath: m_Alpha
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4666473009243997408, guid: 8dd4c80f2096cc548a3af5fed71f30c2, type: 3}
       propertyPath: m_SortingOrder
