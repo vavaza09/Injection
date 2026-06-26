@@ -976,7 +976,7 @@
         "m_Id": "f9c5018f9baf4b5a82a21083a0f4c9a4"
     },
     "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 0,
+    "m_SurfaceType": 1,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
@@ -1798,7 +1798,7 @@
     "m_StageCapability": 3,
     "m_Value": {
         "x": 1.0,
-        "y": 1.0
+        "y": 2.0
     },
     "m_DefaultValue": {
         "x": 1.0,
@@ -2658,7 +2658,6 @@
     "isMainTexture": false,
     "useTilingAndOffset": false,
     "useTexelSize": true,
-    "isHDR": false,
     "m_Modifiable": true,
     "m_DefaultType": 0
 }
