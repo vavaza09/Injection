@@ -585,6 +585,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   gunPivot: {fileID: 9090418405512336103}
   attackPoint: {fileID: 3006710706382042102}
   bulletPrefab: {fileID: 201776429204795054, guid: 6749da368af66ab408932f90a7d0e4a5, type: 3}
@@ -666,6 +667,12 @@ MonoBehaviour:
   partGravityScale: 1.5
   partLifetime: 2.2
   partFadeDuration: 0.8
+  overrideBodyPartSorting: 0
+  bodyPartSortingLayer: Default
+  bodyPartSortingOrder: 0
+  overrideExplosionSorting: 0
+  explosionSortingLayer: Default
+  explosionSortingOrder: 5
   trailTime: 0.4
   trailStartWidth: 0.12
   trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}

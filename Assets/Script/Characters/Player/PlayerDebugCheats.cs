@@ -15,17 +15,14 @@ public class PlayerDebugCheats : MonoBehaviour
     [Header("Kill Boss (F8)")]
     [SerializeField] private Key killBossKey = Key.F8;
 
-    [Header("Room Warp (Ctrl+1–7)")]
-    [SerializeField] private RoomCatalog roomCatalog;
-
-    private Player _player;
-    private RoomManager _roomManager;
-
 #if UNITY_EDITOR
     private bool _cheatsEnabled = true;
 #else
     private bool _cheatsEnabled;
 #endif
+
+    private Player _player;
+    private RoomManager _roomManager;
 
     private static readonly Key[] DigitKeys =
     {
@@ -36,7 +33,13 @@ public class PlayerDebugCheats : MonoBehaviour
     private void Awake()
     {
         _player = GetComponent<Player>();
-        _roomManager = FindFirstObjectByType<RoomManager>();
+    }
+
+    private RoomManager GetRoomManager()
+    {
+        if (_roomManager == null)
+            _roomManager = FindFirstObjectByType<RoomManager>();
+        return _roomManager;
     }
 
     private void Update()
@@ -57,8 +60,8 @@ public class PlayerDebugCheats : MonoBehaviour
 
     private void HandleToggle(Keyboard kb)
     {
-        bool ctrlHeld   = kb[Key.LeftCtrl].isPressed  || kb[Key.RightCtrl].isPressed;
-        bool shiftHeld  = kb[Key.LeftShift].isPressed || kb[Key.RightShift].isPressed;
+        bool ctrlHeld  = kb[Key.LeftCtrl].isPressed  || kb[Key.RightCtrl].isPressed;
+        bool shiftHeld = kb[Key.LeftShift].isPressed || kb[Key.RightShift].isPressed;
 
         if (ctrlHeld && shiftHeld && kb[Key.C].wasPressedThisFrame)
             _cheatsEnabled = !_cheatsEnabled;
@@ -84,20 +87,21 @@ public class PlayerDebugCheats : MonoBehaviour
 
     private void HandleWarpCheats(Keyboard kb)
     {
-        if (_roomManager == null || roomCatalog == null) return;
+        var rm = GetRoomManager();
+        if (rm == null || rm.Catalog == null) return;
 
 #if !UNITY_EDITOR
         bool ctrlHeld = kb[Key.LeftCtrl].isPressed || kb[Key.RightCtrl].isPressed;
         if (!ctrlHeld) return;
 #endif
 
-        for (int i = 0; i < DigitKeys.Length && i < roomCatalog.Count; i++)
+        for (int i = 0; i < DigitKeys.Length && i < rm.Catalog.Count; i++)
         {
             if (kb[DigitKeys[i]].wasPressedThisFrame)
             {
-                var room = roomCatalog.GetByIndex(i);
+                var room = rm.Catalog.GetByIndex(i);
                 if (room != null)
-                    _roomManager.LoadRoom(room.roomId, room.sceneName);
+                    rm.LoadRoom(room.roomId, room.sceneName);
                 break;
             }
         }

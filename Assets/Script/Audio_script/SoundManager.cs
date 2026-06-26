@@ -283,6 +283,21 @@ public class SoundManager : MonoBehaviour
         instance.sfxSource.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Length)], vol);
     }
 
+    /// <summary>Play a one-shot SFX after a delay. Runs on the persistent SoundManager,
+    /// so it survives the caller GameObject being destroyed (e.g. enemy death FX).</summary>
+    public static void PlaySoundDelayed(SoundType sound, float delay, float volumeOverride = -1f)
+    {
+        if (instance == null) return;
+        if (delay <= 0f) { PlaySound(sound, volumeOverride); return; }
+        instance.StartCoroutine(instance.PlaySoundDelayedRoutine(sound, delay, volumeOverride));
+    }
+
+    private IEnumerator PlaySoundDelayedRoutine(SoundType sound, float delay, float volumeOverride)
+    {
+        yield return new WaitForSeconds(delay);
+        PlaySound(sound, volumeOverride);
+    }
+
     public static void PlayFootstep(SoundType sound, float volumeOverride = -1f)
     {
         if (instance == null || instance._footstepSource == null) return;
@@ -591,7 +606,10 @@ public struct SoundList
     public AudioClip[] Sounds => sounds;
 
     // Helpers that return safe defaults when fields are left at 0 (newly added enum entries)
-    public float EffectiveVolume   => volume   > 0f ? volume   : 1f;
+    // EffectiveVolume folds in the per-sound boost (dB). The boost can push the gain above 1.0,
+    // which amplifies one-shots (PlayOneShot volumeScale). Looping SFX still clamp at 1.0 because
+    // AudioSource.volume is clamped [0,1] by Unity — boost has no effect there (by design, no mixer).
+    public float EffectiveVolume   => (volume > 0f ? volume : 1f) * Mathf.Pow(10f, boostDb / 20f);
     public float EffectivePitchMin => pitchMin > 0f ? pitchMin : 1f;
     public float EffectivePitchMax => pitchMax > 0f ? pitchMax : 1f;
 
@@ -600,6 +618,11 @@ public struct SoundList
 
     [Range(0f, 1f)]
     [SerializeField] public float volume;       // 0 = use default (1.0)
+
+    [Range(-24f, 12f)]
+    [Tooltip("Per-sound boost in dB on top of volume. 0 = no change, +dB amplifies. " +
+             "Affects one-shots only; looping SFX clamp at unity gain (no mixer).")]
+    [SerializeField] public float boostDb;      // 0 = no boost
 
     [Range(0.5f, 2f)]
     [SerializeField] public float pitchMin;     // 0 = use default (1.0)

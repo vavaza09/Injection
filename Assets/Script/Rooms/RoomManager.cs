@@ -23,6 +23,7 @@ namespace Game.Rooms
 
         public string CurrentRoomId { get; private set; }
         public bool IsTransitioning => _isTransitioning;
+        public RoomCatalog Catalog => _catalog;
         public event Action<string, string> RoomEntered;
 
         [Inject]

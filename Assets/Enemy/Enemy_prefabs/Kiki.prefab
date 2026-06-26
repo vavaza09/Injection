@@ -152,6 +152,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   patrolRadius: 5
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6
@@ -282,6 +283,12 @@ MonoBehaviour:
   partGravityScale: 1.5
   partLifetime: 2.2
   partFadeDuration: 0.8
+  overrideBodyPartSorting: 0
+  bodyPartSortingLayer: Default
+  bodyPartSortingOrder: 0
+  overrideExplosionSorting: 0
+  explosionSortingLayer: Default
+  explosionSortingOrder: 5
   trailTime: 0.4
   trailStartWidth: 0.12
   trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}
