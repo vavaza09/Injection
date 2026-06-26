@@ -282,6 +282,14 @@ public class Player : character
     {
         base.Update();
 
+        // Re-bind camera after scene transitions (old camera is destroyed, mainCamera goes null).
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+            if (mainCamera != null)
+                _inputHandler?.SetCamera(mainCamera);
+        }
+
         _inputHandler?.UpdateAimDirection(transform);
         UpdateDashAimUI();
 

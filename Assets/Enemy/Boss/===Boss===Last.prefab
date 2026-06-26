@@ -6214,7 +6214,7 @@ MonoBehaviour:
   releaseDuration: 3.7
   minCloudDuration: 10
   maxCloudDuration: 12
-  cooldown: 35
+  cooldown: 30
   fanSpinSpeed: 5
   _sfxSource: {fileID: 0}
   _gasLoopSource: {fileID: 0}
@@ -6525,8 +6525,8 @@ MonoBehaviour:
   - {fileID: -531893396636590029, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
   - {fileID: 6607407418216790345, guid: 808560e78884ebb44a0a9c35569b226e, type: 3}
   explosionFps: 12
-  explosionScale: 0.6
-  explosionScaleFinal: 1.6
+  explosionScale: 0.8
+  explosionScaleFinal: 1.8
   explosionPoints:
   - {fileID: 1655075375950626784}
   - {fileID: 3438773056457508301}
@@ -6539,10 +6539,10 @@ MonoBehaviour:
   sinkRoot: {fileID: 5124109501245790064}
   sinkDistance: 3
   clawIKTarget: {fileID: 4593522834025471643}
-  clawLift: 2.5
+  clawLift: 4
   headTransform: {fileID: 3438773056457508301}
   deadHeadPrefab: {fileID: 6229531436573076514, guid: fc48c737d27a8b248be5add577dd202a, type: 3}
-  headLaunchForce: 9
+  headLaunchForce: 11
   headLaunchAngle: 75
   headAngularVelocity: 240
   headGravityScale: 2.5

@@ -24,6 +24,10 @@ public class BossHammerAttack : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
+    [SerializeField] private SfxCue windUpSfx;
+    [SerializeField] private SfxCue swingSfx;
+    [SerializeField] private SfxCue impactSfx;
+    [SerializeField] private SfxCue recoverSfx;
 
     // ── Wind-Up Phase ─────────────────────────────────────────────────────
 
@@ -147,15 +151,15 @@ public class BossHammerAttack : MonoBehaviour
             float speedScale = i == 0 ? 1f : subsequentSmashSpeedScale;
 
             // Wind-Up before every smash
-            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_WINDUP, _sfxSource);
+            BossSfx.Play(this, SoundType.BOSS_HAMMER_WINDUP, windUpSfx, _sfxSource);
             yield return TweenWorld(hammerLeftIKTarget, windUpFrom, windUp, windUpDuration * speedScale, windUpCurve);
 
             // Swing down
-            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_SWING, _sfxSource);
+            BossSfx.Play(this, SoundType.BOSS_HAMMER_SWING, swingSfx, _sfxSource);
             yield return BezierTween(hammerLeftIKTarget, windUp, arcMid, impact, swingDuration * speedScale, swingCurve);
 
             // Impact Hold — damage, visual, sound
-            SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_IMPACT, _sfxSource);
+            BossSfx.Play(this, SoundType.BOSS_HAMMER_IMPACT, impactSfx, _sfxSource);
             if (hammerCollider != null) hammerCollider.SetActive(true);
             ApplyHammerDamage();
             OnImpact?.Invoke();
@@ -171,7 +175,7 @@ public class BossHammerAttack : MonoBehaviour
         }
 
         // ── Recovery ─────────────────────────────────────────────────────
-        SoundManager.PlaySoundOn(SoundType.BOSS_HAMMER_RECOVER, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_HAMMER_RECOVER, recoverSfx, _sfxSource);
         yield return BezierTween(hammerLeftIKTarget, impact, recMid, _idleHammerPos, recoveryDuration, recoveryCurve);
 
         isAttacking = false;

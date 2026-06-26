@@ -17,9 +17,12 @@ public class RoomLockTrigger : MonoBehaviour
     [Header("Camera")]
     [Tooltip("The room's virtual camera. Auto-found if left empty.")]
     [SerializeField] private CinemachineCamera roomVcam;
+    [Tooltip("Empty GameObject placed where the camera should center when the room locks.")]
     [SerializeField] private Transform roomAnchor;
     [SerializeField] private float _roomOrthoSize = 10f;
     [SerializeField] private float zoomDuration = 0.4f;
+    [Tooltip("Seconds for the camera to glide to the room anchor center on lock.")]
+    [SerializeField] private float panDuration = 2.0f;
 
     [Header("Enemies")]
     [Tooltip("All enemies that must be destroyed to unlock the room.")]
@@ -44,12 +47,25 @@ public class RoomLockTrigger : MonoBehaviour
     private Transform _cachedFollow;
     private Transform _cachedLookAt;
     private float _cachedOrthoSize;
+    private Vector3 _cachedComposerOffset;
+
     private Coroutine _zoomRoutine;
+    private Coroutine _panRoutine;
+    private Transform _panProxy;
+    private CinemachinePositionComposer _composer;
 
     private void Start()
     {
         if (roomVcam == null)
             roomVcam = FindObjectOfType<CinemachineCamera>();
+
+        if (roomVcam != null)
+            _composer = roomVcam.GetComponent<CinemachinePositionComposer>();
+    }
+
+    private void OnDestroy()
+    {
+        if (_panProxy != null) Destroy(_panProxy.gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -72,21 +88,70 @@ public class RoomLockTrigger : MonoBehaviour
         _cachedLookAt = roomVcam.LookAt;
         _cachedOrthoSize = roomVcam.Lens.OrthographicSize;
 
+        if (_composer != null)
+            _cachedComposerOffset = _composer.TargetOffset;
+
+        CameraManager.instance?.SuspendOffsetControl();
+
         if (roomAnchor != null)
         {
-            roomVcam.Follow = roomAnchor;
-            roomVcam.LookAt = roomAnchor;
+            if (_panProxy == null)
+                _panProxy = new GameObject("RoomLockPanProxy").transform;
+
+            // Start the proxy at the current camera world position
+            Vector3 startPos = roomVcam.transform.position;
+            _panProxy.position = startPos;
+
+            roomVcam.Follow = _panProxy;
+            roomVcam.LookAt = _panProxy;
+
+            if (_panRoutine != null) StopCoroutine(_panRoutine);
+            Vector3 target = roomAnchor.position;
+            target.z = startPos.z;
+            _panRoutine = StartCoroutine(PanRoutine(target));
         }
 
         StartZoom(_roomOrthoSize);
+    }
+
+    private IEnumerator PanRoutine(Vector3 targetPos)
+    {
+        Vector3 startPos = _panProxy.position;
+        Vector3 startOffset = _composer != null ? _composer.TargetOffset : Vector3.zero;
+        float t = 0f;
+        float dur = Mathf.Max(0.001f, panDuration);
+
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, t / dur);
+            _panProxy.position = Vector3.Lerp(startPos, targetPos, k);
+            if (_composer != null)
+                _composer.TargetOffset = Vector3.Lerp(startOffset, Vector3.zero, k);
+            yield return null;
+        }
+
+        _panProxy.position = targetPos;
+        if (_composer != null)
+            _composer.TargetOffset = Vector3.zero;
+
+        _panRoutine = null;
     }
 
     private void RestoreCamera()
     {
         if (roomVcam == null) return;
 
+        if (_panRoutine != null) { StopCoroutine(_panRoutine); _panRoutine = null; }
+
         roomVcam.Follow = _cachedFollow;
         roomVcam.LookAt = _cachedLookAt;
+
+        if (_composer != null)
+            _composer.TargetOffset = _cachedComposerOffset;
+
+        CameraManager.instance?.ResumeOffsetControl();
+
         StartZoom(_cachedOrthoSize);
     }
 
@@ -161,4 +226,5 @@ public class RoomLockTrigger : MonoBehaviour
         }
         _spawnedWalls.Clear();
     }
+
 }
