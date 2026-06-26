@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -79,6 +80,13 @@ namespace Game.Rooms
             CurrentRoomId = def.roomId;
             PlacePlayer(arrivalSpawnPointId);
             CameraController.instance?.SetTarget(_player.transform);
+            if (CameraManager.instance != null)
+                CameraManager.instance.SetFollowTarget(_player.transform);
+            else
+            {
+                var vcam = FindFirstObjectByType<CinemachineCamera>();
+                if (vcam != null) vcam.Follow = _player.transform;
+            }
 
             onArrived?.Invoke();
             RoomEntered?.Invoke(def.roomId, arrivalSpawnPointId);

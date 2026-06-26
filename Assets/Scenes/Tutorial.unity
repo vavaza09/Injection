@@ -417,6 +417,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4678906746590791714, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: MaxDistance
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5506953351481280787, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 46
@@ -457,6 +461,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5577287370394050830, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+      propertyPath: _sfxSource
+      value: 
+      objectReference: {fileID: 1451831486}
     - target: {fileID: 8658080719701645966, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
       propertyPath: m_Name
       value: TutorialDummy
@@ -1374,6 +1382,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1451831486 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 4678906746590791714, guid: a5cad22dd7ed02042978f8586763ee66, type: 3}
+  m_PrefabInstance: {fileID: 189314238}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1472841570
 GameObject:
   m_ObjectHideFlags: 0

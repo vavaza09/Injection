@@ -11,21 +11,18 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     [SerializeField] private float empStunDuration  = 3f;
     [SerializeField] private float empCooldown      = 8f;
     [SerializeField] private float empEnergyCost    = 1f;
+    [SerializeField] private GameObject empVFXPrefab;
+    [Tooltip("How long (s) the EMP VFX spawner emits before being stopped — keeps it a single instant burst. Lower = fewer overlapping meshes.")]
+    [SerializeField] private float empVfxBurstWindow = 4f;
+    [Tooltip("How long (s) the EMP VFX instance lives before being destroyed (lets meshes finish dissolving).")]
+    [SerializeField] private float empVfxLifetime = 2f;
 
     [Header("True Damage Dash")]
     [SerializeField] private float trueDamageCooldown   = 5f;
     [SerializeField] private float trueDamageEnergyCost = 1f;
 
     [Header("Visual Feedback")]
-    [SerializeField] private Color empFlashColor           = new Color(0.2f, 0.6f, 1f, 1f);
-    [SerializeField] private float empFlashDuration        = 0.15f;
     [SerializeField] private Color trueDamageArmedColor    = new Color(1f, 0.5f, 0.1f, 1f);
-
-    // Debug gizmo
-    private bool  _drawEmpGizmo;
-    private float _empGizmoTimer;
-    private float _empGizmoRadius;
-    private Vector3 _empGizmoPos;
 
     private Core.Logging.ILogger _logger;
     private PlayerInputHandler   _inputHandler;
@@ -38,7 +35,6 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
 
     private SpriteRenderer _spriteRenderer;
     private Color          _originalColor;
-    private Coroutine      _flashCoroutine;
     private bool           _trueDamageArmedVisual;
 
     // Alive check — PlayerSkillController sits on the same GO as Player
@@ -114,13 +110,6 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     {
         _empSkill?.Tick(Time.deltaTime);
         _trueDashSkill?.Tick(Time.deltaTime);
-
-        if (_drawEmpGizmo)
-        {
-            _empGizmoTimer -= Time.unscaledDeltaTime;
-            if (_empGizmoTimer <= 0f)
-                _drawEmpGizmo = false;
-        }
     }
 
     private void OnDestroy()
@@ -163,13 +152,24 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
 
     private void OnEmpDetonated(EmpBlastEvent e)
     {
-        _drawEmpGizmo   = true;
-        _empGizmoTimer  = 0.5f;
-        _empGizmoRadius = e.Radius;
-        _empGizmoPos    = transform.position;
-
         _audioController?.PlayEmpSound();
-        FlashColor(empFlashColor, empFlashDuration);
+        if (empVFXPrefab != null)
+            StartCoroutine(PlayEmpVfxOnce((Vector3)(Vector2)e.Position));
+    }
+
+    // Plays the EMP VFX as a single instant burst. The shared VFX graph uses a
+    // continuous spawner, so we let it emit for one short window then Stop() the
+    // spawners — already-spawned meshes finish their dissolve, but nothing re-bursts.
+    private System.Collections.IEnumerator PlayEmpVfxOnce(Vector3 position)
+    {
+        var instance = Instantiate(empVFXPrefab, position, Quaternion.identity);
+        var effects = instance.GetComponentsInChildren<UnityEngine.VFX.VisualEffect>();
+        foreach (var v in effects) { v.Reinit(); v.Play(); }
+
+        yield return new WaitForSeconds(empVfxBurstWindow);
+        foreach (var v in effects) if (v != null) v.Stop();
+
+        Destroy(instance, empVfxLifetime);
     }
 
     private void OnTrueDamageArmed()
@@ -185,23 +185,6 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         _trueDamageArmedVisual = false;
         RestoreColor();
         _audioController?.PlayTrueDamageConsumeSound();
-    }
-
-    private void FlashColor(Color color, float duration)
-    {
-        if (_spriteRenderer == null) return;
-        if (_flashCoroutine != null)
-            StopCoroutine(_flashCoroutine);
-        _flashCoroutine = StartCoroutine(FlashCoroutine(color, duration));
-    }
-
-    private System.Collections.IEnumerator FlashCoroutine(Color color, float duration)
-    {
-        _spriteRenderer.color = color;
-        yield return new WaitForSecondsRealtime(duration);
-        // Restore: keep armed tint if still armed, else go back to original
-        RestoreColor();
-        _flashCoroutine = null;
     }
 
     private void RestoreColor()
@@ -235,14 +218,4 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         }
     }
 
-    // ── Debug Gizmos ───────────────────────────────────────────
-
-    private void OnDrawGizmos()
-    {
-        if (!_drawEmpGizmo) return;
-        Gizmos.color = new Color(0.2f, 0.6f, 1f, 0.25f);
-        Gizmos.DrawSphere(_empGizmoPos, _empGizmoRadius);
-        Gizmos.color = new Color(0.2f, 0.6f, 1f, 0.9f);
-        Gizmos.DrawWireSphere(_empGizmoPos, _empGizmoRadius);
-    }
 }

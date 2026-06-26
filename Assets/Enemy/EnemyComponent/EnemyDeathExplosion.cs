@@ -22,6 +22,16 @@ public class EnemyDeathExplosion : MonoBehaviour
     [SerializeField] private float partLifetime = 2.2f;
     [SerializeField] private float partFadeDuration = 0.8f;
 
+    [Header("Sorting - Body Parts")]
+    [SerializeField] private bool overrideBodyPartSorting = false;
+    [SerializeField] private string bodyPartSortingLayer = "Default";
+    [SerializeField] private int bodyPartSortingOrder = 0;
+
+    [Header("Sorting - Explosion FX")]
+    [SerializeField] private bool overrideExplosionSorting = false;
+    [SerializeField] private string explosionSortingLayer = "Default";
+    [SerializeField] private int explosionSortingOrder = 5;
+
     [Header("Smoke Trail")]
     [SerializeField] private float trailTime = 0.4f;
     [SerializeField] private float trailStartWidth = 0.12f;
@@ -99,8 +109,8 @@ public class EnemyDeathExplosion : MonoBehaviour
             exGO.transform.localScale = Vector3.one * explosionScale;
 
             SpriteRenderer exSR = exGO.AddComponent<SpriteRenderer>();
-            exSR.sortingLayerName = _sortingLayer;
-            exSR.sortingOrder = _sortingOrder + 5;
+            exSR.sortingLayerName = overrideExplosionSorting ? explosionSortingLayer : _sortingLayer;
+            exSR.sortingOrder = overrideExplosionSorting ? explosionSortingOrder : _sortingOrder + 5;
 
             float frameDt = 1f / Mathf.Max(explosionFps, 1f);
             foreach (Sprite frame in explosionFrames)
@@ -125,8 +135,8 @@ public class EnemyDeathExplosion : MonoBehaviour
 
         SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
-        sr.sortingLayerName = _sortingLayer;
-        sr.sortingOrder = _sortingOrder;
+        sr.sortingLayerName = overrideBodyPartSorting ? bodyPartSortingLayer : _sortingLayer;
+        sr.sortingOrder = overrideBodyPartSorting ? bodyPartSortingOrder : _sortingOrder;
 
         Rigidbody2D rb = go.AddComponent<Rigidbody2D>();
         rb.gravityScale = partGravityScale;

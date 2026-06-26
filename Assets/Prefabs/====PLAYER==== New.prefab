@@ -150,6 +150,10 @@ PrefabInstance:
       propertyPath: empRadius
       value: 29.1
       objectReference: {fileID: 0}
+    - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: empVFXPrefab
+      value: 
+      objectReference: {fileID: 90529768063714368, guid: 0d3fb514e3dca58499aebff545464a13, type: 3}
     - target: {fileID: 1344462908036067775, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -172,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.2
+      value: -35.1
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -324,6 +328,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+    - {fileID: 1904482654240931063, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -339,9 +344,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6802284921488119621}
-    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6979088413670410294}
   m_SourcePrefab: {fileID: 100100000, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
 --- !u!224 &504866371227959338 stripped
 RectTransform:
@@ -387,14 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementVFX
   windSpeedThreshold: 0.405
-  windRateMin: 12
-  windRateMax: 35
-  windLengthScaleMin: 2.5
-  windLengthScaleMax: 5
-  windBackOffset: 0.4
-  windAlphaMin: 0.35
-  windAlphaMax: 0.8
-  windColor: {r: 0.7, g: 0.85, b: 1, a: 0.7}
+  windTrailPrefab: {fileID: 3703429325690321826, guid: df6bcb4db12f82245885bf63ab59549a, type: 3}
   runDustMinSpeed: 1.5
   runDustMaxRate: 10
   dustColor: {r: 0.92, g: 0.92, b: 0.88, a: 0.45}
@@ -415,21 +410,6 @@ MonoBehaviour:
   behindPlayerOrder: 5
   frontOfPlayerOrder: 10
 --- !u!114 &6802284921488119621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6111057636079140435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d76b2689c4de3f04fa53e9b0eca4cdd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DashFocusMarkerSystem
-  player: {fileID: 2585259648304670452}
-  focusMarkerPrefab: {fileID: 8604236926169184982, guid: 620323d8ab557804fb124abd9b846fa8, type: 3}
-  detectRadius: 8
---- !u!114 &6979088413670410294
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

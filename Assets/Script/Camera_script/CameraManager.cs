@@ -258,6 +258,13 @@ public class CameraManager : MonoBehaviour
         _shakeRoutine = null;
     }
 
+    public void SetFollowTarget(Transform target)
+    {
+        cameraTarget = target;
+        _playerRb = target != null ? target.GetComponent<Rigidbody2D>() : null;
+        if (_currentCam != null) _currentCam.Follow = target;
+    }
+
     public void EnterRoomLock(Transform roomAnchor)
     {
         if (_currentCam == null || roomAnchor == null || _isRoomLocked)
