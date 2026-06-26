@@ -178,6 +178,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: moveSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -192,11 +200,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -35.1
+      value: -24.89
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.9
+      value: -10.4
       objectReference: {fileID: 0}
     - target: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -304,7 +312,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceForce
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: windColor.b
@@ -339,8 +347,56 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2710999510589235540}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: maxFall
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: maxSpeed
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: jumpSpeed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: acceleration
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: deceleration
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: reverseGroundBrake
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallJumpVerticalSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: dashSettings.dashSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: dashAtMaxSpeedMultiplier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: jumpAtMaxSpeedMultiplier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: dashSettings.endDashSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: dashSettings.endDashUpMult
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: dashSettings.airEndDashCarryMultiplier
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8436408531163174128, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -417,6 +473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementVFX
   windSpeedThreshold: 0.405
   windTrailPrefab: {fileID: 3703429325690321826, guid: df6bcb4db12f82245885bf63ab59549a, type: 3}
+  trueDamageTrailPrefab: {fileID: 3703429325690321826, guid: f3f65bb881fb4474b9e37d4afd5f8cd8, type: 3}
   runDustMinSpeed: 1.5
   runDustMaxRate: 10
   dustColor: {r: 0.92, g: 0.92, b: 0.88, a: 0.45}

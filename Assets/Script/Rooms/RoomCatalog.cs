@@ -49,5 +49,13 @@ namespace Game.Rooms
             sceneName = null;
             return false;
         }
+
+        public int Count => rooms.Count;
+
+        public RoomDefinition GetByIndex(int index)
+        {
+            if (index < 0 || index >= rooms.Count) return null;
+            return rooms[index];
+        }
     }
 }
