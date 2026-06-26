@@ -12,6 +12,10 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     [SerializeField] private float empCooldown      = 8f;
     [SerializeField] private float empEnergyCost    = 1f;
     [SerializeField] private GameObject empVFXPrefab;
+    [Tooltip("How long (s) the EMP VFX spawner emits before being stopped — keeps it a single instant burst. Lower = fewer overlapping meshes.")]
+    [SerializeField] private float empVfxBurstWindow = 0.06f;
+    [Tooltip("How long (s) the EMP VFX instance lives before being destroyed (lets meshes finish dissolving).")]
+    [SerializeField] private float empVfxLifetime = 3f;
 
     [Header("True Damage Dash")]
     [SerializeField] private float trueDamageCooldown   = 5f;
@@ -150,10 +154,22 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     {
         _audioController?.PlayEmpSound();
         if (empVFXPrefab != null)
-        {
-            var instance = Instantiate(empVFXPrefab, (Vector3)(Vector2)e.Position, Quaternion.identity);
-            Destroy(instance, 4f);
-        }
+            StartCoroutine(PlayEmpVfxOnce((Vector3)(Vector2)e.Position));
+    }
+
+    // Plays the EMP VFX as a single instant burst. The shared VFX graph uses a
+    // continuous spawner, so we let it emit for one short window then Stop() the
+    // spawners — already-spawned meshes finish their dissolve, but nothing re-bursts.
+    private System.Collections.IEnumerator PlayEmpVfxOnce(Vector3 position)
+    {
+        var instance = Instantiate(empVFXPrefab, position, Quaternion.identity);
+        var effects = instance.GetComponentsInChildren<UnityEngine.VFX.VisualEffect>();
+        foreach (var v in effects) { v.Reinit(); v.Play(); }
+
+        yield return new WaitForSeconds(empVfxBurstWindow);
+        foreach (var v in effects) if (v != null) v.Stop();
+
+        Destroy(instance, empVfxLifetime);
     }
 
     private void OnTrueDamageArmed()

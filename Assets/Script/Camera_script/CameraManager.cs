@@ -1,7 +1,6 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class CameraManager : MonoBehaviour
 {
@@ -44,9 +43,12 @@ public class CameraManager : MonoBehaviour
     private CinemachineCamera _currentCam;
     private CinemachinePositionComposer _composer;
 
+    [Header("Impulse Shake")]
+    [SerializeField] private float impulseGainMultiplier = 5f;
+
+    private CinemachineImpulseSource _impulseSource;
+
     private Coroutine _lerpRoutine;
-    private Coroutine _shakeRoutine;
-    private Vector3 _shakeOffset;
     private bool _isFallingCommitted;
     private float _fallTimer;
 
@@ -65,34 +67,40 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        RenderPipelineManager.beginCameraRendering += ApplyShakeBeforeRender;
-    }
-
-    private void OnDisable()
-    {
-        RenderPipelineManager.beginCameraRendering -= ApplyShakeBeforeRender;
-    }
-
-    // Runs after Cinemachine's LateUpdate but before the draw call — correct timing for shake.
-    private void ApplyShakeBeforeRender(ScriptableRenderContext ctx, Camera cam)
-    {
-        if (cam != Camera.main || _shakeOffset == Vector3.zero) return;
-        cam.transform.position += _shakeOffset;
-    }
-
     private void Start()
     {
         ResolveCurrentCamera();
         ApplyInstant(_normalOffsetY, _normalYDamping);
 
         if (_currentCam != null)
-        {
             _defaultOrthoSize = _currentCam.Lens.OrthographicSize;
+
+        SetupImpulse();
+    }
+
+    private void SetupImpulse()
+    {
+        // Self-wire impulse source on this GameObject
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+        if (_impulseSource == null)
+            _impulseSource = gameObject.AddComponent<CinemachineImpulseSource>();
+
+        // Omnidirectional rumble — shakes in all directions rather than punching one way
+        _impulseSource.ImpulseDefinition.ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Rumble;
+        _impulseSource.ImpulseDefinition.ImpulseType = CinemachineImpulseDefinition.ImpulseTypes.Uniform;
+        _impulseSource.DefaultVelocity = Vector3.up;
+
+        // Add listener to virtual camera only if missing (avoids double-shake in scenes that already have one)
+        if (_currentCam != null && _currentCam.GetComponent<CinemachineImpulseListener>() == null)
+            _currentCam.gameObject.AddComponent<CinemachineImpulseListener>();
+
+        // Brain must ignore time scale so shake survives hitstop (Time.timeScale → ~0 during dash impact)
+        if (Camera.main != null)
+        {
+            var brain = Camera.main.GetComponent<CinemachineBrain>();
+            if (brain != null)
+                brain.IgnoreTimeScale = true;
         }
-
-
     }
 
     private void Update()
@@ -237,25 +245,9 @@ public class CameraManager : MonoBehaviour
 
     public void Shake(float intensity, float duration = 0.3f)
     {
-        if (_shakeRoutine != null) StopCoroutine(_shakeRoutine);
-        _shakeRoutine = StartCoroutine(ShakeRoutine(intensity, duration));
-    }
-
-    private IEnumerator ShakeRoutine(float intensity, float duration)
-    {
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float strength = intensity * (1f - Mathf.Clamp01(elapsed / duration));
-            _shakeOffset = new Vector3(
-                Random.Range(-1f, 1f) * strength,
-                Random.Range(-1f, 1f) * strength,
-                0f);
-            yield return null;
-        }
-        _shakeOffset = Vector3.zero;
-        _shakeRoutine = null;
+        if (_impulseSource == null) return;
+        _impulseSource.ImpulseDefinition.ImpulseDuration = duration;
+        _impulseSource.GenerateImpulse(intensity * impulseGainMultiplier);
     }
 
     public void EnterRoomLock(Transform roomAnchor)
