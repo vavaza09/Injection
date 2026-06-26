@@ -71,8 +71,8 @@ public class MeleeEnemyMovement : MonoBehaviour
 
     private void Flip()
     {
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * direction;
-        transform.localScale = scale;
+        Vector3 euler = transform.eulerAngles;
+        euler.y = (direction > 0) ? 0f : 180f;
+        transform.eulerAngles = euler;
     }
 }

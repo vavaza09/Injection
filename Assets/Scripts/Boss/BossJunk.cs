@@ -25,6 +25,8 @@ public class BossJunk : MonoBehaviour
     [SerializeField] private float spinSpeedMax = 270f;
 
     [Header("Audio")]
+    [SerializeField] private SfxCue fallSfx;
+    [SerializeField] private SfxCue impactSfx;
     [SerializeField] private float shakeIntensity = 0.25f;
     [SerializeField] private float shakeDuration  = 0.2f;
 
@@ -55,7 +57,7 @@ public class BossJunk : MonoBehaviour
         _spinSpeed   = Random.Range(spinSpeedMin, spinSpeedMax) * (Random.value < 0.5f ? 1f : -1f);
         _initialized = true;
 
-        SoundManager.PlaySoundOn(SoundType.BOSS_JUNK_FALL, _sfxSource);
+        BossSfx.Play(this, SoundType.BOSS_JUNK_FALL, fallSfx, _sfxSource);
     }
 
     // ── Update ────────────────────────────────────────────────────────────
@@ -93,8 +95,8 @@ public class BossJunk : MonoBehaviour
         _landed = true;
         if (_shadow != null) Destroy(_shadow);
 
-        SoundManager.PlaySoundOn(SoundType.BOSS_JUNK_IMPACT, _sfxSource);
-        CameraManager.instance?.Shake(shakeIntensity, shakeDuration);
+        BossSfx.Play(this, SoundType.BOSS_JUNK_IMPACT, impactSfx, _sfxSource);
+        CameraShake.Shake(shakeIntensity, shakeDuration);
 
         if (_vfxPrefab != null)
         {
