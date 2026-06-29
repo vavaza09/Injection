@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using Game.Rooms;
 
 public class RoomLockTrigger : MonoBehaviour
 {
@@ -42,6 +43,8 @@ public class RoomLockTrigger : MonoBehaviour
 
     private readonly List<GameObject> _spawnedWalls = new List<GameObject>();
     private bool _locked;
+    private bool _cameraReleased;
+    private IRoomLoader _roomLoader;
 
     // Cached camera state for restore
     private Transform _cachedFollow;
@@ -61,6 +64,18 @@ public class RoomLockTrigger : MonoBehaviour
 
         if (roomVcam != null)
             _composer = roomVcam.GetComponent<CinemachinePositionComposer>();
+
+        _roomLoader = FindFirstObjectByType<RoomManager>();
+    }
+
+    private void OnEnable()
+    {
+        BossBase.Defeated += OnBossDefeated;
+    }
+
+    private void OnDisable()
+    {
+        BossBase.Defeated -= OnBossDefeated;
     }
 
     private void OnDestroy()
@@ -68,9 +83,16 @@ public class RoomLockTrigger : MonoBehaviour
         if (_panProxy != null) Destroy(_panProxy.gameObject);
     }
 
+    private void OnBossDefeated()
+    {
+        if (!_locked) return;
+        ReleaseCamera();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_locked) return;
+        if (_roomLoader != null && _roomLoader.IsTransitioning) return;
         if (!other.CompareTag("Player")) return;
 
         _locked = true;
@@ -216,9 +238,16 @@ public class RoomLockTrigger : MonoBehaviour
         OpenRoom();
     }
 
-    private void OpenRoom()
+    private void ReleaseCamera()
     {
+        if (_cameraReleased) return;
+        _cameraReleased = true;
         RestoreCamera();
+    }
+
+    public void OpenRoom()
+    {
+        ReleaseCamera();
 
         foreach (var wall in _spawnedWalls)
         {

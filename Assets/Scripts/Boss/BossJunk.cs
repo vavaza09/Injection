@@ -8,8 +8,9 @@ using System.Collections;
 [RequireComponent(typeof(SpriteRenderer))]
 public class BossJunk : MonoBehaviour
 {
-    [SerializeField] private float fallSpeed       = 14f;
-    [SerializeField] private float junkScale       = 0.2f;
+    [SerializeField] private float fallSpeed             = 14f;
+    [SerializeField] private float junkScale             = 0.2f;
+    [SerializeField] private float fallingColliderRadius = 0.4f;
     [SerializeField] private float shadowMinRadius = 0.15f;
     [SerializeField] private float shadowMaxRadius = 1.0f;
     [SerializeField] private float shadowMinAlpha  = 0.05f;
@@ -34,7 +35,9 @@ public class BossJunk : MonoBehaviour
     private float         _initialHeight;
     private bool          _initialized;
     private bool          _landed;
+    private bool          _hitPlayerDuringFall;
     private float         _spinSpeed;
+    private CircleCollider2D _fallingCollider;
 
     private AudioSource    _sfxSource;
     private GameObject    _shadow;
@@ -54,6 +57,7 @@ public class BossJunk : MonoBehaviour
 
         SetupVisual();
         SetupShadow();
+        SetupFallingCollider();
         _spinSpeed   = Random.Range(spinSpeedMin, spinSpeedMax) * (Random.value < 0.5f ? 1f : -1f);
         _initialized = true;
 
@@ -88,11 +92,23 @@ public class BossJunk : MonoBehaviour
         if (_shadow != null) Destroy(_shadow);
     }
 
+    // ── Falling damage ────────────────────────────────────────────────────
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (_landed || _hitPlayerDuringFall || !_initialized) return;
+        var player = other.GetComponentInParent<Player>();
+        if (player == null) return;
+        player.TakeDamage(_damage);
+        _hitPlayerDuringFall = true;
+    }
+
     // ── Landing ───────────────────────────────────────────────────────────
 
     private void Land()
     {
         _landed = true;
+        if (_fallingCollider != null) _fallingCollider.enabled = false;
         if (_shadow != null) Destroy(_shadow);
 
         BossSfx.Play(this, SoundType.BOSS_JUNK_IMPACT, impactSfx, _sfxSource);
@@ -139,6 +155,18 @@ public class BossJunk : MonoBehaviour
             yield return null;
         }
         Destroy(gameObject);
+    }
+
+    // ── Falling collider ──────────────────────────────────────────────────
+
+    private void SetupFallingCollider()
+    {
+        var rb = gameObject.AddComponent<Rigidbody2D>();
+        rb.isKinematic  = true;
+        rb.gravityScale = 0f;
+        _fallingCollider = gameObject.AddComponent<CircleCollider2D>();
+        _fallingCollider.isTrigger = true;
+        _fallingCollider.radius    = fallingColliderRadius;
     }
 
     // ── Visual setup ──────────────────────────────────────────────────────

@@ -31,12 +31,26 @@ public class BossHealthBarController : MonoBehaviour
         boss.PlayerEnteredRange += _ui.Show;
         boss.PlayerExitedRange  += _ui.Hide;
 
+        BossDeathSequence.Completed += DestroyHUD;
+
         if (boss.IsPlayerCurrentlyInRange)
             _ui.Show();
     }
 
+    private void DestroyHUD()
+    {
+        BossDeathSequence.Completed -= DestroyHUD;
+        if (_hudInstance != null)
+        {
+            Destroy(_hudInstance);
+            _hudInstance = null;
+        }
+    }
+
     private void OnDestroy()
     {
+        BossDeathSequence.Completed -= DestroyHUD;
+
         if (boss != null)
         {
             boss.PlayerEnteredRange -= _ui.Show;

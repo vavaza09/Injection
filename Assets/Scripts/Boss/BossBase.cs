@@ -14,10 +14,22 @@ public abstract class BossBase : MonoBehaviour
     public event System.Action PlayerEnteredRange;
     public event System.Action PlayerExitedRange;
 
+    public static event System.Action Defeated;
+
     public float HealthPercent => maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
     public bool IsPlayerCurrentlyInRange => _wasPlayerInRange;
 
     protected void RaiseHealthChanged() => HealthChanged?.Invoke(HealthPercent);
+
+    protected void RaiseDefeated()
+    {
+        if (Defeated == null) return;
+        foreach (var del in Defeated.GetInvocationList())
+        {
+            try { ((System.Action)del).Invoke(); }
+            catch (System.Exception e) { Debug.LogException(e); }
+        }
+    }
 
     private bool _wasPlayerInRange;
 
