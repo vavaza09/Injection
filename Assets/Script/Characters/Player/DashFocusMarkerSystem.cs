@@ -33,9 +33,10 @@ public class DashFocusMarkerSystem : MonoBehaviour
             if (_activeMarkers.ContainsKey(wp.transform)) continue;
             if (Vector2.Distance(transform.position, wp.transform.position) > detectRadius) continue;
 
-            var marker = Instantiate(focusMarkerPrefab, wp.transform.position, Quaternion.identity, wp.transform);
-            _activeMarkers[wp.transform] = marker;
             var refCol = wp.WeakPointColliders.Count > 0 ? wp.WeakPointColliders[0] : wp.GetComponent<Collider2D>();
+            Vector3 spawnPos = refCol != null ? new Vector3(refCol.bounds.center.x, refCol.bounds.center.y, wp.transform.position.z) : wp.transform.position;
+            var marker = Instantiate(focusMarkerPrefab, spawnPos, Quaternion.identity, wp.transform);
+            _activeMarkers[wp.transform] = marker;
             ScaleMarkerToWeakpoint(marker, refCol, 0.8f);
         }
 
@@ -45,9 +46,11 @@ public class DashFocusMarkerSystem : MonoBehaviour
             if (_activeMarkers.ContainsKey(bwp.transform)) continue;
             if (Vector2.Distance(transform.position, bwp.transform.position) > detectRadius) continue;
 
-            var marker = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+            var refCol = bwp.GetComponent<Collider2D>();
+            Vector3 spawnPos = refCol != null ? new Vector3(refCol.bounds.center.x, refCol.bounds.center.y, bwp.transform.position.z) : bwp.transform.position;
+            var marker = Instantiate(focusMarkerPrefab, spawnPos, Quaternion.identity, bwp.transform);
             _activeMarkers[bwp.transform] = marker;
-            ScaleMarkerToWeakpoint(marker, bwp.GetComponent<Collider2D>(), 1.5f);
+            ScaleMarkerToWeakpoint(marker, refCol, 1.5f);
         }
     }
 
@@ -63,9 +66,11 @@ public class DashFocusMarkerSystem : MonoBehaviour
 
             if (shouldShow && !hasMarker)
             {
-                var marker = Instantiate(focusMarkerPrefab, bwp.transform.position, Quaternion.identity, bwp.transform);
+                var refCol = bwp.GetComponent<Collider2D>();
+                Vector3 spawnPos = refCol != null ? new Vector3(refCol.bounds.center.x, refCol.bounds.center.y, bwp.transform.position.z) : bwp.transform.position;
+                var marker = Instantiate(focusMarkerPrefab, spawnPos, Quaternion.identity, bwp.transform);
                 _activeMarkers[bwp.transform] = marker;
-                ScaleMarkerToWeakpoint(marker, bwp.GetComponent<Collider2D>(), 1.5f);
+                ScaleMarkerToWeakpoint(marker, refCol, 1.5f);
             }
             else if (!shouldShow && hasMarker)
             {

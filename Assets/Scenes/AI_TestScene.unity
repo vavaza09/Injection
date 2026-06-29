@@ -535,6 +535,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ====PLAYER==== New
       objectReference: {fileID: 0}
+    - target: {fileID: 6802284921488119621, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: detectRadius
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1233,6 +1237,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 0c1d290e91a7f1b48ae4f05e4254949e, type: 3}
     - {fileID: 8300000, guid: cb91f571429c58e46a76c28649eb3217, type: 3}
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -1240,30 +1245,35 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 6c454964627fe31448e02dcb78fabd9a, type: 3}
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: JUMP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FOOTSTEP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FOOTSTEP_METAL
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: HURT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -1271,84 +1281,98 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: HITSTOP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: DEATH
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: LAND
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: GRAB
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: ENERGY
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: EMP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TRUEDAMAGE_ARM
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TRUEDAMAGE_CONSUME
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: SLOWMO
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: WALLSLIDE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: ENEMY_HURT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: ENEMY_DEATH
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: KIKI_FLOAT_IDLE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -1356,6 +1380,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 552610755c560344a9c3fab9333d6278, type: 3}
     volume: 1
+    boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
@@ -1363,6 +1388,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: f44e03b1a7de683459f285594c1c1026, type: 3}
     volume: 1
+    boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
@@ -1370,186 +1396,252 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: c182839c8c933fb4e925bf178f346385, type: 3}
     volume: 1
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_MOTOR
+    sounds: []
+    volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TANK_FOOTSTEP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TANK_CANNON_CHARGE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TANK_CANNON_FIRE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: TANK_BULLET_FLY
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_IDLE_CRACKLE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_ATTACK_CHARGE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_MORTAR_LAUNCH
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_MORTAR_ASCENDING
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_MORTAR_DESCENDING
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: FURNACE_EXPLOSION
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: STOMPER_IDLE_CHITTER
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: STOMPER_WALK_SCUTTLE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: STOMPER_JUMP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: STOMPER_FALL_RUSH
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: STOMPER_STOMP_IMPACT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_AMBIENT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_HURT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_DEATH
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_CLAW_ANTICIPATION
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_CLAW_STRIKE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_CLAW_IMPACT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_CLAW_RETRACT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_HAMMER_WINDUP
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_HAMMER_SWING
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_HAMMER_IMPACT
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_HAMMER_RECOVER
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_GAS_RELEASE
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: BOSS_GAS_LOOP
     sounds: []
     volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_WEAKPOINT_REVEAL
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_WEAKPOINT_CLOSE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_JUNK_FALL
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_JUNK_IMPACT
+    sounds: []
+    volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: UI_HOVER
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: UI_CLICK
     sounds: []
     volume: 0
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -1567,6 +1659,7 @@ MonoBehaviour:
   musicVolume: 0.4
   musicFadeDuration: 1
   loopPoolSize: 8
+  sceneAudio: []
 --- !u!82 &548993900
 AudioSource:
   m_ObjectHideFlags: 0
@@ -47578,6 +47671,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.1
 --- !u!70 &664721452
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -47699,7 +47793,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &664721455
 Transform:
@@ -48504,8 +48598,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747713f608514f34285d208df8934cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomVcam: {fileID: 0}
   roomAnchor: {fileID: 1537702880}
   _roomOrthoSize: 7
+  zoomDuration: 0.4
+  panDuration: 2
+  targetEnemies: []
+  walls: []
+  impactVfxPrefab: {fileID: 0}
+  impactVfxRadius: 2
+  shakeIntensity: 0.6
+  shakeDuration: 0.3
 --- !u!1 &1667175159
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Rooms;
 
 // Randomly selects and fires the boss's attacks. Controls timing, cooldowns, and anti-repeat logic.
 //
@@ -74,6 +75,7 @@ public class BossAttackManager : MonoBehaviour
     private Coroutine     _attackCoroutine;
     private bool          _hammerUsed;
     private bool          _clawUsed;
+    private IRoomLoader   _roomLoader;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
 
@@ -85,12 +87,14 @@ public class BossAttackManager : MonoBehaviour
             if (go != null) playerTransform = go.transform;
         }
 
+        _roomLoader = FindFirstObjectByType<RoomManager>();
         BuildAttackTable();
     }
 
     private void Update()
     {
         if (playerTransform == null) return;
+        if (_roomLoader != null && _roomLoader.IsTransitioning) return;
 
         // Also consider "in range" when JunkSmash can fire — platforms sit outside the
         // normal detectionRadius, so without this the attack loop never starts while

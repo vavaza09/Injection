@@ -18,6 +18,7 @@ public class VictoryScreenController : MonoBehaviour
 
     private void ShowVictory()
     {
+        if (victoryRoot == null) { Debug.LogWarning("[VictoryScreenController] victoryRoot is not assigned.", this); return; }
         victoryRoot.SetActive(true);
         Time.timeScale = 0f;
         SetPlayerInput(false);

@@ -137,7 +137,14 @@ public class BossDeathSequence : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        Completed?.Invoke();
+        if (Completed != null)
+        {
+            foreach (var del in Completed.GetInvocationList())
+            {
+                try { ((System.Action)del).Invoke(); }
+                catch (System.Exception e) { Debug.LogException(e); }
+            }
+        }
 
         // Destroy the entire boss hierarchy (BossDeathSequence dies with it — that's fine, we're done)
         Destroy(sinkRoot.gameObject);
@@ -239,7 +246,8 @@ public class BossHeadLanding : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, _groundMask);
                 if (hit.collider != null)
                 {
-                    _rb.bodyType = RigidbodyType2D.Static;
+                    _rb.linearVelocity = Vector2.zero;
+                    _rb.angularVelocity = 0f;
                     Destroy(this);
                     yield break;
                 }
