@@ -49,6 +49,7 @@ public class FurnaceEnemy : Enemy
 
     private float lastAttackTime = -999f;
     private bool _isAttacking;
+    private Coroutine _attackRoutine;
     private readonly List<GameObject> _activeMortarVfx = new List<GameObject>();
 
     protected override void Awake()
@@ -104,7 +105,19 @@ public class FurnaceEnemy : Enemy
     {
         if (playerTransform == null || _isAttacking) return;
         if (Time.time < lastAttackTime + attackCooldown) return;
-        StartCoroutine(AttackRoutine());
+        _attackRoutine = StartCoroutine(AttackRoutine());
+    }
+
+    protected override void OnStunInterrupt()
+    {
+        if (_attackRoutine != null)
+        {
+            StopCoroutine(_attackRoutine);
+            _attackRoutine = null;
+        }
+        _isAttacking = false;
+        if (_animator != null)
+            _animator.SetBool("IsAttacking", false);
     }
 
     private IEnumerator AttackRoutine()
