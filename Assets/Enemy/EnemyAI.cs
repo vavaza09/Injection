@@ -41,8 +41,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (enemy == null) return;
 
-        if (enemy.GetState() == EnemyState.Stunned && currentState != EnemyState.Stunned)
+        EnemyState enemyState = enemy.GetState();
+
+        if (enemyState == EnemyState.Stunned && currentState != EnemyState.Stunned)
             ChangeState(EnemyState.Stunned);
+        else if (enemyState != EnemyState.Stunned && currentState == EnemyState.Stunned)
+            ChangeState(EnemyState.Idle);
 
         switch (currentState)
         {

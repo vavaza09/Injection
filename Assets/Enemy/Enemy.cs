@@ -107,6 +107,7 @@ public class Enemy : character
     [SerializeField] private float deathSoundDelay = 0.1f;
 
     private float _stunEndTime;
+    private bool _stunVisualsActive;
     private Coroutine _stunBlinkRoutine;
     private SpriteRenderer _spriteRenderer;
     protected Animator _animator;
@@ -187,7 +188,12 @@ public class Enemy : character
     protected override void Update()
     {
         base.Update();
-        if (IsStunned && Time.time >= _stunEndTime)
+        // Restore the normal visual state when the stun expires, OR when something
+        // else (e.g. an attack coroutine finishing) pulled the enemy out of the
+        // Stunned state without routing through EndStun. Without this second guard
+        // the frozen animation / blink tint / electric VFX would linger while the
+        // enemy resumes attacking the player.
+        if (_stunVisualsActive && (!IsStunned || Time.time >= _stunEndTime))
             EndStun();
     }
 
@@ -201,6 +207,7 @@ public class Enemy : character
 
         OnStunInterrupt();
         SetState(EnemyState.Stunned);
+        _stunVisualsActive = true;
 
         if (movementComponent != null)
             movementComponent.Stop();
@@ -237,6 +244,8 @@ public class Enemy : character
 
     private void EndStun()
     {
+        _stunVisualsActive = false;
+
         if (_animator != null)
             _animator.speed = 1f;
 
@@ -278,6 +287,8 @@ public class Enemy : character
         // isn't cut off when the GameObject is destroyed by the death/explosion FX.
         // Delayed via SoundManager's own coroutine so the wait survives this object's destruction.
         SoundManager.PlaySoundDelayed(SoundType.ENEMY_DEATH, deathSoundDelay);
+
+        _stunVisualsActive = false;
 
         if (_stunBlinkRoutine != null)
         {
