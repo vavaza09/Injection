@@ -22,6 +22,8 @@ namespace Game.Tutorial
             public string gamepadLabel = "?";   // text fallback when no gamepad sprite
             public Sprite keyboardSprite;       // Kenney keyboard/mouse glyph
             public Sprite gamepadSprite;        // Kenney gamepad glyph
+            [Tooltip("Override glyph size for this binding only. 0 = use global glyphSize.")]
+            public float sizeOverride = 0f;
         }
 
         [SerializeField] private TextMeshProUGUI label;
@@ -125,17 +127,29 @@ namespace Game.Tutorial
             for (int i = 0; i < _keys.Length; i++)
             {
                 var entry = _keys[i];
-                var binding = Find(entry.actionKey);
-                Sprite sprite = binding == null ? null : (gamepad ? binding.gamepadSprite : binding.keyboardSprite);
-                if (sprite != null)
+
+                if (string.IsNullOrEmpty(entry.actionKey))
                 {
-                    CreateGlyphChip(sprite);
+                    if (!string.IsNullOrEmpty(entry.text))
+                        CreateLabelChip(entry.text);
+                    else
+                        CreateSpacerChip(entry.spacerWidth);
                 }
                 else
                 {
-                    string label = binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : null;
-                    if (string.IsNullOrEmpty(label)) label = entry.actionKey;
-                    CreateTextChip(label);
+                    var binding = Find(entry.actionKey);
+                    Sprite sprite = binding == null ? null : (gamepad ? binding.gamepadSprite : binding.keyboardSprite);
+                    if (sprite != null)
+                    {
+                        float size = (binding != null && binding.sizeOverride > 0f) ? binding.sizeOverride : glyphSize;
+                        CreateGlyphChip(sprite, size);
+                    }
+                    else
+                    {
+                        string chipLabel = binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : null;
+                        if (string.IsNullOrEmpty(chipLabel)) chipLabel = entry.actionKey;
+                        CreateTextChip(chipLabel);
+                    }
                 }
 
                 if (entry.separatorAfter != SeparatorAfter.None)
@@ -150,7 +164,7 @@ namespace Game.Tutorial
             return null;
         }
 
-        private void CreateGlyphChip(Sprite sprite)
+        private void CreateGlyphChip(Sprite sprite, float size)
         {
             var go = new GameObject("Glyph", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
             go.transform.SetParent(glyphRow, false);
@@ -160,8 +174,8 @@ namespace Game.Tutorial
             img.preserveAspect = true;
 
             var le = go.GetComponent<LayoutElement>();
-            le.preferredWidth = glyphSize;
-            le.preferredHeight = glyphSize;
+            le.preferredWidth = size;
+            le.preferredHeight = size;
 
             _chips.Add(go);
         }
@@ -201,6 +215,36 @@ namespace Game.Tutorial
 
             var tmp = go.GetComponent<TextMeshProUGUI>();
             tmp.text = "[" + text + "]";
+            tmp.fontSize = fontSize * 0.875f;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = descriptionColor;
+            if (font != null) tmp.font = font;
+
+            var le = go.GetComponent<LayoutElement>();
+            le.minHeight = glyphSize;
+
+            _chips.Add(go);
+        }
+
+        private void CreateSpacerChip(float width)
+        {
+            var go = new GameObject("Spacer", typeof(RectTransform), typeof(LayoutElement));
+            go.transform.SetParent(glyphRow, false);
+
+            var le = go.GetComponent<LayoutElement>();
+            le.preferredWidth = width > 0f ? width : 24f;
+            le.minHeight = glyphSize;
+
+            _chips.Add(go);
+        }
+
+        private void CreateLabelChip(string text)
+        {
+            var go = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            go.transform.SetParent(glyphRow, false);
+
+            var tmp = go.GetComponent<TextMeshProUGUI>();
+            tmp.text = text;
             tmp.fontSize = fontSize * 0.875f;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = descriptionColor;
