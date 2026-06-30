@@ -150,6 +150,7 @@ public class BossClawAttack : MonoBehaviour
     private void Start()
     {
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        BossSfx.Make3D(_sfxSource);
         SaveIdlePositions();
         if (clawCollider != null)
         {

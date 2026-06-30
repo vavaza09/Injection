@@ -38,10 +38,6 @@ public class Enemy : character
     [SerializeField] private float stunBlinkInterval = 0.12f;
     [SerializeField] private GameObject stunVfxPrefab;
 
-    [Header("Death")]
-    [Tooltip("Small delay (seconds) before the death SFX plays.")]
-    [SerializeField] private float deathSoundDelay = 0.1f;
-
     private float _stunEndTime;
     private bool _stunVisualsActive;
     private Coroutine _stunBlinkRoutine;
@@ -54,6 +50,14 @@ public class Enemy : character
 
     public virtual bool SpriteFacesLeft => false;
 
+    protected static void Make3D(AudioSource src)
+    {
+        if (src == null) return;
+        src.spatialBlend = 1f;
+        src.rolloffMode  = AudioRolloffMode.Linear;
+        src.minDistance  = 1f;
+        src.maxDistance  = 30f;
+    }
 
     protected override void Start()
     {
@@ -219,10 +223,7 @@ public class Enemy : character
 
     protected override void OnDeath()
     {
-        // Play the death SFX globally (not on this enemy's own AudioSource) so it
-        // isn't cut off when the GameObject is destroyed by the death/explosion FX.
-        // Delayed via SoundManager's own coroutine so the wait survives this object's destruction.
-        SoundManager.PlaySoundDelayed(SoundType.ENEMY_DEATH, deathSoundDelay);
+        // Death SFX is now fired by EnemyDeathExplosion at the moment of explosion.
 
         _stunVisualsActive = false;
 

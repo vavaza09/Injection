@@ -8,6 +8,10 @@ public class FurnaceProjectile : MonoBehaviour
     public Vector2 hitboxSize = new Vector2(1.5f, 1.5f);
     public float damageAmount = 1f;
 
+    [Header("Knockback")]
+    [SerializeField] private float knockbackForce   = 8f;
+    [SerializeField] private float knockbackUpward  = 0.5f;
+
     [Header("Ground Shadow")]
     [SerializeField] private float shadowMaxRadius = 1.0f;
     [SerializeField] private float shadowMinRadius = 0.15f;
@@ -142,8 +146,8 @@ public class FurnaceProjectile : MonoBehaviour
             {
                 if (hitPlayer != null) break;
                 hitPlayer = col.GetComponentInParent<Player>();
-                if (hitPlayer != null)
-                    hitPlayer.TakeDamage(damageAmount);
+                if (hitPlayer != null && hitPlayer.TakeDamage(damageAmount))
+                    hitPlayer.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
             }
             SpawnExplosionEffect(impactPosition, _explosionRadius);
             Destroy(gameObject);
@@ -166,7 +170,8 @@ public class FurnaceProjectile : MonoBehaviour
         if (player == null)
             return;
 
-        player.TakeDamage(damageAmount);
+        if (player.TakeDamage(damageAmount))
+            player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
         hasDamagedPlayer = true;
     }
 

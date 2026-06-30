@@ -17,6 +17,15 @@ public abstract class BossBase : MonoBehaviour
     public static event System.Action Defeated;
 
     public float HealthPercent => maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
+
+    protected static void Make3D(AudioSource src, float maxDist = 40f)
+    {
+        if (src == null) return;
+        src.spatialBlend = 1f;
+        src.rolloffMode  = AudioRolloffMode.Linear;
+        src.minDistance  = 1f;
+        src.maxDistance  = maxDist;
+    }
     public bool IsPlayerCurrentlyInRange => _wasPlayerInRange;
 
     protected void RaiseHealthChanged() => HealthChanged?.Invoke(HealthPercent);

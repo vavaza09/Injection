@@ -30,6 +30,10 @@ public class StompEnemy : Enemy
     [SerializeField] private GameObject shadowObject;
     [SerializeField] private Vector3 minShadowScale = new Vector3(2.8f, 0.5f, 1f);
 
+    [Header("Air Contact Knockback")]
+    [SerializeField] private float knockbackForce  = 10f;
+    [SerializeField] private float knockbackUpward = 0.3f;
+
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
@@ -58,6 +62,7 @@ public class StompEnemy : Enemy
         base.Awake();
         anim = GetComponent<Animator>();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
 
         if (groundLayer == 0)
             groundLayer = LayerMask.GetMask("Ground", "Platform");
@@ -121,7 +126,8 @@ public class StompEnemy : Enemy
             Player player = PlayerCollider.GetComponentInParent<Player>();
             if (player != null)
             {
-                player.TakeDamage(airContactDamage);
+                if (player.TakeDamage(airContactDamage))
+                    player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
                 _airContactHasHit = true;
             }
         }

@@ -47,4 +47,13 @@ public static class BossSfx
         yield return new WaitForSeconds(delay);
         SoundManager.PlaySoundOn(sound, source, vol);
     }
+
+    public static void Make3D(AudioSource src, float maxDist = 40f)
+    {
+        if (src == null) return;
+        src.spatialBlend = 1f;
+        src.rolloffMode  = AudioRolloffMode.Linear;
+        src.minDistance  = 1f;
+        src.maxDistance  = maxDist;
+    }
 }

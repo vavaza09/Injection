@@ -68,6 +68,8 @@ public class BossGasAttack : MonoBehaviour
     private void Start()
     {
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        BossSfx.Make3D(_sfxSource);
+        BossSfx.Make3D(_gasLoopSource);
         if (fanAnchor != null)
         {
             _fanAnimator = fanAnchor.GetComponent<Animator>();

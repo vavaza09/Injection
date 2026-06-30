@@ -53,7 +53,7 @@ public class BossJunk : MonoBehaviour
         _damage     = damage;
 
         _sfxSource = gameObject.AddComponent<AudioSource>();
-        _sfxSource.spatialBlend = 0f;
+        BossSfx.Make3D(_sfxSource);
 
         SetupVisual();
         SetupShadow();

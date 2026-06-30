@@ -44,6 +44,10 @@ public class FurnaceEnemy : Enemy
 
     public override bool SpriteFacesLeft => invertFacing;
 
+    [Header("Knockback")]
+    [SerializeField] private float knockbackForce  = 8f;
+    [SerializeField] private float knockbackUpward = 0.3f;
+
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
@@ -56,6 +60,7 @@ public class FurnaceEnemy : Enemy
     {
         base.Awake();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
     }
     protected override void Start() => base.Start();
     protected override void Update() => base.Update();
@@ -248,7 +253,12 @@ public class FurnaceEnemy : Enemy
         foreach (var col in hits)
         {
             Player p = col.GetComponentInParent<Player>();
-            if (p != null) { p.TakeDamage(explosionDamage); break; }
+            if (p != null)
+            {
+                if (p.TakeDamage(explosionDamage))
+                    p.ApplyKnockback(impactPos, knockbackForce, knockbackUpward);
+                break;
+            }
         }
     }
 
