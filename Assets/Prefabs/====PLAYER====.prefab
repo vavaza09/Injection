@@ -103,6 +103,90 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &749875810964583805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 918592111538089172}
+  - component: {fileID: 6869703510119270459}
+  m_Layer: 0
+  m_Name: EMP_ReadyLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &918592111538089172
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749875810964583805}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4782564417429803577}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6869703510119270459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749875810964583805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.Light2D
+  m_ComponentVersion: 2
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeEnabled: 0
+  m_ApplyToSortingLayers: 0000000039050000d1bee715
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowsEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowSoftness: 0.3
+  m_ShadowSoftnessFalloffIntensity: 0.5
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &1344462908036067775
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,10 +427,11 @@ MonoBehaviour:
   hideWhileDashing: 1
   orbitRadius: 0
   angleOffset: 0
+  arrowScale: 1
   orbitSmoothSpeed: 28
   useUnscaledTime: 1
-  useArrowAnchorAsRingAttachPoint: 1
   autoCreateRingImage: 1
+  ringRadius: 0
   ringResolution: 128
   ringThickness: 6.9
   ringCanDashColor: {r: 1, g: 1, b: 1, a: 0.2}
@@ -373,6 +458,7 @@ GameObject:
   - component: {fileID: 1234567890123456789}
   - component: {fileID: 8086246394040665203}
   - component: {fileID: 3733719893120945035}
+  - component: {fileID: 6680487279338927380}
   m_Layer: 10
   m_Name: ====PLAYER====
   m_TagString: Player
@@ -396,6 +482,10 @@ Transform:
   - {fileID: 5517287351408820096}
   - {fileID: 2301711623423801022}
   - {fileID: 131266698191603028}
+  - {fileID: 918592111538089172}
+  - {fileID: 7319405104804506474}
+  - {fileID: 378256009747393520}
+  - {fileID: 645405626485326557}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2308052940577961938
@@ -572,9 +662,13 @@ MonoBehaviour:
   dashAnimDownThreshold: -0.5
   animator: {fileID: 519027211526569210}
   invincibilityDuration: 2
+  enableHealthRegen: 1
+  regenDelay: 5
+  regenInterval: 1
   attackStateDuration: 0.5
   dashImpact: {fileID: 0}
   movementVFX: {fileID: 0}
+  _damageFeedback: {fileID: 0}
   invincibilityBlinkInterval: 0.1
 --- !u!114 &9206611309243768537
 MonoBehaviour:
@@ -643,6 +737,7 @@ MonoBehaviour:
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
   wallJumpLockTime: 0.15
+  sameWallLockTime: 0.35
   wallCheckSize: {x: 0.2, y: 0.8}
   wallCheckOffset: {x: 0.73, y: 0}
   climbableLayer:
@@ -657,6 +752,7 @@ MonoBehaviour:
   grabLaunchMinMultiplier: 0.6
   grabLaunchMaxMultiplier: 1.4
   autoGrab: 1
+  grabLeapDuration: 0.1
   airAnimSpeedThreshold: 1
   canMove: 1
   enableWallDashRefresh: 1
@@ -675,14 +771,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDashImpact
   dashImpactBaseDamage: 15
   dashImpactCooldown: 0.15
-  dashDamageLayer:
+  dashCastRadius: 0.5
+  enemyDetectionLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   hitstopDuration: 1
   hitstopTimeScale: 0.2
   dashAttackFreezeDuration: 0.2
   weakPointShakeIntensity: 0.1
-  bounceForce: 80
+  bounceForceH: 80
+  bounceForceV: 200
   bounceUpwardBias: 0.2
 --- !u!114 &4885150918750639098
 MonoBehaviour:
@@ -702,6 +800,7 @@ MonoBehaviour:
   invincibleKey: 97
   reviveKey: 98
   invincibilityDuration: 5
+  killBossKey: 101
 --- !u!114 &1234567890123456789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -718,10 +817,11 @@ MonoBehaviour:
   empStunDuration: 3
   empCooldown: 8
   empEnergyCost: 1
+  empVFXPrefab: {fileID: 0}
+  empVfxBurstWindow: 4
+  empVfxLifetime: 2
   trueDamageCooldown: 5
   trueDamageEnergyCost: 1
-  empFlashColor: {r: 0.2, g: 0.6, b: 1, a: 1}
-  empFlashDuration: 0.15
   trueDamageArmedColor: {r: 1, g: 0.5, b: 0.1, a: 1}
 --- !u!114 &8086246394040665203
 MonoBehaviour:
@@ -748,3 +848,199 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2e9322b40429f4384642855a452dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Characters.Player.PlayerFootstepRelay
+--- !u!114 &6680487279338927380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109858379891773928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a217653cbb97c445ad915c72758d690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillReadyVolume
+  empVolume: {fileID: 5730316867226954671}
+  trueDamageVolume: {fileID: 2602728390973034629}
+--- !u!1 &7661275362959438712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 378256009747393520}
+  - component: {fileID: 5730316867226954671}
+  m_Layer: 0
+  m_Name: EMP_SkillVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &378256009747393520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7661275362959438712}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4782564417429803577}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5730316867226954671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7661275362959438712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 4eac4a50286c5fd44b7ec72c8e649409, type: 2}
+--- !u!1 &7752297037108244379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7319405104804506474}
+  - component: {fileID: 8166910198545203848}
+  m_Layer: 0
+  m_Name: TrueDamage_ReadyLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7319405104804506474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7752297037108244379}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4782564417429803577}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8166910198545203848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7752297037108244379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.Light2D
+  m_ComponentVersion: 2
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeEnabled: 0
+  m_ApplyToSortingLayers: 0000000039050000d1bee715
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowsEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowSoftness: 0.3
+  m_ShadowSoftnessFalloffIntensity: 0.5
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
+--- !u!1 &8221055258980946538
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 645405626485326557}
+  - component: {fileID: 2602728390973034629}
+  m_Layer: 0
+  m_Name: TrueDamage_SkillVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &645405626485326557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8221055258980946538}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4782564417429803577}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2602728390973034629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8221055258980946538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: b2569865a273265419986a189dd99e31, type: 2}
