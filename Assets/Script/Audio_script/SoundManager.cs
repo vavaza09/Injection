@@ -618,8 +618,8 @@ public struct SoundList
     [SerializeField] public string name;
     [SerializeField] private AudioClip[] sounds;
 
-    [Range(0f, 1f)]
-    [SerializeField] public float volume;       // 0 = use default (1.0)
+    [Range(0f, 10f)]
+    [SerializeField] public float volume;       // 0 = use default 
 
     [Range(-24f, 12f)]
     [Tooltip("Per-sound boost in dB on top of volume. 0 = no change, +dB amplifies. " +
@@ -643,14 +643,14 @@ public struct SceneAudio
     [Tooltip("Scene asset name — must match exactly (case-sensitive).")]
     public string sceneName;
     public MusicType music;
-    [Range(0f, 1f)]
+    [Range(0f, 5f)]
     [Tooltip("Music volume for this scene. 0 = use the SoundManager default.")]
     public float musicVolume;
     [Tooltip("OnSceneLoad: music starts when the scene opens. OnPlayerTrigger: music waits for a MusicZoneTrigger collider.")]
     public MusicStartMode musicStart;
     [Tooltip("Optional looping ambient bed for this scene. Leave empty for none.")]
     public AudioClip ambient;
-    [Range(0f, 1f)]
+    [Range(0f, 5f)]
     [Tooltip("Ambient volume. 0 = full.")]
     public float ambientVolume;
 }
