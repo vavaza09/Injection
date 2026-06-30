@@ -155,8 +155,13 @@ public class SoundManager : MonoBehaviour
         for (int i = 2; i < allSources.Length; i++)
             Destroy(allSources[i]);
 
+        sfxSource.spatialBlend = 0f;     // force 2D — player SFX must not spatialize (same bug as music above)
+        sfxSource.panStereo = 0f;
+
         _footstepSource = gameObject.AddComponent<AudioSource>();
         _footstepSource.playOnAwake = false;
+        _footstepSource.spatialBlend = 0f;
+        _footstepSource.panStereo = 0f;
 
         _ambientSource = gameObject.AddComponent<AudioSource>();
         _ambientSource.loop = true;
@@ -170,6 +175,7 @@ public class SoundManager : MonoBehaviour
             var src = gameObject.AddComponent<AudioSource>();
             src.loop = true;
             src.playOnAwake = false;
+            src.spatialBlend = 0f;       // player loop SFX (wall slide etc.) are 2D
             _loopPool[i] = src;
         }
 
