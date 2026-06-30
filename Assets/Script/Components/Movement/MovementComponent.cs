@@ -400,6 +400,8 @@ namespace Game.Components.Movement
         {
             if (_movementHalted)
             {
+                // TEMP DIAGNOSTIC
+                if (rb != null && rb.linearVelocity.y > 5f) Debug.Log($"[UpdateMovement] HALTED zeroed vel was {rb.linearVelocity:F1}");
                 if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
@@ -492,6 +494,8 @@ namespace Game.Components.Movement
 
             if (isCaptured)
             {
+                // TEMP DIAGNOSTIC
+                if (rb != null && rb.linearVelocity.y > 5f) Debug.Log($"[UpdateMovement] CAPTURED zeroed vel was {rb.linearVelocity:F1}");
                 if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
@@ -500,15 +504,23 @@ namespace Game.Components.Movement
             {
                 _stunTimer -= Time.deltaTime;
                 if (_stunTimer < 0f) _stunTimer = 0f;
+                // TEMP DIAGNOSTIC
+                if (rb != null && rb.linearVelocity.y > 5f) Debug.Log($"[UpdateMovement] STUN zeroed vel was {rb.linearVelocity:F1}");
                 if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
 
             if (_isDashAttacking)
             {
+                // TEMP DIAGNOSTIC
+                if (rb != null && rb.linearVelocity.y > 5f) Debug.Log($"[UpdateMovement] DASH_ATTACK zeroed vel was {rb.linearVelocity:F1}");
                 if (rb != null) rb.linearVelocity = Vector2.zero;
                 return;
             }
+
+            // TEMP DIAGNOSTIC — log velocity before jump/slope processing if it looks like a bounce
+            if (rb != null && _bounceKnockbackLockTimer > 0f && rb.linearVelocity.y > 5f)
+                Debug.Log($"[UpdateMovement] post-checks vel={rb.linearVelocity:F1} isGrounded={isGrounded} bounceKnockLock={_bounceKnockbackLockTimer:F3}");
 
             UpdateJumpState();
             ApplyGroundedSlopeMovement();
@@ -944,6 +956,9 @@ namespace Game.Components.Movement
             }
 
             Vector2 velocity = rb.linearVelocity;
+            // TEMP DIAGNOSTIC
+            if (velocity.y > 5f && Mathf.Min(velocity.y, varJumpSpeed) < velocity.y)
+                Debug.Log($"[VarJumpHold] capping vel.y {velocity.y:F1} → {varJumpSpeed:F1}");
             velocity.y = Mathf.Min(velocity.y, varJumpSpeed);
             rb.linearVelocity = velocity;
             varJumpTimer -= deltaTime;
@@ -1105,6 +1120,8 @@ namespace Game.Components.Movement
                     slopeVel.y -= gap / dt;
             }
 
+            // TEMP DIAGNOSTIC
+            if (rb.linearVelocity.y > 5f) Debug.Log($"[SlopeSnap] overwriting vel {rb.linearVelocity:F1} → {slopeVel:F1}");
             rb.linearVelocity = slopeVel;
         }
 
@@ -1443,6 +1460,9 @@ namespace Game.Components.Movement
         {
             if (rb == null || characterTransform == null) return;
 
+            // Bounce has higher priority — preserve the rebound velocity during its window.
+            if (_bounceKnockbackLockTimer > 0f) return;
+
             float dir = Mathf.Sign(characterTransform.position.x - sourcePosition.x);
             if (dir == 0f)
                 dir = characterTransform.localScale.x >= 0f ? 1f : -1f;
@@ -1485,7 +1505,7 @@ namespace Game.Components.Movement
         // Stops the running dash coroutine so its end-of-dash velocity write never fires,
         // then sets velocity to -dashDir (+ optional upward pop) scaled by dash momentum.
         // The knockback lock window suppresses Move() braking so the bounce carries.
-        public void BounceFromDashImpact(float force, float upwardBias)
+        public void BounceFromDashImpact(float forceH, float forceV, float upwardBias)
         {
             if (rb == null) return;
 
@@ -1505,11 +1525,19 @@ namespace Game.Components.Movement
             _dashHandler?.ForceEndDash();
             _wasDashingLastFrame = false;
 
-            Vector2 bounceDir = (-dashDir + Vector2.up * UpSign * upwardBias).normalized;
-            rb.linearVelocity = bounceDir * (force * multiplier);
+            Vector2 bounceDir = (-dashDir + Vector2.up * upwardBias).normalized;
+            Vector2 finalVel = new Vector2(bounceDir.x * forceH, bounceDir.y * forceV) * multiplier;
+            rb.linearVelocity = finalVel;
+
+            // TEMP DIAGNOSTIC — remove after bug is identified
+            Debug.Log($"[BounceFromDashImpact] dashDir={dashDir:F3} bounceDir={bounceDir:F3} finalVel={finalVel:F1} isGrounded={isGrounded} multiplier={multiplier:F2}");
 
             _bounceKnockbackLockTimer = knockbackLockTime;
+            _snapSuppressTimer = postJumpSnapSuppressTime;
             _postDashAirBrakeTimer = 0f;
+            // Clear any pending jump-hold state so the bounce velocity isn't capped by ApplyVariableJumpHold
+            varJumpTimer = 0f;
+            autoJump = false;
             ResetWallSlideState();
             isGrabbing = false;
             _isLeapingToGrab = false;
@@ -1595,6 +1623,8 @@ namespace Game.Components.Movement
 
             if (carryingUpward && !steeringUpward)
             {
+                // TEMP DIAGNOSTIC
+                if (rb.linearVelocity.y > 5f) Debug.Log($"[CancelUpwardCarry] killing upward vel {rb.linearVelocity.y:F1}");
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             }
         }

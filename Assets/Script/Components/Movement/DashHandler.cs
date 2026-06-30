@@ -36,6 +36,7 @@ namespace Game.Components.Movement
         private bool _isDashing;
         private bool _dashStartedOnGround;
         private float _dashSpeedMultiplier = 1f;
+        private bool _dashCancelled;
 
         public bool IsDashing => _isDashing;
         public bool DashAttacking => _dashAttackTimer > 0;
@@ -67,6 +68,7 @@ namespace Game.Components.Movement
             }
 
             _isDashing = true;
+            _dashCancelled = false;
             _dashStartedOnGround = isGrounded;
             _currentDashes = Mathf.Max(0, _currentDashes - 1);
 
@@ -97,6 +99,10 @@ namespace Game.Components.Movement
             yield return new WaitForSeconds(_settings.dashTime);
 
             _isDashing = false;
+
+            // ForceEndDash was called (bounce/freeze took over) — skip the velocity write.
+            if (_dashCancelled)
+                yield break;
 
             Vector2 endVelocity = BuildEndVelocity();
 
@@ -179,12 +185,12 @@ namespace Game.Components.Movement
         }
 
         // Hard-stop the dash flag and attack window without touching velocity.
-        // Used by BounceFromDashImpact so the caller can set its own velocity immediately
-        // and the dash coroutine's end-of-dash velocity write never runs.
+        // Sets _dashCancelled so the still-running DashCoroutine skips its velocity write.
         public void ForceEndDash()
         {
             _isDashing = false;
             _dashAttackTimer = 0f;
+            _dashCancelled = true;
         }
 
         // Combo refresh: makes the dash available again immediately without touching _isDashing or
