@@ -155,8 +155,8 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 36a32e23dcee08943beb16024a30e0ff, type: 3}
     - {fileID: 8300000, guid: 120fa56a6a41deb47b1454022926b663, type: 3}
-    volume: 0.7
-    boostDb: 0
+    volume: 0.57
+    boostDb: 4.2
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -164,7 +164,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 8faa4f0e64c2bf74dbdb6a4c680103e9, type: 3}
     volume: 0.3
-    boostDb: 0
+    boostDb: 3.3
     pitchMin: 0.77
     pitchMax: 1.04
     loop: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4ea10d8fe3d1d454a838ba6b885f54a7, type: 3}
     - {fileID: 8300000, guid: ed435233539fef440857798b1857c99b, type: 3}
     - {fileID: 8300000, guid: 5f970a3ef6ceabb45bece43016a1773d, type: 3}
-    volume: 0.25
+    volume: 0.24
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.603
@@ -305,7 +305,7 @@ MonoBehaviour:
   - name: KIKI_ATTACK_WINDUP
     sounds:
     - {fileID: 8300000, guid: 552610755c560344a9c3fab9333d6278, type: 3}
-    volume: 0.9
+    volume: 0.6
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.716
@@ -384,7 +384,7 @@ MonoBehaviour:
   - name: FURNACE_MORTAR_LAUNCH
     sounds:
     - {fileID: 8300000, guid: 5688cfc05e88c7a4ea84ab5819ec1287, type: 3}
-    volume: 0.4
+    volume: 0.5
     boostDb: 0
     pitchMin: 0.587
     pitchMax: 1.103
@@ -612,7 +612,7 @@ MonoBehaviour:
     music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: GAMEOVER
     music: {fileID: 0}
-  musicVolume: 0.09616426
+  musicVolume: 0.11938836
   musicFadeDuration: 1.5
   loopPoolSize: 8
   sceneAudio:
@@ -624,19 +624,19 @@ MonoBehaviour:
     ambientVolume: 0
   - sceneName: 2_Under_City_One
     music: 1
-    musicVolume: 0.07
+    musicVolume: 0.08
     musicStart: 0
     ambient: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
     ambientVolume: 0.05
   - sceneName: 3_Under_City_Two
     music: 1
-    musicVolume: 0.22
+    musicVolume: 0.45
     musicStart: 1
     ambient: {fileID: 0}
     ambientVolume: 0.073
   - sceneName: Room_Boss
     music: 2
-    musicVolume: 0.41
+    musicVolume: 0.45
     musicStart: 1
     ambient: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
     ambientVolume: 0.073
