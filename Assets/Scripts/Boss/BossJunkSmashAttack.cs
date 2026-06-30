@@ -99,6 +99,7 @@ public class BossJunkSmashAttack : MonoBehaviour
     private void Start()
     {
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        BossSfx.Make3D(_sfxSource);
         // Capture idle positions exactly once — CLAUDE.md constraint.
         _idleHammerPos = hammerLeftIKTarget != null ? hammerLeftIKTarget.position : Vector3.zero;
         _idleClawPos   = clawRightIKTarget  != null ? clawRightIKTarget.position  : Vector3.zero;

@@ -108,6 +108,7 @@ public class BossHammerAttack : MonoBehaviour
     private void Start()
     {
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        BossSfx.Make3D(_sfxSource);
         SaveIdlePositions();
         if (hammerCollider != null) hammerCollider.SetActive(false);
     }

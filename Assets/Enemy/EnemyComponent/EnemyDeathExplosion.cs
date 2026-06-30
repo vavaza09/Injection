@@ -92,6 +92,8 @@ public class EnemyDeathExplosion : MonoBehaviour
         // Phase 3: Explosion animation + body parts launch simultaneously
         Vector3 origin = transform.position;
 
+        SoundManager.PlaySound(SoundType.ENEMY_DEATH);
+
         // Spawn body parts immediately when explosion fires
         if (bodyPartSprites != null)
         {

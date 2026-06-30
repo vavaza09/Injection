@@ -62,6 +62,7 @@ public class BossDeathSequence : MonoBehaviour
         // ── Setup ─────────────────────────────────────────────────────────────
 
         if (sfxSource == null) sfxSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        BossSfx.Make3D(sfxSource);
         SoundManager.PlaySoundOn(SoundType.BOSS_DEATH, sfxSource);
 
         var idle = GetComponent<BossIdleAnimation>();

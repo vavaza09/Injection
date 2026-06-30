@@ -37,6 +37,10 @@ public class KikiEnemy : Enemy
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
+    [Header("Knockback")]
+    [SerializeField] private float knockbackForce  = 8f;
+    [SerializeField] private float knockbackUpward = 0.4f;
+
     [Header("Headbutt Aim")]
     [SerializeField] private bool  aimHeadAtPlayer = true;
     [Tooltip("Calibrate to the sprite's head-forward direction (degrees). Tune live in editor.")]
@@ -61,6 +65,7 @@ public class KikiEnemy : Enemy
         _spawnCenter = transform.position;
         _anim = GetComponentInChildren<Animator>();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
     }
 
     protected override void Start()
@@ -318,7 +323,8 @@ public class KikiEnemy : Enemy
             character ch = hit.GetComponentInParent<character>();
             if (ch is Player)
             {
-                ch.TakeDamage(attackDamage);
+                if (ch.TakeDamage(attackDamage))
+                    (ch as Player)?.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
                 _hasDamaged = true;
                 SoundManager.PlaySoundOn(SoundType.KIKI_ATTACK_HIT, _sfxSource);
                 if (_anim != null) _anim.speed = 1f;

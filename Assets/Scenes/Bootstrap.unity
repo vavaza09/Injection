@@ -1152,6 +1152,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 115910579}
     m_Modifications:
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: audioFadeIn
+      value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: audioFadeOut
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: vignettePeak
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: vignetteFadeIn
+      value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: vignetteFadeOut
+      value: 0.45
+      objectReference: {fileID: 0}
     - target: {fileID: 2585259648304670452, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: maxJumps
       value: 1
@@ -1207,6 +1227,10 @@ PrefabInstance:
     - target: {fileID: 6111057636079140435, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802284921488119621, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: detectRadius
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: bounceForce

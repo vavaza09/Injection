@@ -416,7 +416,35 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6802284921488119621}
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2474572027279144426}
+    - targetCorrespondingSourceObject: {fileID: 298528245570665569, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1436469220477857360}
   m_SourcePrefab: {fileID: 100100000, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+--- !u!1 &297466834211509210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 298528245570665569, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+  m_PrefabInstance: {fileID: 1202152371122107}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1436469220477857360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297466834211509210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Postprocessing.Runtime::UnityEngine.Rendering.PostProcessing.PostProcessVolume
+  sharedProfile: {fileID: 0}
+  isGlobal: 0
+  blendDistance: 0
+  weight: 1
+  priority: 0
 --- !u!224 &504866371227959338 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 506056908665171857, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -508,3 +536,26 @@ MonoBehaviour:
   player: {fileID: 2585259648304670452}
   focusMarkerPrefab: {fileID: 8604236926169184982, guid: 620323d8ab557804fb124abd9b846fa8, type: 3}
   detectRadius: 8
+--- !u!114 &2474572027279144426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc47a0a56ddf904ab9991ef976777b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageFeedback
+  shakeIntensity: 0.4
+  shakeDuration: 0.25
+  muffledCutoff: 700
+  normalCutoff: 22000
+  audioFadeIn: 0.08
+  audioFadeOut: 0.3
+  duckMultiplier: 0.35
+  vignettePeak: 0.55
+  vignetteFadeIn: 0.08
+  vignetteFadeOut: 0.4
+  volumeOverride: {fileID: 0}
