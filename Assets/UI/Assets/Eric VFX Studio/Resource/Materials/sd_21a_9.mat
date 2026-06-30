@@ -72,6 +72,7 @@ Material:
     - _Usecenterglow: 0
     - _Usecustomrandom: 0
     - _Usedepth: 0
+    - _VertexAlphaRef: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveEdgeColor: {r: 1, g: 0, b: 0, a: 1}
@@ -83,3 +84,4 @@ Material:
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0, a: 0}
     - _TintColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 0.5019608}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

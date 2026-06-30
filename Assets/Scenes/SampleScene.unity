@@ -297,6 +297,7 @@ Rigidbody2D:
   m_Constraints: 4
 --- !u!212 &239740362
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -315,6 +316,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -336,9 +339,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -8804577451312863447, guid: af13a060c97d01244877394727a08cd3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -347,8 +352,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &239740363
 Transform:
@@ -537,6 +541,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &274742800
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -555,6 +560,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -576,9 +583,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -588,7 +597,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &519420028
 GameObject:
@@ -641,7 +649,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -654,7 +662,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -662,6 +669,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -811,17 +819,411 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 0c1d290e91a7f1b48ae4f05e4254949e, type: 3}
     - {fileID: 8300000, guid: cb91f571429c58e46a76c28649eb3217, type: 3}
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: DASH
     sounds:
     - {fileID: 8300000, guid: 6c454964627fe31448e02dcb78fabd9a, type: 3}
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: JUMP
     sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: FOOTSTEP
     sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FOOTSTEP_METAL
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: HURT
     sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: MAGIC
     sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: HITSTOP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: DEATH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: LAND
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: GRAB
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENERGY
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: EMP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TRUEDAMAGE_ARM
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TRUEDAMAGE_CONSUME
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: SLOWMO
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: WALLSLIDE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENEMY_HURT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: ENEMY_DEATH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: KIKI_FLOAT_IDLE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: KIKI_ATTACK_WINDUP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: KIKI_ATTACK_DASH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: KIKI_ATTACK_HIT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_MOTOR
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_FOOTSTEP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_CANNON_CHARGE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_CANNON_FIRE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: TANK_BULLET_FLY
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_IDLE_CRACKLE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_ATTACK_CHARGE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_MORTAR_LAUNCH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_MORTAR_ASCENDING
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_MORTAR_DESCENDING
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: FURNACE_EXPLOSION
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: STOMPER_IDLE_CHITTER
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: STOMPER_WALK_SCUTTLE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: STOMPER_JUMP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: STOMPER_FALL_RUSH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: STOMPER_STOMP_IMPACT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_AMBIENT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HURT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_DEATH
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_CLAW_ANTICIPATION
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_CLAW_STRIKE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_CLAW_IMPACT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_CLAW_RETRACT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HAMMER_WINDUP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HAMMER_SWING
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HAMMER_IMPACT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_HAMMER_RECOVER
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_GAS_RELEASE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_GAS_LOOP
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_WEAKPOINT_REVEAL
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_WEAKPOINT_CLOSE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_JUNK_FALL
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: BOSS_JUNK_IMPACT
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: UI_HOVER
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: UI_CLICK
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   musicList:
   - name: MENU
     music: {fileID: 0}
@@ -835,6 +1237,8 @@ MonoBehaviour:
     music: {fileID: 0}
   musicVolume: 0.4
   musicFadeDuration: 1
+  loopPoolSize: 8
+  sceneAudio: []
 --- !u!82 &548993900
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1272,6 +1676,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1051993097
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1290,6 +1695,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1311,9 +1718,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1323,7 +1732,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1191555962
 GameObject:
@@ -1481,6 +1889,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1425852614
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1499,6 +1908,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1520,9 +1931,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1532,7 +1945,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1520786932
 GameObject:
@@ -1615,6 +2027,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1520786935
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1633,6 +2046,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1654,9 +2069,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1666,7 +2083,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1523242436
 GameObject:
@@ -1968,8 +2384,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747713f608514f34285d208df8934cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomVcam: {fileID: 0}
   roomAnchor: {fileID: 1537702880}
   _roomOrthoSize: 7
+  zoomDuration: 0.4
+  panDuration: 2
+  targetEnemies: []
+  walls: []
+  impactVfxPrefab: {fileID: 0}
+  impactVfxRadius: 2
+  shakeIntensity: 0.6
+  shakeDuration: 0.3
 --- !u!1 &1604862512
 GameObject:
   m_ObjectHideFlags: 0
@@ -2166,6 +2591,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1855674404
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2184,6 +2610,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2205,9 +2633,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2217,7 +2647,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1857243799
 GameObject:
@@ -2285,6 +2714,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1857243801
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2303,6 +2733,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2324,9 +2756,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2336,7 +2770,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1857243802
 Transform:

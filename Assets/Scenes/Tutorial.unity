@@ -155,6 +155,10 @@ MonoBehaviour:
   abilityToUnlock: skill1
   barriers: []
   skill: 0
+  dummy: {fileID: 0}
+  aiBehaviour: {fileID: 0}
+  makeDummyImmortal: 0
+  keepDummyActiveOnComplete: 0
 --- !u!4 &122011385
 Transform:
   m_ObjectHideFlags: 0
@@ -394,6 +398,10 @@ MonoBehaviour:
   abilityToUnlock: skill2
   barriers: []
   skill: 1
+  dummy: {fileID: 0}
+  aiBehaviour: {fileID: 0}
+  makeDummyImmortal: 0
+  keepDummyActiveOnComplete: 0
 --- !u!4 &172051970
 Transform:
   m_ObjectHideFlags: 0
@@ -620,8 +628,19 @@ MonoBehaviour:
   energyAmount: 1
   respawnSeconds: 30
   glowRoot: {fileID: 0}
+  _spotLight: {fileID: 0}
   pulseSpeed: 2
   pulseAmount: 0.25
+  outlineTarget: {fileID: 0}
+  outlineShader: {fileID: 0}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineSize: 2
+  outlineAlphaThreshold: 0.5
+  proximityRadius: 1.5
+  colliderOffset: {x: 0, y: 0}
+  glowOffset: {x: 0, y: 0}
+  glowScale: 1.5
+  _interactPrompt: {fileID: 0}
 --- !u!58 &279150768
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -652,12 +671,12 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 1.5
 --- !u!4 &279150769
 Transform:
   m_ObjectHideFlags: 0
@@ -873,9 +892,15 @@ MonoBehaviour:
     gamepadLabel: RB
     keyboardSprite: {fileID: -8387302115945079765, guid: 0fff65debe06e5942926cad6d50f63ce, type: 3}
     gamepadSprite: {fileID: 4249578791139060025, guid: bb0357b70cb3bfa45969ef56ed6604ab, type: 3}
+  font: {fileID: 0}
   descriptionColor: {r: 1, g: 1, b: 1, a: 1}
   successColor: {r: 0.4, g: 1, b: 0.5, a: 1}
+  fontSize: 32
   glyphSize: 64
+  panelAnchor: {x: 0.5, y: 0}
+  panelPosition: {x: 0, y: 60}
+  bgColor: {r: 0, g: 0, b: 0, a: 0.55}
+  bgHeight: 130
 --- !u!4 &391827232
 Transform:
   m_ObjectHideFlags: 0
@@ -934,6 +959,11 @@ MonoBehaviour:
   successFeedbackSeconds: 1
   successMessage: Nice!
   completeMessage: Tutorial Complete!
+  startDelay: 0.6
+  warpOnComplete: 1
+  completionDelay: 2
+  nextRoomId: room_a
+  nextSpawnPointId: default
   enableDevSkip: 1
   devSkipKey: 12
 --- !u!4 &392929983
@@ -1232,8 +1262,19 @@ MonoBehaviour:
   energyAmount: 1
   respawnSeconds: 30
   glowRoot: {fileID: 0}
+  _spotLight: {fileID: 0}
   pulseSpeed: 2
   pulseAmount: 0.25
+  outlineTarget: {fileID: 0}
+  outlineShader: {fileID: 0}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineSize: 2
+  outlineAlphaThreshold: 0.5
+  proximityRadius: 1.5
+  colliderOffset: {x: 0, y: 0}
+  glowOffset: {x: 0, y: 0}
+  glowScale: 1.5
+  _interactPrompt: {fileID: 0}
 --- !u!58 &1188481943
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1264,12 +1305,12 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 1.5
 --- !u!4 &1188481944
 Transform:
   m_ObjectHideFlags: 0
@@ -1504,7 +1545,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0

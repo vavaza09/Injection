@@ -27276,11 +27276,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3734118502463726433, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: m_Radius
-      value: 2.3562744
+      value: 2.5129201
       objectReference: {fileID: 0}
     - target: {fileID: 3734118502463726433, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: m_Offset.x
-      value: 1.3813941
+      value: 1.5380399
       objectReference: {fileID: 0}
     - target: {fileID: 3734118502463726433, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: m_Offset.y
@@ -27500,7 +27500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7904882032829883795, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: hammerHitRadius
-      value: 12
+      value: 12.5
       objectReference: {fileID: 0}
     - target: {fileID: 7904882032829883795, guid: 197f7c67efde1f647b293b1ab549f751, type: 3}
       propertyPath: swingSfx.volume
