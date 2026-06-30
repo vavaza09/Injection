@@ -155,8 +155,8 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 36a32e23dcee08943beb16024a30e0ff, type: 3}
     - {fileID: 8300000, guid: 120fa56a6a41deb47b1454022926b663, type: 3}
-    volume: 0.57
-    boostDb: 4.2
+    volume: 0.6
+    boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4ea10d8fe3d1d454a838ba6b885f54a7, type: 3}
     - {fileID: 8300000, guid: ed435233539fef440857798b1857c99b, type: 3}
     - {fileID: 8300000, guid: 5f970a3ef6ceabb45bece43016a1773d, type: 3}
-    volume: 0.24
+    volume: 0.4
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.603
@@ -211,7 +211,7 @@ MonoBehaviour:
   - name: HITSTOP
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    volume: 1
+    volume: 0.75
     boostDb: 0
     pitchMin: 0.549
     pitchMax: 0.668
@@ -290,7 +290,7 @@ MonoBehaviour:
   - name: ENEMY_DEATH
     sounds:
     - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
-    volume: 1.5
+    volume: 1
     boostDb: 0
     pitchMin: 0.76
     pitchMax: 0.9
@@ -384,7 +384,7 @@ MonoBehaviour:
   - name: FURNACE_MORTAR_LAUNCH
     sounds:
     - {fileID: 8300000, guid: 5688cfc05e88c7a4ea84ab5819ec1287, type: 3}
-    volume: 0.5
+    volume: 0.35
     boostDb: 0
     pitchMin: 0.587
     pitchMax: 1.103
@@ -588,7 +588,7 @@ MonoBehaviour:
   - name: UI_HOVER
     sounds:
     - {fileID: 8300000, guid: d0006485e4b301f44914a6840f2445d5, type: 3}
-    volume: 0.893
+    volume: 0.8
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.72
@@ -596,7 +596,7 @@ MonoBehaviour:
   - name: UI_CLICK
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    volume: 0.6
+    volume: 0.4
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.53
@@ -612,7 +612,7 @@ MonoBehaviour:
     music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: GAMEOVER
     music: {fileID: 0}
-  musicVolume: 0.11938836
+  musicVolume: 0.5
   musicFadeDuration: 1.5
   loopPoolSize: 8
   sceneAudio:
