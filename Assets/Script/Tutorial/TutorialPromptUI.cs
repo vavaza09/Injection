@@ -48,11 +48,23 @@ namespace Game.Tutorial
         private PromptEntry[] _keys;
         private bool _showingSuccess;
         private readonly List<GameObject> _chips = new List<GameObject>();
+        private Vector2Int _lastScreenSize;
 
         private void Awake()
         {
             if (label == null || glyphRow == null) BuildDefaultUI();
             if (deviceTracker == null) deviceTracker = FindAnyObjectByType<InputDeviceTracker>();
+            _lastScreenSize = new Vector2Int(Screen.width, Screen.height);
+        }
+
+        private void Update()
+        {
+            var current = new Vector2Int(Screen.width, Screen.height);
+            if (current != _lastScreenSize)
+            {
+                _lastScreenSize = current;
+                if (!_showingSuccess && _keys != null) Render();
+            }
         }
 
         private void OnEnable()
@@ -212,6 +224,10 @@ namespace Game.Tutorial
             var canvasGo = new GameObject("TutorialPromptCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.transform.SetParent(transform, false);
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = canvasGo.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = 0.5f;
 
             // Full-width background strip — Panel lives inside it so position always matches.
             var bgGo = new GameObject("Background", typeof(RectTransform), typeof(Image));
@@ -225,6 +241,7 @@ namespace Game.Tutorial
             _bgImage = bgGo.GetComponent<Image>();
             _bgImage.color = bgColor;
             _bgImage.raycastTarget = false;
+            bgGo.AddComponent<RectMask2D>();
             bgGo.SetActive(false);
 
             // Panel is a child of BG, stretches to fill it — guarantees vertical centering.

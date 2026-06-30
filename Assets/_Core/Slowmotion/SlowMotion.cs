@@ -22,6 +22,8 @@ public class SlowMotion : MonoBehaviour, ISlowMotionController
     private Coroutine _slowMotionCoroutine;
     private Coroutine _hitstopCoroutine;
     private bool _hitstopActive;
+
+    public bool IsHitstopActive => _hitstopActive;
     private float _defaultFixedDeltaTime;
 
     private void Awake()

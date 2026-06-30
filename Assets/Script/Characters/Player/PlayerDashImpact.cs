@@ -24,7 +24,8 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     [SerializeField] private float weakPointShakeIntensity = 0.1f;
 
     [Header("Bounce on Hit")]
-    [SerializeField] private float bounceForce = 80f;
+    [SerializeField] private float bounceForceH = 80f;
+    [SerializeField] private float bounceForceV = 200f;
     [SerializeField] private float bounceUpwardBias = 0.2f;
 
     public event Action ImpactLanded;
@@ -198,7 +199,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                 else
                 {
                     // Armor hit: bounce, no damage; weak point behind is shielded for this dash.
-                    _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+                    _mc?.BounceFromDashImpact(bounceForceH, bounceForceV, bounceUpwardBias);
                 }
                 break;
             }
@@ -231,6 +232,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     {
         _mc?.BeginDashAttackFreeze();
         yield return new WaitForSecondsRealtime(dashAttackFreezeDuration);
-        _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+        yield return new WaitUntil(() => !SlowMotion.Instance.IsHitstopActive);
+        _mc?.BounceFromDashImpact(bounceForceH, bounceForceV, bounceUpwardBias);
     }
 }

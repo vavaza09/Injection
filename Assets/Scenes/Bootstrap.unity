@@ -1236,6 +1236,30 @@ PrefabInstance:
       propertyPath: bounceForce
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: bounceForceH
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: bounceForceV
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: hitstopDuration
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: bounceUpwardBias
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: hitstopTimeScale
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7704000516124548894, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: dashAttackFreezeDuration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 9205411982190735714, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: maxFall
       value: 14
