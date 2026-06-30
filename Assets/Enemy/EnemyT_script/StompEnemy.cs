@@ -229,7 +229,6 @@ public class StompEnemy : Enemy
 
         stompDamageZone?.DisableZone();
         if (shadowObject != null) shadowObject.SetActive(false);
-        IgnorePlayerCollision(false);
         SetSolidCollidersEnabled(true);
 
         if (movementComponent != null)
@@ -268,8 +267,6 @@ public class StompEnemy : Enemy
             playerTransform.position.y + jumpHeightAbovePlayer,
             transform.position.z);
         Vector3 apexAboveStart = new Vector3(startPosition.x, targetAbovePlayer.y, startPosition.z);
-
-        IgnorePlayerCollision(true);
 
         float apexY = apexAboveStart.y;
         if (shadowObject != null)
@@ -384,9 +381,6 @@ public class StompEnemy : Enemy
 
         _damageWindowHandle = StartCoroutine(StompDamageWindow());
         yield return _damageWindowHandle;
-
-        yield return StartCoroutine(WaitUntilClearOfPlayer());
-        IgnorePlayerCollision(false);
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);

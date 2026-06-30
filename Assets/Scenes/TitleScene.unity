@@ -3838,7 +3838,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: soundList.Array.data[7].boostDb
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: sceneAudio.Array.data[1].ambient
