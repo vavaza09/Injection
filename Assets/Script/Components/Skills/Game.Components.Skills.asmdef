@@ -1,7 +1,9 @@
 {
   "name": "Game.Components.Skills",
   "references": [
-    "Core.Logging"
+    "Core.Logging",
+    "Unity.RenderPipelines.Universal.2D.Runtime",
+    "Unity.TextMeshPro"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

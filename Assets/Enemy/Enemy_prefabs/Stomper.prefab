@@ -222,7 +222,7 @@ MonoBehaviour:
   stompAttackCooldown: 4.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 2056
   airContactDamage: 20
   shakeAmplitude: 2
   impactVfxRadius: 3.5

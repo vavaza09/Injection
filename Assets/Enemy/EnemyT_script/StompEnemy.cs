@@ -60,7 +60,7 @@ public class StompEnemy : Enemy
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
 
         if (groundLayer == 0)
-            groundLayer = LayerMask.GetMask("Ground");
+            groundLayer = LayerMask.GetMask("Ground", "Platform");
 
         if (stompDamageZone == null)
             stompDamageZone = GetComponentInChildren<StompDamageZone>();
@@ -309,15 +309,11 @@ public class StompEnemy : Enemy
         float lockedShadowX = playerTransform != null ? playerTransform.position.x : transform.position.x;
         transform.position = new Vector3(lockedShadowX, transform.position.y, transform.position.z);
 
-        // Find the surface the PLAYER is standing on by raycasting down from the player.
-        // The origin must be the player (not the stomper column) so the ray starts below
-        // any platform that sits between the apex and the player.
-        Vector2 groundRayOrigin = playerTransform != null
-            ? (Vector2)playerTransform.position
-            : new Vector2(lockedShadowX, transform.position.y);
-        RaycastHit2D groundHit = Physics2D.Raycast(groundRayOrigin, Vector2.down, 50f, groundLayer);
-        _useTargetLandingY = groundHit.collider != null;
-        _targetLandingY = _useTargetLandingY ? groundHit.point.y : _shadowGroundY;
+        // Find the ground directly beneath the shadow column (locked X) by raycasting
+        // downward from the apex. This is the single source of truth for both the shadow
+        // position and the landing snap — the Stomper will land exactly where the shadow is.
+        _useTargetLandingY = TryGetGroundYBelow(lockedShadowX, transform.position.y, out _targetLandingY);
+        if (!_useTargetLandingY) _targetLandingY = _shadowGroundY;
 
         float telegraphTimer = 0f;
         while (telegraphTimer < telegraphDuration)
@@ -437,6 +433,13 @@ public class StompEnemy : Enemy
         return (groundLayer.value & (1 << layer)) != 0;
     }
 
+    private bool TryGetGroundYBelow(float worldX, float fromY, out float groundY)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(worldX, fromY), Vector2.down, 100f, groundLayer);
+        groundY = hit.collider != null ? hit.point.y : 0f;
+        return hit.collider != null;
+    }
+
 
     // Pins the shadow to a fixed ground Y/Z at the given world X, and scales it by
     // the stomper's height: full base scale at apex, min scale near the ground.
@@ -445,9 +448,14 @@ public class StompEnemy : Enemy
     private void UpdateShadow(float stomperY, float apexY, float worldX)
     {
         if (shadowObject == null) return;
-        // After the landing target is captured at telegraph, pin the shadow to it so the
-        // shadow always sits on the player's ground (single source of truth with the fall).
-        float groundY = _useTargetLandingY ? _targetLandingY : _shadowGroundY;
+        // Once the landing target is locked at telegraph, pin shadow to it.
+        // Before that, project the shadow down to the actual ground beneath its column
+        // so it sits on whichever platform is directly below — not the Stomper's spawn ground.
+        float groundY;
+        if (_useTargetLandingY)
+            groundY = _targetLandingY;
+        else if (!TryGetGroundYBelow(worldX, stomperY, out groundY))
+            groundY = _shadowGroundY;
         shadowObject.transform.position = new Vector3(worldX, groundY, _shadowZ);
         float maxH = apexY - groundY;
         float t = maxH > 0f ? Mathf.Clamp01((stomperY - groundY) / maxH) : 0f;
