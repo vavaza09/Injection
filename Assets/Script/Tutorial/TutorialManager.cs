@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using VContainer;
 using Game.Characters.Player;
 using Game.Components.Skills;
+using Game.Tutorial.Navigator;
 
 namespace Game.Tutorial
 {
@@ -32,6 +33,9 @@ namespace Game.Tutorial
         [SerializeField] private string nextRoomId = "room_a";
         [SerializeField] private string nextSpawnPointId = "default";
 
+        [Header("Navigator")]
+        [SerializeField] private NavigatorShadow navigator;
+
         [Header("Dev")]
         [SerializeField] private bool enableDevSkip = true;
         [SerializeField] private Key devSkipKey = Key.RightBracket;
@@ -41,6 +45,7 @@ namespace Game.Tutorial
         private int _index = -1;
         private TutorialStep _current;
         private bool _running;
+        private bool _playerInputReceived;
 
         [Inject]
         public void Construct(Player player, PlayerInputHandler input, IPlayerSkillEvents skillEvents, IEnergyStore energyStore)
@@ -100,11 +105,53 @@ namespace Game.Tutorial
             _current.Completed += OnCurrentCompleted;
             promptUI?.Show(_current.Description, _current.PromptKeys);
             _current.Begin(_context);
+
+            StartNavigator(_current);
+        }
+
+        private void StartNavigator(TutorialStep step)
+        {
+            if (navigator == null || step.NavigatorClip == null || step.NavigatorAnchor == null) return;
+            _playerInputReceived = false;
+            navigator.Play(step.NavigatorClip, step.NavigatorAnchor);
+            SubscribePlayerInputDim();
+        }
+
+        private void SubscribePlayerInputDim()
+        {
+            if (_context?.Input == null) return;
+            _context.Input.OnJumpPressed    += OnFirstPlayerInput;
+            _context.Input.OnDashPressed    += OnFirstPlayerInput;
+            _context.Input.OnAttackPressed  += OnFirstPlayerInput;
+            _context.Input.OnRightClickPressed += OnFirstPlayerInput;
+            _context.Input.OnSkill1Pressed  += OnFirstPlayerInput;
+            _context.Input.OnSkill2Pressed  += OnFirstPlayerInput;
+        }
+
+        private void UnsubscribePlayerInputDim()
+        {
+            if (_context?.Input == null) return;
+            _context.Input.OnJumpPressed    -= OnFirstPlayerInput;
+            _context.Input.OnDashPressed    -= OnFirstPlayerInput;
+            _context.Input.OnAttackPressed  -= OnFirstPlayerInput;
+            _context.Input.OnRightClickPressed -= OnFirstPlayerInput;
+            _context.Input.OnSkill1Pressed  -= OnFirstPlayerInput;
+            _context.Input.OnSkill2Pressed  -= OnFirstPlayerInput;
+        }
+
+        private void OnFirstPlayerInput()
+        {
+            if (_playerInputReceived) return;
+            _playerInputReceived = true;
+            UnsubscribePlayerInputDim();
+            navigator?.Dim();
         }
 
         private void OnCurrentCompleted()
         {
             if (_current != null) _current.Completed -= OnCurrentCompleted;
+            UnsubscribePlayerInputDim();
+            navigator?.Stop();
             StartCoroutine(SuccessThenAdvance());
         }
 
@@ -113,6 +160,8 @@ namespace Game.Tutorial
             if (_current == null) return;
             _current.Completed -= OnCurrentCompleted;
             _current.Cleanup();
+            UnsubscribePlayerInputDim();
+            navigator?.Stop();
             StartCoroutine(SuccessThenAdvance());
         }
 
@@ -127,6 +176,8 @@ namespace Game.Tutorial
         {
             _running = false;
             _current = null;
+            UnsubscribePlayerInputDim();
+            navigator?.Stop();
             _player?.UnlockAllAbilities();
             promptUI?.ShowSuccess(completeMessage);
 

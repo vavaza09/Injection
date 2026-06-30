@@ -71,9 +71,9 @@ public class CameraManager : MonoBehaviour
         if (_currentCam != null)
         {
             _defaultOrthoSize = _currentCam.Lens.OrthographicSize;
+            // Apply target that may have been set via SetFollowTarget during Awake (before _currentCam was resolved)
+            if (cameraTarget != null) _currentCam.Follow = cameraTarget;
         }
-
-
     }
 
     public void SuspendOffsetControl()
