@@ -9,7 +9,11 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     [Header("Dash Impact Settings")]
     [SerializeField] private float dashImpactBaseDamage = 15f;
     [SerializeField] private float dashImpactCooldown = 0.15f;
-    [SerializeField] private LayerMask dashDamageLayer = ~0;
+
+    [Header("Enemy Detection")]
+    [Tooltip("Radius of the swept circle cast along the dash path (match player capsule half-width).")]
+    [SerializeField] private float dashCastRadius = 0.5f;
+    [SerializeField] private LayerMask enemyDetectionLayer;
 
     [Header("Hitstop")]
     [SerializeField] private float hitstopDuration = 1f;
@@ -31,9 +35,12 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     private MovementComponentRef _movement;
     private Game.Components.Movement.MovementComponent _mc;
     private HitFlash _hitFlash;
+    private Rigidbody2D _rb;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
-    private readonly HashSet<int> _armoredHitTargets = new HashSet<int>();
     private bool _wasDashing;
+    private Vector2 _prevPosition;
+    private ContactFilter2D _enemyFilter;
+    private readonly List<RaycastHit2D> _castResults = new List<RaycastHit2D>(16);
 
     // Thin wrapper so PlayerDashImpact can read IsDashing/DashAttacking without a hard assembly reference
     private class MovementComponentRef
@@ -51,6 +58,17 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         float cooldown = cooldownOverride >= 0f ? cooldownOverride : dashImpactCooldown;
         _attackComponent = new AttackComponent(cooldown);
         _hitFlash = GetComponentInChildren<HitFlash>();
+        _rb = GetComponent<Rigidbody2D>();
+
+        if (enemyDetectionLayer.value == 0)
+            enemyDetectionLayer = LayerMask.GetMask("Enemy");
+
+        _enemyFilter = new ContactFilter2D();
+        _enemyFilter.useLayerMask = true;
+        _enemyFilter.layerMask = enemyDetectionLayer;
+        _enemyFilter.useTriggers = true;
+
+        _prevPosition = _rb != null ? _rb.position : (Vector2)transform.position;
     }
 
     public void ArmTrueDamage() => _trueDamageArmed = true;
@@ -61,10 +79,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
         bool isDashingNow = _movement.IsDashing;
         if (isDashingNow && !_wasDashing)
-        {
             _dashHitTargets.Clear();
-            _armoredHitTargets.Clear();
-        }
 
         // Dash just ended — consume the armed buff regardless of whether it hit anything
         if (!isDashingNow && _wasDashing && _trueDamageArmed)
@@ -76,109 +91,140 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         _wasDashing = isDashingNow;
     }
 
+    // Boss weak-point path: bosses stay on Default layer so physics callbacks still fire.
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        TryDealDashImpactDamage(collision.collider);
+        TryHandleBossWeakPoint(collision.collider);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        TryDealDashImpactDamage(other);
+        TryHandleBossWeakPoint(other);
     }
 
-    private void TryDealDashImpactDamage(Collider2D targetCollider)
+    private void TryHandleBossWeakPoint(Collider2D targetCollider)
     {
         if (_movement == null || targetCollider == null) return;
         if (!_movement.IsDashing || !_movement.DashAttacking) return;
-        if ((dashDamageLayer.value & (1 << targetCollider.gameObject.layer)) == 0) return;
         if (_attackComponent == null || !_attackComponent.CanAttack()) return;
 
-        // Boss weakpoint path — boss is not a character, so handled before the character lookup.
         BossWeakPoint bossWeakPoint = targetCollider.GetComponentInParent<BossWeakPoint>();
-        if (bossWeakPoint != null)
+        if (bossWeakPoint == null) return;
+
+        int wpId = bossWeakPoint.GetInstanceID();
+        if (_dashHitTargets.Contains(wpId)) return;
+        _dashHitTargets.Add(wpId);
+        if (bossWeakPoint.TryDestroy())
         {
-            int wpId = bossWeakPoint.GetInstanceID();
-            if (_dashHitTargets.Contains(wpId)) return;
-            _dashHitTargets.Add(wpId);
-            if (bossWeakPoint.TryDestroy())
-            {
-                ImpactLanded?.Invoke();
-                SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
-                CameraShake.Shake(weakPointShakeIntensity);
-                _hitFlash?.Flash();
-                HitFlashFX.Spawn(targetCollider.bounds.center);
-                SoundManager.PlaySound(SoundType.HITSTOP);
-            }
-            return;
-        }
-
-        character targetCharacter = targetCollider.GetComponentInParent<character>();
-        if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) return;
-
-        // True Damage armed: kill any regular Enemy on a body hit, bypassing the weak-point requirement.
-        bool isTrueDamageKill = _trueDamageArmed && targetCharacter is Enemy;
-
-        bool hitWeakPoint = false;
-        if (targetCharacter is Enemy && !_trueDamageArmed)
-        {
-            EnemyWeakPoint weakPoint = targetCollider.GetComponent<EnemyWeakPoint>();
-            if (weakPoint == null)
-            {
-                EnemyWeakPoint[] weakPoints = targetCharacter.GetComponentsInChildren<EnemyWeakPoint>();
-                for (int i = 0; i < weakPoints.Length; i++)
-                {
-                    if (weakPoints[i] != null && weakPoints[i].IsWeakPoint(targetCollider))
-                    {
-                        weakPoint = weakPoints[i];
-                        break;
-                    }
-                }
-            }
-
-            if (weakPoint == null)
-            {
-                // Armored hit: bounce only — no damage, no combo. Uses a separate set so a
-                // body-collider hit on the same frame cannot block a subsequent weak-point hit.
-                int armoredId = targetCharacter.GetInstanceID();
-                if (!_armoredHitTargets.Contains(armoredId))
-                {
-                    _armoredHitTargets.Add(armoredId);
-                    _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
-                }
-                return;
-            }
-            if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return;
-            hitWeakPoint = true;
-        }
-
-        int targetId = targetCharacter.GetInstanceID();
-        if (_dashHitTargets.Contains(targetId)) return;
-
-        _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
-        _dashHitTargets.Add(targetId);
-        ImpactLanded?.Invoke();
-
-        if (hitWeakPoint || isTrueDamageKill)
-        {
+            ImpactLanded?.Invoke();
             SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
             CameraShake.Shake(weakPointShakeIntensity);
             _hitFlash?.Flash();
             HitFlashFX.Spawn(targetCollider.bounds.center);
             SoundManager.PlaySound(SoundType.HITSTOP);
-            targetCharacter.Die();
-            StartCoroutine(DashAttackFreezeAndBounce());
+        }
+    }
 
-            // Consume the armed buff on the first kill so a single dash kills only one enemy.
-            if (isTrueDamageKill)
+    private void FixedUpdate()
+    {
+        Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
+
+        if (_movement == null || !_movement.IsDashing || !_movement.DashAttacking)
+        {
+            _prevPosition = currentPos;
+            return;
+        }
+
+        if (_attackComponent == null || !_attackComponent.CanAttack())
+        {
+            _prevPosition = currentPos;
+            return;
+        }
+
+        Vector2 delta = currentPos - _prevPosition;
+        float distance = delta.magnitude;
+
+        if (distance > 0.001f)
+        {
+            _castResults.Clear();
+            int count = Physics2D.CircleCast(_prevPosition, dashCastRadius, delta.normalized, _enemyFilter, _castResults, distance);
+
+            // Hits are sorted near→far by CircleCast; nearest collider wins.
+            for (int i = 0; i < count; i++)
             {
-                _trueDamageArmed = false;
-                TrueDamageConsumed?.Invoke();
+                RaycastHit2D hit = _castResults[i];
+                if (hit.collider == null) continue;
+
+                character targetCharacter = hit.collider.GetComponentInParent<character>();
+                if (targetCharacter == null || targetCharacter == GetComponentInParent<character>()) continue;
+                if (!(targetCharacter is Enemy)) continue;
+
+                int targetId = targetCharacter.GetInstanceID();
+                if (_dashHitTargets.Contains(targetId)) continue;
+
+                _dashHitTargets.Add(targetId);
+
+                if (_trueDamageArmed)
+                {
+                    // True damage is unblockable — kills on any enemy collider, ignoring armor.
+                    _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
+                    ImpactLanded?.Invoke();
+                    SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
+                    CameraShake.Shake(weakPointShakeIntensity);
+                    _hitFlash?.Flash();
+                    HitFlashFX.Spawn(hit.point);
+                    SoundManager.PlaySound(SoundType.HITSTOP);
+                    targetCharacter.Die();
+                    StartCoroutine(DashAttackFreezeAndBounce());
+                    _trueDamageArmed = false;
+                    TrueDamageConsumed?.Invoke();
+                    break;
+                }
+
+                // Normal dash: nearest collider determines outcome.
+                // If it's a weak point → kill; if it's armor → bounce and shield everything behind it.
+                if (ResolveIsWeakPoint(hit.collider, targetCharacter))
+                {
+                    _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
+                    ImpactLanded?.Invoke();
+                    SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
+                    CameraShake.Shake(weakPointShakeIntensity);
+                    _hitFlash?.Flash();
+                    HitFlashFX.Spawn(hit.point);
+                    SoundManager.PlaySound(SoundType.HITSTOP);
+                    targetCharacter.Die();
+                    StartCoroutine(DashAttackFreezeAndBounce());
+                }
+                else
+                {
+                    // Armor hit: bounce, no damage; weak point behind is shielded for this dash.
+                    _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+                }
+                break;
             }
         }
-        else
+
+        _prevPosition = currentPos;
+    }
+
+    private bool ResolveIsWeakPoint(Collider2D hitCollider, character targetCharacter)
+    {
+        EnemyWeakPoint weakPoint = hitCollider.GetComponent<EnemyWeakPoint>();
+        if (weakPoint == null)
         {
-            _mc?.BounceFromDashImpact(bounceForce, bounceUpwardBias);
+            EnemyWeakPoint[] weakPoints = targetCharacter.GetComponentsInChildren<EnemyWeakPoint>();
+            for (int i = 0; i < weakPoints.Length; i++)
+            {
+                if (weakPoints[i] != null && weakPoints[i].IsWeakPoint(hitCollider))
+                {
+                    weakPoint = weakPoints[i];
+                    break;
+                }
+            }
         }
+        if (weakPoint == null) return false;
+        if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return false;
+        return true;
     }
 
     private IEnumerator DashAttackFreezeAndBounce()
