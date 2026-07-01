@@ -657,6 +657,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_SortingOrder
+      value: 900
+      objectReference: {fileID: 0}
     - target: {fileID: 7575443319861014824, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: m_Pivot.x
       value: 0
