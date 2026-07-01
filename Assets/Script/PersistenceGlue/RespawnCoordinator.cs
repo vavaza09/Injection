@@ -52,6 +52,20 @@ public class RespawnCoordinator : MonoBehaviour
         yield return new WaitForSecondsRealtime(deathDisplayDuration);
         // Time is already restored by Player.OnStateEnter(Dead) -> ISlowMotionController.ResetImmediate().
 
+        // Dying in the boss room always reloads it fresh (fully re-instantiates the scene) instead
+        // of just repositioning the player in place — boss health, weakpoints, spawned junk/gas
+        // clouds, caged enemies, room-lock walls, everything resets like the fight never happened.
+        // Takes priority over the generic checkpoint respawn below, which only repositions the
+        // player within whatever scene is already loaded.
+        if (_roomLoader != null && _roomLoader.CurrentRoomId == "boss")
+        {
+            _roomLoader.LoadRoom("boss", "Room_Boss", onArrived: () =>
+            {
+                _player?.Respawn(respawnInvincDuration);
+            });
+            yield break;
+        }
+
         var data = _saveService?.Load();
 
         // No checkpoint reached yet: place at the current scene's default spawn point.

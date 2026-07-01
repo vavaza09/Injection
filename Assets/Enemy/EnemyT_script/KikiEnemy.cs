@@ -34,6 +34,17 @@ public class KikiEnemy : Enemy
     [Header("Facing")]
     [SerializeField] private bool invertFacing = true;
 
+    [Header("Cage / Release")]
+    [Tooltip("Starts inert (no AI, physics not simulated) until Release() is called.")]
+    [SerializeField] private bool startDormant = false;
+    [Tooltip("Float_Idle frame to freeze on while dormant (0-indexed, e.g. 3 = Float Idle Sprite Sheet_3).")]
+    [SerializeField] private int dormantFreezeFrame = 3;
+    [Tooltip("Total frame count of the Float_Idle clip (5 in Float_Idle.anim).")]
+    [SerializeField] private int dormantTotalFrames = 5;
+    [SerializeField] private float dropDistance = 2.5f;
+    [SerializeField] private float dropDuration = 0.5f;
+    [SerializeField] private AnimationCurve dropCurve;
+
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
@@ -58,6 +69,7 @@ public class KikiEnemy : Enemy
     private Animator _anim;
     private TrailRenderer _dashTrail;
     private ParticleSystem _dashParticles;
+    private bool _isDormant;
 
     protected override void Awake()
     {
@@ -79,6 +91,57 @@ public class KikiEnemy : Enemy
         PickWaypoint();
         SetupDashTrail();
         SetupDashParticles();
+
+        _isDormant = startDormant;
+        if (_isDormant)
+        {
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.simulated = false;
+                rb.linearVelocity = Vector2.zero;
+            }
+            if (_anim != null)
+            {
+                float normalized = dormantTotalFrames > 0 ? (float)dormantFreezeFrame / dormantTotalFrames : 0f;
+                _anim.Play("Float_Idle", 0, normalized);
+                _anim.Update(0f); // sample immediately so the frame shows before the next real Update
+                _anim.speed = 0f;
+            }
+        }
+    }
+
+    /// <summary>Wakes a dormant (caged) Kiki: detaches it, plays a short drop, then resumes normal AI.</summary>
+    public void Release()
+    {
+        if (!_isDormant) return;
+        StartCoroutine(ReleaseRoutine());
+    }
+
+    private IEnumerator ReleaseRoutine()
+    {
+        transform.SetParent(null, true); // detach from platform, keep world position
+        if (_anim != null) _anim.speed = 1f;
+
+        Vector3 from = transform.position;
+        Vector3 to = from + Vector3.down * dropDistance;
+        float e = 0f;
+        while (e < dropDuration)
+        {
+            e += Time.deltaTime;
+            float t = Mathf.Clamp01(e / dropDuration);
+            transform.position = Vector3.Lerp(from, to, dropCurve != null ? dropCurve.Evaluate(t) : t);
+            yield return null;
+        }
+        transform.position = to;
+
+        _spawnCenter = transform.position; // patrol around the drop point, not the cage spot
+        _isDormant = false;
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
     }
 
     private void SetupDashTrail()
@@ -165,7 +228,7 @@ public class KikiEnemy : Enemy
     protected override void Update()
     {
         base.Update();
-        if (!isAlive || IsStunned || _isAttacking) return;
+        if (!isAlive || IsStunned || _isAttacking || _isDormant) return;
 
         DetectPlayer();
 

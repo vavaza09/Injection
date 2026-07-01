@@ -292,8 +292,8 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
     volume: 1
     boostDb: 0
-    pitchMin: 0.76
-    pitchMax: 0.9
+    pitchMin: 0.695
+    pitchMax: 0.895
     loop: 0
   - name: KIKI_FLOAT_IDLE
     sounds: []
