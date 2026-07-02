@@ -28,10 +28,22 @@ namespace Game.Tutorial
         [SerializeField] private RectTransform glyphRow;
         [SerializeField] private InputDeviceTracker deviceTracker;
         [SerializeField] private List<GlyphBinding> bindings = new List<GlyphBinding>();
+        [SerializeField] private TMP_FontAsset font;
         [SerializeField] private Color descriptionColor = Color.white;
         [SerializeField] private Color successColor = new Color(0.4f, 1f, 0.5f);
+        [SerializeField] private float fontSize = 32f;
         [SerializeField] private float glyphSize = 64f;
 
+        [Header("Position")]
+        [SerializeField] private Vector2 panelAnchor   = new Vector2(0.5f, 0f);
+        [SerializeField] private Vector2 panelPosition = new Vector2(0f, 60f);
+
+        [Header("Background")]
+        [SerializeField] private Color   bgColor  = new Color(0f, 0f, 0f, 0.55f);
+        [SerializeField] private float   bgHeight = 130f;
+
+        private RectTransform _panelRect;
+        private Image _bgImage;
         private string _description;
         private PromptEntry[] _keys;
         private bool _showingSuccess;
@@ -55,6 +67,7 @@ namespace Game.Tutorial
 
         public void Show(string description, PromptEntry[] actionKeys)
         {
+            if (_bgImage != null) _bgImage.gameObject.SetActive(true);
             _showingSuccess = false;
             _description = description;
             _keys = actionKeys;
@@ -63,6 +76,7 @@ namespace Game.Tutorial
 
         public void ShowSuccess(string message)
         {
+            if (_bgImage != null) _bgImage.gameObject.SetActive(true);
             _showingSuccess = true;
             ClearChips();
             if (label != null)
@@ -74,6 +88,7 @@ namespace Game.Tutorial
 
         public void Hide()
         {
+            if (_bgImage != null) _bgImage.gameObject.SetActive(false);
             ClearChips();
             if (label != null) label.text = string.Empty;
         }
@@ -155,9 +170,10 @@ namespace Game.Tutorial
 
             var tmp = go.GetComponent<TextMeshProUGUI>();
             tmp.text = symbol;
-            tmp.fontSize = 28;
+            tmp.fontSize = fontSize * 0.875f;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = descriptionColor;
+            if (font != null) tmp.font = font;
 
             var le = go.GetComponent<LayoutElement>();
             le.minHeight = glyphSize;
@@ -173,9 +189,10 @@ namespace Game.Tutorial
 
             var tmp = go.GetComponent<TextMeshProUGUI>();
             tmp.text = "[" + text + "]";
-            tmp.fontSize = 28;
+            tmp.fontSize = fontSize * 0.875f;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = descriptionColor;
+            if (font != null) tmp.font = font;
 
             var le = go.GetComponent<LayoutElement>();
             le.minHeight = glyphSize;
@@ -196,16 +213,30 @@ namespace Game.Tutorial
             canvasGo.transform.SetParent(transform, false);
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
+            // Full-width background strip — Panel lives inside it so position always matches.
+            var bgGo = new GameObject("Background", typeof(RectTransform), typeof(Image));
+            bgGo.transform.SetParent(canvasGo.transform, false);
+            var bgRect = bgGo.GetComponent<RectTransform>();
+            bgRect.anchorMin = new Vector2(0f, panelAnchor.y);
+            bgRect.anchorMax = new Vector2(1f, panelAnchor.y);
+            bgRect.pivot     = new Vector2(0.5f, panelAnchor.y);
+            bgRect.offsetMin = new Vector2(0f, panelPosition.y);
+            bgRect.offsetMax = new Vector2(0f, panelPosition.y + bgHeight);
+            _bgImage = bgGo.GetComponent<Image>();
+            _bgImage.color = bgColor;
+            _bgImage.raycastTarget = false;
+            bgGo.SetActive(false);
+
+            // Panel is a child of BG, stretches to fill it — guarantees vertical centering.
             var panelGo = new GameObject("Panel", typeof(RectTransform), typeof(VerticalLayoutGroup));
-            panelGo.transform.SetParent(canvasGo.transform, false);
-            var panelRt = panelGo.GetComponent<RectTransform>();
-            panelRt.anchorMin = new Vector2(0.5f, 0f);
-            panelRt.anchorMax = new Vector2(0.5f, 0f);
-            panelRt.pivot = new Vector2(0.5f, 0f);
-            panelRt.anchoredPosition = new Vector2(0f, 60f);
-            panelRt.sizeDelta = new Vector2(1000f, 200f);
+            panelGo.transform.SetParent(bgGo.transform, false);
+            _panelRect = panelGo.GetComponent<RectTransform>();
+            _panelRect.anchorMin = Vector2.zero;
+            _panelRect.anchorMax = Vector2.one;
+            _panelRect.offsetMin = Vector2.zero;
+            _panelRect.offsetMax = Vector2.zero;
             var vlg = panelGo.GetComponent<VerticalLayoutGroup>();
-            vlg.childAlignment = TextAnchor.LowerCenter;
+            vlg.childAlignment = TextAnchor.MiddleCenter;
             vlg.spacing = 12f;
             vlg.childControlHeight = true;
             vlg.childControlWidth = true;
@@ -216,8 +247,9 @@ namespace Game.Tutorial
             labelGo.transform.SetParent(panelGo.transform, false);
             label = labelGo.GetComponent<TextMeshProUGUI>();
             label.alignment = TextAlignmentOptions.Center;
-            label.fontSize = 32;
+            label.fontSize = fontSize;
             label.color = descriptionColor;
+            if (font != null) label.font = font;
 
             var rowGo = new GameObject("GlyphRow", typeof(RectTransform), typeof(HorizontalLayoutGroup));
             rowGo.transform.SetParent(panelGo.transform, false);

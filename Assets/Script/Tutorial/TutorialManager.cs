@@ -23,6 +23,15 @@ namespace Game.Tutorial
         [SerializeField] private string successMessage = "Nice!";
         [SerializeField] private string completeMessage = "Tutorial Complete!";
 
+        [Header("Start Delay")]
+        [SerializeField] private float startDelay = 0.6f;
+
+        [Header("Completion Warp")]
+        [SerializeField] private bool warpOnComplete = true;
+        [SerializeField] private float completionDelay = 2f;
+        [SerializeField] private string nextRoomId = "room_a";
+        [SerializeField] private string nextSpawnPointId = "default";
+
         [Header("Dev")]
         [SerializeField] private bool enableDevSkip = true;
         [SerializeField] private Key devSkipKey = Key.RightBracket;
@@ -52,6 +61,13 @@ namespace Game.Tutorial
 
             _player?.SetAbilityGating(true);
             _running = true;
+            StartCoroutine(DelayedStart());
+        }
+
+        private IEnumerator DelayedStart()
+        {
+            if (startDelay > 0f)
+                yield return new WaitForSecondsRealtime(startDelay);
             Advance();
         }
 
@@ -113,6 +129,19 @@ namespace Game.Tutorial
             _current = null;
             _player?.UnlockAllAbilities();
             promptUI?.ShowSuccess(completeMessage);
+
+            if (warpOnComplete)
+                StartCoroutine(WarpAfterDelay());
+        }
+
+        private IEnumerator WarpAfterDelay()
+        {
+            yield return new WaitForSecondsRealtime(completionDelay);
+
+            // RoomManager is DontDestroyOnLoad when running via Bootstrap.
+            // In standalone DevScene it won't exist — FindAnyObjectByType returns null and we skip.
+            var roomManager = FindAnyObjectByType<Game.Rooms.RoomManager>();
+            roomManager?.LoadRoom(nextRoomId, nextSpawnPointId);
         }
     }
 }

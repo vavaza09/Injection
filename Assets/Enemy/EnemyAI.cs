@@ -176,9 +176,8 @@ public class EnemyAI : MonoBehaviour
     private void FlipSprite(bool faceRight)
     {
         if (enemy == null) return;
-        Vector3 scale = enemy.transform.localScale;
-        float abs = Mathf.Abs(scale.x);
-        scale.x = (faceRight != enemy.SpriteFacesLeft) ? abs : -abs;
-        enemy.transform.localScale = scale;
+        Vector3 euler = enemy.transform.eulerAngles;
+        euler.y = (faceRight != enemy.SpriteFacesLeft) ? 0f : 180f;
+        enemy.transform.eulerAngles = euler;
     }
 }
