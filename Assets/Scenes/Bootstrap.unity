@@ -1028,9 +1028,33 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: vignettePeak
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.b
+      value: 0.94846624
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.g
+      value: 0.9811321
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7435623
+      objectReference: {fileID: 0}
     - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_Intensity
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.744
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_PointLightOuterRadius
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x
