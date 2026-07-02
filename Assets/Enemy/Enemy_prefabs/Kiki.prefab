@@ -88,7 +88,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9011178215853506880, guid: 77a023a24e9cbc14daa7a34eaf2c713c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -152,6 +152,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   patrolRadius: 5
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6
@@ -282,6 +283,12 @@ MonoBehaviour:
   partGravityScale: 1.5
   partLifetime: 2.2
   partFadeDuration: 0.8
+  overrideBodyPartSorting: 0
+  bodyPartSortingLayer: Default
+  bodyPartSortingOrder: 0
+  overrideExplosionSorting: 0
+  explosionSortingLayer: Default
+  explosionSortingOrder: 5
   trailTime: 0.4
   trailStartWidth: 0.12
   trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}

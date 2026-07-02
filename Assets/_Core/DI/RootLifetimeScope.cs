@@ -106,7 +106,7 @@ public class RootLifetimeScope : LifetimeScope
         builder.RegisterComponentInHierarchy<EmpBlastReceiver>();
 
         // Persistence (session singletons)
-        builder.Register<ISaveStorage>(_ => new JsonFileSaveStorage("save.json"), Lifetime.Singleton);
+        builder.Register<ISaveStorage>(_ => new JsonFileSaveStorage(Game.Persistence.SaveFileLocator.FileName), Lifetime.Singleton);
         builder.Register<SaveService>(resolver => new SaveService(
             resolver.Resolve<ISaveStorage>(),
             resolver.Resolve<LoggerFactory>().CreateLogger("SaveService")),

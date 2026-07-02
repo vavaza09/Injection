@@ -12,6 +12,13 @@ public class UIParticleSystem : MaskableGraphic
 
     public override Texture mainTexture => _texture ?? base.mainTexture;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        if (_bakeCamera == null)
+            _bakeCamera = Camera.main;
+    }
+
     private void Update()
     {
         SetVerticesDirty();

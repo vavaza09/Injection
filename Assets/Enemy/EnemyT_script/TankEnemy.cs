@@ -66,6 +66,7 @@ public class TankEnemy : Enemy
         spriteRenderer = GetComponent<SpriteRenderer>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
         _currentFacingRight = false;
 
         // Move gunPivot out of the non-uniformly scaled Circle parent so rotation
@@ -86,6 +87,7 @@ public class TankEnemy : Enemy
 
         _motorSource = gameObject.AddComponent<AudioSource>();
         _motorSource.playOnAwake = false;
+        Make3D(_motorSource);
         SoundManager.StartLoopOn(SoundType.TANK_MOTOR, _motorSource);
 
         SetState(EnemyState.Idle);

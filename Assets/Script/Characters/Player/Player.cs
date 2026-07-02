@@ -86,6 +86,9 @@ public class Player : character
     private readonly HashSet<string> _unlockedAbilities = new HashSet<string>();
     private bool _abilityGatingActive;
 
+    [Header("Damage Feedback")]
+    [SerializeField] private PlayerDamageFeedback _damageFeedback;
+
     [Header("Invincibility Visual")]
     [SerializeField] private float invincibilityBlinkInterval = 0.1f;
     private SpriteRenderer _spriteRenderer;
@@ -181,6 +184,9 @@ public class Player : character
     protected override void Awake()
     {
         base.Awake();
+
+        if (_damageFeedback == null)
+            _damageFeedback = GetComponent<PlayerDamageFeedback>();
 
         if (dashImpact == null)
             dashImpact = GetComponent<PlayerDashImpact>();
@@ -658,6 +664,7 @@ public class Player : character
         movementComponent?.NotifyDamageTaken();
         healthComponent?.StartInvincibility(invincibilityDuration);
         _audioController?.PlayHurtSound();
+        _damageFeedback?.PlayDamageFeedback(invincibilityDuration);
     }
 
     public void ApplyKnockback(Vector2 sourcePosition, float force, float upwardBias)

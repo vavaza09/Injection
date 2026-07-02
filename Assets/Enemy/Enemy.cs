@@ -1,7 +1,6 @@
 using Game.Components.Health;
 using Game.Components.Movement;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : character
@@ -9,43 +8,7 @@ public class Enemy : character
     [Header("Enemy Settings")]
     [SerializeField] protected EnemyType enemyType;
 
-    private Collider2D _bodyCollider;
-    private Collider2D[] _allBodyColliders;
     private Collider2D _playerCollider;
-
-    // Root-only solid collider — used by Stomp to toggle .enabled directly.
-    protected Collider2D BodyCollider =>
-        _bodyCollider != null ? _bodyCollider : (_bodyCollider = GetComponent<Collider2D>());
-
-    // All solid (non-trigger) colliders on this enemy including children.
-    // Cached once so IgnorePlayerCollision / WaitUntilClearOfPlayer handle
-    // enemies that have extra child colliders (e.g. Kiki's "floating area").
-    private Collider2D[] AllBodyColliders
-    {
-        get
-        {
-            if (_allBodyColliders == null)
-            {
-                // Exclude weak point colliders so they stay hittable during pass-through.
-                var weakPointSet = new HashSet<Collider2D>();
-                foreach (var wp in GetComponentsInChildren<EnemyWeakPoint>())
-                {
-                    foreach (var c in wp.WeakPointColliders)
-                        if (c != null) weakPointSet.Add(c);
-                    var ownCol = wp.GetComponent<Collider2D>();
-                    if (ownCol != null) weakPointSet.Add(ownCol);
-                }
-
-                var all = GetComponentsInChildren<Collider2D>();
-                int count = 0;
-                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) count++;
-                _allBodyColliders = new Collider2D[count];
-                int idx = 0;
-                foreach (var c in all) if (!c.isTrigger && !weakPointSet.Contains(c)) _allBodyColliders[idx++] = c;
-            }
-            return _allBodyColliders;
-        }
-    }
 
     protected Collider2D PlayerCollider
     {
@@ -58,33 +21,6 @@ public class Enemy : character
             }
             return _playerCollider;
         }
-    }
-
-    protected void IgnorePlayerCollision(bool ignore)
-    {
-        if (PlayerCollider == null) return;
-        foreach (var col in AllBodyColliders)
-            Physics2D.IgnoreCollision(col, PlayerCollider, ignore);
-    }
-
-    protected IEnumerator WaitUntilClearOfPlayer()
-    {
-        if (PlayerCollider == null) yield break;
-        int timeout = 0;
-        bool touching;
-        do
-        {
-            touching = false;
-            foreach (var col in AllBodyColliders)
-            {
-                if (Physics2D.IsTouching(col, PlayerCollider)) { touching = true; break; }
-            }
-            if (!touching) break;
-            if (++timeout > 120) break;
-            yield return null;
-        } while (true);
-        yield return null;
-        yield return null;
     }
 
     [Header("Detection")]
@@ -103,6 +39,7 @@ public class Enemy : character
     [SerializeField] private GameObject stunVfxPrefab;
 
     private float _stunEndTime;
+    private bool _stunVisualsActive;
     private Coroutine _stunBlinkRoutine;
     private SpriteRenderer _spriteRenderer;
     protected Animator _animator;
@@ -113,6 +50,14 @@ public class Enemy : character
 
     public virtual bool SpriteFacesLeft => false;
 
+    protected static void Make3D(AudioSource src)
+    {
+        if (src == null) return;
+        src.spatialBlend = 1f;
+        src.rolloffMode  = AudioRolloffMode.Linear;
+        src.minDistance  = 1f;
+        src.maxDistance  = 30f;
+    }
 
     protected override void Start()
     {
@@ -183,7 +128,12 @@ public class Enemy : character
     protected override void Update()
     {
         base.Update();
-        if (IsStunned && Time.time >= _stunEndTime)
+        // Restore the normal visual state when the stun expires, OR when something
+        // else (e.g. an attack coroutine finishing) pulled the enemy out of the
+        // Stunned state without routing through EndStun. Without this second guard
+        // the frozen animation / blink tint / electric VFX would linger while the
+        // enemy resumes attacking the player.
+        if (_stunVisualsActive && (!IsStunned || Time.time >= _stunEndTime))
             EndStun();
     }
 
@@ -197,6 +147,7 @@ public class Enemy : character
 
         OnStunInterrupt();
         SetState(EnemyState.Stunned);
+        _stunVisualsActive = true;
 
         if (movementComponent != null)
             movementComponent.Stop();
@@ -233,6 +184,8 @@ public class Enemy : character
 
     private void EndStun()
     {
+        _stunVisualsActive = false;
+
         if (_animator != null)
             _animator.speed = 1f;
 
@@ -270,6 +223,10 @@ public class Enemy : character
 
     protected override void OnDeath()
     {
+        // Death SFX is now fired by EnemyDeathExplosion at the moment of explosion.
+
+        _stunVisualsActive = false;
+
         if (_stunBlinkRoutine != null)
         {
             StopCoroutine(_stunBlinkRoutine);

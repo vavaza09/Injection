@@ -12,6 +12,9 @@ namespace Game.UI.Skills
         [SerializeField] [Range(0f, 1f)] private float lockedBrightness   = 0.15f;
         [SerializeField] [Range(0f, 1f)] private float lockedAlpha        = 0.5f;
 
+        [Header("Ready Particles")]
+        [SerializeField] private ParticleSystem readyParticles;
+
         private Image[] _allImages;
         private Color[] _originalColors;
 
@@ -44,6 +47,9 @@ namespace Game.UI.Skills
                 cooldownRadial.fillAmount = readout.CooldownDuration > 0f
                     ? readout.CooldownRemaining / readout.CooldownDuration
                     : 0f;
+
+            if (readyParticles != null)
+                readyParticles.gameObject.SetActive(readout.CanCast);
         }
 
         public void SetVisible(bool visible) => gameObject.SetActive(visible);

@@ -30,6 +30,10 @@ public class StompEnemy : Enemy
     [SerializeField] private GameObject shadowObject;
     [SerializeField] private Vector3 minShadowScale = new Vector3(2.8f, 0.5f, 1f);
 
+    [Header("Air Contact Knockback")]
+    [SerializeField] private float knockbackForce  = 10f;
+    [SerializeField] private float knockbackUpward = 0.3f;
+
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
@@ -45,8 +49,12 @@ public class StompEnemy : Enemy
     private Vector3 _shadowBaseScale;
     private float _shadowGroundY;
     private float _shadowZ;
+    private float _targetLandingY;
+    private bool _useTargetLandingY;
+    private const float FeetOffset = 0.9f;
 
     private Collider2D stomperBodyCollider;
+    private Collider2D[] _solidColliders;
     private CinemachineImpulseSource _impulseSource;
 
     protected override void Awake()
@@ -54,14 +62,23 @@ public class StompEnemy : Enemy
         base.Awake();
         anim = GetComponent<Animator>();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
 
         if (groundLayer == 0)
-            groundLayer = LayerMask.GetMask("Ground");
+            groundLayer = LayerMask.GetMask("Ground", "Platform");
 
         if (stompDamageZone == null)
             stompDamageZone = GetComponentInChildren<StompDamageZone>();
 
         stomperBodyCollider = GetComponent<Collider2D>();
+
+        // All solid (non-trigger) colliders — root body + child weak-point colliders.
+        // These are toggled off during flight so the stomper passes through platforms.
+        Collider2D[] all = GetComponentsInChildren<Collider2D>(true);
+        var solid = new System.Collections.Generic.List<Collider2D>();
+        foreach (Collider2D c in all)
+            if (c != null && !c.isTrigger) solid.Add(c);
+        _solidColliders = solid.ToArray();
 
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         if (_impulseSource == null)
@@ -109,7 +126,8 @@ public class StompEnemy : Enemy
             Player player = PlayerCollider.GetComponentInParent<Player>();
             if (player != null)
             {
-                player.TakeDamage(airContactDamage);
+                if (player.TakeDamage(airContactDamage))
+                    player.ApplyKnockback(transform.position, knockbackForce, knockbackUpward);
                 _airContactHasHit = true;
             }
         }
@@ -217,9 +235,7 @@ public class StompEnemy : Enemy
 
         stompDamageZone?.DisableZone();
         if (shadowObject != null) shadowObject.SetActive(false);
-        IgnorePlayerCollision(false);
-        if (stomperBodyCollider != null)
-            stomperBodyCollider.enabled = true;
+        SetSolidCollidersEnabled(true);
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);
@@ -234,6 +250,7 @@ public class StompEnemy : Enemy
         _stompPhase = StompPhase.None;
         hasGroundImpact = false;
         _airContactHasHit = false;
+        _useTargetLandingY = false;
         lastAttackTime = Time.time;
 
         if (anim != null)
@@ -257,16 +274,13 @@ public class StompEnemy : Enemy
             transform.position.z);
         Vector3 apexAboveStart = new Vector3(startPosition.x, targetAbovePlayer.y, startPosition.z);
 
-        IgnorePlayerCollision(true);
-
         float apexY = apexAboveStart.y;
         if (shadowObject != null)
             shadowObject.SetActive(true);
 
         _stompPhase = StompPhase.Jump;
         SoundManager.PlaySoundOn(SoundType.STOMPER_JUMP, _sfxSource);
-        if (stomperBodyCollider != null)
-            stomperBodyCollider.enabled = false;
+        SetSolidCollidersEnabled(false);
 
         // Phase 1: rise straight up at jumpUpSpeed (units/sec)
         float riseDistance = Mathf.Abs(apexAboveStart.y - startPosition.y);
@@ -301,6 +315,12 @@ public class StompEnemy : Enemy
         float lockedShadowX = playerTransform != null ? playerTransform.position.x : transform.position.x;
         transform.position = new Vector3(lockedShadowX, transform.position.y, transform.position.z);
 
+        // Find the ground directly beneath the shadow column (locked X) by raycasting
+        // downward from the apex. This is the single source of truth for both the shadow
+        // position and the landing snap — the Stomper will land exactly where the shadow is.
+        _useTargetLandingY = TryGetGroundYBelow(lockedShadowX, transform.position.y, out _targetLandingY);
+        if (!_useTargetLandingY) _targetLandingY = _shadowGroundY;
+
         float telegraphTimer = 0f;
         while (telegraphTimer < telegraphDuration)
         {
@@ -324,7 +344,20 @@ public class StompEnemy : Enemy
             if (rb != null)
                 rb.linearVelocity = new Vector2(0f, -Mathf.Abs(stompDownSpeed));
             UpdateShadow(transform.position.y, apexY, lockedShadowX);
-            if (HasLanded())
+            if (_useTargetLandingY)
+            {
+                // Land on the player's ground only — ignore platforms above it.
+                if (transform.position.y - FeetOffset <= _targetLandingY)
+                {
+                    // Snap so a fast fall doesn't overshoot/clip into the floor.
+                    transform.position = new Vector3(
+                        transform.position.x, _targetLandingY + FeetOffset, transform.position.z);
+                    if (rb != null) rb.linearVelocity = Vector2.zero;
+                    hasGroundImpact = true;
+                    break;
+                }
+            }
+            else if (HasLanded())
             {
                 hasGroundImpact = true;
                 break;
@@ -335,8 +368,7 @@ public class StompEnemy : Enemy
         // STOMP_LAND: halt the fall, slam the ground.
         _stompPhase = StompPhase.Land;
         if (shadowObject != null) shadowObject.SetActive(false);
-        if (stomperBodyCollider != null)
-            stomperBodyCollider.enabled = true;
+        SetSolidCollidersEnabled(true);
         if (rb != null)
         {
             rb.gravityScale = savedGravityScale;
@@ -351,9 +383,6 @@ public class StompEnemy : Enemy
 
         _damageWindowHandle = StartCoroutine(StompDamageWindow());
         yield return _damageWindowHandle;
-
-        yield return StartCoroutine(WaitUntilClearOfPlayer());
-        IgnorePlayerCollision(false);
 
         if (movementComponent != null)
             movementComponent.SetCanMove(true);
@@ -373,9 +402,16 @@ public class StompEnemy : Enemy
         stompDamageZone?.DisableZone();
     }
 
+    private void SetSolidCollidersEnabled(bool enabled)
+    {
+        if (_solidColliders == null) return;
+        foreach (Collider2D c in _solidColliders)
+            if (c != null) c.enabled = enabled;
+    }
+
     private bool HasLanded()
     {
-        Vector2 origin = (Vector2)transform.position + new Vector2(0f, -0.9f);
+        Vector2 origin = (Vector2)transform.position + new Vector2(0f, -FeetOffset);
         RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 0.2f, groundLayer);
         return hit.collider != null;
     }
@@ -403,6 +439,13 @@ public class StompEnemy : Enemy
         return (groundLayer.value & (1 << layer)) != 0;
     }
 
+    private bool TryGetGroundYBelow(float worldX, float fromY, out float groundY)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(worldX, fromY), Vector2.down, 100f, groundLayer);
+        groundY = hit.collider != null ? hit.point.y : 0f;
+        return hit.collider != null;
+    }
+
 
     // Pins the shadow to a fixed ground Y/Z at the given world X, and scales it by
     // the stomper's height: full base scale at apex, min scale near the ground.
@@ -411,9 +454,17 @@ public class StompEnemy : Enemy
     private void UpdateShadow(float stomperY, float apexY, float worldX)
     {
         if (shadowObject == null) return;
-        shadowObject.transform.position = new Vector3(worldX, _shadowGroundY, _shadowZ);
-        float maxH = apexY - _shadowGroundY;
-        float t = maxH > 0f ? Mathf.Clamp01((stomperY - _shadowGroundY) / maxH) : 0f;
+        // Once the landing target is locked at telegraph, pin shadow to it.
+        // Before that, project the shadow down to the actual ground beneath its column
+        // so it sits on whichever platform is directly below — not the Stomper's spawn ground.
+        float groundY;
+        if (_useTargetLandingY)
+            groundY = _targetLandingY;
+        else if (!TryGetGroundYBelow(worldX, stomperY, out groundY))
+            groundY = _shadowGroundY;
+        shadowObject.transform.position = new Vector3(worldX, groundY, _shadowZ);
+        float maxH = apexY - groundY;
+        float t = maxH > 0f ? Mathf.Clamp01((stomperY - groundY) / maxH) : 0f;
         shadowObject.transform.localScale = Vector3.Lerp(minShadowScale, _shadowBaseScale, t);
     }
 

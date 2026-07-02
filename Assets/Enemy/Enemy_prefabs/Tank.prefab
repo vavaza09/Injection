@@ -475,7 +475,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7521067841466369339, guid: bec0c3b4cf1b0a843a129765988477d8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -521,7 +521,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.080999374, y: -0.76834106}
+  m_Offset: {x: 0.080999374, y: -0.92605686}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -531,7 +531,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.116184, y: 1.7545853}
+  m_Size: {x: 4.116184, y: 1.4391537}
   m_EdgeRadius: 0
 --- !u!50 &8298999538917575035
 Rigidbody2D:
@@ -585,6 +585,7 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
+  deathSoundDelay: 0.5
   gunPivot: {fileID: 9090418405512336103}
   attackPoint: {fileID: 3006710706382042102}
   bulletPrefab: {fileID: 201776429204795054, guid: 6749da368af66ab408932f90a7d0e4a5, type: 3}
@@ -666,6 +667,12 @@ MonoBehaviour:
   partGravityScale: 1.5
   partLifetime: 2.2
   partFadeDuration: 0.8
+  overrideBodyPartSorting: 0
+  bodyPartSortingLayer: Default
+  bodyPartSortingOrder: 0
+  overrideExplosionSorting: 0
+  explosionSortingLayer: Default
+  explosionSortingOrder: 5
   trailTime: 0.4
   trailStartWidth: 0.12
   trailStartColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.75}

@@ -113,3 +113,13 @@ MonoBehaviour:
   shadowSortOrder: 1
   spinSpeedMin: 90
   spinSpeedMax: 270
+  fallSfx:
+    delay: 0
+    volume: 0
+    mute: 0
+  impactSfx:
+    delay: 0
+    volume: 0
+    mute: 1
+  shakeIntensity: 0.25
+  shakeDuration: 0.2

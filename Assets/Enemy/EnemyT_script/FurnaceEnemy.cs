@@ -44,17 +44,23 @@ public class FurnaceEnemy : Enemy
 
     public override bool SpriteFacesLeft => invertFacing;
 
+    [Header("Knockback")]
+    [SerializeField] private float knockbackForce  = 8f;
+    [SerializeField] private float knockbackUpward = 0.3f;
+
     [Header("Audio")]
     [SerializeField] private AudioSource _sfxSource;
 
     private float lastAttackTime = -999f;
     private bool _isAttacking;
+    private Coroutine _attackRoutine;
     private readonly List<GameObject> _activeMortarVfx = new List<GameObject>();
 
     protected override void Awake()
     {
         base.Awake();
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        Make3D(_sfxSource);
     }
     protected override void Start() => base.Start();
     protected override void Update() => base.Update();
@@ -104,7 +110,19 @@ public class FurnaceEnemy : Enemy
     {
         if (playerTransform == null || _isAttacking) return;
         if (Time.time < lastAttackTime + attackCooldown) return;
-        StartCoroutine(AttackRoutine());
+        _attackRoutine = StartCoroutine(AttackRoutine());
+    }
+
+    protected override void OnStunInterrupt()
+    {
+        if (_attackRoutine != null)
+        {
+            StopCoroutine(_attackRoutine);
+            _attackRoutine = null;
+        }
+        _isAttacking = false;
+        if (_animator != null)
+            _animator.SetBool("IsAttacking", false);
     }
 
     private IEnumerator AttackRoutine()
@@ -235,7 +253,12 @@ public class FurnaceEnemy : Enemy
         foreach (var col in hits)
         {
             Player p = col.GetComponentInParent<Player>();
-            if (p != null) { p.TakeDamage(explosionDamage); break; }
+            if (p != null)
+            {
+                if (p.TakeDamage(explosionDamage))
+                    p.ApplyKnockback(impactPos, knockbackForce, knockbackUpward);
+                break;
+            }
         }
     }
 

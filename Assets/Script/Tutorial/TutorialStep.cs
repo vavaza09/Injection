@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Game.Characters.Player;
 using Game.Components.Skills;
+using Game.Tutorial.Navigator;
 
 namespace Game.Tutorial
 {
@@ -10,8 +11,12 @@ namespace Game.Tutorial
     [Serializable]
     public class PromptEntry
     {
-        [Tooltip("Action key resolved by TutorialPromptUI bindings (e.g. \"Jump\", \"Dash\").")]
+        [Tooltip("Action key resolved by TutorialPromptUI bindings (e.g. \"Jump\", \"Dash\"). Leave empty to show 'text' as a plain label instead.")]
         public string actionKey;
+        [Tooltip("Plain text shown as a label chip when actionKey is empty (e.g. \"then\", \"and\", \"or hold\"). Leave both actionKey and text empty for a blank spacer.")]
+        public string text;
+        [Tooltip("Width in pixels of the blank spacer inserted when both actionKey and text are empty.")]
+        public float spacerWidth = 24f;
         [Tooltip("Separator shown after this chip. None = last chip in the row.")]
         public SeparatorAfter separatorAfter = SeparatorAfter.None;
     }
@@ -39,6 +44,12 @@ namespace Game.Tutorial
         [Tooltip("Ability key to unlock when this step begins (see TutorialAbilities). Leave empty for steps that gate nothing, e.g. walk/jump.")]
         [SerializeField] protected string abilityToUnlock;
 
+        [Header("Navigator")]
+        [Tooltip("Recorded clip to play on the shadow ghost for this step. Leave empty for steps with no demonstration.")]
+        [SerializeField] private NavigatorClip navigatorClip;
+        [Tooltip("World-space anchor for the clip's frame-0 position. Usually a child Transform placed at the step's start point.")]
+        [SerializeField] private Transform navigatorAnchor;
+
         [Header("Barriers")]
         [Tooltip("GameObjects that block the player from advancing past this step. They start active in the scene and are disabled when the step completes or is skipped.")]
         [SerializeField] private GameObject[] barriers;
@@ -46,6 +57,8 @@ namespace Game.Tutorial
         public string Description => description;
         public PromptEntry[] PromptKeys => promptKeys;
         public string AbilityToUnlock => abilityToUnlock;
+        public NavigatorClip NavigatorClip => navigatorClip;
+        public Transform NavigatorAnchor => navigatorAnchor;
 
         /// <summary>Raised once the step's objective is met.</summary>
         public event Action Completed;

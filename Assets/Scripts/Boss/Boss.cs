@@ -55,11 +55,15 @@ public class Boss : BossBase
         GetComponent<BossPersistence>()?.MarkDefeated();
         Exit();
 
+        SoundManager.StopMusic();
+
         var deathSeq = GetComponent<BossDeathSequence>();
         if (deathSeq != null)
             deathSeq.Play();
         else
             Destroy(gameObject, 1f); // fallback if component not wired
+
+        RaiseDefeated();
     }
 
     private void ResolveReferences()

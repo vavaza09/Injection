@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,10 +103,14 @@ public class SoundManager : MonoBehaviour
     [Header("Loop Pool")]
     [SerializeField, Min(2)] private int loopPoolSize = 8;
 
+    [Header("Per-Scene Audio")]
+    [SerializeField] private SceneAudio[] sceneAudio;
+
     private static SoundManager instance;
     private AudioSource sfxSource;
     private AudioSource musicSource;
     private AudioSource _footstepSource;
+    private AudioSource _ambientSource;
 
     // Pool of AudioSources for looping SFX — supports multiple concurrent loops
     private AudioSource[] _loopPool;
@@ -150,8 +155,18 @@ public class SoundManager : MonoBehaviour
         for (int i = 2; i < allSources.Length; i++)
             Destroy(allSources[i]);
 
+        sfxSource.spatialBlend = 0f;     // force 2D — player SFX must not spatialize (same bug as music above)
+        sfxSource.panStereo = 0f;
+
         _footstepSource = gameObject.AddComponent<AudioSource>();
         _footstepSource.playOnAwake = false;
+        _footstepSource.spatialBlend = 0f;
+        _footstepSource.panStereo = 0f;
+
+        _ambientSource = gameObject.AddComponent<AudioSource>();
+        _ambientSource.loop = true;
+        _ambientSource.playOnAwake = false;
+        _ambientSource.spatialBlend = 0f;
 
         // Build loop pool — each slot is an independent looping AudioSource
         _loopPool = new AudioSource[loopPoolSize];
@@ -160,11 +175,59 @@ public class SoundManager : MonoBehaviour
             var src = gameObject.AddComponent<AudioSource>();
             src.loop = true;
             src.playOnAwake = false;
+            src.spatialBlend = 0f;       // player loop SFX (wall slide etc.) are 2D
             _loopPool[i] = src;
         }
 
         // Apply saved settings (PlayerPrefs) so in-game volume matches the player's preference
         GameSettings.ApplyVolumes();
+        // Apply saved/default display resolution (defaults to 1920x1080 on first run)
+        GameSettings.ApplyResolution();
+
+        // Drive per-scene music/ambient from the central map.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // ── Per-scene audio ───────────────────────────────────────────────────
+
+    private bool TryGetSceneAudio(string sceneName, out SceneAudio entry)
+    {
+        if (sceneAudio != null)
+            foreach (var e in sceneAudio)
+                if (e.sceneName == sceneName) { entry = e; return true; }
+        entry = default;
+        return false;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!TryGetSceneAudio(scene.name, out var entry)) return;
+
+        PlayAmbient(entry.ambient, entry.ambientVolume);
+
+        if (entry.musicStart == MusicStartMode.OnSceneLoad)
+            PlaySceneMusic(entry);
+    }
+
+    /// <summary>Play the music mapped to the currently active scene (used by MusicZoneTrigger).</summary>
+    public static void PlayCurrentSceneMusic()
+    {
+        if (instance == null) return;
+        if (instance.TryGetSceneAudio(SceneManager.GetActiveScene().name, out var entry))
+            PlaySceneMusic(entry);
+    }
+
+    private static void PlaySceneMusic(SceneAudio entry)
+    {
+        if (entry.musicVolume > 0f) SetMusicVolume(entry.musicVolume);
+        PlayMusic(entry.music);
     }
 
     #region Sound Effects
@@ -226,6 +289,21 @@ public class SoundManager : MonoBehaviour
         float pitch = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         instance.sfxSource.pitch = pitch;
         instance.sfxSource.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Length)], vol);
+    }
+
+    /// <summary>Play a one-shot SFX after a delay. Runs on the persistent SoundManager,
+    /// so it survives the caller GameObject being destroyed (e.g. enemy death FX).</summary>
+    public static void PlaySoundDelayed(SoundType sound, float delay, float volumeOverride = -1f)
+    {
+        if (instance == null) return;
+        if (delay <= 0f) { PlaySound(sound, volumeOverride); return; }
+        instance.StartCoroutine(instance.PlaySoundDelayedRoutine(sound, delay, volumeOverride));
+    }
+
+    private IEnumerator PlaySoundDelayedRoutine(SoundType sound, float delay, float volumeOverride)
+    {
+        yield return new WaitForSeconds(delay);
+        PlaySound(sound, volumeOverride);
     }
 
     public static void PlayFootstep(SoundType sound, float volumeOverride = -1f)
@@ -317,6 +395,31 @@ public class SoundManager : MonoBehaviour
         foreach (var src in instance._loopPool)
             src.Stop();
         instance._activeLoopers.Clear();
+    }
+
+    #endregion
+
+    #region Ambient
+
+    /// <summary>Play a looping ambient bed. Seamless — does nothing if the same clip is already playing.</summary>
+    public static void PlayAmbient(AudioClip clip, float volume = 0f)
+    {
+        if (instance == null || instance._ambientSource == null) return;
+
+        if (clip == null) { StopAmbient(); return; }
+
+        var src = instance._ambientSource;
+        if (src.clip == clip && src.isPlaying) return; // already playing — keep it seamless
+
+        src.clip = clip;
+        src.volume = volume > 0f ? volume : 1f;
+        src.Play();
+    }
+
+    public static void StopAmbient()
+    {
+        if (instance != null && instance._ambientSource != null)
+            instance._ambientSource.Stop();
     }
 
     #endregion
@@ -511,15 +614,23 @@ public struct SoundList
     public AudioClip[] Sounds => sounds;
 
     // Helpers that return safe defaults when fields are left at 0 (newly added enum entries)
-    public float EffectiveVolume   => volume   > 0f ? volume   : 1f;
+    // EffectiveVolume folds in the per-sound boost (dB). The boost can push the gain above 1.0,
+    // which amplifies one-shots (PlayOneShot volumeScale). Looping SFX still clamp at 1.0 because
+    // AudioSource.volume is clamped [0,1] by Unity — boost has no effect there (by design, no mixer).
+    public float EffectiveVolume   => (volume > 0f ? volume : 1f) * Mathf.Pow(10f, boostDb / 20f);
     public float EffectivePitchMin => pitchMin > 0f ? pitchMin : 1f;
     public float EffectivePitchMax => pitchMax > 0f ? pitchMax : 1f;
 
     [SerializeField] public string name;
     [SerializeField] private AudioClip[] sounds;
 
-    [Range(0f, 1f)]
-    [SerializeField] public float volume;       // 0 = use default (1.0)
+    [Range(0f, 10f)]
+    [SerializeField] public float volume;       // 0 = use default 
+
+    [Range(-24f, 12f)]
+    [Tooltip("Per-sound boost in dB on top of volume. 0 = no change, +dB amplifies. " +
+             "Affects one-shots only; looping SFX clamp at unity gain (no mixer).")]
+    [SerializeField] public float boostDb;      // 0 = no boost
 
     [Range(0.5f, 2f)]
     [SerializeField] public float pitchMin;     // 0 = use default (1.0)
@@ -528,6 +639,26 @@ public struct SoundList
     [SerializeField] public float pitchMax;     // 0 = use default (1.0)
 
     [SerializeField] public bool loop;          // informational — used by StartLoop callers
+}
+
+public enum MusicStartMode { OnSceneLoad, OnPlayerTrigger }
+
+[Serializable]
+public struct SceneAudio
+{
+    [Tooltip("Scene asset name — must match exactly (case-sensitive).")]
+    public string sceneName;
+    public MusicType music;
+    [Range(0f, 5f)]
+    [Tooltip("Music volume for this scene. 0 = use the SoundManager default.")]
+    public float musicVolume;
+    [Tooltip("OnSceneLoad: music starts when the scene opens. OnPlayerTrigger: music waits for a MusicZoneTrigger collider.")]
+    public MusicStartMode musicStart;
+    [Tooltip("Optional looping ambient bed for this scene. Leave empty for none.")]
+    public AudioClip ambient;
+    [Range(0f, 5f)]
+    [Tooltip("Ambient volume. 0 = full.")]
+    public float ambientVolume;
 }
 
 [Serializable]

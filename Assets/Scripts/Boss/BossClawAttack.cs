@@ -111,12 +111,7 @@ public class BossClawAttack : MonoBehaviour
     [SerializeField] private AudioSource _sfxSource;
     [SerializeField] private SfxCue anticipationSfx;
     [SerializeField] private SfxCue strikeSfx;
-    [SerializeField] private SfxCue missImpactSfx;
     [SerializeField] private SfxCue retractSfx;
-    [Tooltip("Plays at the start of the lift-up during a grab. Bridges the ~0.5s silence before the smash.")]
-    [SerializeField] private SfxCue liftSfx;
-    [Tooltip("Plays at the start of the downward smash during a grab. Bridges the gap so the impact thud lands naturally.")]
-    [SerializeField] private SfxCue smashWhooshSfx;
     [SerializeField] private SfxCue smashImpactSfx;
 
     // ── Debug ─────────────────────────────────────────────────────────────
@@ -155,6 +150,7 @@ public class BossClawAttack : MonoBehaviour
     private void Start()
     {
         if (_sfxSource == null) _sfxSource = GetComponent<AudioSource>();
+        BossSfx.Make3D(_sfxSource);
         SaveIdlePositions();
         if (clawCollider != null)
         {
@@ -253,7 +249,6 @@ public class BossClawAttack : MonoBehaviour
         else
         {
             // Missed — hold in place, fire feedback event, then retract.
-            BossSfx.Play(this, SoundType.BOSS_CLAW_IMPACT, missImpactSfx, _sfxSource);
             OnClawImpact?.Invoke();
             yield return new WaitForSeconds(holdDuration);
         }
@@ -288,7 +283,6 @@ public class BossClawAttack : MonoBehaviour
         gripWorldPos.z = _idleClawPos.z;
 
         // Lift: bezier claw IK + player from strikeTarget up to gripWorldPos.
-        BossSfx.Play(this, SoundType.BOSS_CLAW_ANTICIPATION, liftSfx, _sfxSource);
         float e = 0f;
         while (e < liftDuration)
         {
@@ -315,7 +309,6 @@ public class BossClawAttack : MonoBehaviour
         Vector3 smashTarget = new Vector3(gripWorldPos.x, smashY, _idleClawPos.z);
 
         // Smash: slam claw IK + player straight down to the ground.
-        BossSfx.Play(this, SoundType.BOSS_CLAW_STRIKE, smashWhooshSfx, _sfxSource);
         e = 0f;
         while (e < smashDuration)
         {

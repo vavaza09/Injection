@@ -22,6 +22,8 @@ namespace Game.Tutorial
             public string gamepadLabel = "?";   // text fallback when no gamepad sprite
             public Sprite keyboardSprite;       // Kenney keyboard/mouse glyph
             public Sprite gamepadSprite;        // Kenney gamepad glyph
+            [Tooltip("Override glyph size for this binding only. 0 = use global glyphSize.")]
+            public float sizeOverride = 0f;
         }
 
         [SerializeField] private TextMeshProUGUI label;
@@ -48,11 +50,23 @@ namespace Game.Tutorial
         private PromptEntry[] _keys;
         private bool _showingSuccess;
         private readonly List<GameObject> _chips = new List<GameObject>();
+        private Vector2Int _lastScreenSize;
 
         private void Awake()
         {
             if (label == null || glyphRow == null) BuildDefaultUI();
             if (deviceTracker == null) deviceTracker = FindAnyObjectByType<InputDeviceTracker>();
+            _lastScreenSize = new Vector2Int(Screen.width, Screen.height);
+        }
+
+        private void Update()
+        {
+            var current = new Vector2Int(Screen.width, Screen.height);
+            if (current != _lastScreenSize)
+            {
+                _lastScreenSize = current;
+                if (!_showingSuccess && _keys != null) Render();
+            }
         }
 
         private void OnEnable()
@@ -113,17 +127,29 @@ namespace Game.Tutorial
             for (int i = 0; i < _keys.Length; i++)
             {
                 var entry = _keys[i];
-                var binding = Find(entry.actionKey);
-                Sprite sprite = binding == null ? null : (gamepad ? binding.gamepadSprite : binding.keyboardSprite);
-                if (sprite != null)
+
+                if (string.IsNullOrEmpty(entry.actionKey))
                 {
-                    CreateGlyphChip(sprite);
+                    if (!string.IsNullOrEmpty(entry.text))
+                        CreateLabelChip(entry.text);
+                    else
+                        CreateSpacerChip(entry.spacerWidth);
                 }
                 else
                 {
-                    string label = binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : null;
-                    if (string.IsNullOrEmpty(label)) label = entry.actionKey;
-                    CreateTextChip(label);
+                    var binding = Find(entry.actionKey);
+                    Sprite sprite = binding == null ? null : (gamepad ? binding.gamepadSprite : binding.keyboardSprite);
+                    if (sprite != null)
+                    {
+                        float size = (binding != null && binding.sizeOverride > 0f) ? binding.sizeOverride : glyphSize;
+                        CreateGlyphChip(sprite, size);
+                    }
+                    else
+                    {
+                        string chipLabel = binding != null ? (gamepad ? binding.gamepadLabel : binding.keyboardLabel) : null;
+                        if (string.IsNullOrEmpty(chipLabel)) chipLabel = entry.actionKey;
+                        CreateTextChip(chipLabel);
+                    }
                 }
 
                 if (entry.separatorAfter != SeparatorAfter.None)
@@ -138,7 +164,7 @@ namespace Game.Tutorial
             return null;
         }
 
-        private void CreateGlyphChip(Sprite sprite)
+        private void CreateGlyphChip(Sprite sprite, float size)
         {
             var go = new GameObject("Glyph", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
             go.transform.SetParent(glyphRow, false);
@@ -148,8 +174,8 @@ namespace Game.Tutorial
             img.preserveAspect = true;
 
             var le = go.GetComponent<LayoutElement>();
-            le.preferredWidth = glyphSize;
-            le.preferredHeight = glyphSize;
+            le.preferredWidth = size;
+            le.preferredHeight = size;
 
             _chips.Add(go);
         }
@@ -200,6 +226,36 @@ namespace Game.Tutorial
             _chips.Add(go);
         }
 
+        private void CreateSpacerChip(float width)
+        {
+            var go = new GameObject("Spacer", typeof(RectTransform), typeof(LayoutElement));
+            go.transform.SetParent(glyphRow, false);
+
+            var le = go.GetComponent<LayoutElement>();
+            le.preferredWidth = width > 0f ? width : 24f;
+            le.minHeight = glyphSize;
+
+            _chips.Add(go);
+        }
+
+        private void CreateLabelChip(string text)
+        {
+            var go = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            go.transform.SetParent(glyphRow, false);
+
+            var tmp = go.GetComponent<TextMeshProUGUI>();
+            tmp.text = text;
+            tmp.fontSize = fontSize * 0.875f;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = descriptionColor;
+            if (font != null) tmp.font = font;
+
+            var le = go.GetComponent<LayoutElement>();
+            le.minHeight = glyphSize;
+
+            _chips.Add(go);
+        }
+
         private void ClearChips()
         {
             for (int i = 0; i < _chips.Count; i++)
@@ -212,6 +268,10 @@ namespace Game.Tutorial
             var canvasGo = new GameObject("TutorialPromptCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.transform.SetParent(transform, false);
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = canvasGo.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = 0.5f;
 
             // Full-width background strip — Panel lives inside it so position always matches.
             var bgGo = new GameObject("Background", typeof(RectTransform), typeof(Image));
@@ -225,6 +285,7 @@ namespace Game.Tutorial
             _bgImage = bgGo.GetComponent<Image>();
             _bgImage.color = bgColor;
             _bgImage.raycastTarget = false;
+            bgGo.AddComponent<RectMask2D>();
             bgGo.SetActive(false);
 
             // Panel is a child of BG, stretches to fill it — guarantees vertical centering.

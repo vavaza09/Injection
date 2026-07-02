@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using Game.Rooms;
 
 public class RoomLockTrigger : MonoBehaviour
 {
@@ -42,6 +43,9 @@ public class RoomLockTrigger : MonoBehaviour
 
     private readonly List<GameObject> _spawnedWalls = new List<GameObject>();
     private bool _locked;
+    private bool _cameraReleased;
+    private IRoomLoader _roomLoader;
+    private Player _player;
 
     // Cached camera state for restore
     private Transform _cachedFollow;
@@ -61,16 +65,50 @@ public class RoomLockTrigger : MonoBehaviour
 
         if (roomVcam != null)
             _composer = roomVcam.GetComponent<CinemachinePositionComposer>();
+
+        _roomLoader = FindFirstObjectByType<RoomManager>();
+
+        var playerGo = GameObject.FindGameObjectWithTag("Player");
+        _player = playerGo != null ? playerGo.GetComponent<Player>() : null;
+        if (_player != null) _player.Died += OnPlayerDied;
+    }
+
+    private void OnEnable()
+    {
+        BossBase.Defeated += OnBossDefeated;
+    }
+
+    private void OnDisable()
+    {
+        BossBase.Defeated -= OnBossDefeated;
     }
 
     private void OnDestroy()
     {
         if (_panProxy != null) Destroy(_panProxy.gameObject);
+        if (_player != null) _player.Died -= OnPlayerDied;
+    }
+
+    private void OnBossDefeated()
+    {
+        if (!_locked) return;
+        ReleaseCamera();
+    }
+
+    // Player death doesn't defeat the boss, so OnBossDefeated never fires — without this the
+    // camera stays locked on the room anchor through the death/respawn beat instead of
+    // following the player. Restores directly (not via ReleaseCamera/_cameraReleased) so the
+    // room stays logically locked and a later real boss-defeat still restores correctly.
+    private void OnPlayerDied(character _)
+    {
+        if (!_locked) return;
+        RestoreCamera();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_locked) return;
+        if (_roomLoader != null && _roomLoader.IsTransitioning) return;
         if (!other.CompareTag("Player")) return;
 
         _locked = true;
@@ -216,9 +254,16 @@ public class RoomLockTrigger : MonoBehaviour
         OpenRoom();
     }
 
-    private void OpenRoom()
+    private void ReleaseCamera()
     {
+        if (_cameraReleased) return;
+        _cameraReleased = true;
         RestoreCamera();
+    }
+
+    public void OpenRoom()
+    {
+        ReleaseCamera();
 
         foreach (var wall in _spawnedWalls)
         {

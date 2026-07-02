@@ -11,6 +11,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float noPlayerWalkDelay = 3f;
     [SerializeField] private float boundaryPauseTime = 0.8f;
 
+    [Header("Ledge / Cliff Check")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float edgeCheckLookahead = 0.3f;
+    [SerializeField] private float edgeCheckDepth = 1.0f;
+
     private Vector2 patrolCenter;
     private float leftBoundary;
     private float rightBoundary;
@@ -19,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private float noPlayerTimer;
     private bool movingRight = true;
     private bool isAtBoundary;
+    private Collider2D _bodyCollider;
 
     private void Awake()
     {
@@ -28,6 +34,11 @@ public class EnemyAI : MonoBehaviour
         patrolCenter = transform.position;
         leftBoundary  = patrolCenter.x - walkDistance;
         rightBoundary = patrolCenter.x + walkDistance;
+
+        if (groundLayer == 0)
+            groundLayer = LayerMask.GetMask("Ground", "Platform");
+
+        _bodyCollider = enemy != null ? enemy.GetComponent<Collider2D>() : GetComponent<Collider2D>();
 
         FlipSprite(movingRight);
     }
@@ -41,8 +52,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (enemy == null) return;
 
-        if (enemy.GetState() == EnemyState.Stunned && currentState != EnemyState.Stunned)
+        EnemyState enemyState = enemy.GetState();
+
+        if (enemyState == EnemyState.Stunned && currentState != EnemyState.Stunned)
             ChangeState(EnemyState.Stunned);
+        else if (enemyState != EnemyState.Stunned && currentState == EnemyState.Stunned)
+            ChangeState(EnemyState.Idle);
 
         switch (currentState)
         {
@@ -122,6 +137,13 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        if (!HasGroundAhead(movingRight))
+        {
+            isAtBoundary = true;
+            ChangeState(EnemyState.Idle);
+            return;
+        }
+
         Vector2 direction = new Vector2(movingRight ? 1f : -1f, 0f);
         enemy.Patrol(direction, patrolSpeed);
         FlipSprite(movingRight);
@@ -129,7 +151,6 @@ public class EnemyAI : MonoBehaviour
 
     private void Chase()
     {
-        enemy.ChasePlayer();
         enemy.DetectPlayer();
 
         if (enemy.GetState() == EnemyState.Attack)
@@ -147,6 +168,8 @@ public class EnemyAI : MonoBehaviour
         }
 
         bool playerRight = enemy.playerTransform.position.x > enemy.transform.position.x;
+        if (HasGroundAhead(playerRight))
+            enemy.ChasePlayer();
         FlipSprite(playerRight);
     }
 
@@ -173,11 +196,56 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private bool HasGroundAhead(bool movingRight)
+    {
+        float leadingX;
+        float originY;
+
+        if (_bodyCollider != null)
+        {
+            Bounds b = _bodyCollider.bounds;
+            leadingX = movingRight ? b.max.x + edgeCheckLookahead : b.min.x - edgeCheckLookahead;
+            originY  = b.min.y + 0.05f;
+        }
+        else
+        {
+            float offset = movingRight ? edgeCheckLookahead : -edgeCheckLookahead;
+            leadingX = transform.position.x + offset;
+            originY  = transform.position.y;
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(leadingX, originY), Vector2.down, edgeCheckDepth, groundLayer);
+        return hit.collider != null;
+    }
+
     private void FlipSprite(bool faceRight)
     {
         if (enemy == null) return;
         Vector3 euler = enemy.transform.eulerAngles;
         euler.y = (faceRight != enemy.SpriteFacesLeft) ? 0f : 180f;
         enemy.transform.eulerAngles = euler;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (enemy == null) return;
+        Collider2D col = _bodyCollider != null ? _bodyCollider : enemy.GetComponent<Collider2D>();
+
+        float leadingX, originY;
+        if (col != null)
+        {
+            Bounds b = col.bounds;
+            leadingX = movingRight ? b.max.x + edgeCheckLookahead : b.min.x - edgeCheckLookahead;
+            originY  = b.min.y + 0.05f;
+        }
+        else
+        {
+            float offset = movingRight ? edgeCheckLookahead : -edgeCheckLookahead;
+            leadingX = transform.position.x + offset;
+            originY  = transform.position.y;
+        }
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(new Vector3(leadingX, originY, 0f), new Vector3(leadingX, originY - edgeCheckDepth, 0f));
     }
 }

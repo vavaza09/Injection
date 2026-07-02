@@ -94,8 +94,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GasCloudHitbox
   damage: 1
-  tickInterval: 1.4
-  damageDelay: 3
+  tickInterval: 1.2
+  damageDelay: 1
 --- !u!114 &6307202597509251684
 MonoBehaviour:
   m_ObjectHideFlags: 0

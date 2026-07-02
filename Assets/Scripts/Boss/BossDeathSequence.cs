@@ -46,6 +46,8 @@ public class BossDeathSequence : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource sfxSource;
 
+    public static event System.Action Completed;
+
     private bool _playing;
 
     public void Play()
@@ -60,6 +62,7 @@ public class BossDeathSequence : MonoBehaviour
         // ── Setup ─────────────────────────────────────────────────────────────
 
         if (sfxSource == null) sfxSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        BossSfx.Make3D(sfxSource);
         SoundManager.PlaySoundOn(SoundType.BOSS_DEATH, sfxSource);
 
         var idle = GetComponent<BossIdleAnimation>();
@@ -135,6 +138,15 @@ public class BossDeathSequence : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
+        if (Completed != null)
+        {
+            foreach (var del in Completed.GetInvocationList())
+            {
+                try { ((System.Action)del).Invoke(); }
+                catch (System.Exception e) { Debug.LogException(e); }
+            }
+        }
+
         // Destroy the entire boss hierarchy (BossDeathSequence dies with it — that's fine, we're done)
         Destroy(sinkRoot.gameObject);
     }
@@ -191,6 +203,8 @@ public class BossDeathSequence : MonoBehaviour
     {
         if (explosionFrames == null || explosionFrames.Length == 0) yield break;
 
+        SoundManager.PlaySound(SoundType.ENEMY_DEATH);
+
         var go = new GameObject("_BossDeathFX");
         go.transform.position = worldPos;
         go.transform.localScale = Vector3.one * scale;
@@ -235,7 +249,8 @@ public class BossHeadLanding : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, _groundMask);
                 if (hit.collider != null)
                 {
-                    _rb.bodyType = RigidbodyType2D.Static;
+                    _rb.linearVelocity = Vector2.zero;
+                    _rb.angularVelocity = 0f;
                     Destroy(this);
                     yield break;
                 }
