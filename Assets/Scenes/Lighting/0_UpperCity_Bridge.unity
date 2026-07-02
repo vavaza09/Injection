@@ -16186,7 +16186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.37915978, g: 0.690566, b: 0.6206125, a: 0.14901961}
+  m_Color: {r: 0.37915978, g: 0.690566, b: 0.6206125, a: 0.101960786}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -34338,7 +34338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.37915978, g: 0.690566, b: 0.6206125, a: 0.14901961}
+  m_Color: {r: 0.37915978, g: 0.690566, b: 0.6206125, a: 0.101960786}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
