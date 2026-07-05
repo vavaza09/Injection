@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eecd34ff49f2c234db234f74cd79bcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RespawnCoordinator
-  deathDisplayDuration: 3
+  deathDisplayDuration: 1.5
   respawnInvincDuration: 2
 --- !u!114 &115910575
 MonoBehaviour:
@@ -658,8 +658,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 994121404}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: m_SortingOrder
       value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 367509201
       objectReference: {fileID: 0}
     - target: {fileID: 7575443319861014824, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: m_Pivot.x
@@ -1022,11 +1030,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2306859723887614057, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_SortingLayer
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2306859723887614057, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_SortingLayerID
-      value: 0
+      value: 2006563727
       objectReference: {fileID: 0}
     - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: vignettePeak
