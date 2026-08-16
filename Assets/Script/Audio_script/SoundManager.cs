@@ -538,7 +538,7 @@ public class SoundManager : MonoBehaviour
 
             while (elapsed < musicFadeDuration)
             {
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / musicFadeDuration);
                 yield return null;
             }
@@ -554,7 +554,7 @@ public class SoundManager : MonoBehaviour
 
         while (fadeInElapsed < musicFadeDuration)
         {
-            fadeInElapsed += Time.deltaTime;
+            fadeInElapsed += Time.unscaledDeltaTime;
             musicSource.volume = Mathf.Lerp(0f, targetVolume, fadeInElapsed / musicFadeDuration);
             yield return null;
         }
@@ -570,7 +570,7 @@ public class SoundManager : MonoBehaviour
 
         while (elapsed < musicFadeDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / musicFadeDuration);
             yield return null;
         }

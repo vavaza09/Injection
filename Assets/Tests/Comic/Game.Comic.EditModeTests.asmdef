@@ -1,0 +1,23 @@
+{
+  "name": "Game.Comic.EditModeTests",
+  "references": [
+    "Game.Comic",
+    "Core.Logging",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

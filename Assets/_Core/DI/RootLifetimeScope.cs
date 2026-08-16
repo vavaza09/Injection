@@ -66,6 +66,7 @@ public class RootLifetimeScope : LifetimeScope
 
         builder.Register<LoggerFactory>(_ => new LoggerFactory(logConfig), Lifetime.Singleton);
         builder.Register<ISlowMotionController>(_ => SlowMotion.Instance, Lifetime.Singleton);
+        builder.Register<Game.Pause.IPauseService>(_ => Game.Pause.PauseStack.Instance, Lifetime.Singleton);
 
         // Plain C# gameplay components
         builder.Register<HealthComponent>(Lifetime.Transient);

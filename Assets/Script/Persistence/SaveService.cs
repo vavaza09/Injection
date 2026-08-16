@@ -7,7 +7,7 @@ namespace Game.Persistence
         private readonly ISaveStorage _storage;
         private readonly ILogger _logger;
 
-        private const int CurrentVersion = 3;
+        private const int CurrentVersion = 4;
 
         public SaveService(ISaveStorage storage, ILogger logger)
         {
@@ -48,9 +48,15 @@ namespace Game.Persistence
             {
                 old.version = 3;
                 old.objectivesCompleted ??= new System.Collections.Generic.List<string>();
-                return old;
             }
-            return null;
+
+            if (old.version == 3)
+            {
+                old.version = 4;
+                old.comicsSeen ??= new System.Collections.Generic.List<string>();
+            }
+
+            return old.version == CurrentVersion ? old : null;
         }
 
         public void Save(SaveData data)
@@ -105,6 +111,26 @@ namespace Game.Persistence
             if (string.IsNullOrEmpty(objectiveId)) return false;
             var data = Load();
             return data != null && data.objectivesCompleted.Contains(objectiveId);
+        }
+
+        public void MarkComicSeen(string comicId)
+        {
+            if (string.IsNullOrEmpty(comicId)) return;
+
+            var data = Load() ?? new SaveData();
+            if (!data.comicsSeen.Contains(comicId))
+            {
+                data.comicsSeen.Add(comicId);
+                Save(data);
+                _logger?.Log($"[SaveService] Comic '{comicId}' marked seen.");
+            }
+        }
+
+        public bool IsComicSeen(string comicId)
+        {
+            if (string.IsNullOrEmpty(comicId)) return false;
+            var data = Load();
+            return data != null && data.comicsSeen.Contains(comicId);
         }
     }
 }

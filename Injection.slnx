@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Game.Comic.Editor.csproj" />
   <Project Path="Game.Components.Movement.csproj" />
   <Project Path="Game.Rooms.Objectives.Trackers.csproj" />
   <Project Path="Game.Components.Skills.csproj" />
@@ -7,6 +8,8 @@
   <Project Path="Game.Tests.Integration.csproj" />
   <Project Path="Game.Tests.Fixtures.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Game.Comic.EditModeTests.csproj" />
+  <Project Path="Game.Comic.csproj" />
   <Project Path="Game.Health.csproj" />
   <Project Path="Game.Rooms.EditModeTests.csproj" />
   <Project Path="Game.Persistence.csproj" />

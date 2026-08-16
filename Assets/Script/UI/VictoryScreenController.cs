@@ -1,8 +1,11 @@
 using UnityEngine;
-using Game.Characters.Player;
+using Game.Pause;
+using Game.UI;
 
 public class VictoryScreenController : MonoBehaviour
 {
+    private const string PauseHandle = "victoryScreen";
+
     [SerializeField] private GameObject victoryRoot;
     [SerializeField] private string titleSceneName = "TitleScene";
 
@@ -20,16 +23,16 @@ public class VictoryScreenController : MonoBehaviour
     {
         if (victoryRoot == null) { Debug.LogWarning("[VictoryScreenController] victoryRoot is not assigned.", this); return; }
         victoryRoot.SetActive(true);
-        Time.timeScale = 0f;
-        SetPlayerInput(false);
+        PauseStack.Instance.Push(PauseHandle);
+        PlayerInputGate.Set(false);
         SoundManager.PlayMusic(MusicType.MENU);
     }
 
     public void OnContinuePlaying()
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
-        Time.timeScale = 1f;
-        SetPlayerInput(true);
+        PauseStack.Instance.Release(PauseHandle);
+        PlayerInputGate.Set(true);
         victoryRoot.SetActive(false);
     }
 
@@ -37,11 +40,5 @@ public class VictoryScreenController : MonoBehaviour
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
         Game.UI.SessionTeardown.ReturnToTitle(titleSceneName);
-    }
-
-    private void SetPlayerInput(bool on)
-    {
-        var playerGO = GameObject.FindWithTag("Player");
-        playerGO?.GetComponent<Player>()?.SetInputEnabled(on);
     }
 }

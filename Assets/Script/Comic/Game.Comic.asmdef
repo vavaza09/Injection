@@ -1,0 +1,18 @@
+{
+  "name": "Game.Comic",
+  "rootNamespace": "Game.Comic",
+  "references": [
+    "Core.Logging",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

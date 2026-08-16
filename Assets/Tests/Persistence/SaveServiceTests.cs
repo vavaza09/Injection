@@ -143,10 +143,10 @@ namespace Game.Tests.Persistence
             Assert.IsNull(_sut.Load());
         }
 
-        // --- v2 → v3 migration ---
+        // --- version migration ---
 
         [Test]
-        public void Load_MigratesV2ToV3_ReturnsData()
+        public void Load_MigratesV2ToCurrent_ChainsThroughV3AndV4()
         {
             var v2 = new SaveData { version = 2 };
             v2.checkpoint.roomId = "room_harbor";
@@ -158,10 +158,78 @@ namespace Game.Tests.Persistence
             var result = _sut.Load();
 
             Assert.IsNotNull(result, "Migrated v2 save should not be discarded.");
-            Assert.AreEqual(3, result.version);
+            Assert.AreEqual(4, result.version);
             Assert.AreEqual("room_harbor", result.checkpoint.roomId);
             Assert.AreEqual(1, result.bossesDefeated.Count);
             Assert.IsNotNull(result.objectivesCompleted);
+            Assert.IsNotNull(result.comicsSeen);
+        }
+
+        [Test]
+        public void Load_MigratesV3ToV4_InitialisesComicsSeen()
+        {
+            var v3 = new SaveData { version = 3 };
+            v3.checkpoint.roomId = "room_harbor";
+            v3.bossesDefeated.Add("crab_boss");
+            v3.objectivesCompleted.Add("gate1");
+            _storage.Write(v3);
+
+            var result = _sut.Load();
+
+            Assert.IsNotNull(result, "Migrated v3 save should not be discarded.");
+            Assert.AreEqual(4, result.version);
+            Assert.AreEqual("room_harbor", result.checkpoint.roomId);
+            Assert.AreEqual(1, result.bossesDefeated.Count);
+            Assert.AreEqual(1, result.objectivesCompleted.Count);
+            Assert.IsNotNull(result.comicsSeen);
+            Assert.AreEqual(0, result.comicsSeen.Count);
+        }
+
+        // --- comic persistence ---
+
+        [Test]
+        public void MarkComicSeen_AddsId()
+        {
+            _sut.MarkComicSeen("prologue");
+            Assert.IsTrue(_sut.IsComicSeen("prologue"));
+        }
+
+        [Test]
+        public void MarkComicSeen_IsIdempotent()
+        {
+            _sut.MarkComicSeen("prologue");
+            _sut.MarkComicSeen("prologue");
+            var data = _sut.Load();
+            Assert.AreEqual(1, data.comicsSeen.Count);
+        }
+
+        [Test]
+        public void IsComicSeen_FalseWhenNotMarked()
+        {
+            Assert.IsFalse(_sut.IsComicSeen("prologue"));
+        }
+
+        [Test]
+        public void MarkComicSeen_EmptyId_IsIgnored()
+        {
+            _sut.MarkComicSeen("");
+            Assert.IsFalse(_sut.HasSave());
+        }
+
+        [Test]
+        public void MarkComicSeen_PreservesExistingData()
+        {
+            var initial = new SaveData();
+            initial.checkpoint.roomId = "room_harbor";
+            initial.bossesDefeated.Add("crab_boss");
+            _sut.Save(initial);
+
+            _sut.MarkComicSeen("prologue");
+            var data = _sut.Load();
+
+            Assert.AreEqual("room_harbor", data.checkpoint.roomId);
+            Assert.IsTrue(data.bossesDefeated.Contains("crab_boss"));
+            Assert.IsTrue(data.comicsSeen.Contains("prologue"));
         }
 
         // --- objective persistence ---
