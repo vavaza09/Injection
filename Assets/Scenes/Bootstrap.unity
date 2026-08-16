@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eecd34ff49f2c234db234f74cd79bcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RespawnCoordinator
-  deathDisplayDuration: 3
+  deathDisplayDuration: 1.5
   respawnInvincDuration: 2
 --- !u!114 &115910575
 MonoBehaviour:
@@ -657,6 +657,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 994121404}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_SortingOrder
+      value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 5922609086601842250, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 367509201
+      objectReference: {fileID: 0}
     - target: {fileID: 7575443319861014824, guid: ee651d8a34af2a94e90e4f6487701351, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1018,15 +1030,67 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2306859723887614057, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_SortingLayer
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2306859723887614057, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_SortingLayerID
-      value: 0
+      value: 2006563727
+      objectReference: {fileID: 0}
+    - target: {fileID: 2474572027279144426, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: vignettePeak
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.a
+      value: 0.7058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9748427
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8785311
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_Color.r
+      value: 0.40771714
       objectReference: {fileID: 0}
     - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_Intensity
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.744
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_LightVolumeEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_PointLightOuterRadius
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: m_ApplyToSortingLayers.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: 'm_ApplyToSortingLayers.Array.data[1]'
+      value: -167005809
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: 'm_ApplyToSortingLayers.Array.data[2]'
+      value: 103192207
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: 'm_ApplyToSortingLayers.Array.data[3]'
+      value: 103192207
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240961599033378952, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
+      propertyPath: 'm_ApplyToSortingLayers.Array.data[4]'
+      value: 103192207
       objectReference: {fileID: 0}
     - target: {fileID: 4781505204020870530, guid: 10ad6a8c1dc76114caf67ed3da51a2c5, type: 3}
       propertyPath: m_LocalPosition.x

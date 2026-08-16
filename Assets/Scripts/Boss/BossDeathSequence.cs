@@ -203,6 +203,8 @@ public class BossDeathSequence : MonoBehaviour
     {
         if (explosionFrames == null || explosionFrames.Length == 0) yield break;
 
+        SoundManager.PlaySound(SoundType.ENEMY_DEATH);
+
         var go = new GameObject("_BossDeathFX");
         go.transform.position = worldPos;
         go.transform.localScale = Vector3.one * scale;
