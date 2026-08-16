@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Game.Characters.Player;
+using Game.Pause;
+using Game.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
+    private const string PauseHandle = "pauseMenu";
+
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private string titleSceneName = "TitleScene";
@@ -45,19 +48,19 @@ public class PauseMenuController : MonoBehaviour
 
     public void Pause()
     {
-        Time.timeScale = 0f;
+        PauseStack.Instance.Push(PauseHandle);
         menuRoot.SetActive(true);
-        SetPlayerInput(false);
+        PlayerInputGate.Set(false);
         _isPaused = true;
     }
 
     public void Resume()
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
-        Time.timeScale = 1f;
+        PauseStack.Instance.Release(PauseHandle);
         menuRoot.SetActive(false);
         settingsPanel.SetActive(false);
-        SetPlayerInput(true);
+        PlayerInputGate.Set(true);
         _isPaused = false;
         _settingsOpen = false;
     }
@@ -80,12 +83,6 @@ public class PauseMenuController : MonoBehaviour
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
         Game.UI.SessionTeardown.ReturnToTitle(titleSceneName);
-    }
-
-    private void SetPlayerInput(bool on)
-    {
-        var playerGO = GameObject.FindWithTag("Player");
-        playerGO?.GetComponent<Player>()?.SetInputEnabled(on);
     }
 
     private void OnDestroy()
