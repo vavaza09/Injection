@@ -88,7 +88,13 @@ namespace Game.Comic.Editor
                 _stage.CurrentView.Tick(dt);
             }
 
-            _stage.Render();
+            // The actual camera.Render() call happens in DrawCanvasColumn during OnGUI's
+            // Repaint event, not here — interleaving a manual URP render with
+            // EditorApplication.update's independent tick (instead of the IMGUI repaint pass
+            // that's actually synchronized with the real render pipeline) corrupted Render
+            // Graph pass state under continuous use ("BlitFinalToBackBuffer ... dimensions
+            // do not match RenderPass specifications"), even though a single isolated render
+            // call works fine.
             Repaint();
         }
 
@@ -369,8 +375,12 @@ namespace Game.Comic.Editor
             Rect rect = GUILayoutUtility.GetRect(width, height);
             _previewScreenRect = rect;
 
-            if (Event.current.type == EventType.Repaint && _stage.Texture != null)
-                GUI.DrawTexture(rect, _stage.Texture, ScaleMode.StretchToFill, false);
+            if (Event.current.type == EventType.Repaint)
+            {
+                _stage.Render();
+                if (_stage.Texture != null)
+                    GUI.DrawTexture(rect, _stage.Texture, ScaleMode.StretchToFill, false);
+            }
 
             HandleCanvasInput(page, rect);
             DrawSelectionOverlay(page, rect);
