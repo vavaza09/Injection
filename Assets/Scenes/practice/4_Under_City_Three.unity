@@ -6175,6 +6175,7 @@ GameObject:
   - component: {fileID: 232069815}
   - component: {fileID: 232069814}
   - component: {fileID: 232069813}
+  - component: {fileID: 232069817}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -6291,6 +6292,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &232069817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232069812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96bf9781af22d304eb4d98330a1cecb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineAimLean
+  aimMaxOffset: 3
+  aimStrength: 0.6
+  aimSmoothTime: 1.2
+  aimReturnSmoothTime: 0.25
 --- !u!4 &285489066 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9219424678529984816, guid: f7cc23a9f5fc5e740beac21e24fbbda9, type: 3}

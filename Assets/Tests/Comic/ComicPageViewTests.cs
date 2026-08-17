@@ -127,6 +127,118 @@ namespace Game.Tests.Comic
         }
 
         [Test]
+        public void ApplyBeat_ExitBeatFresh_WithAnimate_StaysVisibleUntilSnapped()
+        {
+            var page = new ComicPage { name = "P1" };
+            var panel = new ComicPanel
+            {
+                name = "A",
+                beatIndex = 0,
+                exitBeatIndex = 1,
+                rect = new Rect(0, 0, 400, 300),
+                exit = new ComicTween { duration = 10f, fromAlpha = 0f }
+            };
+            page.panels.Add(panel);
+
+            var view = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            view.ApplyBeat(0, false);
+            view.ApplyBeat(1, true);
+
+            Assert.IsTrue(view.Root.Find("A").gameObject.activeSelf, "Panel should still be visible while its own Exit tween is mid-flight.");
+            Assert.IsTrue(view.IsAnimating);
+
+            view.SnapCurrentBeat();
+            Assert.IsFalse(view.Root.Find("A").gameObject.activeSelf, "Panel should be hidden once its Exit tween settles.");
+        }
+
+        [Test]
+        public void ApplyBeat_ExitBeatPassed_WithoutAnimate_IsHiddenImmediately()
+        {
+            var page = new ComicPage { name = "P1" };
+            page.panels.Add(new ComicPanel { name = "A", beatIndex = 0, exitBeatIndex = 1, rect = new Rect(0, 0, 400, 300) });
+
+            var view = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            view.ApplyBeat(2, false);
+
+            Assert.IsFalse(view.Root.Find("A").gameObject.activeSelf);
+        }
+
+        [Test]
+        public void ApplyBeat_ExitBeat_SequentialWalkMatchesDirectJump()
+        {
+            var page = new ComicPage { name = "P1" };
+            page.panels.Add(new ComicPanel { name = "A", beatIndex = 0, exitBeatIndex = 1, rect = new Rect(0, 0, 400, 300) });
+
+            var walked = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            for (int b = 0; b <= 2; b++) walked.ApplyBeat(b, true);
+
+            var jumped = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            jumped.ApplyBeat(2, false);
+
+            Assert.AreEqual(jumped.Root.Find("A").gameObject.activeSelf, walked.Root.Find("A").gameObject.activeSelf);
+        }
+
+        [Test]
+        public void ApplyBeat_LayerExitBeatFresh_WithAnimate_StaysVisibleUntilSnapped()
+        {
+            var page = new ComicPage { name = "P1" };
+            var panel = new ComicPanel { name = "A", beatIndex = 0, rect = new Rect(0, 0, 400, 300) };
+            panel.layers.Add(new ComicLayer
+            {
+                id = "sfx",
+                kind = ComicLayerKind.Sprite,
+                beatIndex = 0,
+                exitBeatIndex = 1,
+                rect = new Rect(0, 0, 50, 50),
+                exit = new ComicTween { duration = 10f, fromAlpha = 0f }
+            });
+            page.panels.Add(panel);
+
+            var view = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            view.ApplyBeat(0, false);
+            view.ApplyBeat(1, true);
+
+            Assert.IsTrue(view.Root.Find("A/Clip/sfx").gameObject.activeSelf, "Layer should still be visible while its own Exit tween is mid-flight.");
+            Assert.IsTrue(view.IsAnimating);
+
+            view.SnapCurrentBeat();
+            Assert.IsFalse(view.Root.Find("A/Clip/sfx").gameObject.activeSelf, "Layer should be hidden once its Exit tween settles.");
+            // The panel itself has no exitBeatIndex of its own — only the layer left, panel stays.
+            Assert.IsTrue(view.Root.Find("A").gameObject.activeSelf);
+        }
+
+        [Test]
+        public void ApplyBeat_LayerExitBeatPassed_WithoutAnimate_IsHiddenImmediately()
+        {
+            var page = new ComicPage { name = "P1" };
+            var panel = new ComicPanel { name = "A", beatIndex = 0, rect = new Rect(0, 0, 400, 300) };
+            panel.layers.Add(new ComicLayer { id = "sfx", kind = ComicLayerKind.Sprite, beatIndex = 0, exitBeatIndex = 1, rect = new Rect(0, 0, 50, 50) });
+            page.panels.Add(panel);
+
+            var view = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            view.ApplyBeat(2, false);
+
+            Assert.IsFalse(view.Root.Find("A/Clip/sfx").gameObject.activeSelf);
+        }
+
+        [Test]
+        public void ApplyBeat_LayerExitBeat_SequentialWalkMatchesDirectJump()
+        {
+            var page = new ComicPage { name = "P1" };
+            var panel = new ComicPanel { name = "A", beatIndex = 0, rect = new Rect(0, 0, 400, 300) };
+            panel.layers.Add(new ComicLayer { id = "sfx", kind = ComicLayerKind.Sprite, beatIndex = 0, exitBeatIndex = 1, rect = new Rect(0, 0, 50, 50) });
+            page.panels.Add(panel);
+
+            var walked = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            for (int b = 0; b <= 2; b++) walked.ApplyBeat(b, true);
+
+            var jumped = ComicPageBuilder.Build(page, new ComicStyle(), NewParent());
+            jumped.ApplyBeat(2, false);
+
+            Assert.AreEqual(jumped.Root.Find("A/Clip/sfx").gameObject.activeSelf, walked.Root.Find("A/Clip/sfx").gameObject.activeSelf);
+        }
+
+        [Test]
         public void TextLayer_ResolvesInlineText_WhenNoProviderGiven()
         {
             var page = new ComicPage { name = "P1" };
