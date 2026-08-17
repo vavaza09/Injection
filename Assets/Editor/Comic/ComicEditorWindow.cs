@@ -36,11 +36,14 @@ namespace Game.Comic.Editor
         private int _layerIndex = -1;
         private int _beat;
         private bool _isPlaying;
+        private float _autoAdvanceElapsed;
         private bool _needsRebuild = true;
         private bool _pageSettingsFoldout = true;
 
         private ComicPreviewStage _stage;
         private double _lastTickTime;
+
+        private const float DefaultAutoAdvanceDelay = 2f;
 
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
@@ -81,11 +84,17 @@ namespace Game.Comic.Editor
                 var page = CurrentPage;
                 _stage.Rebuild(page, _asset != null ? _asset.Style : new ComicStyle());
                 _stage.CurrentView?.ApplyBeat(_beat, false);
+                _autoAdvanceElapsed = 0f;
                 _needsRebuild = false;
             }
-            else if (_isPlaying && _stage.CurrentView != null)
+            else if (_stage.CurrentView != null)
             {
+                // Always ticks, Play or Pause, so a beat's entrance/typewriter tween — kicked off
+                // by SetBeat below — actually plays out frame by frame while stepping through
+                // beats one at a time. Only the auto-advance-to-the-next-beat timer is gated on
+                // _isPlaying; Pause freezes that timer, not the current beat's own animation.
                 _stage.CurrentView.Tick(dt);
+                if (_isPlaying) TickAutoAdvance(dt);
             }
 
             // The actual camera.Render() call happens in DrawCanvasColumn during OnGUI's
@@ -1003,19 +1012,19 @@ namespace Game.Comic.Editor
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
-            if (GUILayout.Button("|<", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(0);
-            if (GUILayout.Button("<", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(_beat - 1);
-
             int maxBeat = page.MaxBeatIndex();
+
+            
+
             EditorGUI.BeginChangeCheck();
             int newBeat = EditorGUILayout.IntSlider(_beat, 0, maxBeat);
             if (EditorGUI.EndChangeCheck()) SetBeat(newBeat);
 
+            if (GUILayout.Button("|<", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(0);
+            if (GUILayout.Button("<", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(_beat - 1);
+            _isPlaying = GUILayout.Toggle(_isPlaying, _isPlaying ? "Pause" : "Play", EditorStyles.toolbarButton, GUILayout.Width(50));
             if (GUILayout.Button(">", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(_beat + 1);
             if (GUILayout.Button(">|", EditorStyles.toolbarButton, GUILayout.Width(28))) SetBeat(maxBeat);
-
-            _isPlaying = GUILayout.Toggle(_isPlaying, _isPlaying ? "Pause" : "Play", EditorStyles.toolbarButton, GUILayout.Width(50));
-
             GUILayout.Label($"Beat {_beat} / {maxBeat}", GUILayout.Width(90));
 
             EditorGUILayout.EndHorizontal();
@@ -1026,7 +1035,39 @@ namespace Game.Comic.Editor
             var page = CurrentPage;
             int maxBeat = page != null ? page.MaxBeatIndex() : 0;
             _beat = Mathf.Clamp(beat, 0, maxBeat);
-            _stage.CurrentView?.ApplyBeat(_beat, false);
+            _stage.CurrentView?.ApplyBeat(_beat, true);
+            _autoAdvanceElapsed = 0f;
+        }
+
+        /// <summary>While "Play" is on, waits for the current beat's entrance/typewriter tweens
+        /// to settle, then waits that beat's authored delay (<see cref="ComicBeatEvent.autoAdvanceAfter"/>,
+        /// mirrors <c>ComicPlayer.TickAutoPlay</c>) before advancing — looping back to beat 0 once
+        /// the page's last beat is reached, so the preview keeps playing while authoring instead
+        /// of stopping dead at the end.</summary>
+        private void TickAutoAdvance(float dt)
+        {
+            var view = _stage.CurrentView;
+            var page = CurrentPage;
+            if (view == null || page == null) return;
+
+            if (view.IsAnimating)
+            {
+                _autoAdvanceElapsed = 0f;
+                return;
+            }
+
+            _autoAdvanceElapsed += dt;
+            if (_autoAdvanceElapsed < GetAutoAdvanceDelay(page, _beat)) return;
+
+            int maxBeat = page.MaxBeatIndex();
+            SetBeat(_beat >= maxBeat ? 0 : _beat + 1);
+        }
+
+        private static float GetAutoAdvanceDelay(ComicPage page, int beat)
+        {
+            for (int i = 0; i < page.beatEvents.Count; i++)
+                if (page.beatEvents[i].beatIndex == beat) return Mathf.Max(0.1f, page.beatEvents[i].autoAdvanceAfter);
+            return DefaultAutoAdvanceDelay;
         }
     }
 }
