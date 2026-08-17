@@ -18,6 +18,10 @@ namespace Game.Comic
         [Tooltip("Beat at which this layer becomes visible. 0 = visible as soon as the panel is revealed.")]
         public int beatIndex;
 
+        [Tooltip("Beat at which this layer plays its own Exit tween below and is removed, " +
+            "independent of the panel it lives in. -1 = never (stays on screen for as long as the panel does).")]
+        public int exitBeatIndex = -1;
+
         [Tooltip("Layout rect relative to the owning panel's un-rotated local frame (panel's bottom-left corner = 0,0). If the panel is rotated, this content rotates rigidly along with it.")]
         public Rect rect = new Rect(0, 0, 200, 100);
         public float rotation;

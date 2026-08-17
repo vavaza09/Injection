@@ -22,6 +22,11 @@ namespace Game.Comic
         [Tooltip("Beat at which this panel becomes visible.")]
         public int beatIndex;
 
+        [Tooltip("Beat at which this panel plays its own Exit tween and is removed from view, " +
+            "independent of focus. -1 = never — the panel just stays on screen, dimmed whenever " +
+            "a later panel takes focus (the default behavior).")]
+        public int exitBeatIndex = -1;
+
         public ComicTween entrance = ComicTween.DefaultEntrance();
         public ComicTween exit = ComicTween.DefaultExit();
 

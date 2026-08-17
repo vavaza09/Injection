@@ -18,6 +18,7 @@ namespace Game.Comic
         public float baseRotation;
         public float entranceElapsed;
         public float exitElapsed;
+        public bool selfExiting;
         public readonly List<ComicLayerRuntime> layers = new List<ComicLayerRuntime>();
     }
 
@@ -34,6 +35,7 @@ namespace Game.Comic
         public string resolvedText;
         public float entranceElapsed;
         public float exitElapsed;
+        public bool selfExiting;
         public float idleClock;
         public float flipbookClock;
         public float typewriterElapsed;
@@ -70,6 +72,17 @@ namespace Game.Comic
 
         internal void AddPanel(ComicPanelRuntime panel) => _panels.Add(panel);
 
+        /// <summary>True once <paramref name="beat"/> has passed a panel's <see cref="ComicPanel.exitBeatIndex"/>
+        /// (-1 = no own exit beat, never true) and the beat isn't the exact one that should still
+        /// be playing the exit tween this frame — i.e. "gone for good", not "currently leaving".</summary>
+        private static bool IsExitSettled(ComicPanel data, int beat, bool animate)
+        {
+            if (data.exitBeatIndex < 0) return false;
+            bool triggered = beat >= data.exitBeatIndex;
+            bool fresh = beat == data.exitBeatIndex;
+            return triggered && !(fresh && animate);
+        }
+
         /// <summary>Reveals/hides/dims panels and layers for <paramref name="beat"/>. When
         /// <paramref name="animate"/> is false, everything visible snaps straight to its settled
         /// layout state (used for editor scrubbing and for a hard Skip).</summary>
@@ -83,6 +96,7 @@ namespace Game.Comic
             for (int i = 0; i < _panels.Count; i++)
             {
                 var p = _panels[i];
+                if (IsExitSettled(p.data, beat, animate)) continue; // gone — can't be the focused panel
                 if (p.data.beatIndex <= beat && p.data.beatIndex >= bestBeat)
                 {
                     bestBeat = p.data.beatIndex;
@@ -93,11 +107,20 @@ namespace Game.Comic
             for (int i = 0; i < _panels.Count; i++)
             {
                 var panel = _panels[i];
-                bool visible = panel.data.beatIndex <= beat;
+                bool exitTriggered = panel.data.exitBeatIndex >= 0 && beat >= panel.data.exitBeatIndex;
+                bool exitFresh = panel.data.exitBeatIndex >= 0 && beat == panel.data.exitBeatIndex;
+                bool exitPlaying = exitTriggered && exitFresh && animate;
+                bool exitSettled = exitTriggered && !exitPlaying;
+
+                bool visible = panel.data.beatIndex <= beat && !exitSettled;
                 panel.root.gameObject.SetActive(visible);
+                panel.selfExiting = visible && exitPlaying;
                 if (!visible) continue;
 
-                bool fresh = panel.data.beatIndex == beat;
+                // A panel whose own exit is fresh-playing was necessarily already fully revealed
+                // (its beatIndex is always <= its exitBeatIndex <= beat), so its entrance never
+                // replays here — only the Exit tween Tick() drives from panel.exitElapsed below.
+                bool fresh = panel.data.beatIndex == beat && !exitPlaying;
                 panel.entranceElapsed = fresh && animate ? 0f : Settled;
                 panel.exitElapsed = 0f;
 
@@ -111,11 +134,17 @@ namespace Game.Comic
                 for (int j = 0; j < panel.layers.Count; j++)
                 {
                     var layer = panel.layers[j];
-                    bool layerVisible = layer.data.beatIndex <= beat;
+                    bool layerExitTriggered = layer.data.exitBeatIndex >= 0 && beat >= layer.data.exitBeatIndex;
+                    bool layerExitFresh = layer.data.exitBeatIndex >= 0 && beat == layer.data.exitBeatIndex;
+                    bool layerExitPlaying = layerExitTriggered && layerExitFresh && animate;
+                    bool layerExitSettled = layerExitTriggered && !layerExitPlaying;
+
+                    bool layerVisible = layer.data.beatIndex <= beat && !layerExitSettled;
                     layer.rt.gameObject.SetActive(layerVisible);
+                    layer.selfExiting = layerVisible && layerExitPlaying;
                     if (!layerVisible) continue;
 
-                    bool layerFresh = layer.data.beatIndex == beat;
+                    bool layerFresh = layer.data.beatIndex == beat && !layerExitPlaying;
                     layer.entranceElapsed = layerFresh && animate ? 0f : Settled;
                     layer.exitElapsed = 0f;
                     layer.idleClock = 0f;
@@ -145,6 +174,19 @@ namespace Game.Comic
                 var panel = _panels[i];
                 if (!panel.root.gameObject.activeSelf) continue;
 
+                if (panel.selfExiting)
+                {
+                    float exitDuration = ComicTweenRunner.TotalDuration(panel.data.exit);
+                    if (panel.exitElapsed < exitDuration) panel.exitElapsed += unscaledDeltaTime;
+                    ApplyPanelSample(panel, ComicTweenRunner.EvaluateExit(panel.data.exit, panel.exitElapsed));
+                    if (ComicTweenRunner.IsFinished(panel.data.exit, panel.exitElapsed))
+                    {
+                        panel.selfExiting = false;
+                        panel.root.gameObject.SetActive(false);
+                    }
+                    continue;
+                }
+
                 float panelDuration = ComicTweenRunner.TotalDuration(panel.data.entrance);
                 if (panel.entranceElapsed < panelDuration) panel.entranceElapsed += unscaledDeltaTime;
 
@@ -155,6 +197,19 @@ namespace Game.Comic
                 {
                     var layer = panel.layers[j];
                     if (!layer.rt.gameObject.activeSelf) continue;
+
+                    if (layer.selfExiting)
+                    {
+                        float layerExitDuration = ComicTweenRunner.TotalDuration(layer.data.exit);
+                        if (layer.exitElapsed < layerExitDuration) layer.exitElapsed += unscaledDeltaTime;
+                        ApplyLayerSample(layer, ComicTweenRunner.EvaluateExit(layer.data.exit, layer.exitElapsed));
+                        if (ComicTweenRunner.IsFinished(layer.data.exit, layer.exitElapsed))
+                        {
+                            layer.selfExiting = false;
+                            layer.rt.gameObject.SetActive(false);
+                        }
+                        continue;
+                    }
 
                     float layerDuration = ComicTweenRunner.TotalDuration(layer.data.entrance);
                     if (layer.entranceElapsed < layerDuration) layer.entranceElapsed += unscaledDeltaTime;
@@ -199,12 +254,28 @@ namespace Game.Comic
             {
                 var panel = _panels[i];
                 if (!panel.root.gameObject.activeSelf) continue;
+
+                if (panel.selfExiting)
+                {
+                    panel.selfExiting = false;
+                    panel.root.gameObject.SetActive(false);
+                    continue;
+                }
+
                 panel.entranceElapsed = Settled;
 
                 for (int j = 0; j < panel.layers.Count; j++)
                 {
                     var layer = panel.layers[j];
                     if (!layer.rt.gameObject.activeSelf) continue;
+
+                    if (layer.selfExiting)
+                    {
+                        layer.selfExiting = false;
+                        layer.rt.gameObject.SetActive(false);
+                        continue;
+                    }
+
                     layer.entranceElapsed = Settled;
                     if (layer.tmp != null && layer.data.reveal == TextRevealMode.Typewriter)
                     {
@@ -223,13 +294,15 @@ namespace Game.Comic
                 {
                     var panel = _panels[i];
                     if (!panel.root.gameObject.activeSelf) continue;
-                    if (!ComicTweenRunner.IsFinished(panel.data.entrance, panel.entranceElapsed)) return true;
+                    if (panel.selfExiting && !ComicTweenRunner.IsFinished(panel.data.exit, panel.exitElapsed)) return true;
+                    if (!panel.selfExiting && !ComicTweenRunner.IsFinished(panel.data.entrance, panel.entranceElapsed)) return true;
 
                     for (int j = 0; j < panel.layers.Count; j++)
                     {
                         var layer = panel.layers[j];
                         if (!layer.rt.gameObject.activeSelf) continue;
-                        if (!ComicTweenRunner.IsFinished(layer.data.entrance, layer.entranceElapsed)) return true;
+                        if (layer.selfExiting && !ComicTweenRunner.IsFinished(layer.data.exit, layer.exitElapsed)) return true;
+                        if (!layer.selfExiting && !ComicTweenRunner.IsFinished(layer.data.entrance, layer.entranceElapsed)) return true;
                         if (layer.tmp != null && layer.data.reveal == TextRevealMode.Typewriter &&
                             layer.tmp.maxVisibleCharacters < layer.resolvedText.Length) return true;
                     }
