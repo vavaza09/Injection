@@ -31,6 +31,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4781505204020870530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1595270260322659608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3574364252656133180}
+  - component: {fileID: 1408319955254991565}
+  m_Layer: 0
+  m_Name: Aim Vignette Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3574364252656133180
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595270260322659608}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2159.9998, y: 0, z: 0}
+  m_LocalScale: {x: 108, y: 108, z: 108}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5518337554278092859}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1408319955254991565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595270260322659608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 100
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 48636fa0cfbee2748b58bb8bdfba088a, type: 2}
 --- !u!1 &2306451850799828503
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,12 +202,12 @@ MonoBehaviour:
   m_ComponentVersion: 2
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.755
-  m_Color: {r: 0.6780981, g: 0.99371064, b: 0.94925815, a: 0.49019608}
-  m_Intensity: 4
+  m_FalloffIntensity: 0.744
+  m_Color: {r: 0.40771714, g: 0.8785311, b: 0.9748427, a: 0.7058824}
+  m_Intensity: 2
   m_LightVolumeIntensity: 0.08
-  m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 0000000039050000d1bee71509e02999
+  m_LightVolumeEnabled: 1
+  m_ApplyToSortingLayers: 000000008fb10bf68f962606
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 1
@@ -179,7 +228,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 9
+  m_PointLightOuterRadius: 7
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -260,11 +309,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2308052940577961938, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_SortingLayer
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2308052940577961938, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_SortingLayerID
-      value: -1725308919
+      value: 2006563727
       objectReference: {fileID: 0}
     - target: {fileID: 2530035418342197973, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Layer
@@ -282,6 +331,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2586450101955332431, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: _aimFeedback
+      value: 
+      objectReference: {fileID: 7294418023718602059}
     - target: {fileID: 2709797985317162735, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -439,12 +492,20 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: bounceForceV
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: hitstopDuration
       value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceUpwardBias
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: weakPointShakeIntensity
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashAttackFreezeDuration
@@ -516,15 +577,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: maxSpeed
-      value: 18
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpSpeed
       value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: jumpHBoost
+      value: 41
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: acceleration
-      value: 3.5
+      value: 3.32
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: deceleration
@@ -548,7 +613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashSettings.dashSpeed
-      value: 8.5
+      value: 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallJumpHorizontalSpeed
@@ -560,7 +625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpAtMaxSpeedMultiplier
-      value: 3
+      value: 3.1
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashSettings.endDashSpeed
@@ -582,6 +647,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4782564417429803577, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3303279866256865185}
+    - targetCorrespondingSourceObject: {fileID: 5517287351408820096, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3574364252656133180}
     - targetCorrespondingSourceObject: {fileID: 506056908665171857, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 823768447247259356}
@@ -598,6 +666,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2474572027279144426}
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7294418023718602059}
     - targetCorrespondingSourceObject: {fileID: 298528245570665569, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1436469220477857360}
@@ -666,6 +737,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!224 &5518337554278092859 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5517287351408820096, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+  m_PrefabInstance: {fileID: 1202152371122107}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6111057636079140435 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
@@ -688,7 +764,7 @@ MonoBehaviour:
   trueDamageTrailPrefab: {fileID: 3703429325690321826, guid: f3f65bb881fb4474b9e37d4afd5f8cd8, type: 3}
   runDustMinSpeed: 1.5
   runDustMaxRate: 10
-  dustColor: {r: 0.92, g: 0.92, b: 0.88, a: 0.45}
+  dustColor: {r: 0.92, g: 0.92, b: 0.88, a: 0.6117647}
   jumpPuffCount: 6
   landMinFallSpeed: 4
   landMaxFallSpeed: 20
@@ -732,14 +808,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc47a0a56ddf904ab9991ef976777b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageFeedback
-  shakeIntensity: 0.44
+  shakeIntensity: 0.49
   shakeDuration: 0.25
   muffledCutoff: 700
   normalCutoff: 22000
   audioFadeIn: 0.09
   audioFadeOut: 0.5
   duckMultiplier: 0.35
-  vignettePeak: 0.42
+  vignettePeak: 0.5
   vignetteFadeIn: 0.09
   vignetteFadeOut: 0.45
   volumeOverride: {fileID: 0}
+--- !u!114 &7294418023718602059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 631c232c0b5015d4ea15a9d805ceec3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAimFeedback
+  aimVolume: {fileID: 1408319955254991565}
+  weightMax: 1
+  fadeTime: 0.15

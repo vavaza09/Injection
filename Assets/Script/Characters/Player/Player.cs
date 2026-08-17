@@ -306,6 +306,7 @@ public class Player : character
         if (_inputHandler != null)
         {
             CameraController.instance?.SetAim(_inputHandler.IsAimHeld, _inputHandler.AimWorldOffset);
+            CinemachineAimLean.instance?.SetAim(_inputHandler.IsAimHeld, _inputHandler.AimWorldOffset);
             _aimFeedback?.SetAiming(_inputHandler.IsAimHeld);
         }
         UpdateDashAimUI();
@@ -790,6 +791,8 @@ public class Player : character
             case PlayerState.Dashing:
                 _audioController?.PlayDashSound();
                 _slowMotion?.StopSlowMotion();
+                CameraController.instance?.CancelAim();
+                CinemachineAimLean.instance?.CancelAim();
                 break;
 
             case PlayerState.Attacking:
