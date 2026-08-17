@@ -47,8 +47,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float aimMaxOffset = 3f;
     [Tooltip("Fraction of cursor world-distance the camera leads toward while aiming (0-1).")]
     [SerializeField] private float aimStrength = 0.6f;
-    [Tooltip("SmoothDamp time for the aim lean easing in/out.")]
+    [Tooltip("SmoothDamp time for the aim lean easing in.")]
     [SerializeField] private float aimSmoothTime = 0.2f;
+    [Tooltip("SmoothDamp time for the aim lean returning to center (dash / aim release). Keep short.")]
+    [SerializeField] private float aimReturnSmoothTime = 0.25f;
 
     private Camera _cam;
     public Camera Cam => _cam;
@@ -64,6 +66,7 @@ public class CameraController : MonoBehaviour
     private Vector2 _aimTarget;
     private Vector2 _aimCurrent;
     private Vector2 _aimVelocity;
+    private bool _aimSuppressed;
 
     private Coroutine _shakeRoutine;
 
@@ -116,8 +119,9 @@ public class CameraController : MonoBehaviour
         float goalX = _deadzoneAnchor.x + _lookAheadCurrent.x;
         float goalY = _deadzoneAnchor.y + _lookAheadCurrent.y;
 
+        float aimTime = _aimTarget == Vector2.zero ? aimReturnSmoothTime : aimSmoothTime;
         _aimCurrent = Vector2.SmoothDamp(_aimCurrent, _aimTarget, ref _aimVelocity,
-            aimSmoothTime, float.MaxValue, Time.unscaledDeltaTime);
+            aimTime, float.MaxValue, Time.unscaledDeltaTime);
         goalX += _aimCurrent.x;
         goalY += _aimCurrent.y;
 
@@ -177,10 +181,20 @@ public class CameraController : MonoBehaviour
     public void SetBounds(Bounds bounds) { roomBounds = bounds; useBounds = true; }
     public void ClearBounds() => useBounds = false;
 
-    public void SetAim(bool aiming, Vector2 worldOffset) =>
-        _aimTarget = aiming
+    public void SetAim(bool aiming, Vector2 worldOffset)
+    {
+        if (!aiming) _aimSuppressed = false; // release resets the latch
+        _aimTarget = aiming && !_aimSuppressed
             ? Vector2.ClampMagnitude(worldOffset * aimStrength, aimMaxOffset)
             : Vector2.zero;
+    }
+
+    // Dash recenters the camera; the lean stays off until aim is released and re-pressed.
+    public void CancelAim()
+    {
+        _aimSuppressed = true;
+        _aimTarget = Vector2.zero;
+    }
 
     private void SnapToTarget()
     {
@@ -188,6 +202,9 @@ public class CameraController : MonoBehaviour
         _deadzoneAnchor = target.position;
         _lookAheadCurrent = Vector2.zero;
         _smoothVelocity = Vector3.zero;
+        _aimCurrent = Vector2.zero;
+        _aimVelocity = Vector2.zero;
+        _aimTarget = Vector2.zero;
         transform.position = new Vector3(target.position.x, target.position.y, _cameraZ);
     }
 
