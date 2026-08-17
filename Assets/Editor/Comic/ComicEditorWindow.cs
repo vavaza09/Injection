@@ -447,7 +447,66 @@ namespace Game.Comic.Editor
                 Color c = string.IsNullOrEmpty(selLayer.autoFitTo) ? Color.cyan : new Color(0.6f, 0.6f, 0.6f, 0.8f);
                 Handles.DrawSolidRectangleWithOutline(s, Color.clear, c);
             }
+
+            if (selPanel != null)
+            {
+                Rect settledPageRect = selLayer != null ? LayerRectInPageSpace(selPanel, selLayer) : selPanel.rect;
+                ComicTween entrance = selLayer != null ? selLayer.entrance : selPanel.entrance;
+                ComicTween exit = selLayer != null ? selLayer.exit : selPanel.exit;
+                DrawTweenOffsetIndicator(settledPageRect, entrance.fromOffset, screenRect, new Color(0.35f, 1f, 0.45f), "Enter From");
+                DrawTweenOffsetIndicator(settledPageRect, exit.fromOffset, screenRect, new Color(1f, 0.5f, 0.3f), "Exit To");
+            }
             Handles.EndGUI();
+        }
+
+        /// <summary>Ghost outline + arrow on the canvas showing where a tween's From Offset places
+        /// this panel/layer relative to its settled rect — green "Enter From" is where it starts
+        /// before animating in; orange "Exit To" is where the Exit tween's fromOffset (reused as
+        /// the exit destination, see <see cref="ComicTweenRunner.EvaluateExit"/>) sends it. No-op
+        /// when the offset is (0,0) — nothing to point at for a Fade-only tween.</summary>
+        private void DrawTweenOffsetIndicator(Rect settledPageRect, Vector2 fromOffset, Rect screenRect, Color color, string label)
+        {
+            if (fromOffset == Vector2.zero) return;
+
+            Rect fromPageRect = new Rect(settledPageRect.x + fromOffset.x, settledPageRect.y + fromOffset.y, settledPageRect.width, settledPageRect.height);
+            Rect fromScreen = PageRectToScreen(fromPageRect, screenRect);
+            Rect settledScreen = PageRectToScreen(settledPageRect, screenRect);
+
+            var prevColor = Handles.color;
+            Handles.color = color;
+
+            Vector3[] corners =
+            {
+                new Vector3(fromScreen.xMin, fromScreen.yMin), new Vector3(fromScreen.xMax, fromScreen.yMin),
+                new Vector3(fromScreen.xMax, fromScreen.yMax), new Vector3(fromScreen.xMin, fromScreen.yMax),
+            };
+            for (int i = 0; i < 4; i++)
+                Handles.DrawDottedLine(corners[i], corners[(i + 1) % 4], 4f);
+
+            Vector2 from = fromScreen.center;
+            Vector2 to = settledScreen.center;
+            Handles.DrawLine(from, to);
+            DrawArrowhead(from, to, color);
+
+            Handles.color = prevColor;
+            GUI.Label(new Rect(fromScreen.x, fromScreen.y - 16f, 120f, 16f), label, EditorStyles.miniLabel);
+        }
+
+        private static void DrawArrowhead(Vector2 from, Vector2 to, Color color)
+        {
+            Vector2 dir = to - from;
+            if (dir.sqrMagnitude < 1f) return;
+            dir.Normalize();
+            Vector2 normal = new Vector2(-dir.y, dir.x);
+            const float size = 10f;
+            Vector2 back = to - dir * size;
+            Vector3 p1 = back + normal * (size * 0.5f);
+            Vector3 p2 = back - normal * (size * 0.5f);
+
+            var prevColor = Handles.color;
+            Handles.color = color;
+            Handles.DrawAAConvexPolygon(new Vector3[] { to, p1, p2 });
+            Handles.color = prevColor;
         }
 
         private void HandleCanvasInput(ComicPage page, Rect screenRect)
@@ -756,7 +815,20 @@ namespace Game.Comic.Editor
 
             EditorGUILayout.Space();
             DrawTweenSection("Entrance", panel.entrance);
+
             EditorGUILayout.Space();
+            EditorGUI.BeginChangeCheck();
+            int exitBeat = EditorGUILayout.IntField(
+                new GUIContent("Exit Beat", "Beat at which this panel plays the Exit tween below and is " +
+                    "removed, independent of focus. -1 = never (stays on screen, dimmed once a later panel takes focus)."),
+                panel.exitBeatIndex);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_asset, "Edit Panel Exit Beat");
+                panel.exitBeatIndex = Mathf.Max(-1, exitBeat);
+                EditorUtility.SetDirty(_asset);
+                _needsRebuild = true;
+            }
             DrawTweenSection("Exit", panel.exit);
         }
 
@@ -808,7 +880,20 @@ namespace Game.Comic.Editor
 
             EditorGUILayout.Space();
             DrawTweenSection("Entrance", layer.entrance);
+
             EditorGUILayout.Space();
+            EditorGUI.BeginChangeCheck();
+            int exitBeat = EditorGUILayout.IntField(
+                new GUIContent("Exit Beat", "Beat at which this layer plays the Exit tween below and is " +
+                    "removed, independent of the panel it lives in. -1 = never (stays for as long as the panel does)."),
+                layer.exitBeatIndex);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_asset, "Edit Layer Exit Beat");
+                layer.exitBeatIndex = Mathf.Max(-1, exitBeat);
+                EditorUtility.SetDirty(_asset);
+                _needsRebuild = true;
+            }
             DrawTweenSection("Exit", layer.exit);
             EditorGUILayout.Space();
             DrawIdleSection(layer.idle);
@@ -945,6 +1030,8 @@ namespace Game.Comic.Editor
             if (GUILayout.Button("Instant", EditorStyles.miniButton)) ApplyPreset(tween, PresetKind.Instant);
             EditorGUILayout.EndHorizontal();
 
+            DrawOffsetDirectionGrid(tween);
+
             EditorGUI.BeginChangeCheck();
             Vector2 fromOffset = EditorGUILayout.Vector2Field("From Offset", tween.fromOffset);
             float fromScale = EditorGUILayout.FloatField("From Scale", tween.fromScale);
@@ -964,6 +1051,64 @@ namespace Game.Comic.Editor
                 EditorUtility.SetDirty(_asset);
                 _needsRebuild = true;
             }
+        }
+
+        // Row-major, top-left to bottom-right — matches the spatial layout of Unity's own
+        // RectTransform anchor preset grid so picking a corner/edge here reads the same way.
+        private static readonly Vector2[] OffsetGridDirections =
+        {
+            new Vector2(-1f, 1f), new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(-1f, 0f), Vector2.zero,         new Vector2(1f, 0f),
+            new Vector2(-1f, -1f), new Vector2(0f, -1f), new Vector2(1f, -1f),
+        };
+        private static readonly string[] OffsetGridGlyphs =
+            { "↖", "↑", "↗", "←", "•", "→", "↙", "↓", "↘" };
+        private static readonly string[] OffsetGridTooltips =
+        {
+            "Enters from top-left", "Enters from top", "Enters from top-right",
+            "Enters from left", "No offset (only fades/scales in place)", "Enters from right",
+            "Enters from bottom-left", "Enters from bottom", "Enters from bottom-right",
+        };
+
+        /// <summary>Quick corner/edge picker for <see cref="ComicTween.fromOffset"/>, laid out like
+        /// the RectTransform anchor grid. Only touches direction — it keeps From Offset's current
+        /// distance (or defaults to 300 the first time it's used from zero); the exact numbers stay
+        /// editable in the Vector2 field right below for fine-tuning.</summary>
+        private void DrawOffsetDirectionGrid(ComicTween tween)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("From Offset Dir.",
+                "Pick a corner/edge to set From Offset's direction, like the RectTransform anchor grid."),
+                GUILayout.Width(EditorGUIUtility.labelWidth));
+
+            Vector2 currentDir = tween.fromOffset.sqrMagnitude > 0.0001f ? tween.fromOffset.normalized : Vector2.zero;
+
+            EditorGUILayout.BeginVertical(GUILayout.Width(66));
+            for (int row = 0; row < 3; row++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int col = 0; col < 3; col++)
+                {
+                    int idx = row * 3 + col;
+                    Vector2 dir = OffsetGridDirections[idx];
+                    bool isCurrent = Vector2.Distance(currentDir, dir.normalized) < 0.01f;
+
+                    var prevColor = GUI.backgroundColor;
+                    if (isCurrent) GUI.backgroundColor = Color.cyan;
+                    if (GUILayout.Button(new GUIContent(OffsetGridGlyphs[idx], OffsetGridTooltips[idx]), GUILayout.Width(20), GUILayout.Height(18)))
+                    {
+                        Undo.RecordObject(_asset, "Set From Offset Direction");
+                        float magnitude = tween.fromOffset.sqrMagnitude > 1f ? tween.fromOffset.magnitude : 300f;
+                        tween.fromOffset = dir.normalized * magnitude;
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    }
+                    GUI.backgroundColor = prevColor;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
         }
 
         private void ApplyPreset(ComicTween tween, PresetKind kind)
