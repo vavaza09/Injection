@@ -30,12 +30,23 @@ public class PlayerDamageFeedback : MonoBehaviour
     private bool               _vignetteReady;
 
     private Coroutine _feedbackRoutine;
+    private Game.Rooms.RoomManager _roomManager;
 
     private void Start()
     {
         EnsureLowPass();
         EnsureVignette();
+
+        // Player (and this component) is DontDestroyOnLoad and Start() only ever runs once,
+        // but RoomManager reloads each room with LoadSceneMode.Single — which destroys whatever
+        // scene-local Volume EnsureVignette cached. Re-acquire on every room arrival so the new
+        // room's own Vignette volume gets picked up instead of the stale/destroyed one.
+        _roomManager = FindAnyObjectByType<Game.Rooms.RoomManager>();
+        if (_roomManager != null)
+            _roomManager.RoomEntered += OnRoomEntered;
     }
+
+    private void OnRoomEntered(string roomId, string spawnPointId) => _vignetteReady = false;
 
     private void EnsureLowPass()
     {
@@ -62,12 +73,19 @@ public class PlayerDamageFeedback : MonoBehaviour
             return;
         }
 
+        // The aim-vignette volume (PlayerAimFeedback) also overrides Vignette but for an
+        // unrelated always-on-camera effect — it must never be mistaken for the room's
+        // ambient damage vignette, regardless of priority ordering.
+        var aimFeedback = GetComponent<PlayerAimFeedback>();
+        Volume aimVolume = aimFeedback != null ? aimFeedback.AimVolume : null;
+
         // Search all global Volumes for one that actually has a Vignette override.
         // Pick the highest-priority match so scene-specific volumes win over project defaults.
         var volumes = FindObjectsByType<Volume>(FindObjectsSortMode.None);
         float bestPriority = float.MinValue;
         foreach (var v in volumes)
         {
+            if (v == aimVolume) continue;
             if (!v.isGlobal || v.priority <= bestPriority) continue;
             // Use instanced profile — never sharedProfile (mutates the asset on disk).
             if (!v.profile.TryGet<Vignette>(out var vig)) continue;
@@ -160,5 +178,10 @@ public class PlayerDamageFeedback : MonoBehaviour
         RestoreAll(GameSettings.MusicVolume, GameSettings.SFXVolume);
     }
 
-    private void OnDestroy() => OnDisable();
+    private void OnDestroy()
+    {
+        OnDisable();
+        if (_roomManager != null)
+            _roomManager.RoomEntered -= OnRoomEntered;
+    }
 }

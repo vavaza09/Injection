@@ -89,6 +89,9 @@ public class Player : character
     [Header("Damage Feedback")]
     [SerializeField] private PlayerDamageFeedback _damageFeedback;
 
+    [Header("Aim Feedback")]
+    [SerializeField] private PlayerAimFeedback _aimFeedback;
+
     [Header("Invincibility Visual")]
     [SerializeField] private float invincibilityBlinkInterval = 0.1f;
     private SpriteRenderer _spriteRenderer;
@@ -187,6 +190,9 @@ public class Player : character
 
         if (_damageFeedback == null)
             _damageFeedback = GetComponent<PlayerDamageFeedback>();
+
+        if (_aimFeedback == null)
+            _aimFeedback = GetComponent<PlayerAimFeedback>();
 
         if (dashImpact == null)
             dashImpact = GetComponent<PlayerDashImpact>();
@@ -297,6 +303,11 @@ public class Player : character
         }
 
         _inputHandler?.UpdateAimDirection(transform);
+        if (_inputHandler != null)
+        {
+            CameraController.instance?.SetAim(_inputHandler.IsAimHeld, _inputHandler.AimWorldOffset);
+            _aimFeedback?.SetAiming(_inputHandler.IsAimHeld);
+        }
         UpdateDashAimUI();
 
         _stateTimer += Time.deltaTime;

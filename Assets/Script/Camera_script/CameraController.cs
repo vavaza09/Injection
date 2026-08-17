@@ -42,6 +42,14 @@ public class CameraController : MonoBehaviour
     [Tooltip("Multiplier applied to the intensity passed into Shake(). Tune here without touching call-sites.")]
     [SerializeField] private float shakeScale = 1f;
 
+    [Header("Aim Lean")]
+    [Tooltip("Max world-unit offset the camera leans toward the cursor while aiming.")]
+    [SerializeField] private float aimMaxOffset = 3f;
+    [Tooltip("Fraction of cursor world-distance the camera leads toward while aiming (0-1).")]
+    [SerializeField] private float aimStrength = 0.6f;
+    [Tooltip("SmoothDamp time for the aim lean easing in/out.")]
+    [SerializeField] private float aimSmoothTime = 0.2f;
+
     private Camera _cam;
     public Camera Cam => _cam;
     private Rigidbody2D _targetRb;
@@ -52,6 +60,10 @@ public class CameraController : MonoBehaviour
 
     private Vector2 _lookAheadCurrent;
     private Vector2 _lookAheadVelocity;
+
+    private Vector2 _aimTarget;
+    private Vector2 _aimCurrent;
+    private Vector2 _aimVelocity;
 
     private Coroutine _shakeRoutine;
 
@@ -103,6 +115,11 @@ public class CameraController : MonoBehaviour
 
         float goalX = _deadzoneAnchor.x + _lookAheadCurrent.x;
         float goalY = _deadzoneAnchor.y + _lookAheadCurrent.y;
+
+        _aimCurrent = Vector2.SmoothDamp(_aimCurrent, _aimTarget, ref _aimVelocity,
+            aimSmoothTime, float.MaxValue, Time.unscaledDeltaTime);
+        goalX += _aimCurrent.x;
+        goalY += _aimCurrent.y;
 
         if (useBounds) ClampGoal(ref goalX, ref goalY);
 
@@ -159,6 +176,11 @@ public class CameraController : MonoBehaviour
 
     public void SetBounds(Bounds bounds) { roomBounds = bounds; useBounds = true; }
     public void ClearBounds() => useBounds = false;
+
+    public void SetAim(bool aiming, Vector2 worldOffset) =>
+        _aimTarget = aiming
+            ? Vector2.ClampMagnitude(worldOffset * aimStrength, aimMaxOffset)
+            : Vector2.zero;
 
     private void SnapToTarget()
     {

@@ -14,10 +14,12 @@ namespace Game.Characters.Player
         private readonly InputSystem_Actions _actions;
         private Vector2 _moveInput;
         private Vector2 _aimDirection;
+        private Vector2 _aimWorldOffset;
         private Camera _mainCamera;
 
         public Vector2 MoveInput => _moveInput;
         public Vector2 AimDirection => _aimDirection;
+        public Vector2 AimWorldOffset => _aimWorldOffset;
         public bool IsAimHeld { get; private set; }
 
         // Events
@@ -112,6 +114,7 @@ namespace Game.Characters.Player
                 new Vector3(mousePos.x, mousePos.y, _mainCamera.nearClipPlane)
             );
             Vector2 direction = (Vector2)worldPos - (Vector2)playerTransform.position;
+            _aimWorldOffset = direction;
 
             if (direction.magnitude > 0.1f)
             {
