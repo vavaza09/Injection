@@ -109,6 +109,8 @@ MonoBehaviour:
   fallSpeed: 20
   hitboxSize: {x: 1.5, y: 1.5}
   damageAmount: 10
+  knockbackForce: 10
+  knockbackUpward: 0.5
   shadowMaxRadius: 1
   shadowMinRadius: 0.25
   shadowMaxAlpha: 0.45

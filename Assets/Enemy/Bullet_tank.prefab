@@ -110,6 +110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TankBullet
   speed: 14
   lifeTime: 5
+  knockbackForce: 10
+  knockbackUpward: 0.5
   impactFlashScale: 5
   impactFireballScale: 2
   impactSparkCount: 20

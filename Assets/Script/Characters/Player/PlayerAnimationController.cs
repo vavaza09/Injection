@@ -12,6 +12,9 @@ namespace Game.Characters.Player
         private readonly Core.Logging.ILogger _logger;
         private readonly Animator _animator;
         private MovementComponent _movementComponent;
+        private PlayerInputHandler _inputHandler;
+        private float _runStopDelay;
+        private float _noMoveInputTimer;
 
         // Animation parameter hashes
         private readonly int _animMoveSpeed;
@@ -26,6 +29,7 @@ namespace Game.Characters.Player
         private readonly int _animDashDirection;
         private readonly int _animIsDashAttacking;
         private readonly int _animIsKnockback;
+        private readonly int _animIsDamageKnocked;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
         private readonly bool _hasRunSpeedParameter;
@@ -33,6 +37,7 @@ namespace Game.Characters.Player
         private readonly bool _hasDashingParameter;
         private readonly bool _hasDashAttackingParameter;
         private readonly bool _hasKnockbackParameter;
+        private readonly bool _hasDamageKnockedParameter;
 
         // Run animation playback speed at min/max momentum
         private const float RunSpeedMultMin = 1.0f;
@@ -61,6 +66,7 @@ namespace Game.Characters.Player
             _animDashDirection = Animator.StringToHash("DashDirection");
             _animIsDashAttacking = Animator.StringToHash("IsDashAttacking");
             _animIsKnockback = Animator.StringToHash("IsKnockback");
+            _animIsDamageKnocked = Animator.StringToHash("IsDamageKnocked");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
             _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
@@ -68,6 +74,7 @@ namespace Game.Characters.Player
             _hasDashingParameter = HasBoolParameter(_animator, "IsDashing");
             _hasDashAttackingParameter = HasBoolParameter(_animator, "IsDashAttacking");
             _hasKnockbackParameter = HasTriggerParameter(_animator, "IsKnockback");
+            _hasDamageKnockedParameter = HasBoolParameter(_animator, "IsDamageKnocked");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -78,24 +85,56 @@ namespace Game.Characters.Player
             _logger?.Log("MovementComponent assigned to AnimationController");
         }
 
+        public void SetInputHandler(PlayerInputHandler inputHandler)
+        {
+            _inputHandler = inputHandler;
+        }
+
+        public void SetRunStopDelay(float delay)
+        {
+            _runStopDelay = delay;
+        }
+
         public void UpdateMovementAnimation()
         {
             if (_animator == null || _movementComponent == null) return;
 
-            float moveSpeed = Mathf.Abs(_movementComponent.GetVelocity().x);
-            _animator.SetFloat(_animMoveSpeed, moveSpeed);
-            _animator.SetBool(_animIsGrounded, _movementComponent.IsGrounded());
+            float rawMoveSpeed = Mathf.Abs(_movementComponent.GetVelocity().x);
+            bool hasMoveInput = _inputHandler == null || _inputHandler.MoveInput.x != 0f;
 
-            if (_hasWallSlideParameter)
-            {
-                _animator.SetBool(_animIsWallSliding, _movementComponent.IsWallSliding);
-            }
+            // Real velocity still drives MoveSpeed while within the delay window after input
+            // release, so a momentum slide keeps playing naturally. Only once input has been
+            // absent continuously for runStopDelay do we force Run to cut to Idle.
+            if (hasMoveInput)
+                _noMoveInputTimer = 0f;
+            else
+                _noMoveInputTimer += Time.deltaTime;
+
+            bool forceIdle = !hasMoveInput && _noMoveInputTimer >= _runStopDelay;
+            float moveSpeed = forceIdle ? 0f : rawMoveSpeed;
+            _animator.SetFloat(_animMoveSpeed, moveSpeed);
+
+            _animator.SetBool(_animIsGrounded, _movementComponent.IsGrounded());
 
             // Airborne anim is driven by a continuous bool (not a one-shot trigger), so the
             // Jump → Fall flow always matches physics regardless of frame ordering.
             if (_hasFallingParameter)
             {
                 _animator.SetBool(_animIsFalling, _movementComponent.IsFallingAnim);
+            }
+
+            // Mirrors MovementComponent's damageKnockbackLockTime: the Fall/Jump AnyState
+            // transitions and KnockbackDamge's own exit transition all require this false,
+            // so nothing can pull the Animator out of Knockback until the lock timer expires —
+            // regardless of what IsGrounded/IsFalling say in the meantime.
+            if (_hasDamageKnockedParameter)
+            {
+                _animator.SetBool(_animIsDamageKnocked, _movementComponent.IsDamageKnocked);
+            }
+
+            if (_hasWallSlideParameter)
+            {
+                _animator.SetBool(_animIsWallSliding, _movementComponent.IsWallSliding);
             }
 
             if (_hasRunSpeedParameter)

@@ -51,6 +51,10 @@ public class Player : character
     [SerializeField, Range(0f, 1f)] private float dashAnimUpThreshold = 0.5f;
     [SerializeField, Range(-1f, 0f)] private float dashAnimDownThreshold = -0.5f;
 
+    [Header("Animation Settings")]
+    [Tooltip("Seconds move input can be released before the Run animation cuts to Idle. Real velocity still drives the animation during this window, so momentum slides still play out naturally.")]
+    [SerializeField] private float runStopDelay = 0.15f;
+
     [Header("References for DI")]
     [SerializeField] private Animator animator;
 
@@ -231,6 +235,8 @@ public class Player : character
         {
             _animationController.SetMovementComponent(movementComponent);
             _animationController.SetDashThresholds(dashAnimUpThreshold, dashAnimDownThreshold);
+            _animationController.SetInputHandler(_inputHandler);
+            _animationController.SetRunStopDelay(runStopDelay);
         }
 
         if (_inputHandler != null)
@@ -351,6 +357,7 @@ public class Player : character
     public override void Move(Vector2 direction)
     {
         if (_currentState == PlayerState.Dead) return;
+        if (movementComponent != null && movementComponent.IsDamageKnocked) return;
 
         movementComponent?.Move(direction);
 
@@ -381,6 +388,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
+        if (movementComponent.IsDamageKnocked) return;
 
         if (_energyCollector != null && _energyCollector.TryCollectNearby())
         {
@@ -410,6 +418,7 @@ public class Player : character
     {
         if (_currentState == PlayerState.Dead) return;
         if (movementComponent == null) return;
+        if (movementComponent.IsDamageKnocked) return;
         if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
 
         if (requireAimHoldForDash && (_inputHandler == null || !_inputHandler.IsAimHeld))
@@ -432,6 +441,7 @@ public class Player : character
     public void Jump()
     {
         if (_currentState == PlayerState.Dead) return;
+        if (movementComponent != null && movementComponent.IsDamageKnocked) return;
 
         if (movementComponent == null)
         {
@@ -454,6 +464,7 @@ public class Player : character
     public void CancelJump()
     {
         if (_currentState == PlayerState.Dead) return;
+        if (movementComponent != null && movementComponent.IsDamageKnocked) return;
         movementComponent?.CancelJump();
     }
 
@@ -520,6 +531,7 @@ public class Player : character
     private void BeginDashAimMode()
     {
         if (_currentState == PlayerState.Dead) return;
+        if (movementComponent != null && movementComponent.IsDamageKnocked) return;
         if (!IsAbilityUnlocked(TutorialAbilities.Dash)) return;
         _audioController?.PlaySlowMoSound();
         ActivateSlowMotion();

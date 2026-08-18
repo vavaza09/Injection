@@ -172,6 +172,8 @@ MonoBehaviour:
   trailTime: 0.25
   invertFacing: 1
   _sfxSource: {fileID: 0}
+  knockbackForce: 10
+  knockbackUpward: 0.5
   aimHeadAtPlayer: 1
   headAngleOffset: 105
   aimResetSpeed: 250

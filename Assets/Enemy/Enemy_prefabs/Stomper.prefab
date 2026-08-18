@@ -229,6 +229,8 @@ MonoBehaviour:
   impactVfxPrefab: {fileID: 0}
   shadowObject: {fileID: 8065132223933855877, guid: 9c3c636fe373e104486ae894526027bf, type: 3}
   minShadowScale: {x: 2.8, y: 0.5, z: 1}
+  knockbackForce: 12
+  knockbackUpward: 0.8
   _sfxSource: {fileID: 0}
 --- !u!50 &2443875247897457428
 Rigidbody2D:
