@@ -226,7 +226,10 @@ namespace Game.Comic
                     if (layer.image != null && layer.data.flipbookFrames.Count > 0)
                         TickFlipbook(layer, unscaledDeltaTime);
 
-                    if (layer.tmp != null && layer.data.reveal == TextRevealMode.Typewriter && layer.typewriterElapsed < Settled)
+                    // Gated behind the layer's own entrance tween finishing — otherwise typed
+                    // characters reveal mid-fade/slide, before the balloon/box has settled.
+                    if (layer.tmp != null && layer.data.reveal == TextRevealMode.Typewriter && layer.typewriterElapsed < Settled &&
+                        ComicTweenRunner.IsFinished(layer.data.entrance, layer.entranceElapsed))
                     {
                         layer.typewriterElapsed += unscaledDeltaTime;
                         int visibleChars = Mathf.Clamp(Mathf.FloorToInt(layer.typewriterElapsed * Mathf.Max(1f, layer.data.charsPerSecond)), 0, layer.resolvedText.Length);
@@ -382,7 +385,10 @@ namespace Game.Comic
         private static void ApplyLayerSample(ComicLayerRuntime layer, ComicTweenRunner.Sample s)
         {
             layer.rt.anchoredPosition = layer.basePos + s.offset;
-            layer.rt.localScale = Vector3.one * s.scale;
+            layer.rt.localScale = new Vector3(
+                (layer.data.flipX ? -1f : 1f) * s.scale,
+                (layer.data.flipY ? -1f : 1f) * s.scale,
+                1f);
             layer.rt.localEulerAngles = new Vector3(0f, 0f, layer.baseRotation + s.rotation);
             float a = layer.baseColor.a * s.alpha;
             if (layer.image != null) layer.image.color = new Color(layer.baseColor.r, layer.baseColor.g, layer.baseColor.b, a);

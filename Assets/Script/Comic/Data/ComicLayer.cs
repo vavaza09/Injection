@@ -26,9 +26,27 @@ namespace Game.Comic
         public Rect rect = new Rect(0, 0, 200, 100);
         public float rotation;
 
+        [Tooltip("Normalized rotation/scale origin within Rect (0,0 = bottom-left, 0.5,0.5 = center, 1,1 = top-right). Purely a build-time transform origin — does not affect Rect's authored bounds.")]
+        public Vector2 pivot = new Vector2(0.5f, 0.5f);
+
         // --- Sprite ---
         public Sprite sprite;
         public Color tint = Color.white;
+
+        [Tooltip("Mirrors UnityEngine.UI.Image.Type. Sliced/Tiled require the sprite to have a Border configured in the Sprite Editor.")]
+        public UnityEngine.UI.Image.Type drawMode = UnityEngine.UI.Image.Type.Simple;
+        [Tooltip("Scales the sprite's authored border proportionally (maps to Image.pixelsPerUnitMultiplier). Only used by Sliced/Tiled.")]
+        [Min(0.01f)] public float borderScale = 1f;
+        [Tooltip("Mirrors UnityEngine.UI.Image.fillMethod. Only used when Draw Mode = Filled.")]
+        public UnityEngine.UI.Image.FillMethod fillMethod = UnityEngine.UI.Image.FillMethod.Horizontal;
+        [Tooltip("Mirrors UnityEngine.UI.Image.fillOrigin (interpreted per Fill Method, same as Image.OriginHorizontal/Vertical/90/180/360). Only used when Draw Mode = Filled.")]
+        public int fillOrigin;
+        [Tooltip("Mirrors UnityEngine.UI.Image.fillAmount. Static — not animated by beats/tweens. Only used when Draw Mode = Filled.")]
+        [Range(0f, 1f)] public float fillAmount = 1f;
+        [Tooltip("Mirrors UnityEngine.UI.Image.fillClockwise. Only used by radial Fill Methods.")]
+        public bool fillClockwise = true;
+        public bool flipX;
+        public bool flipY;
 
         [Tooltip("Optional: additional frames played in sequence at Flipbook Fps. Empty = static sprite.")]
         public List<Sprite> flipbookFrames = new List<Sprite>();
@@ -42,6 +60,8 @@ namespace Game.Comic
         public TMP_FontAsset font;
         [Min(1f)] public float fontSize = 42f;
         public Color textColor = Color.white;
+        [Tooltip("Anchoring of the text block within Rect. Typewriter reveal typically wants Top-Left so revealed characters grow downward instead of outward from the box's center.")]
+        public TextAlignmentOptions textAlignment = TextAlignmentOptions.TopLeft;
         public TextRevealMode reveal = TextRevealMode.Instant;
         [Tooltip("Typewriter reveal speed, in characters per second.")]
         [Min(1f)] public float charsPerSecond = 40f;

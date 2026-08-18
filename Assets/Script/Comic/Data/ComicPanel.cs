@@ -15,6 +15,9 @@ namespace Game.Comic
         public Rect rect = new Rect(0, 0, 900, 500);
         public float rotation;
 
+        [Tooltip("Normalized rotation/scale origin within Rect (0,0 = bottom-left, 0.5,0.5 = center, 1,1 = top-right). Purely a build-time transform origin — does not affect Rect's authored bounds.")]
+        public Vector2 pivot = new Vector2(0.5f, 0.5f);
+
         [Tooltip("Silhouette the panel content is clipped to (uGUI Mask). Null = plain rectangle.")]
         public Sprite maskShape;
         public bool drawBorder = true;
