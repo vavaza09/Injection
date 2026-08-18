@@ -81,6 +81,10 @@ public class FurnaceEnemy : Enemy
 
     public override void ChasePlayer()
     {
+        if (_animator != null
+            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Idle")
+            && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Oven_Attack"))
+            _animator.Play("Oven_Idle");
         Move(Vector2.zero);
     }
 
@@ -122,7 +126,10 @@ public class FurnaceEnemy : Enemy
         }
         _isAttacking = false;
         if (_animator != null)
+        {
             _animator.SetBool("IsAttacking", false);
+            _animator.Play("Oven_Idle");
+        }
     }
 
     private IEnumerator AttackRoutine()
@@ -131,7 +138,10 @@ public class FurnaceEnemy : Enemy
         lastAttackTime = Time.time;
 
         if (_animator != null)
+        {
             _animator.SetBool("IsAttacking", true);
+            _animator.Play("Oven_Attack");
+        }
 
         // Muzzle flash timing
         if (flashStartDelay > 0f)
@@ -166,7 +176,10 @@ public class FurnaceEnemy : Enemy
             yield return new WaitForSeconds(postAttackDelay);
 
         if (_animator != null)
+        {
             _animator.SetBool("IsAttacking", false);
+            _animator.Play("Oven_Idle");
+        }
 
         _isAttacking = false;
         SetState(EnemyState.Idle);
