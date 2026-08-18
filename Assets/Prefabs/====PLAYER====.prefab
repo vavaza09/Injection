@@ -660,6 +660,7 @@ MonoBehaviour:
   dashAimDisplay: {fileID: 0}
   dashAnimUpThreshold: 0.5
   dashAnimDownThreshold: -0.5
+  runStopDelay: 0.15
   animator: {fileID: 519027211526569210}
   invincibilityDuration: 2
   enableHealthRegen: 1
@@ -669,6 +670,7 @@ MonoBehaviour:
   dashImpact: {fileID: 0}
   movementVFX: {fileID: 0}
   _damageFeedback: {fileID: 0}
+  _aimFeedback: {fileID: 0}
   invincibilityBlinkInterval: 0.1
 --- !u!114 &9206611309243768537
 MonoBehaviour:
@@ -733,7 +735,8 @@ MonoBehaviour:
   groundSnapDistance: 0.12
   groundCheckSkin: 0.02
   postJumpSnapSuppressTime: 0.1
-  knockbackLockTime: 0.2
+  damageKnockbackLockTime: 0.2
+  bounceKnockbackLockTime: 0.2
   wallJumpHorizontalSpeed: 20
   wallJumpVerticalSpeed: 4
   wallJumpLockTime: 0.15
@@ -779,6 +782,8 @@ MonoBehaviour:
   hitstopTimeScale: 0.2
   dashAttackFreezeDuration: 0.2
   weakPointShakeIntensity: 0.1
+  weakPointHitVfxPrefab: {fileID: 4355782252833408451, guid: 98f071ae68e1ef34188fa810710d20b8, type: 3}
+  weakPointHitVfxLifetime: 1
   bounceForceH: 80
   bounceForceV: 200
   bounceUpwardBias: 0.2
