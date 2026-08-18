@@ -505,7 +505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: weakPointShakeIntensity
-      value: 0.2
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashAttackFreezeDuration
@@ -577,7 +577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: maxSpeed
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpSpeed
@@ -585,11 +585,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpHBoost
-      value: 41
+      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: acceleration
-      value: 3.32
+      value: 3.2
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: deceleration
@@ -616,6 +616,14 @@ PrefabInstance:
       value: 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: bounceKnockbackLockTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: damageKnockbackLockTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: wallJumpHorizontalSpeed
       value: 14
       objectReference: {fileID: 0}
@@ -625,7 +633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: jumpAtMaxSpeedMultiplier
-      value: 3.1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9206611309243768537, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: dashSettings.endDashSpeed
@@ -808,7 +816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc47a0a56ddf904ab9991ef976777b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageFeedback
-  shakeIntensity: 0.49
+  shakeIntensity: 0.47
   shakeDuration: 0.25
   muffledCutoff: 700
   normalCutoff: 22000

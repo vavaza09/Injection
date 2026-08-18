@@ -22,6 +22,10 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
     [Header("Weak Point Hit Feedback")]
     [SerializeField] private float weakPointShakeIntensity = 0.1f;
+    [SerializeField] private GameObject weakPointHitVfxPrefab;
+    [SerializeField] private float weakPointHitVfxLifetime = 1f;
+    [Tooltip("Forced sorting order for the VFX's particle renderers so they draw in front of the player sprite.")]
+    [SerializeField] private int weakPointHitVfxSortingOrder = 10;
 
     [Header("Bounce on Hit")]
     [SerializeField] private float bounceForceH = 80f;
@@ -36,6 +40,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
     private MovementComponentRef _movement;
     private Game.Components.Movement.MovementComponent _mc;
     private HitFlash _hitFlash;
+    private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rb;
     private readonly HashSet<int> _dashHitTargets = new HashSet<int>();
     private bool _wasDashing;
@@ -59,6 +64,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         float cooldown = cooldownOverride >= 0f ? cooldownOverride : dashImpactCooldown;
         _attackComponent = new AttackComponent(cooldown);
         _hitFlash = GetComponentInChildren<HitFlash>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         _rb = GetComponent<Rigidbody2D>();
 
         if (enemyDetectionLayer.value == 0)
@@ -121,7 +127,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
             SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
             CameraShake.Shake(weakPointShakeIntensity);
             _hitFlash?.Flash();
-            HitFlashFX.Spawn(targetCollider.bounds.center);
+            SpawnWeakPointHitVfx(targetCollider.bounds.center);
             SoundManager.PlaySound(SoundType.HITSTOP);
         }
     }
@@ -173,7 +179,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                     SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
                     CameraShake.Shake(weakPointShakeIntensity);
                     _hitFlash?.Flash();
-                    HitFlashFX.Spawn(hit.point);
+                    SpawnWeakPointHitVfx(hit.point);
                     SoundManager.PlaySound(SoundType.HITSTOP);
                     targetCharacter.Die();
                     StartCoroutine(DashAttackFreezeAndBounce());
@@ -191,7 +197,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                     SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
                     CameraShake.Shake(weakPointShakeIntensity);
                     _hitFlash?.Flash();
-                    HitFlashFX.Spawn(hit.point);
+                    SpawnWeakPointHitVfx(hit.point);
                     SoundManager.PlaySound(SoundType.HITSTOP);
                     targetCharacter.Die();
                     StartCoroutine(DashAttackFreezeAndBounce());
@@ -206,6 +212,23 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         }
 
         _prevPosition = currentPos;
+    }
+
+    private void SpawnWeakPointHitVfx(Vector3 pos)
+    {
+        if (weakPointHitVfxPrefab == null)
+        {
+            HitFlashFX.Spawn(pos);
+            return;
+        }
+        GameObject fx = Instantiate(weakPointHitVfxPrefab, pos, Quaternion.identity);
+        int layerID = _spriteRenderer != null ? _spriteRenderer.sortingLayerID : 0;
+        foreach (ParticleSystemRenderer renderer in fx.GetComponentsInChildren<ParticleSystemRenderer>())
+        {
+            renderer.sortingLayerID = layerID; // match the player's actual sorting layer, not just "Default"
+            renderer.sortingOrder = weakPointHitVfxSortingOrder;
+        }
+        Destroy(fx, weakPointHitVfxLifetime);
     }
 
     private bool ResolveIsWeakPoint(Collider2D hitCollider, character targetCharacter)
