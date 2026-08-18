@@ -86,8 +86,11 @@ namespace Game.Components.Movement
         [SerializeField] private float postJumpSnapSuppressTime = 0.1f;
 
         [Header("Knockback Settings")]
-        [Tooltip("Seconds after a knockback during which move input and braking are ignored so the knockback velocity carries.")]
-        [SerializeField] private float knockbackLockTime = 0.2f;
+        [Tooltip("Seconds after taking enemy damage during which move input and braking are ignored so the knockback velocity carries.")]
+        [FormerlySerializedAs("knockbackLockTime")]
+        [SerializeField] private float damageKnockbackLockTime = 0.2f;
+        [Tooltip("Seconds after a dash-attack bounce (BounceFromDashImpact, player-initiated) during which move input and braking are ignored so the bounce velocity carries.")]
+        [SerializeField] private float bounceKnockbackLockTime = 0.2f;
 
         [Header("Wall Jump Settings")]
         [SerializeField] private float wallJumpHorizontalSpeed = 80f;
@@ -1473,7 +1476,7 @@ namespace Game.Components.Movement
             isGrabbing = false;
             _isLeapingToGrab = false;
             rb.linearVelocity = kick;
-            _knockbackLockTimer = knockbackLockTime;
+            _knockbackLockTimer = damageKnockbackLockTime;
         }
 
         public void BeginDashAttackFreeze()
@@ -1532,7 +1535,7 @@ namespace Game.Components.Movement
             // TEMP DIAGNOSTIC — remove after bug is identified
             Debug.Log($"[BounceFromDashImpact] dashDir={dashDir:F3} bounceDir={bounceDir:F3} finalVel={finalVel:F1} isGrounded={isGrounded} multiplier={multiplier:F2}");
 
-            _bounceKnockbackLockTimer = knockbackLockTime;
+            _bounceKnockbackLockTimer = bounceKnockbackLockTime;
             _snapSuppressTimer = postJumpSnapSuppressTime;
             _postDashAirBrakeTimer = 0f;
             // Clear any pending jump-hold state so the bounce velocity isn't capped by ApplyVariableJumpHold

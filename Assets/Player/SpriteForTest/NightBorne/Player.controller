@@ -364,16 +364,16 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1000}
-    m_Position: {x: 510, y: -70, z: 0}
+    m_Position: {x: 590, y: -120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1001}
     m_Position: {x: 750, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1002}
-    m_Position: {x: 330, y: -110, z: 0}
+    m_Position: {x: 310, y: -140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1003}
-    m_Position: {x: 290, y: 90, z: 0}
+    m_Position: {x: 320, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1004}
     m_Position: {x: 270, y: -200, z: 0}
@@ -397,7 +397,7 @@ AnimatorStateMachine:
     m_Position: {x: 320, y: 350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7058528496534172847}
-    m_Position: {x: 150, y: -300, z: 0}
+    m_Position: {x: 100, y: -350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7975571411601469845}
     m_Position: {x: 810, y: 430, z: 0}
@@ -733,6 +733,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: IsHanging
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsDamageKnocked
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1002}
   m_Solo: 0
@@ -769,6 +772,9 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: IsDashAttacking
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsDamageKnocked
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1003}
@@ -950,17 +956,20 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsDamageKnocked
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1003}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.05
+  m_TransitionDuration: 0.35650325
   m_TransitionOffset: 0
-  m_ExitTime: 1
-  m_HasExitTime: 1
+  m_ExitTime: 1.2727271
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -1042,6 +1051,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: IsKnockback
     m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: IsDamageKnocked
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
