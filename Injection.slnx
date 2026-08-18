@@ -1,16 +1,22 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="CFXRRuntime.csproj" />
   <Project Path="Game.Components.Movement.csproj" />
   <Project Path="Game.Rooms.Objectives.Trackers.csproj" />
   <Project Path="Game.Components.Skills.csproj" />
   <Project Path="Game.Tests.Unit.csproj" />
+  <Project Path="KinoBloom.Runtime.csproj" />
   <Project Path="Game.Tests.Integration.csproj" />
   <Project Path="Game.Tests.Fixtures.csproj" />
+  <Project Path="CFXREditor.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Game.Health.csproj" />
   <Project Path="Game.Rooms.EditModeTests.csproj" />
   <Project Path="Game.Persistence.csproj" />
   <Project Path="Game.Skills.EditModeTests.csproj" />
+  <Project Path="ToonyColorsPro.Demo.Editor.csproj" />
+  <Project Path="CFXRDemo.csproj" />
+  <Project Path="CFXR.WelcomeScreen.csproj" />
   <Project Path="Game.Persistence.EditModeTests.csproj" />
   <Project Path="Core.Logging.csproj" />
   <Project Path="Game.Health.EditModeTests.csproj" />
