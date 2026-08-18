@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Game.Comic;
 
@@ -34,6 +36,7 @@ namespace Game.Comic.Editor
         private int _pageIndex = -1;
         private int _panelIndex = -1;
         private int _layerIndex = -1;
+        private readonly HashSet<int> _expandedPanels = new HashSet<int>();
         private int _beat;
         private bool _isPlaying;
         private float _autoAdvanceElapsed;
@@ -295,12 +298,20 @@ namespace Game.Comic.Editor
                 var panel = page.panels[p];
 
                 EditorGUILayout.BeginHorizontal();
+                bool expanded = _expandedPanels.Contains(p);
+                if (GUILayout.Button(expanded ? "▼" : "▶", EditorStyles.label, GUILayout.Width(14)))
+                {
+                    if (expanded) _expandedPanels.Remove(p); else _expandedPanels.Add(p);
+                    expanded = !expanded;
+                }
                 bool selected = _panelIndex == p && _layerIndex < 0;
                 string label = (string.IsNullOrEmpty(panel.name) ? "Panel" : panel.name) + $"  (beat {panel.beatIndex})";
                 if (GUILayout.Toggle(selected, label, EditorStyles.miniButton))
                 {
                     _panelIndex = p;
                     _layerIndex = -1;
+                    _expandedPanels.Add(p);
+                    expanded = true;
                 }
                 if (GUILayout.Button("x", GUILayout.Width(20)))
                 {
@@ -310,28 +321,37 @@ namespace Game.Comic.Editor
                     if (_panelIndex >= page.panels.Count) _panelIndex = page.panels.Count - 1;
                     _layerIndex = -1;
                     _needsRebuild = true;
+                    ShiftExpandedPanelsAfterRemoval(p);
                     EditorGUILayout.EndHorizontal();
                     break;
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (_panelIndex != p) continue;
+                // Each panel's foldout state is independent of the others now, so every
+                // panel's own layers can stay visible at once — the list used to only ever
+                // reveal whichever single panel was selected (_panelIndex), which made it
+                // impossible to see which sprite/text belonged to which panel without
+                // clicking through them one at a time.
+                if (!expanded) continue;
 
                 EditorGUI.indentLevel++;
                 for (int l = 0; l < panel.layers.Count; l++)
                 {
                     var layer = panel.layers[l];
                     EditorGUILayout.BeginHorizontal();
-                    bool layerSelected = _layerIndex == l;
+                    bool layerSelected = _panelIndex == p && _layerIndex == l;
                     string layerLabel = $"{(string.IsNullOrEmpty(layer.id) ? "layer" : layer.id)} [{layer.kind}]";
                     if (GUILayout.Toggle(layerSelected, layerLabel, EditorStyles.miniButton))
+                    {
+                        _panelIndex = p;
                         _layerIndex = l;
+                    }
                     if (GUILayout.Button("x", GUILayout.Width(20)))
                     {
                         Undo.RecordObject(_asset, "Remove Layer");
                         panel.layers.RemoveAt(l);
                         EditorUtility.SetDirty(_asset);
-                        if (_layerIndex >= panel.layers.Count) _layerIndex = -1;
+                        if (_panelIndex == p && _layerIndex >= panel.layers.Count) _layerIndex = -1;
                         _needsRebuild = true;
                         EditorGUILayout.EndHorizontal();
                         break;
@@ -340,8 +360,8 @@ namespace Game.Comic.Editor
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("+Sprite", EditorStyles.miniButton)) AddLayer(panel, ComicLayerKind.Sprite);
-                if (GUILayout.Button("+Text", EditorStyles.miniButton)) AddLayer(panel, ComicLayerKind.Text);
+                if (GUILayout.Button("+Sprite", EditorStyles.miniButton)) { _panelIndex = p; AddLayer(panel, ComicLayerKind.Sprite); }
+                if (GUILayout.Button("+Text", EditorStyles.miniButton)) { _panelIndex = p; AddLayer(panel, ComicLayerKind.Text); }
                 EditorGUILayout.EndHorizontal();
                 EditorGUI.indentLevel--;
             }
@@ -355,10 +375,25 @@ namespace Game.Comic.Editor
                 EditorUtility.SetDirty(_asset);
                 _panelIndex = page.panels.Count - 1;
                 _layerIndex = -1;
+                _expandedPanels.Add(_panelIndex);
                 _needsRebuild = true;
             }
 
             EditorGUILayout.EndVertical();
+        }
+
+        // Panel indices shift down by one past the removed panel — without this, foldout
+        // state after a mid-list delete would silently apply to the wrong panel.
+        private void ShiftExpandedPanelsAfterRemoval(int removedIndex)
+        {
+            var shifted = new HashSet<int>();
+            foreach (var idx in _expandedPanels)
+            {
+                if (idx < removedIndex) shifted.Add(idx);
+                else if (idx > removedIndex) shifted.Add(idx - 1);
+            }
+            _expandedPanels.Clear();
+            foreach (var idx in shifted) _expandedPanels.Add(idx);
         }
 
         private void AddLayer(ComicPanel panel, ComicLayerKind kind)
@@ -572,6 +607,7 @@ namespace Game.Comic.Editor
                 {
                     _panelIndex = p;
                     _layerIndex = -1;
+                    _expandedPanels.Add(p);
                     e.Use();
                     return;
                 }
@@ -814,6 +850,16 @@ namespace Game.Comic.Editor
             }
 
             EditorGUILayout.Space();
+            DrawPivotGrid("Pivot", panel.pivot, newPivot =>
+            {
+                Undo.RecordObject(_asset, "Change Panel Pivot");
+                panel.rect = CompensateRectForPivotChange(panel.rect, panel.pivot, newPivot, panel.rotation);
+                panel.pivot = newPivot;
+                EditorUtility.SetDirty(_asset);
+                _needsRebuild = true;
+            });
+
+            EditorGUILayout.Space();
             DrawTweenSection("Entrance", panel.entrance);
 
             EditorGUILayout.Space();
@@ -855,6 +901,16 @@ namespace Game.Comic.Editor
                 EditorUtility.SetDirty(_asset);
                 _needsRebuild = true;
             }
+
+            EditorGUILayout.Space();
+            DrawPivotGrid("Pivot", layer.pivot, newPivot =>
+            {
+                Undo.RecordObject(_asset, "Change Layer Pivot");
+                layer.rect = CompensateRectForPivotChange(layer.rect, layer.pivot, newPivot, layer.rotation);
+                layer.pivot = newPivot;
+                EditorUtility.SetDirty(_asset);
+                _needsRebuild = true;
+            });
 
             EditorGUILayout.Space();
             DrawAutoFitPicker(panel, layer);
@@ -933,13 +989,39 @@ namespace Game.Comic.Editor
             EditorGUI.BeginChangeCheck();
             var sprite = (Sprite)EditorGUILayout.ObjectField("Sprite", layer.sprite, typeof(Sprite), false);
             var tint = EditorGUILayout.ColorField("Tint", layer.tint);
+            var drawMode = (Image.Type)EditorGUILayout.EnumPopup("Draw Mode", layer.drawMode);
+            bool flipX = EditorGUILayout.Toggle("Flip X", layer.flipX);
+            bool flipY = EditorGUILayout.Toggle("Flip Y", layer.flipY);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_asset, "Edit Sprite Layer");
                 layer.sprite = sprite;
                 layer.tint = tint;
+                layer.drawMode = drawMode;
+                layer.flipX = flipX;
+                layer.flipY = flipY;
                 EditorUtility.SetDirty(_asset);
                 _needsRebuild = true;
+            }
+
+            if (layer.drawMode == Image.Type.Sliced || layer.drawMode == Image.Type.Tiled)
+            {
+                EditorGUI.BeginChangeCheck();
+                float borderScale = EditorGUILayout.FloatField(
+                    new GUIContent("Border Scale", "Scales the sprite's authored Border (set in the " +
+                        "Sprite's own Sprite Editor) proportionally on all 4 sides."),
+                    layer.borderScale);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(_asset, "Edit Border Scale");
+                    layer.borderScale = Mathf.Max(0.01f, borderScale);
+                    EditorUtility.SetDirty(_asset);
+                    _needsRebuild = true;
+                }
+            }
+            else if (layer.drawMode == Image.Type.Filled)
+            {
+                DrawFillFields(layer);
             }
 
             EditorGUILayout.LabelField("Flipbook (optional — overrides Sprite when non-empty)");
@@ -987,6 +1069,53 @@ namespace Game.Comic.Editor
             }
         }
 
+        // Mirrors Unity's own Image inspector: Fill Origin's enum depends on Fill Method, so the
+        // dropdown swaps enum type per method while the underlying value stays the plain int
+        // Image.fillOrigin itself uses.
+        private void DrawFillFields(ComicLayer layer)
+        {
+            EditorGUILayout.LabelField("Fill", EditorStyles.boldLabel);
+            EditorGUI.BeginChangeCheck();
+            var fillMethod = (Image.FillMethod)EditorGUILayout.EnumPopup("Fill Method", layer.fillMethod);
+
+            int fillOrigin;
+            switch (fillMethod)
+            {
+                case Image.FillMethod.Vertical:
+                    fillOrigin = (int)(Image.OriginVertical)EditorGUILayout.EnumPopup("Fill Origin", (Image.OriginVertical)layer.fillOrigin);
+                    break;
+                case Image.FillMethod.Radial90:
+                    fillOrigin = (int)(Image.Origin90)EditorGUILayout.EnumPopup("Fill Origin", (Image.Origin90)layer.fillOrigin);
+                    break;
+                case Image.FillMethod.Radial180:
+                    fillOrigin = (int)(Image.Origin180)EditorGUILayout.EnumPopup("Fill Origin", (Image.Origin180)layer.fillOrigin);
+                    break;
+                case Image.FillMethod.Radial360:
+                    fillOrigin = (int)(Image.Origin360)EditorGUILayout.EnumPopup("Fill Origin", (Image.Origin360)layer.fillOrigin);
+                    break;
+                default:
+                    fillOrigin = (int)(Image.OriginHorizontal)EditorGUILayout.EnumPopup("Fill Origin", (Image.OriginHorizontal)layer.fillOrigin);
+                    break;
+            }
+
+            float fillAmount = EditorGUILayout.Slider(
+                new GUIContent("Fill Amount", "Static — not animated by beats/tweens."), layer.fillAmount, 0f, 1f);
+            bool fillClockwise = layer.fillClockwise;
+            bool isRadial = fillMethod == Image.FillMethod.Radial90 || fillMethod == Image.FillMethod.Radial180 || fillMethod == Image.FillMethod.Radial360;
+            if (isRadial) fillClockwise = EditorGUILayout.Toggle("Fill Clockwise", layer.fillClockwise);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_asset, "Edit Fill Settings");
+                layer.fillMethod = fillMethod;
+                layer.fillOrigin = fillOrigin;
+                layer.fillAmount = fillAmount;
+                layer.fillClockwise = fillClockwise;
+                EditorUtility.SetDirty(_asset);
+                _needsRebuild = true;
+            }
+        }
+
         private void DrawTextLayerFields(ComicLayer layer)
         {
             EditorGUILayout.LabelField("Text", EditorStyles.boldLabel);
@@ -996,6 +1125,7 @@ namespace Game.Comic.Editor
             var font = (TMP_FontAsset)EditorGUILayout.ObjectField("Font", layer.font, typeof(TMP_FontAsset), false);
             float fontSize = EditorGUILayout.FloatField("Font Size", layer.fontSize);
             var color = EditorGUILayout.ColorField("Color", layer.textColor);
+            var alignment = (TextAlignmentOptions)EditorGUILayout.EnumPopup("Alignment", layer.textAlignment);
             var reveal = (TextRevealMode)EditorGUILayout.EnumPopup("Reveal", layer.reveal);
             float cps = EditorGUILayout.FloatField("Chars / Sec", layer.charsPerSecond);
             if (EditorGUI.EndChangeCheck())
@@ -1005,6 +1135,7 @@ namespace Game.Comic.Editor
                 layer.locKey = locKey;
                 layer.font = font;
                 layer.fontSize = Mathf.Max(1f, fontSize);
+                layer.textAlignment = alignment;
                 layer.textColor = color;
                 layer.reveal = reveal;
                 layer.charsPerSecond = Mathf.Max(1f, cps);
@@ -1109,6 +1240,67 @@ namespace Game.Comic.Editor
             }
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+        }
+
+        // Row-major, top-left to bottom-right — same visual grid as OffsetGridDirections above,
+        // but these are absolute pivot positions (0-1 within Rect), not directions.
+        private static readonly Vector2[] PivotGridPoints =
+        {
+            new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(1f, 0.5f),
+            new Vector2(0f, 0f), new Vector2(0.5f, 0f), new Vector2(1f, 0f),
+        };
+        private static readonly string[] PivotGridLabels = { "TL", "T", "TR", "L", "C", "R", "BL", "B", "BR" };
+
+        /// <summary>Rotation/scale origin picker (0-1 within Rect), laid out like the RectTransform
+        /// anchor grid. Picking a point calls <paramref name="onPick"/> with the new pivot; callers
+        /// are expected to pair it with <see cref="CompensateRectForPivotChange"/> so the on-screen
+        /// position doesn't jump.</summary>
+        private void DrawPivotGrid(string label, Vector2 currentPivot, System.Action<Vector2> onPick)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent(label,
+                "Rotation/scale origin within the authored Rect (0,0 = bottom-left, 1,1 = top-right). " +
+                "Changing this keeps the current on-screen position — it does not move or resize Rect."),
+                GUILayout.Width(EditorGUIUtility.labelWidth));
+
+            EditorGUILayout.BeginVertical(GUILayout.Width(66));
+            for (int row = 0; row < 3; row++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int col = 0; col < 3; col++)
+                {
+                    int idx = row * 3 + col;
+                    Vector2 p = PivotGridPoints[idx];
+                    bool isCurrent = Vector2.Distance(currentPivot, p) < 0.001f;
+
+                    var prevColor = GUI.backgroundColor;
+                    if (isCurrent) GUI.backgroundColor = Color.cyan;
+                    if (GUILayout.Button(new GUIContent(PivotGridLabels[idx]), GUILayout.Width(20), GUILayout.Height(18)))
+                        onPick(p);
+                    GUI.backgroundColor = prevColor;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>Shifts Rect's position so a pivot change doesn't move the rendered (possibly
+        /// rotated) content — Rect keeps meaning "authored bottom-left-origin bounds", pivot is
+        /// purely where rotation/scale originate within it. At rotation 0 this is a no-op beyond
+        /// what the pivot itself already accounts for; at nonzero rotation the bottom-left corner
+        /// has to move because rotating the same shape around a different point necessarily
+        /// relocates it unless the shape itself is translated to compensate.</summary>
+        private static Rect CompensateRectForPivotChange(Rect rect, Vector2 oldPivot, Vector2 newPivot, float rotationDegrees)
+        {
+            if (newPivot == oldPivot) return rect;
+            float rad = rotationDegrees * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(rad), sin = Mathf.Sin(rad);
+            Vector2 localDelta = Vector2.Scale(newPivot - oldPivot, new Vector2(rect.width, rect.height));
+            Vector2 rotatedDelta = new Vector2(cos * localDelta.x - sin * localDelta.y, sin * localDelta.x + cos * localDelta.y);
+            Vector2 offset = rotatedDelta - localDelta;
+            return new Rect(rect.x + offset.x, rect.y + offset.y, rect.width, rect.height);
         }
 
         private void ApplyPreset(ComicTween tween, PresetKind kind)

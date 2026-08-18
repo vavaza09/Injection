@@ -70,8 +70,8 @@ namespace Game.Comic
             root.SetParent(pageRoot, false);
             root.anchorMin = Vector2.zero;
             root.anchorMax = Vector2.zero;
-            root.pivot = Vector2.zero;
-            var basePos = new Vector2(data.rect.x, data.rect.y);
+            root.pivot = data.pivot;
+            var basePos = new Vector2(data.rect.x + data.pivot.x * data.rect.width, data.rect.y + data.pivot.y * data.rect.height);
             root.anchoredPosition = basePos;
             root.sizeDelta = new Vector2(data.rect.width, data.rect.height);
             root.localEulerAngles = new Vector3(0f, 0f, data.rotation);
@@ -153,7 +153,7 @@ namespace Game.Comic
         private static ComicLayerRuntime BuildLayer(ComicPanel panel, ComicLayer data, RectTransform clip, IComicTextProvider textProvider, Core.Logging.ILogger logger)
         {
             Rect builtRect = ComicAutoFit.Resolve(panel, data);
-            var basePos = new Vector2(builtRect.x, builtRect.y);
+            var basePos = new Vector2(builtRect.x + data.pivot.x * builtRect.width, builtRect.y + data.pivot.y * builtRect.height);
 
             GameObject go;
             Image image = null;
@@ -171,7 +171,7 @@ namespace Game.Comic
                 tmp.fontSize = data.fontSize;
                 tmp.color = data.textColor;
                 tmp.raycastTarget = false;
-                tmp.alignment = TextAlignmentOptions.Center;
+                tmp.alignment = data.textAlignment;
                 tmp.maxVisibleCharacters = data.reveal == TextRevealMode.Instant ? int.MaxValue : 0;
                 baseColor = data.textColor;
             }
@@ -182,8 +182,13 @@ namespace Game.Comic
                 image.sprite = data.flipbookFrames.Count > 0 ? data.flipbookFrames[0] : data.sprite;
                 image.color = data.tint;
                 image.raycastTarget = false;
-                image.type = Image.Type.Simple;
+                image.type = data.drawMode;
                 image.preserveAspect = false;
+                image.pixelsPerUnitMultiplier = data.borderScale;
+                image.fillMethod = data.fillMethod;
+                image.fillOrigin = data.fillOrigin;
+                image.fillAmount = data.fillAmount;
+                image.fillClockwise = data.fillClockwise;
                 baseColor = data.tint;
             }
 
@@ -191,11 +196,11 @@ namespace Game.Comic
             rt.SetParent(clip, false);
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.zero;
-            rt.pivot = Vector2.zero;
+            rt.pivot = data.pivot;
             rt.anchoredPosition = basePos;
             rt.sizeDelta = new Vector2(builtRect.width, builtRect.height);
             rt.localEulerAngles = new Vector3(0f, 0f, data.rotation);
-            rt.localScale = Vector3.one;
+            rt.localScale = new Vector3(data.flipX ? -1f : 1f, data.flipY ? -1f : 1f, 1f);
 
             return new ComicLayerRuntime
             {
