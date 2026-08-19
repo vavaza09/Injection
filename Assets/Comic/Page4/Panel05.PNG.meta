@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: 7f392e7a6db6b2640927509c22bb8f99
+guid: 4a846eac4daace4499098cc4ca261e43
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 899112705459692229
-    second: Page03_panel04 (1)_0
+      213: 5115427597903713394
+    second: Panel05_0
+  - first:
+      213: 7498588033122278844
+    second: Panel05_1
+  - first:
+      213: 6674476265312620023
+    second: Panel05_2
+  - first:
+      213: -9164892138635366345
+    second: Panel05_3
+  - first:
+      213: 7161762572998943909
+    second: Panel05_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +151,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Page03_panel04 (1)_0
+      name: Panel05_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1211
-        height: 1019
+        width: 1888
+        height: 998
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c227fded3a4a7c00800000000000000
-      internalID: 899112705459692229
+      spriteID: 274d74f2c46adf640800000000000000
+      internalID: 5115427597903713394
       vertices: []
       indices: 
       edges: []
@@ -164,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cda05f1ea2bd6764f82cfbe5a2503542
+    spriteID: af49490a0d977b84eade83d0c4e0003c
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +186,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Page03_panel04 (1)_0: 899112705459692229
+      Panel05_0: 5115427597903713394
+      Panel05_1: 7498588033122278844
+      Panel05_2: 6674476265312620023
+      Panel05_3: -9164892138635366345
+      Panel05_4: 7161762572998943909
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

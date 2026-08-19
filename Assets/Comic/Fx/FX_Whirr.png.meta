@@ -163,12 +163,12 @@ TextureImporter:
       name: FX_Whirr_0
       rect:
         serializedVersion: 2
-        x: 164
-        y: 455
-        width: 138
-        height: 168
+        x: 0
+        y: 0
+        width: 1080
+        height: 1080
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -181,165 +181,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_1
-      rect:
-        serializedVersion: 2
-        x: 296
-        y: 456
-        width: 110
-        height: 165
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a868ff645c64436d0800000000000000
-      internalID: -3011704437690366326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_2
-      rect:
-        serializedVersion: 2
-        x: 415
-        y: 462
-        width: 67
-        height: 152
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fbb3101c136d2c8f0800000000000000
-      internalID: -521619097641731137
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_3
-      rect:
-        serializedVersion: 2
-        x: 488
-        y: 452
-        width: 117
-        height: 173
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ca182b6e00a858480800000000000000
-      internalID: -8897553752325455444
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_4
-      rect:
-        serializedVersion: 2
-        x: 606
-        y: 452
-        width: 117
-        height: 173
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 08964c84be8aac4f0800000000000000
-      internalID: -807647454667970176
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_5
-      rect:
-        serializedVersion: 2
-        x: 723
-        y: 461
-        width: 61
-        height: 46
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 285fd158ba7e87390800000000000000
-      internalID: -7820246029070109310
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_6
-      rect:
-        serializedVersion: 2
-        x: 789
-        y: 461
-        width: 61
-        height: 46
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b878f4a73c04e95e0800000000000000
-      internalID: -1901010784388937845
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Whirr_7
-      rect:
-        serializedVersion: 2
-        x: 855
-        y: 461
-        width: 61
-        height: 46
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 44766c5c7e02c6b90800000000000000
-      internalID: -7247381520518322364
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ed8e599dae5bb94438a4c129058298f5
     internalID: 0
     vertices: []
     indices: 

@@ -154,59 +154,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FX_Click_0
-      rect:
-        serializedVersion: 2
-        x: 188
-        y: 433
-        width: 155
-        height: 162
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e18d34a2b334dfe10800000000000000
-      internalID: 2233014911636854814
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Click_1
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 435
-        width: 152
-        height: 232
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0d832728ef273e5e0800000000000000
-      internalID: -1881533781874951984
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: FX_Click_2
       rect:
         serializedVersion: 2
-        x: 435
-        y: 443
-        width: 87
-        height: 230
+        x: 0
+        y: 0
+        width: 1080
+        height: 1080
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,77 +175,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: FX_Click_3
-      rect:
-        serializedVersion: 2
-        x: 536
-        y: 439
-        width: 138
-        height: 230
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8bb2efaf75b8f0910800000000000000
-      internalID: 1805815185588235192
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Click_4
-      rect:
-        serializedVersion: 2
-        x: 662
-        y: 433
-        width: 182
-        height: 208
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ce57aeb5244958fd0800000000000000
-      internalID: -2340301418618259988
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FX_Click_5
-      rect:
-        serializedVersion: 2
-        x: 781
-        y: 448
-        width: 170
-        height: 148
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 27f753c5708f6c830800000000000000
-      internalID: 4091230022008143730
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 3f67ef4ed72743e4ebbf1c2ecb209927
     internalID: 0
     vertices: []
     indices: 

@@ -1,10 +1,64 @@
 fileFormatVersion: 2
-guid: 7f392e7a6db6b2640927509c22bb8f99
+guid: 73f4434587e0ca442ad270f7c4e478e2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 899112705459692229
-    second: Page03_panel04 (1)_0
+      213: -1810509504068123588
+    second: Panel03_0
+  - first:
+      213: -6801924397046195967
+    second: Panel03_1
+  - first:
+      213: -1306532142543559877
+    second: Panel03_2
+  - first:
+      213: -5842772351906709180
+    second: Panel03_3
+  - first:
+      213: 2082098688665883740
+    second: Panel03_4
+  - first:
+      213: -8342387038738919432
+    second: Panel03_5
+  - first:
+      213: -9161780902486403583
+    second: Panel03_6
+  - first:
+      213: 4521755516648158924
+    second: Panel03_7
+  - first:
+      213: 5113813325044100497
+    second: Panel03_8
+  - first:
+      213: 1023581287038236294
+    second: Panel03_9
+  - first:
+      213: 7801517570689537004
+    second: Panel03_10
+  - first:
+      213: 6794852809185944907
+    second: Panel03_11
+  - first:
+      213: 6826441359654433273
+    second: Panel03_12
+  - first:
+      213: 8445654805665136140
+    second: Panel03_13
+  - first:
+      213: -3544268614880375124
+    second: Panel03_14
+  - first:
+      213: -6604494438513460283
+    second: Panel03_15
+  - first:
+      213: 114928180512092477
+    second: Panel03_16
+  - first:
+      213: -8541241475933114631
+    second: Panel03_17
+  - first:
+      213: -6320929406197815360
+    second: Panel03_18
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +193,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Page03_panel04 (1)_0
+      name: Panel03_8
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1211
-        height: 1019
+        width: 1295
+        height: 754
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +208,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c227fded3a4a7c00800000000000000
-      internalID: 899112705459692229
+      spriteID: 19da9eeff1ae7f640800000000000000
+      internalID: 5113813325044100497
       vertices: []
       indices: 
       edges: []
@@ -164,7 +218,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cda05f1ea2bd6764f82cfbe5a2503542
+    spriteID: 2c8a953d32209f941ad2eac658ad58c2
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +228,25 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Page03_panel04 (1)_0: 899112705459692229
+      Panel03_0: -1810509504068123588
+      Panel03_1: -6801924397046195967
+      Panel03_10: 7801517570689537004
+      Panel03_11: 6794852809185944907
+      Panel03_12: 6826441359654433273
+      Panel03_13: 8445654805665136140
+      Panel03_14: -3544268614880375124
+      Panel03_15: -6604494438513460283
+      Panel03_16: 114928180512092477
+      Panel03_17: -8541241475933114631
+      Panel03_18: -6320929406197815360
+      Panel03_2: -1306532142543559877
+      Panel03_3: -5842772351906709180
+      Panel03_4: 2082098688665883740
+      Panel03_5: -8342387038738919432
+      Panel03_6: -9161780902486403583
+      Panel03_7: 4521755516648158924
+      Panel03_8: 5113813325044100497
+      Panel03_9: 1023581287038236294
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

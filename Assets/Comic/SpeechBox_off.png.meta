@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7f392e7a6db6b2640927509c22bb8f99
+guid: 0ed56905ad27c2749b36c7dca7510c8f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 899112705459692229
-    second: Page03_panel04 (1)_0
+      213: 5436160202796174903
+    second: SpeechBox_off_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,10 +48,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -139,23 +139,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Page03_panel04 (1)_0
+      name: SpeechBox_off_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1211
-        height: 1019
+        width: 651
+        height: 655
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 77, y: 77, z: 77, w: 77}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c227fded3a4a7c00800000000000000
-      internalID: 899112705459692229
+      spriteID: 73e08c507ee117b40800000000000000
+      internalID: 5436160202796174903
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cda05f1ea2bd6764f82cfbe5a2503542
+    spriteID: 1815b9c5a514ecc4a9d2d8aaea080ae2
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Page03_panel04 (1)_0: 899112705459692229
+      SpeechBox_off_0: 5436160202796174903
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

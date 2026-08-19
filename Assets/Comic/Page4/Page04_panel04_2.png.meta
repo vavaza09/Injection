@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: 7f392e7a6db6b2640927509c22bb8f99
+guid: ecabe6c6434051244bdb5148bae30339
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 899112705459692229
-    second: Page03_panel04 (1)_0
+      213: 8486728367675886021
+    second: Page04_panel04_2_0
+  - first:
+      213: 1600841873619785810
+    second: Page04_panel04_2_1
+  - first:
+      213: 2400521018356881135
+    second: Page04_panel04_2_2
+  - first:
+      213: -9017885727082825358
+    second: Page04_panel04_2_3
+  - first:
+      213: -1478902227316491955
+    second: Page04_panel04_2_4
+  - first:
+      213: -9203126235634265673
+    second: Page04_panel04_2_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +154,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Page03_panel04 (1)_0
+      name: Page04_panel04_2_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1211
-        height: 1019
+        x: 277
+        y: 71
+        width: 422
+        height: 422
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +169,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c227fded3a4a7c00800000000000000
-      internalID: 899112705459692229
+      spriteID: 2589da2d335573610800000000000000
+      internalID: 1600841873619785810
       vertices: []
       indices: 
       edges: []
@@ -164,7 +179,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cda05f1ea2bd6764f82cfbe5a2503542
+    spriteID: 8960d5ddfe713ab4c9ef7b341cd66fd5
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +189,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Page03_panel04 (1)_0: 899112705459692229
+      Page04_panel04_2_0: 8486728367675886021
+      Page04_panel04_2_1: 1600841873619785810
+      Page04_panel04_2_2: 2400521018356881135
+      Page04_panel04_2_3: -9017885727082825358
+      Page04_panel04_2_4: -1478902227316491955
+      Page04_panel04_2_5: -9203126235634265673
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
