@@ -3745,21 +3745,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[3].volume
-      value: 0.25
+      propertyPath: musicList.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[12].volume
-      value: 1.4
+      propertyPath: soundList.Array.size
+      value: 58
       objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: soundList.Array.data[12].sounds.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
-      propertyPath: 'soundList.Array.data[12].sounds.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: eb66518d11eec224ba3aaa282f74f18f, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
