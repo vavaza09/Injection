@@ -238,7 +238,8 @@ MonoBehaviour:
     pitchMax: 0
     loop: 0
   - name: ENERGY
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: bb57b809dc766534e8610b3094278c2c, type: 3}
     volume: 0
     boostDb: 0
     pitchMin: 0
@@ -609,6 +610,118 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     loop: 0
+  - name: STEAM_HISSIBG
+    sounds:
+    - {fileID: 8300000, guid: 0d5fc449c787b284a9f8a7d3378ee31f, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: CLICKUI
+    sounds:
+    - {fileID: 8300000, guid: 99dbc0869be0c624f972c034b60ff20e, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: TURNPAGE
+    sounds:
+    - {fileID: 8300000, guid: 52cd863b958c3af4f9f2ee658a36030f, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: CLOCKTICKING
+    sounds:
+    - {fileID: 8300000, guid: 184afdc7b2967f44791078b8a5e6c23e, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: NUKE_RADIENT
+    sounds:
+    - {fileID: 8300000, guid: d294d7ba9a9d71948b0c35715859f6fd, type: 3}
+    volume: 0.2
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: CITY_SKYLINE
+    sounds:
+    - {fileID: 8300000, guid: 6e9306e989852104cbe239b37022a927, type: 3}
+    volume: 0.8
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: METAL_CLINGCLANG
+    sounds:
+    - {fileID: 8300000, guid: 0a280a69ccc632545940da2995b35c94, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: WATER_DROP
+    sounds:
+    - {fileID: 8300000, guid: bb24fb4df276f6a4585d321995e0211a, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: BASS_IMPACT
+    sounds:
+    - {fileID: 8300000, guid: 6b0d55f4735101b4b95ee9361abcb860, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: ENERGY_HUM
+    sounds:
+    - {fileID: 8300000, guid: 0359a721028f3b34298e85432e07e94d, type: 3}
+    volume: 0.4
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: GRIP_TRIM
+    sounds:
+    - {fileID: 8300000, guid: f692ba48821119b4bb015a5953b6ebe0, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: LIGHTER
+    sounds:
+    - {fileID: 8300000, guid: 7df6e8123e87ad041b52fe2da0fb595f, type: 3}
+    volume: 0.6
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: WIND
+    sounds:
+    - {fileID: 8300000, guid: 9e67df3341793f74f9adfdc50e76f286, type: 3}
+    volume: 1
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+  - name: TOYCAR
+    sounds:
+    - {fileID: 8300000, guid: 03a430d8699fbe048b28d076365ed70d, type: 3}
+    volume: 0.4
+    boostDb: 0
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
   musicList:
   - name: MENU
     music: {fileID: 8300000, guid: 2da1ca824085cff4ea8983b5b933ad9c, type: 3}
@@ -619,6 +732,8 @@ MonoBehaviour:
   - name: VICTORY
     music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: GAMEOVER
+    music: {fileID: 0}
+  - name: CITY_SKYLINE
     music: {fileID: 0}
   musicVolume: 0.5
   musicFadeDuration: 1.5

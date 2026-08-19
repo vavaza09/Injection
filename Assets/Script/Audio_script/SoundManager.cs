@@ -79,6 +79,20 @@ public enum SoundType
     UI_HOVER,
     UI_CLICK,
     TEST,
+    STEAM_HISSIBG,
+    CLICKUI,
+    TURNPAGE,
+    CLOCKTICKING,
+    NUKE_RADIENT,
+    CITY_SKYLINE,
+    METAL_CLINGCLANG,
+    WATER_DROP,
+    BASS_IMPACT,
+    ENERGY_HUM,
+    GRIP_TRIM,
+    LIGHTER,
+    WIND,
+    TOYCAR,
 }
 
 public enum MusicType
@@ -88,6 +102,7 @@ public enum MusicType
     BOSS,
     VICTORY,
     GAMEOVER,
+    CITY_SKYLINE,
 }
 
 [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
