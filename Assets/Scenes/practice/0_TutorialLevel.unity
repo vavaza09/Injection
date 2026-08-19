@@ -49977,7 +49977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7d4271f64ab484469f80a7332e6a59d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Comic.ComicPlayOnEntry
-  sequence: {fileID: 11400000, guid: d1506a7292070904b8633105621b5f61, type: 2}
+  sequence: {fileID: 11400000, guid: 4662de136ca4c1b4698f53392f66ea4b, type: 2}
   playOnce: 1
   pauseGame: 1
 --- !u!114 &8658080719071365271 stripped
