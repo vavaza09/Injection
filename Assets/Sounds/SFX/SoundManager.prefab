@@ -176,7 +176,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4ea10d8fe3d1d454a838ba6b885f54a7, type: 3}
     - {fileID: 8300000, guid: ed435233539fef440857798b1857c99b, type: 3}
     - {fileID: 8300000, guid: 5f970a3ef6ceabb45bece43016a1773d, type: 3}
-    volume: 0.4
+    volume: 0.25
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.603
@@ -246,8 +246,9 @@ MonoBehaviour:
     pitchMax: 0
     loop: 0
   - name: EMP
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: eb66518d11eec224ba3aaa282f74f18f, type: 3}
+    volume: 1.4
     boostDb: 0
     pitchMin: 0
     pitchMax: 0
@@ -601,6 +602,14 @@ MonoBehaviour:
     pitchMin: 0.5
     pitchMax: 0.53
     loop: 0
+  - name: CM_ClockTicking
+    sounds:
+    - {fileID: 8300000, guid: 629747fd57e8e73468a4ebb7e3791023, type: 3}
+    volume: 0.4
+    boostDb: 0
+    pitchMin: 0.5
+    pitchMax: 0.53
+    loop: 0
   musicList:
   - name: MENU
     music: {fileID: 8300000, guid: 2da1ca824085cff4ea8983b5b933ad9c, type: 3}
@@ -612,9 +621,12 @@ MonoBehaviour:
     music: {fileID: 8300000, guid: 71e5d5a08fb19f74fb4d576814a7a7df, type: 3}
   - name: GAMEOVER
     music: {fileID: 0}
+  - name: ForComicOne_P1
+    music: {fileID: 8300000, guid: 8d5649abbb1c2f2468f70f8629a193c9, type: 3}
   musicVolume: 0.5
   musicFadeDuration: 1.5
   loopPoolSize: 8
+  instancePoolSize: 8
   sceneAudio:
   - sceneName: TitleScene
     music: 0

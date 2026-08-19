@@ -145,37 +145,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FX_FWSSSH_0
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 334
-        width: 321
-        height: 254
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ba41b96467b7ce870800000000000000
-      internalID: 8713475126975993003
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: FX_FWSSSH_1
       rect:
         serializedVersion: 2
-        x: 331
-        y: 395
-        width: 530
-        height: 304
+        x: 0
+        y: 0
+        width: 1080
+        height: 1080
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -188,33 +166,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: FX_FWSSSH_2
-      rect:
-        serializedVersion: 2
-        x: 831
-        y: 559
-        width: 213
-        height: 75
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b8faa937d52390d30800000000000000
-      internalID: 4398101888056864651
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 938568db161cf684483436362ee920f4
     internalID: 0
     vertices: []
     indices: 
