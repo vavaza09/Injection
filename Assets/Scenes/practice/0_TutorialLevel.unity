@@ -49955,8 +49955,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8585729226748956519, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7987961606638522794}
   m_SourcePrefab: {fileID: 100100000, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+--- !u!1 &7987961606638522793 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8585729226748956519, guid: d8286d9794d567546a0dc8b4e0dc148f, type: 3}
+  m_PrefabInstance: {fileID: 7987961606638522792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7987961606638522794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7987961606638522793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d4271f64ab484469f80a7332e6a59d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Comic.ComicPlayOnEntry
+  sequence: {fileID: 11400000, guid: d1506a7292070904b8633105621b5f61, type: 2}
+  playOnce: 1
+  pauseGame: 1
 --- !u!114 &8658080719071365271 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8672183930915337131, guid: 643ceb6565cc1354eb8650556d3529df, type: 3}

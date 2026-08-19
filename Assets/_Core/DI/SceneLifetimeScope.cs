@@ -34,6 +34,7 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<RoomPortal>(container);
             InjectAll<TutorialManager>(container);
             InjectAll<ComicTrigger>(container);
+            InjectAll<ComicPlayOnEntry>(container);
         });
     }
 
