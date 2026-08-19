@@ -103,6 +103,10 @@ public class SoundManager : MonoBehaviour
     [Header("Loop Pool")]
     [SerializeField, Min(2)] private int loopPoolSize = 8;
 
+    [Header("Instance Pool")]
+    [Tooltip("Independently-stoppable, overlap-capable sound instances (StartInstance/StopInstance) — used by the Comic Tool's beat-ranged SFX. Separate from the Loop Pool above, which only allows one active instance per SoundType.")]
+    [SerializeField, Min(2)] private int instancePoolSize = 8;
+
     [Header("Per-Scene Audio")]
     [SerializeField] private SceneAudio[] sceneAudio;
 
@@ -115,6 +119,9 @@ public class SoundManager : MonoBehaviour
     // Pool of AudioSources for looping SFX — supports multiple concurrent loops
     private AudioSource[] _loopPool;
     private readonly Dictionary<int, AudioSource> _activeLoopers = new();
+
+    // Pool of AudioSources for independently-stoppable, overlap-capable instances (StartInstance)
+    private AudioSource[] _instancePool;
 
     private Coroutine musicFadeCoroutine;
 
@@ -179,6 +186,18 @@ public class SoundManager : MonoBehaviour
             _loopPool[i] = src;
         }
 
+        // Build instance pool — same shape as the loop pool, but sources are handed back to the
+        // caller so multiple concurrent instances (including duplicates of the same SoundType)
+        // can be tracked and stopped independently, unlike _activeLoopers' one-per-SoundType map.
+        _instancePool = new AudioSource[instancePoolSize];
+        for (int i = 0; i < instancePoolSize; i++)
+        {
+            var src = gameObject.AddComponent<AudioSource>();
+            src.playOnAwake = false;
+            src.spatialBlend = 0f;
+            _instancePool[i] = src;
+        }
+
         // Apply saved settings (PlayerPrefs) so in-game volume matches the player's preference
         GameSettings.ApplyVolumes();
         // Apply saved/default display resolution (defaults to 1920x1080 on first run)
@@ -229,6 +248,17 @@ public class SoundManager : MonoBehaviour
         if (entry.musicVolume > 0f) SetMusicVolume(entry.musicVolume);
         PlayMusic(entry.music);
     }
+
+    /// <summary>Editor-only accessor: the authored clip data for a SoundType on *this* instance,
+    /// without going through the static singleton — <see cref="instance"/> is only assigned in
+    /// Awake when Application.isPlaying, so it's simply unset in Edit Mode. Lets editor tooling
+    /// (e.g. the Comic Editor's audio preview) read clips/volume/pitch/loop straight off the
+    /// SoundManager prefab asset for auditioning, without needing Play Mode.</summary>
+    public SoundList GetSoundListEntryEditorOnly(SoundType sound) => soundList[(int)sound];
+
+    /// <summary>Editor-only accessor: the authored music clip for a MusicType on *this* instance,
+    /// without going through the static singleton — see <see cref="GetSoundListEntryEditorOnly"/>.</summary>
+    public AudioClip GetMusicClipEditorOnly(MusicType music) => musicList[(int)music].Music;
 
     #region Sound Effects
 
@@ -395,6 +425,48 @@ public class SoundManager : MonoBehaviour
         foreach (var src in instance._loopPool)
             src.Stop();
         instance._activeLoopers.Clear();
+    }
+
+    /// <summary>Starts a sound as an independent, individually-stoppable instance — loops if the
+    /// SoundType is authored as a loop (<see cref="SoundList.loop"/>), otherwise plays once and
+    /// can still be cut short via the returned AudioSource's Stop(). Unlike StartLoop/StopLoop
+    /// (one active instance per SoundType), multiple concurrent instances of the same SoundType
+    /// are supported — each call gets its own pooled AudioSource. Returns null if the instance
+    /// pool is exhausted or the SoundType has no clips.</summary>
+    public static AudioSource StartInstance(SoundType sound, float volumeOverride = -1f)
+    {
+        if (instance == null) return null;
+
+        SoundList sl = instance.soundList[(int)sound];
+        AudioClip[] clips = sl.Sounds;
+        if (clips == null || clips.Length == 0) return null;
+
+        AudioSource src = instance.GetFreeInstanceSource();
+        if (src == null)
+        {
+            Debug.LogWarning($"[SoundManager] Instance pool exhausted ({instance.instancePoolSize} slots). Increase Instance Pool Size.");
+            return null;
+        }
+
+        src.clip   = clips[UnityEngine.Random.Range(0, clips.Length)];
+        src.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        src.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
+        src.loop   = sl.loop;
+        src.Play();
+        return src;
+    }
+
+    /// <summary>Stops an instance started via <see cref="StartInstance"/>.</summary>
+    public static void StopInstance(AudioSource source)
+    {
+        if (source != null) source.Stop();
+    }
+
+    private AudioSource GetFreeInstanceSource()
+    {
+        foreach (var src in _instancePool)
+            if (!src.isPlaying) return src;
+        return null;
     }
 
     #endregion
