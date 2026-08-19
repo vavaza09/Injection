@@ -37,6 +37,7 @@ namespace Game.Comic.Editor
         private int _panelIndex = -1;
         private int _layerIndex = -1;
         private readonly HashSet<int> _expandedPanels = new HashSet<int>();
+        private readonly HashSet<int> _expandedBeatEvents = new HashSet<int>();
         private int _beat;
         private bool _isPlaying;
         private float _autoAdvanceElapsed;
@@ -44,6 +45,10 @@ namespace Game.Comic.Editor
         private bool _pageSettingsFoldout = true;
 
         private ComicPreviewStage _stage;
+        private ComicSfxDispatcher _sfxDispatcher;
+        private ComicEditorSfxBackend _sfxBackend;
+        private ComicMusicDispatcher _musicDispatcher;
+        private ComicEditorMusicBackend _musicBackend;
         private double _lastTickTime;
 
         private const float DefaultAutoAdvanceDelay = 2f;
@@ -64,6 +69,10 @@ namespace Game.Comic.Editor
         private void OnEnable()
         {
             _stage = new ComicPreviewStage();
+            _sfxBackend = new ComicEditorSfxBackend();
+            _sfxDispatcher = new ComicSfxDispatcher(_sfxBackend);
+            _musicBackend = new ComicEditorMusicBackend();
+            _musicDispatcher = new ComicMusicDispatcher(_musicBackend);
             _lastTickTime = EditorApplication.timeSinceStartup;
             _needsRebuild = true;
             EditorApplication.update += OnEditorUpdate;
@@ -72,6 +81,13 @@ namespace Game.Comic.Editor
         private void OnDisable()
         {
             EditorApplication.update -= OnEditorUpdate;
+            _sfxDispatcher?.StopAll();
+            _sfxDispatcher = null;
+            _sfxBackend?.Dispose();
+            _sfxBackend = null;
+            _musicDispatcher = null;
+            _musicBackend?.Dispose();
+            _musicBackend = null;
             _stage?.Dispose();
             _stage = null;
         }
@@ -84,11 +100,17 @@ namespace Game.Comic.Editor
 
             if (_needsRebuild)
             {
+                _sfxDispatcher.StopAll();
                 var page = CurrentPage;
                 _stage.Rebuild(page, _asset != null ? _asset.Style : new ComicStyle());
                 _stage.CurrentView?.ApplyBeat(_beat, false);
                 _autoAdvanceElapsed = 0f;
                 _needsRebuild = false;
+                if (page != null)
+                {
+                    _sfxDispatcher.Reconcile(page, _beat);
+                    _musicDispatcher.Reconcile(page, _beat);
+                }
             }
             else if (_stage.CurrentView != null)
             {
@@ -97,6 +119,9 @@ namespace Game.Comic.Editor
                 // beats one at a time. Only the auto-advance-to-the-next-beat timer is gated on
                 // _isPlaying; Pause freezes that timer, not the current beat's own animation.
                 _stage.CurrentView.Tick(dt);
+                // SFX delay timers/range instances tick in real time regardless of Play/Pause,
+                // same as above — matches ComicPlayer's runtime behavior 1:1 (see ComicSfxDispatcher).
+                _sfxDispatcher.Tick(dt);
                 if (_isPlaying) TickAutoAdvance(dt);
             }
 
@@ -730,51 +755,100 @@ namespace Game.Comic.Editor
                 var e = page.beatEvents[i];
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                EditorGUI.BeginChangeCheck();
-                int beat = EditorGUILayout.IntField("Beat", e.beatIndex);
-                if (EditorGUI.EndChangeCheck())
+                EditorGUILayout.BeginHorizontal();
+                bool expanded = _expandedBeatEvents.Contains(i);
+                if (GUILayout.Button(expanded ? "▼" : "▶", EditorStyles.label, GUILayout.Width(14)))
                 {
-                    Undo.RecordObject(_asset, "Edit Beat Event");
-                    e.beatIndex = Mathf.Max(0, beat);
-                    EditorUtility.SetDirty(_asset);
-                    _needsRebuild = true;
+                    if (expanded) _expandedBeatEvents.Remove(i); else _expandedBeatEvents.Add(i);
+                    expanded = !expanded;
                 }
-
-                DrawEnumNameField("SFX Name", "SoundType", e.sfxName, v =>
-                {
-                    Undo.RecordObject(_asset, "Edit Beat Event SFX");
-                    e.sfxName = v;
-                    EditorUtility.SetDirty(_asset);
-                });
-                DrawEnumNameField("Music Name", "MusicType", e.musicName, v =>
-                {
-                    Undo.RecordObject(_asset, "Edit Beat Event Music");
-                    e.musicName = v;
-                    EditorUtility.SetDirty(_asset);
-                });
-
-                EditorGUI.BeginChangeCheck();
-                float shakeAmp = EditorGUILayout.FloatField("Shake Amplitude", e.shakeAmplitude);
-                float shakeDur = EditorGUILayout.FloatField("Shake Duration", e.shakeDuration);
-                float autoAdvance = EditorGUILayout.FloatField("Auto-Advance After (s)", e.autoAdvanceAfter);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(_asset, "Edit Beat Event");
-                    e.shakeAmplitude = Mathf.Max(0f, shakeAmp);
-                    e.shakeDuration = Mathf.Max(0f, shakeDur);
-                    e.autoAdvanceAfter = Mathf.Max(0f, autoAdvance);
-                    EditorUtility.SetDirty(_asset);
-                    _needsRebuild = true;
-                }
-
-                if (GUILayout.Button("Remove Beat Event"))
+                EditorGUILayout.LabelField(BeatEventSummary(e));
+                if (GUILayout.Button("x", GUILayout.Width(20)))
                 {
                     Undo.RecordObject(_asset, "Remove Beat Event");
                     page.beatEvents.RemoveAt(i);
                     EditorUtility.SetDirty(_asset);
                     _needsRebuild = true;
+                    ShiftExpandedBeatEventsAfterRemoval(i);
+                    EditorGUILayout.EndHorizontal();
                     EditorGUILayout.EndVertical();
                     break;
+                }
+                EditorGUILayout.EndHorizontal();
+
+                if (expanded)
+                {
+                    EditorGUI.indentLevel++;
+
+                    EditorGUI.BeginChangeCheck();
+                    int beat = EditorGUILayout.IntField(e.IsRangeMode ? "Start Beat" : "Beat", e.beatIndex);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event");
+                        e.beatIndex = Mathf.Max(0, beat);
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    }
+
+                    DrawEnumNameField("SFX Name", "SoundType", e.sfxName, v =>
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event SFX");
+                        e.sfxName = v;
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    });
+
+                    EditorGUI.BeginChangeCheck();
+                    float delay = EditorGUILayout.FloatField("SFX Delay (s)", e.sfxDelay);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event SFX Delay");
+                        e.sfxDelay = Mathf.Max(0f, delay);
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    }
+
+                    EditorGUI.BeginChangeCheck();
+                    bool hasRange = EditorGUILayout.Toggle("SFX Range (hold until beat)", e.IsRangeMode);
+                    int endBeatField = e.IsRangeMode ? e.endBeatIndex : e.beatIndex + 1;
+                    if (hasRange)
+                        endBeatField = EditorGUILayout.IntField("End Beat (exclusive)", endBeatField);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event SFX Range");
+                        e.endBeatIndex = hasRange ? Mathf.Max(endBeatField, e.beatIndex + 1) : -1;
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    }
+                    if (!hasRange)
+                        EditorGUILayout.HelpBox("Plays once and always runs to completion, exactly like a plain one-shot (unaffected by how fast beats advance).", MessageType.None);
+                    else
+                        EditorGUILayout.HelpBox("Plays continuously from Start Beat and stops the instant beat " + endBeatField + " is reached — even mid-clip. Loops automatically if this SFX is authored as a loop in SoundManager.", MessageType.None);
+
+                    EditorGUILayout.Space(4);
+
+                    DrawEnumNameField("Music Name", "MusicType", e.musicName, v =>
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event Music");
+                        e.musicName = v;
+                        EditorUtility.SetDirty(_asset);
+                    });
+
+                    EditorGUI.BeginChangeCheck();
+                    float shakeAmp = EditorGUILayout.FloatField("Shake Amplitude", e.shakeAmplitude);
+                    float shakeDur = EditorGUILayout.FloatField("Shake Duration", e.shakeDuration);
+                    float autoAdvance = EditorGUILayout.FloatField("Auto-Advance After (s)", e.autoAdvanceAfter);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(_asset, "Edit Beat Event");
+                        e.shakeAmplitude = Mathf.Max(0f, shakeAmp);
+                        e.shakeDuration = Mathf.Max(0f, shakeDur);
+                        e.autoAdvanceAfter = Mathf.Max(0f, autoAdvance);
+                        EditorUtility.SetDirty(_asset);
+                        _needsRebuild = true;
+                    }
+
+                    EditorGUI.indentLevel--;
                 }
 
                 EditorGUILayout.EndVertical();
@@ -784,15 +858,53 @@ namespace Game.Comic.Editor
             {
                 Undo.RecordObject(_asset, "Add Beat Event");
                 page.beatEvents.Add(new ComicBeatEvent());
+                _expandedBeatEvents.Add(page.beatEvents.Count - 1);
                 EditorUtility.SetDirty(_asset);
                 _needsRebuild = true;
             }
         }
 
-        // Sfx/Music are matched by enum NAME at runtime (see ComicBeatEvent doc comment — this
-        // asmdef can't reference SoundType/MusicType directly, they live in Assembly-CSharp).
-        // This picker looks them up via reflection purely to save designers from typos; the
-        // plain text field underneath still works fine on its own if reflection finds nothing.
+        /// <summary>One-line collapsed-row summary, e.g. "Beat 3→6 · SFX: ENGINE_LOOP" or
+        /// "Beat 5 · Music: BOSS · Shake" — built from whichever fields are actually set.</summary>
+        private static string BeatEventSummary(ComicBeatEvent e)
+        {
+            var parts = new List<string>();
+            if (!string.IsNullOrEmpty(e.sfxName))
+            {
+                string beatLabel = e.IsRangeMode ? $"Beat {e.beatIndex}→{e.endBeatIndex}" : $"Beat {e.beatIndex}";
+                string delayLabel = e.sfxDelay > 0f ? $" +{e.sfxDelay}s" : "";
+                parts.Add($"{beatLabel} · SFX: {e.sfxName}{delayLabel}");
+            }
+            else
+            {
+                parts.Add($"Beat {e.beatIndex}");
+            }
+            if (!string.IsNullOrEmpty(e.musicName)) parts.Add($"Music: {e.musicName}");
+            if (e.shakeAmplitude > 0f && e.shakeDuration > 0f) parts.Add("Shake");
+            return string.Join(" · ", parts);
+        }
+
+        private void ShiftExpandedBeatEventsAfterRemoval(int removedIndex)
+        {
+            var shifted = new HashSet<int>();
+            foreach (var idx in _expandedBeatEvents)
+            {
+                if (idx < removedIndex) shifted.Add(idx);
+                else if (idx > removedIndex) shifted.Add(idx - 1);
+            }
+            _expandedBeatEvents.Clear();
+            foreach (var idx in shifted) _expandedBeatEvents.Add(idx);
+        }
+
+        // ComicBeatEvent.sfxName/musicName stay plain strings (see its doc comment) because the
+        // *data model*, Game.Comic, is a real asmdef and can never reference SoundType/MusicType
+        // — those live in Assembly-CSharp, and no custom asmdef can reference a predefined
+        // assembly, regardless of compile order. This editor window itself has no such
+        // restriction: it's loose in the default Editor assembly (no Game.Comic.Editor.asmdef —
+        // removed specifically so this file and ComicSfxDispatcher's live audio preview below
+        // could reference SoundManager/SoundType directly, the same way SoundManagerEditor.cs
+        // already does), so it could type this as an actual enum. It stays reflection + a plain
+        // text fallback anyway, to keep the *authored data* engine-agnostic and typo-proof either way.
         private void DrawEnumNameField(string label, string typeName, string currentValue, System.Action<string> onChange)
         {
             EditorGUILayout.BeginHorizontal();
@@ -1374,6 +1486,11 @@ namespace Game.Comic.Editor
             _beat = Mathf.Clamp(beat, 0, maxBeat);
             _stage.CurrentView?.ApplyBeat(_beat, true);
             _autoAdvanceElapsed = 0f;
+            if (page != null)
+            {
+                _sfxDispatcher.Reconcile(page, _beat);
+                _musicDispatcher.Reconcile(page, _beat);
+            }
         }
 
         /// <summary>While "Play" is on, waits for the current beat's entrance/typewriter tweens

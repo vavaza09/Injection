@@ -43,6 +43,7 @@ namespace Game.Comic
         public bool AutoPlay { get; private set; }
 
         private Core.Logging.ILogger _logger;
+        private ComicSfxDispatcher _sfxDispatcher;
         private Canvas _canvas;
         private RectTransform _pagesContainer;
         private CanvasGroup _fadeOverlay;
@@ -75,6 +76,7 @@ namespace Game.Comic
             DontDestroyOnLoad(gameObject);
 
             _logger = new UnityLogger("ComicPlayer");
+            _sfxDispatcher = new ComicSfxDispatcher(new SoundManagerSfxBackend(_logger));
             BuildCanvas();
             BuildInput();
         }
@@ -194,6 +196,8 @@ namespace Game.Comic
 
         private void LoadPage(int index, bool firstPage)
         {
+            _sfxDispatcher.StopAll();
+
             _pageIndex = index;
             var page = _sequence.GetPage(index);
             if (page == null)
@@ -211,6 +215,7 @@ namespace Game.Comic
             _currentBeat = 0;
             newView.ApplyBeat(0, isCut);
             DispatchBeatEventsFor(page, 0);
+            _sfxDispatcher.Reconcile(page, 0);
 
             if (isCut)
             {
@@ -335,7 +340,9 @@ namespace Game.Comic
 
             _currentBeat = next;
             _currentView.ApplyBeat(_currentBeat, true);
-            DispatchBeatEventsFor(_sequence.GetPage(_pageIndex), _currentBeat);
+            var page = _sequence.GetPage(_pageIndex);
+            DispatchBeatEventsFor(page, _currentBeat);
+            _sfxDispatcher.Reconcile(page, _currentBeat);
         }
 
         public void Skip()
@@ -344,6 +351,10 @@ namespace Game.Comic
             EndSequence();
         }
 
+        /// <summary>Dispatches the point-in-time (non-SFX) side effects for a beat that just
+        /// activated: music switch and screen shake. SFX (one-shot or beat-ranged, with optional
+        /// delay) is handled separately by <see cref="_sfxDispatcher"/>'s Reconcile/Tick, since it
+        /// isn't a fire-once-per-beat concern the way these are.</summary>
         private void DispatchBeatEventsFor(ComicPage page, int beat)
         {
             if (page == null) return;
@@ -353,11 +364,6 @@ namespace Game.Comic
                 var e = page.beatEvents[i];
                 if (e.beatIndex != beat) continue;
 
-                if (!string.IsNullOrEmpty(e.sfxName))
-                {
-                    if (Enum.TryParse(e.sfxName, out SoundType sfx)) SoundManager.PlaySound(sfx);
-                    else _logger.LogWarning($"[ComicPlayer] Unknown SFX name '{e.sfxName}'.");
-                }
                 if (!string.IsNullOrEmpty(e.musicName))
                 {
                     if (Enum.TryParse(e.musicName, out MusicType music)) SoundManager.PlayMusic(music);
@@ -377,6 +383,7 @@ namespace Game.Comic
             IsPlaying = false;
             AutoPlay = false;
             DisableInput();
+            _sfxDispatcher.StopAll();
 
             if (_transitionRoutine != null) { StopCoroutine(_transitionRoutine); _transitionRoutine = null; }
             _currentView?.Destroy();
@@ -402,6 +409,7 @@ namespace Game.Comic
             if (!IsPlaying) return;
 
             _currentView?.Tick(Time.unscaledDeltaTime);
+            _sfxDispatcher.Tick(Time.unscaledDeltaTime);
             TickShake();
             if (AutoPlay && _transitionRoutine == null) TickAutoPlay();
         }
