@@ -3,9 +3,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 using Core.Logging;
 using Game.Pause;
 using Game.UI;
+using Game.Tutorial;
 
 namespace Game.Comic
 {
@@ -22,7 +24,14 @@ namespace Game.Comic
     {
         private const string PauseHandle = "comic";
         private const float DefaultAutoAdvanceDelay = 2f;
-        private const float SkipHoldSeconds = 0.6f;
+        private const float DefaultSkipHoldSeconds = 0.6f;
+        private const string DefaultSkipKeyboardBindingPath = "<Keyboard>/escape";
+        private const string DefaultSkipGamepadBindingPath = "<Gamepad>/buttonNorth";
+        private const float DefaultSkipIconSize = 32f;
+        private const float DefaultSkipFontSize = 22f;
+        private const string SkipGlyphsResourcePath = "Comic/ComicSkipPromptGlyphs";
+        private static readonly Color SkipHintIdleColor = new Color(1f, 1f, 1f, 0.6f);
+        private static readonly Color SkipHintActiveColor = new Color(1f, 0.85f, 0.3f, 1f);
 
         private static ComicPlayer _instance;
         public static ComicPlayer Instance
@@ -47,6 +56,10 @@ namespace Game.Comic
         private Canvas _canvas;
         private RectTransform _pagesContainer;
         private CanvasGroup _fadeOverlay;
+        private TextMeshProUGUI _skipHintText;
+        private Image _skipHintIcon;
+        private InputDeviceTracker _deviceTracker;
+        private ComicSkipPromptGlyphs _skipGlyphs;
 
         private ComicSequenceAsset _sequence;
         private int _pageIndex;
@@ -77,6 +90,13 @@ namespace Game.Comic
 
             _logger = new UnityLogger("ComicPlayer");
             _sfxDispatcher = new ComicSfxDispatcher(new SoundManagerSfxBackend(_logger));
+
+            // Loaded before BuildCanvas/BuildInput so both can read the designer-tunable
+            // binding/size overrides from it; see ComicSkipPromptGlyphs for what's editable.
+            _skipGlyphs = Resources.Load<ComicSkipPromptGlyphs>(SkipGlyphsResourcePath);
+            if (_skipGlyphs == null)
+                _logger.LogWarning($"[ComicPlayer] No ComicSkipPromptGlyphs found at Resources/{SkipGlyphsResourcePath} — skip hint will fall back to built-in defaults.");
+
             BuildCanvas();
             BuildInput();
         }
@@ -119,7 +139,99 @@ namespace Game.Comic
             _fadeOverlay.alpha = 0f;
             overlayGO.SetActive(false);
 
+            BuildSkipHint(canvasGO.transform);
+
             canvasGO.SetActive(false);
+        }
+
+        /// <summary>Icon+text skip hint, bottom-right of the comic canvas. The icon is resolved
+        /// per the actual bound key/button and live-switches keyboard/gamepad the same way
+        /// <see cref="InputDeviceTracker"/> already drives <c>TutorialPromptUI</c>'s glyphs —
+        /// reused directly here rather than re-implemented, since it's generic device tracking
+        /// with no tutorial-specific logic in it.</summary>
+        private void BuildSkipHint(Transform canvasParent)
+        {
+            float iconSize = (_skipGlyphs != null && _skipGlyphs.iconSize > 0f) ? _skipGlyphs.iconSize : DefaultSkipIconSize;
+            float fontSize = (_skipGlyphs != null && _skipGlyphs.fontSize > 0f) ? _skipGlyphs.fontSize : DefaultSkipFontSize;
+
+            var rowGO = new GameObject("SkipHint", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter));
+            var rowRt = (RectTransform)rowGO.transform;
+            rowRt.SetParent(canvasParent, false);
+            rowRt.anchorMin = new Vector2(1f, 0f);
+            rowRt.anchorMax = new Vector2(1f, 0f);
+            rowRt.pivot = new Vector2(1f, 0f);
+            rowRt.anchoredPosition = new Vector2(-40f, 32f);
+
+            var hlg = rowGO.GetComponent<HorizontalLayoutGroup>();
+            hlg.childAlignment = TextAnchor.MiddleRight;
+            hlg.spacing = 10f;
+            // Must be true: the layout group always POSITIONS children using their preferred
+            // size regardless of these flags, but only APPLIES that size to the child's actual
+            // RectTransform when control is on. With it off, both children stayed at Unity's
+            // default 100x100 RectTransform rect — the icon rendered oversized and the
+            // right-aligned text sat far from it inside its own oversized box, even though the
+            // layout math positioned them as if they were the intended sizes.
+            hlg.childControlWidth = true;
+            hlg.childControlHeight = true;
+            hlg.childForceExpandWidth = false;
+            hlg.childForceExpandHeight = false;
+
+            // Row auto-sizes to its children (icon + text), so changing iconSize/fontSize on the
+            // glyphs asset never clips or leaves dead space — the bottom-right pivot above keeps
+            // it anchored to the same corner as it grows/shrinks.
+            var fitter = rowGO.GetComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var iconGO = new GameObject("SkipHintIcon", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+            iconGO.transform.SetParent(rowRt, false);
+            _skipHintIcon = iconGO.GetComponent<Image>();
+            _skipHintIcon.preserveAspect = true;
+            _skipHintIcon.raycastTarget = false;
+            _skipHintIcon.color = SkipHintIdleColor;
+            var iconLe = iconGO.GetComponent<LayoutElement>();
+            iconLe.preferredWidth = iconSize;
+            iconLe.preferredHeight = iconSize;
+
+            var textGO = new GameObject("SkipHintText", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textGO.transform.SetParent(rowRt, false);
+            _skipHintText = textGO.GetComponent<TextMeshProUGUI>();
+            _skipHintText.fontSize = fontSize;
+            _skipHintText.alignment = TextAlignmentOptions.Right;
+            _skipHintText.color = SkipHintIdleColor;
+            _skipHintText.raycastTarget = false;
+            _skipHintText.enableAutoSizing = false;
+            // No LayoutElement here on purpose — TMP reports its own preferred width/height from
+            // the live text + fontSize, so the row (and its ContentSizeFitter) always fit the
+            // current font size instead of clipping against a size hardcoded for the old one.
+
+            _deviceTracker = gameObject.AddComponent<InputDeviceTracker>();
+            _deviceTracker.DeviceChanged += OnSkipHintDeviceChanged;
+
+            RenderSkipHint();
+        }
+
+        private void OnSkipHintDeviceChanged(InputDeviceKind kind) => RenderSkipHint();
+
+        private void RenderSkipHint()
+        {
+            bool gamepad = _deviceTracker != null && _deviceTracker.Current == InputDeviceKind.Gamepad;
+            Sprite sprite = _skipGlyphs != null ? (gamepad ? _skipGlyphs.gamepadSprite : _skipGlyphs.keyboardSprite) : null;
+
+            if (sprite != null)
+            {
+                _skipHintIcon.sprite = sprite;
+                _skipHintIcon.gameObject.SetActive(true);
+                _skipHintText.text = "Hold to Skip";
+            }
+            else
+            {
+                string fallback = _skipGlyphs != null
+                    ? (gamepad ? _skipGlyphs.gamepadLabel : _skipGlyphs.keyboardLabel)
+                    : (gamepad ? "Y" : "ESC");
+                _skipHintIcon.gameObject.SetActive(false);
+                _skipHintText.text = $"Hold [{fallback}] to Skip";
+            }
         }
 
         private void BuildInput()
@@ -130,10 +242,16 @@ namespace Game.Comic
             _advanceAction.AddBinding("<Gamepad>/buttonSouth");
             _advanceAction.performed += OnAdvancePerformed;
 
+            float holdSeconds = (_skipGlyphs != null && _skipGlyphs.holdDuration > 0f) ? _skipGlyphs.holdDuration : DefaultSkipHoldSeconds;
+            string kbBindingPath = (_skipGlyphs != null && !string.IsNullOrEmpty(_skipGlyphs.keyboardBindingPath)) ? _skipGlyphs.keyboardBindingPath : DefaultSkipKeyboardBindingPath;
+            string gpBindingPath = (_skipGlyphs != null && !string.IsNullOrEmpty(_skipGlyphs.gamepadBindingPath)) ? _skipGlyphs.gamepadBindingPath : DefaultSkipGamepadBindingPath;
+
             _skipAction = new InputAction("ComicSkip", InputActionType.Button);
-            _skipAction.AddBinding("<Keyboard>/escape").WithInteraction($"hold(duration={SkipHoldSeconds})");
-            _skipAction.AddBinding("<Gamepad>/buttonNorth").WithInteraction($"hold(duration={SkipHoldSeconds})");
+            _skipAction.AddBinding(kbBindingPath).WithInteraction($"hold(duration={holdSeconds})");
+            _skipAction.AddBinding(gpBindingPath).WithInteraction($"hold(duration={holdSeconds})");
             _skipAction.performed += OnSkipPerformed;
+            _skipAction.started += OnSkipStarted;
+            _skipAction.canceled += OnSkipCanceled;
 
             _autoToggleAction = new InputAction("ComicAutoToggle", InputActionType.Button);
             _autoToggleAction.AddBinding("<Keyboard>/tab");
@@ -143,6 +261,20 @@ namespace Game.Comic
         private void OnAdvancePerformed(InputAction.CallbackContext ctx) => Advance();
         private void OnSkipPerformed(InputAction.CallbackContext ctx) => Skip();
         private void OnAutoTogglePerformed(InputAction.CallbackContext ctx) => AutoPlay = !AutoPlay;
+
+        // Hold-in-progress feedback on the skip hint label — confirms to the player that the
+        // press is registering as a hold, not lost input, before the full 0.6s completes.
+        private void OnSkipStarted(InputAction.CallbackContext ctx)
+        {
+            if (_skipHintText != null) _skipHintText.color = SkipHintActiveColor;
+            if (_skipHintIcon != null) _skipHintIcon.color = SkipHintActiveColor;
+        }
+
+        private void OnSkipCanceled(InputAction.CallbackContext ctx)
+        {
+            if (_skipHintText != null) _skipHintText.color = SkipHintIdleColor;
+            if (_skipHintIcon != null) _skipHintIcon.color = SkipHintIdleColor;
+        }
 
         private void EnableInput()
         {
@@ -176,7 +308,10 @@ namespace Game.Comic
             }
 
             IsPlaying = true;
-            AutoPlay = false;
+            // Beats advance on their own by default (no click needed) — Tab still lets the
+            // player switch to manual pacing, and a tap/click still fast-forwards past the
+            // current auto-wait even while this is on.
+            AutoPlay = true;
             _autoWaitElapsed = 0f;
             _sequence = sequence;
             _onDone = onDone;
@@ -323,6 +458,7 @@ namespace Game.Comic
         public void Advance()
         {
             if (!IsPlaying || _currentView == null || _transitionRoutine != null) return;
+            if (IsPausedByOtherSystem()) return;
 
             if (_currentView.IsAnimating)
             {
@@ -348,7 +484,20 @@ namespace Game.Comic
         public void Skip()
         {
             if (!IsPlaying) return;
+            if (IsPausedByOtherSystem()) return;
             EndSequence();
+        }
+
+        /// <summary>True while some other system (e.g. the pause menu) has its own handle
+        /// pushed on top of this comic's own "comic" pause handle. Escape drives both the pause
+        /// menu (tap) and this comic's skip (hold) as separate InputActions with no shared
+        /// consumption, so without this guard, holding Escape to dismiss a pause menu opened
+        /// mid-comic would also silently skip the comic underneath it.</summary>
+        private bool IsPausedByOtherSystem()
+        {
+            foreach (var handle in PauseStack.Instance.ActiveHandles)
+                if (handle != PauseHandle) return true;
+            return false;
         }
 
         /// <summary>Dispatches the point-in-time (non-SFX) side effects for a beat that just
@@ -389,6 +538,8 @@ namespace Game.Comic
             _currentView?.Destroy();
             _currentView = null;
             _canvas.gameObject.SetActive(false);
+            if (_skipHintText != null) _skipHintText.color = SkipHintIdleColor;
+            if (_skipHintIcon != null) _skipHintIcon.color = SkipHintIdleColor;
             _shakeTimeRemaining = 0f;
             _pagesContainer.anchoredPosition = Vector2.zero;
 
@@ -459,8 +610,15 @@ namespace Game.Comic
         private void OnDestroy()
         {
             if (_advanceAction != null) { _advanceAction.performed -= OnAdvancePerformed; _advanceAction.Dispose(); }
-            if (_skipAction != null) { _skipAction.performed -= OnSkipPerformed; _skipAction.Dispose(); }
+            if (_skipAction != null)
+            {
+                _skipAction.performed -= OnSkipPerformed;
+                _skipAction.started -= OnSkipStarted;
+                _skipAction.canceled -= OnSkipCanceled;
+                _skipAction.Dispose();
+            }
             if (_autoToggleAction != null) { _autoToggleAction.performed -= OnAutoTogglePerformed; _autoToggleAction.Dispose(); }
+            if (_deviceTracker != null) _deviceTracker.DeviceChanged -= OnSkipHintDeviceChanged;
             if (_instance == this) _instance = null;
         }
     }

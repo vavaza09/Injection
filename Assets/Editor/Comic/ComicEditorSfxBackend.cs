@@ -102,8 +102,21 @@ public sealed class ComicEditorSfxBackend : IComicSfxBackend, IDisposable
         }
 
         sl = _soundManagerData.GetSoundListEntryEditorOnly(sound);
-        return sl.Sounds != null && sl.Sounds.Length > 0;
+        if (sl.Sounds != null && sl.Sounds.Length > 0) return true;
+
+        // An authored-but-empty entry used to return false silently, which is indistinguishable from
+        // "the beat has no SFX" — the actual cause is almost always that the clip was assigned to the
+        // SoundManager *scene instance* (stored as a prefab override in the scene file) rather than to
+        // the prefab asset this reads. Say so once per SoundType instead of playing nothing.
+        if (_warnedEmpty.Add(sound))
+            Debug.LogWarning($"[ComicEditorSfxBackend] SoundType.{sound} has no clips on '{SoundManagerPrefabPath}' " +
+                             "— nothing to preview. If it plays in-game, the clip is a scene-only prefab override: " +
+                             "select the SoundManager in the scene and use 'Apply Audio Overrides To Prefab'.");
+        return false;
     }
+
+    // Warn once per SoundType — Reconcile can fire repeatedly while scrubbing beats.
+    private readonly System.Collections.Generic.HashSet<SoundType> _warnedEmpty = new();
 
     private static AudioClip PickClip(SoundList sl) =>
         sl.Sounds[UnityEngine.Random.Range(0, sl.Sounds.Length)];

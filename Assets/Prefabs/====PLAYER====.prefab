@@ -827,7 +827,7 @@ MonoBehaviour:
   empVfxLifetime: 2
   trueDamageCooldown: 5
   trueDamageEnergyCost: 1
-  trueDamageArmedColor: {r: 1, g: 0.5, b: 0.1, a: 1}
+  trueDamageArmedColor: {r: 0.35, g: 0.8, b: 1, a: 1}
 --- !u!114 &8086246394040665203
 MonoBehaviour:
   m_ObjectHideFlags: 0

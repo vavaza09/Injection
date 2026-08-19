@@ -32,6 +32,11 @@ namespace Game.Pause
 
         public bool IsPaused => _handles.Count > 0;
 
+        /// <summary>Read-only view of which handles currently hold a pause — lets a system
+        /// distinguish "I'm the only reason we're paused" from "something else is layered on
+        /// top of me" (e.g. <c>ComicPlayer</c> checking whether the pause menu opened over it).</summary>
+        public IReadOnlyCollection<string> ActiveHandles => _handles;
+
         private void Awake()
         {
             if (_instance != null && _instance != this)

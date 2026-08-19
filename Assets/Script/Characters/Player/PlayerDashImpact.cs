@@ -216,6 +216,8 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
 
     private void SpawnWeakPointHitVfx(Vector3 pos)
     {
+        ExplosionFlashLight2D.Spawn(pos, outerRadius: 9f, color: new Color(0.3f, 0.6f, 1f));
+
         if (weakPointHitVfxPrefab == null)
         {
             HitFlashFX.Spawn(pos);

@@ -219,6 +219,9 @@ namespace Game.Components.Movement
         public int MaxDashes => _dashHandler?.MaxDashes ?? 0;
         public float MaxSpeed => maxSpeed;
 
+        // Set by PlayerSkillController while the true-damage dash is armed.
+        public float DashPowerMultiplier { get; set; } = 1f;
+
         // Animation-facing airborne state. Derives "up" from the sign of jumpSpeed so it is
         // correct regardless of the project's vertical convention (and survives Inspector overrides).
         private float UpSign => Mathf.Sign(jumpSpeed != 0f ? jumpSpeed : -1f);
@@ -649,7 +652,7 @@ namespace Game.Components.Movement
             }
 
             float speedFactor = GetCurrentSpeedFactorFromVelocity();
-            float dashSpeedMultiplier = Mathf.Lerp(1f, dashAtMaxSpeedMultiplier, speedFactor);
+            float dashSpeedMultiplier = Mathf.Lerp(1f, dashAtMaxSpeedMultiplier, speedFactor) * DashPowerMultiplier;
             _dashCoroutine = StartCoroutine(DashCoroutineWrapper(direction, dashSpeedMultiplier));
         }
 
