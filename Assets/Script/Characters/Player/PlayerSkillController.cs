@@ -20,9 +20,10 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     [Header("True Damage Dash")]
     [SerializeField] private float trueDamageCooldown   = 5f;
     [SerializeField] private float trueDamageEnergyCost = 1f;
+    [SerializeField] private float trueDamageDashSpeedMultiplier = 1.5f;
 
     [Header("Visual Feedback")]
-    [SerializeField] private Color trueDamageArmedColor    = new Color(1f, 0.5f, 0.1f, 1f);
+    [SerializeField] private Color trueDamageArmedColor    = new Color(0.35f, 0.8f, 1f, 1f);
 
     private Core.Logging.ILogger _logger;
     private PlayerInputHandler   _inputHandler;
@@ -37,6 +38,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     private Color          _originalColor;
     private bool           _trueDamageArmedVisual;
     private PlayerMovementVFX _movementVFX;
+    private Game.Components.Movement.MovementComponent _movement;
 
     // Alive check — PlayerSkillController sits on the same GO as Player
     private character _character;
@@ -65,6 +67,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         if (_spriteRenderer != null)
             _originalColor = _spriteRenderer.color;
         _movementVFX = GetComponent<PlayerMovementVFX>();
+        _movement    = GetComponent<Game.Components.Movement.MovementComponent>();
     }
 
     private void Start()
@@ -112,10 +115,21 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     {
         _empSkill?.Tick(Time.deltaTime);
         _trueDashSkill?.Tick(Time.deltaTime);
+
+        if (_movement != null)
+        {
+            bool empoweredDashing = _trueDamageArmedVisual && _movement.IsDashing;
+            _movement.DashPowerMultiplier = _trueDamageArmedVisual ? trueDamageDashSpeedMultiplier : 1f;
+            ApplyTrueDamageTint(empoweredDashing);
+            ApplyElectricFX(empoweredDashing);
+        }
     }
 
     private void OnDestroy()
     {
+        if (_electricFx != null)
+            Destroy(_electricFx);
+
         if (_inputHandler != null)
         {
             _inputHandler.OnSkill1Pressed -= UseEmp;
@@ -188,10 +202,31 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         _movementVFX?.DisableTrueDamageTrail();
     }
 
-    private void RestoreColor()
+    private bool _tintActive;
+
+    private void ApplyTrueDamageTint(bool active)
     {
-        if (_spriteRenderer == null) return;
-        _spriteRenderer.color = _trueDamageArmedVisual ? trueDamageArmedColor : _originalColor;
+        if (_spriteRenderer == null || active == _tintActive) return;
+        _tintActive = active;
+        _spriteRenderer.color = active ? trueDamageArmedColor : _originalColor;
+    }
+
+    private GameObject _electricFx;
+
+    // Reuses the enemy EMP-stun electric look (StunElectricFX) as a player-worn effect
+    // for the duration of an empowered dash.
+    private void ApplyElectricFX(bool active)
+    {
+        if (active)
+        {
+            if (_electricFx != null || _spriteRenderer == null) return;
+            _electricFx = StunElectricFX.Attach(transform, _spriteRenderer.bounds);
+        }
+        else if (_electricFx != null)
+        {
+            Destroy(_electricFx);
+            _electricFx = null;
+        }
     }
 
     // ── ISkillReadinessProvider ────────────────────────────────

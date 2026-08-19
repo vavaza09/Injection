@@ -217,8 +217,7 @@ MonoBehaviour:
     pitchMax: 0.668
     loop: 0
   - name: DEATH
-    sounds:
-    - {fileID: 8300000, guid: 941ba76239ad2bc41961c7912ea2ce0f, type: 3}
+    sounds: []
     volume: 1
     boostDb: 0
     pitchMin: 0
