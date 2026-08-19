@@ -37,6 +37,11 @@ public class PlayerMovementVFX : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float ghostStartAlpha = 0.45f;
     [SerializeField] private Color ghostTint = Color.white;
 
+    [Header("True Damage Dash")]
+    [SerializeField] private float trueDamageGhostInterval = 0.02f;
+    [SerializeField, Range(0f, 1f)] private float trueDamageGhostAlpha = 0.7f;
+    [SerializeField] private Color trueDamageGhostTint = new Color(0.35f, 0.8f, 1f, 1f);
+
     [Header("Wall")]
     [SerializeField] private float wallDustRate = 8f;
     [SerializeField] private int wallJumpBurstCount = 8;
@@ -79,6 +84,7 @@ public class PlayerMovementVFX : MonoBehaviour
     private SpriteAfterimage[] _ghostPool;
     private int _ghostIndex;
     private float _lastGhostTime;
+    private bool _wasDashing;
 
     // Landing detection
     private bool _wasGrounded;
@@ -241,11 +247,22 @@ public class PlayerMovementVFX : MonoBehaviour
 
     private void UpdateAfterimages()
     {
-        if (!_movement.IsDashing) return;
+        bool isDashing = _movement.IsDashing;
+
+        if (isDashing && !_wasDashing && _trueDamageTrailActive)
+            PlayDashBurst(_movement.DashDirection);
+        _wasDashing = isDashing;
+
+        if (!isDashing) return;
         if (_spriteRenderer == null || _spriteRenderer.sprite == null) return;
-        if (Time.unscaledTime - _lastGhostTime < ghostInterval) return;
+
+        float interval = _trueDamageTrailActive ? trueDamageGhostInterval : ghostInterval;
+        if (Time.unscaledTime - _lastGhostTime < interval) return;
 
         _lastGhostTime = Time.unscaledTime;
+
+        Color tint = _trueDamageTrailActive ? trueDamageGhostTint : ghostTint;
+        float alpha = _trueDamageTrailActive ? trueDamageGhostAlpha : ghostStartAlpha;
 
         SpriteAfterimage ghost = _ghostPool[_ghostIndex % _ghostPool.Length];
         _ghostIndex++;
@@ -254,8 +271,8 @@ public class PlayerMovementVFX : MonoBehaviour
             _spriteRenderer.transform.position,
             _spriteRenderer.transform.rotation,
             transform.lossyScale,
-            ghostTint,
-            ghostStartAlpha,
+            tint,
+            alpha,
             ghostFadeDuration);
     }
 
@@ -565,7 +582,7 @@ public class PlayerMovementVFX : MonoBehaviour
 
     private void BuildGhostPool()
     {
-        _ghostPool = new SpriteAfterimage[6];
+        _ghostPool = new SpriteAfterimage[12];
         for (int i = 0; i < _ghostPool.Length; i++)
         {
             var go = new GameObject("SpriteGhost_" + i);
