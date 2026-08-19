@@ -20,6 +20,8 @@ public class MortarExplosionVFX : MonoBehaviour
 
     private IEnumerator PlayExplosion()
     {
+        ExplosionFlashLight2D.Spawn(transform.position);
+
         // LAYER 1: INITIAL FLASH
         GameObject flash = CreateSpriteObj("Flash", 25);
         var flashSr = flash.GetComponent<SpriteRenderer>();
