@@ -22,6 +22,8 @@ public class TankBulletImpactVFX : MonoBehaviour
 
     private IEnumerator PlayImpact()
     {
+        ExplosionFlashLight2D.Spawn(transform.position);
+
         // LAYER 1: Big bright flash
         GameObject flash = new GameObject("Flash");
         flash.transform.SetParent(transform, false);

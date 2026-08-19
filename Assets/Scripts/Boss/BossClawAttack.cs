@@ -92,6 +92,11 @@ public class BossClawAttack : MonoBehaviour
     [Tooltip("Seconds the player is stunned on the ground after the smash impact.")]
     [SerializeField] private float stunDuration = 0.7f;
 
+    [Tooltip("Knockback force passed to Player.ApplyKnockback on smash impact — triggers the same knockdown animation as a tank enemy bullet hit.")]
+    [SerializeField] private float knockdownForce = 6f;
+    [Tooltip("Upward bias for the knockdown knockback.")]
+    [SerializeField] private float knockdownUpward = 0.2f;
+
     [Tooltip("Optional prefab for the ground-slam VFX (StompImpactVFX). If null, spawns procedurally.")]
     [SerializeField] private StompImpactVFX impactVfxPrefab;
     [SerializeField] private float impactVfxRadius = 3f;
@@ -328,6 +333,7 @@ public class BossClawAttack : MonoBehaviour
         SpawnImpactVFX(smashTarget);
         CameraShake.Shake(shakeIntensity, shakeDuration);
         _player.SetCaptured(false);
+        _player.ApplyKnockback(transform.position, knockdownForce, knockdownUpward);
         _player.Stun(stunDuration);
     }
 
