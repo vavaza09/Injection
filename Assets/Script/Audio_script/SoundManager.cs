@@ -78,6 +78,7 @@ public enum SoundType
     // UI
     UI_HOVER,
     UI_CLICK,
+    TEST,
 }
 
 public enum MusicType
@@ -253,12 +254,52 @@ public class SoundManager : MonoBehaviour
     /// without going through the static singleton — <see cref="instance"/> is only assigned in
     /// Awake when Application.isPlaying, so it's simply unset in Edit Mode. Lets editor tooling
     /// (e.g. the Comic Editor's audio preview) read clips/volume/pitch/loop straight off the
-    /// SoundManager prefab asset for auditioning, without needing Play Mode.</summary>
-    public SoundList GetSoundListEntryEditorOnly(SoundType sound) => soundList[(int)sound];
+    /// SoundManager prefab asset for auditioning, without needing Play Mode.
+    /// <para/>
+    /// Returns an empty entry (rather than throwing) when the list is shorter than the enum — see
+    /// <see cref="TryGetSoundEntry"/> for why a short list is the normal state of a prefab asset.</summary>
+    public SoundList GetSoundListEntryEditorOnly(SoundType sound) =>
+        TryGetSoundEntry(sound, out SoundList sl) ? sl : default;
 
     /// <summary>Editor-only accessor: the authored music clip for a MusicType on *this* instance,
     /// without going through the static singleton — see <see cref="GetSoundListEntryEditorOnly"/>.</summary>
-    public AudioClip GetMusicClipEditorOnly(MusicType music) => musicList[(int)music].Music;
+    public AudioClip GetMusicClipEditorOnly(MusicType music) => GetMusicClip(music);
+
+    /// <summary>Bounds-checked read of <see cref="musicList"/> — same staleness hazard as
+    /// <see cref="TryGetSoundEntry"/>. Null when the MusicType has no authored slot or no clip.</summary>
+    private AudioClip GetMusicClip(MusicType music)
+    {
+        int i = (int)music;
+        return musicList != null && i >= 0 && i < musicList.Length ? musicList[i].Music : null;
+    }
+
+    /// <summary>Bounds-checked lookup into <see cref="soundList"/>, used by every read below.
+    /// <para/>
+    /// The list is only ever grown to match the SoundType enum by <c>SyncListsToEnumsEditorOnly</c>,
+    /// which runs from <c>OnEnable</c> — and <c>OnEnable</c> fires only for components that actually get
+    /// *enabled*: scene instances and Prefab Mode. It never fires for the prefab asset in the Project
+    /// window, and it is compiled out of builds entirely. So both the prefab asset and every shipped
+    /// build hold exactly the length that was last serialized to disk, which goes stale the moment a
+    /// SoundType is added. Unguarded indexing threw IndexOutOfRangeException there.</summary>
+    private bool TryGetSoundEntry(SoundType sound, out SoundList entry)
+    {
+        int i = (int)sound;
+        if (soundList != null && i >= 0 && i < soundList.Length)
+        {
+            entry = soundList[i];
+            return true;
+        }
+
+        entry = default;
+        if (_warnedMissingSounds.Add(sound))
+            Debug.LogWarning($"[SoundManager] No authored entry for SoundType.{sound} (index {i}, list length " +
+                             $"{(soundList == null ? 0 : soundList.Length)}). Re-save the SoundManager prefab so its " +
+                             "sound list matches the SoundType enum (Inspector → Sync Lists To Enums).");
+        return false;
+    }
+
+    // Warn once per SoundType — these calls sit on hot paths (footsteps, loops) and must not spam.
+    private static readonly HashSet<SoundType> _warnedMissingSounds = new();
 
     #region Sound Effects
 
@@ -267,7 +308,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null || source == null) return;
 
-        SoundList sl = instance.soundList[(int)sound];
+        if (!instance.TryGetSoundEntry(sound, out SoundList sl)) return;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
@@ -282,7 +323,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null || source == null) return;
 
-        SoundList sl = instance.soundList[(int)sound];
+        if (!instance.TryGetSoundEntry(sound, out SoundList sl)) return;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
@@ -311,7 +352,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null || instance.sfxSource == null) return;
 
-        SoundList sl = instance.soundList[(int)sound];
+        if (!instance.TryGetSoundEntry(sound, out SoundList sl)) return;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
@@ -340,7 +381,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null || instance._footstepSource == null) return;
 
-        SoundList sl = instance.soundList[(int)sound];
+        if (!instance.TryGetSoundEntry(sound, out SoundList sl)) return;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
@@ -377,7 +418,7 @@ public class SoundManager : MonoBehaviour
     private void StartLoopInternal(SoundType sound, float volumeOverride)
     {
         int key = (int)sound;
-        SoundList sl = soundList[key];
+        if (!TryGetSoundEntry(sound, out SoundList sl)) return;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
@@ -437,7 +478,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null) return null;
 
-        SoundList sl = instance.soundList[(int)sound];
+        if (!instance.TryGetSoundEntry(sound, out SoundList sl)) return null;
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return null;
 
@@ -502,7 +543,8 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null || instance.musicSource == null) return;
 
-        AudioClip clip = instance.musicList[(int)music].Music;
+        // Bounds-checked for the same reason the SFX reads are — see TryGetSoundEntry.
+        AudioClip clip = instance.GetMusicClip(music);
         if (clip == null) return;
 
         // If same music is already playing, do nothing
@@ -657,23 +699,50 @@ public class SoundManager : MonoBehaviour
     #region Editor Only
 
 #if UNITY_EDITOR
-    private void OnEnable()
+    private void OnEnable() => SyncListsToEnumsEditorOnly();
+
+    /// <summary>Editor-only: resize <see cref="soundList"/>/<see cref="musicList"/> to match the
+    /// SoundType/MusicType enums and refresh their display names. Returns true only if something
+    /// actually changed, so callers can skip dirtying the asset on a no-op pass.
+    /// <para/>
+    /// Public, and not merged back into <c>OnEnable</c>, because <c>OnEnable</c> alone cannot keep the
+    /// prefab asset correct: it runs only for *enabled* components (scene instances, Prefab Mode), so
+    /// the asset in the Project window keeps whatever length was last written to disk. It also writes
+    /// straight to the backing fields without dirtying the object, so even when it does run the resize
+    /// is never persisted on its own. <c>SoundManagerEditor</c> calls this on load and saves the
+    /// result, which is what keeps the on-disk asset aligned for tooling that reads it directly
+    /// (the Comic Editor, via <see cref="GetSoundListEntryEditorOnly"/>).</summary>
+    public bool SyncListsToEnumsEditorOnly()
     {
-        // Setup sound effects list
+        bool changed = false;
+
         string[] soundNames = Enum.GetNames(typeof(SoundType));
-        Array.Resize(ref soundList, soundNames.Length);
+        if (soundList == null || soundList.Length != soundNames.Length)
+        {
+            Array.Resize(ref soundList, soundNames.Length);
+            changed = true;
+        }
         for (int i = 0; i < soundList.Length; i++)
         {
+            if (soundList[i].name == soundNames[i]) continue;
             soundList[i].name = soundNames[i];
+            changed = true;
         }
 
-        // Setup music list
         string[] musicNames = Enum.GetNames(typeof(MusicType));
-        Array.Resize(ref musicList, musicNames.Length);
+        if (musicList == null || musicList.Length != musicNames.Length)
+        {
+            Array.Resize(ref musicList, musicNames.Length);
+            changed = true;
+        }
         for (int i = 0; i < musicList.Length; i++)
         {
+            if (musicList[i].name == musicNames[i]) continue;
             musicList[i].name = musicNames[i];
+            changed = true;
         }
+
+        return changed;
     }
 #endif
 

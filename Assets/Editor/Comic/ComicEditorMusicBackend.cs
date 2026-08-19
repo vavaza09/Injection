@@ -18,6 +18,9 @@ public sealed class ComicEditorMusicBackend : IComicMusicBackend, IDisposable
     private AudioSource _musicSource;
     private bool _disposed;
 
+    // Warn once per MusicType — Reconcile can fire repeatedly while scrubbing beats.
+    private readonly System.Collections.Generic.HashSet<MusicType> _warnedEmpty = new();
+
     public void PlayMusic(string musicName)
     {
         if (string.IsNullOrEmpty(musicName)) return;
@@ -39,7 +42,15 @@ public sealed class ComicEditorMusicBackend : IComicMusicBackend, IDisposable
         }
 
         var clip = _soundManagerData.GetMusicClipEditorOnly(music);
-        if (clip == null) return;
+        if (clip == null)
+        {
+            // Same silent-failure trap as ComicEditorSfxBackend.TryResolve — see its comment.
+            if (_warnedEmpty.Add(music))
+                Debug.LogWarning($"[ComicEditorMusicBackend] MusicType.{music} has no clip on '{SoundManagerPrefabPath}' " +
+                                 "— nothing to preview. If it plays in-game, the clip is a scene-only prefab override: " +
+                                 "select the SoundManager in the scene and use 'Apply Audio Overrides To Prefab'.");
+            return;
+        }
 
         EnsureRoot();
 
