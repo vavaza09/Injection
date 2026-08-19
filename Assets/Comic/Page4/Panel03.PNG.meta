@@ -1,0 +1,254 @@
+fileFormatVersion: 2
+guid: 73f4434587e0ca442ad270f7c4e478e2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1810509504068123588
+    second: Panel03_0
+  - first:
+      213: -6801924397046195967
+    second: Panel03_1
+  - first:
+      213: -1306532142543559877
+    second: Panel03_2
+  - first:
+      213: -5842772351906709180
+    second: Panel03_3
+  - first:
+      213: 2082098688665883740
+    second: Panel03_4
+  - first:
+      213: -8342387038738919432
+    second: Panel03_5
+  - first:
+      213: -9161780902486403583
+    second: Panel03_6
+  - first:
+      213: 4521755516648158924
+    second: Panel03_7
+  - first:
+      213: 5113813325044100497
+    second: Panel03_8
+  - first:
+      213: 1023581287038236294
+    second: Panel03_9
+  - first:
+      213: 7801517570689537004
+    second: Panel03_10
+  - first:
+      213: 6794852809185944907
+    second: Panel03_11
+  - first:
+      213: 6826441359654433273
+    second: Panel03_12
+  - first:
+      213: 8445654805665136140
+    second: Panel03_13
+  - first:
+      213: -3544268614880375124
+    second: Panel03_14
+  - first:
+      213: -6604494438513460283
+    second: Panel03_15
+  - first:
+      213: 114928180512092477
+    second: Panel03_16
+  - first:
+      213: -8541241475933114631
+    second: Panel03_17
+  - first:
+      213: -6320929406197815360
+    second: Panel03_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Panel03_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1295
+        height: 754
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19da9eeff1ae7f640800000000000000
+      internalID: 5113813325044100497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2c8a953d32209f941ad2eac658ad58c2
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Panel03_0: -1810509504068123588
+      Panel03_1: -6801924397046195967
+      Panel03_10: 7801517570689537004
+      Panel03_11: 6794852809185944907
+      Panel03_12: 6826441359654433273
+      Panel03_13: 8445654805665136140
+      Panel03_14: -3544268614880375124
+      Panel03_15: -6604494438513460283
+      Panel03_16: 114928180512092477
+      Panel03_17: -8541241475933114631
+      Panel03_18: -6320929406197815360
+      Panel03_2: -1306532142543559877
+      Panel03_3: -5842772351906709180
+      Panel03_4: 2082098688665883740
+      Panel03_5: -8342387038738919432
+      Panel03_6: -9161780902486403583
+      Panel03_7: 4521755516648158924
+      Panel03_8: 5113813325044100497
+      Panel03_9: 1023581287038236294
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
