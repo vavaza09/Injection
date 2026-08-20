@@ -93,6 +93,8 @@ public enum SoundType
     LIGHTER,
     WIND,
     TOYCAR,
+    FISHTANK,
+    BACKROOM_NOISE,
 }
 
 public enum MusicType
