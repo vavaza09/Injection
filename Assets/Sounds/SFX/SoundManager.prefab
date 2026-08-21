@@ -629,7 +629,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 52cd863b958c3af4f9f2ee658a36030f, type: 3}
     volume: 0
-    boostDb: 0
+    boostDb: -12
     pitchMin: 0.8
     pitchMax: 1.2
     loop: 0
@@ -653,7 +653,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 6e9306e989852104cbe239b37022a927, type: 3}
     volume: 0
-    boostDb: -15
+    boostDb: -12
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -685,7 +685,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 0359a721028f3b34298e85432e07e94d, type: 3}
     volume: 0
-    boostDb: -5
+    boostDb: -12
     pitchMin: 0
     pitchMax: 0
     loop: 0
@@ -724,19 +724,19 @@ MonoBehaviour:
   - name: FISHTANK
     sounds:
     - {fileID: 8300000, guid: d4273b5fdf5b6eb4eb19747c9b7167e4, type: 3}
-    volume: 1
-    boostDb: 0
-    pitchMin: 1
-    pitchMax: 1
+    volume: 0
+    boostDb: -6
+    pitchMin: 0
+    pitchMax: 0
     loop: 0
   - name: BACKROOM_NOISE
     sounds:
     - {fileID: 8300000, guid: 5aa2f0ddbeb63b14fa6cc34bc6316a70, type: 3}
-    volume: 1
-    boostDb: 0
-    pitchMin: 1
-    pitchMax: 1
-    loop: 0
+    volume: 0
+    boostDb: -20
+    pitchMin: 0
+    pitchMax: 0
+    loop: 1
   musicList:
   - name: MENU
     music: {fileID: 8300000, guid: 2da1ca824085cff4ea8983b5b933ad9c, type: 3}
@@ -779,6 +779,18 @@ MonoBehaviour:
     musicStart: 1
     ambient: {fileID: 8300000, guid: fce5c2beca16e0841aece1e0a0baa855, type: 3}
     ambientVolume: 0.073
+  - sceneName: 0_TutorialLevel
+    music: 1
+    musicVolume: 0.08
+    musicStart: 0
+    ambient: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
+    ambientVolume: 0.05
+  - sceneName: 1_Upper_City_Bridge
+    music: 1
+    musicVolume: 0.08
+    musicStart: 0
+    ambient: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
+    ambientVolume: 0.05
 --- !u!82 &8778517580754884786
 AudioSource:
   m_ObjectHideFlags: 0
