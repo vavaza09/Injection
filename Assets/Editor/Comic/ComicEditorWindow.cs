@@ -43,6 +43,7 @@ namespace Game.Comic.Editor
         private float _autoAdvanceElapsed;
         private bool _needsRebuild = true;
         private bool _pageSettingsFoldout = true;
+        private bool _sequenceAudioFoldout;
 
         private ComicPreviewStage _stage;
         private ComicSfxDispatcher _sfxDispatcher;
@@ -706,6 +707,13 @@ namespace Game.Comic.Editor
             EditorGUILayout.BeginVertical(GUILayout.Width(RightColumnWidth));
             _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
 
+            _sequenceAudioFoldout = EditorGUILayout.Foldout(_sequenceAudioFoldout, "Scene Audio (whole sequence)", true);
+            if (_sequenceAudioFoldout)
+            {
+                DrawSequenceAudio();
+                EditorGUILayout.Space();
+            }
+
             _pageSettingsFoldout = EditorGUILayout.Foldout(_pageSettingsFoldout, "Page Settings", true);
             if (_pageSettingsFoldout)
             {
@@ -724,6 +732,48 @@ namespace Game.Comic.Editor
 
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
+        }
+
+        /// <summary>Sequence-wide (not page-wide) audio policy: what happens to the *room's* music
+        /// and ambient bed while this comic runs. Lives here rather than only on the asset's default
+        /// Inspector because it's the same class of decision as the Beat Events right below it —
+        /// a designer tuning a comic's sound shouldn't have to leave this window to find it.</summary>
+        private void DrawSequenceAudio()
+        {
+            if (_asset == null) return;
+
+            EditorGUI.BeginChangeCheck();
+            bool silence = EditorGUILayout.Toggle(
+                new GUIContent("Silence Scene Audio",
+                    "Cut the room's background music, ambient bed and looping SFX while this comic plays, " +
+                    "so only the comic's own beat-event audio is heard."),
+                _asset.SilenceSceneAudio);
+
+            float fadeOut;
+            bool restore;
+            using (new EditorGUI.DisabledScope(!silence))
+            {
+                fadeOut = EditorGUILayout.FloatField(
+                    new GUIContent("Fade Out (s)",
+                        "Seconds to fade the scene music out at the start of the comic. 0 = cut instantly, " +
+                        "which is what you want for a comic that plays on room entry."),
+                    _asset.SceneAudioFadeOut);
+                restore = EditorGUILayout.Toggle(
+                    new GUIContent("Restore On Finish",
+                        "Bring the room's music/ambient back when the comic ends. Untick when the comic's " +
+                        "own final music beat should carry on into gameplay."),
+                    _asset.RestoreSceneAudioOnFinish);
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_asset, "Edit Comic Scene Audio");
+                _asset.SetSceneAudioPolicy(silence, fadeOut, restore);
+            }
+
+            EditorGUILayout.HelpBox(
+                "Preview here is comic audio only — the scene bed this controls exists in Play Mode.",
+                MessageType.None);
         }
 
         private void DrawPageSettings(ComicPage page)

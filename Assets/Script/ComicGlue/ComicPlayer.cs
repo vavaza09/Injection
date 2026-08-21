@@ -66,6 +66,8 @@ namespace Game.Comic
         private int _currentBeat;
         private ComicPageView _currentView;
         private bool _pauseGame;
+        private bool _sceneAudioSuspended;
+        private bool _restoreSceneAudioOnFinish = true;
         private Action _onDone;
         private Coroutine _transitionRoutine;
 
@@ -317,6 +319,15 @@ namespace Game.Comic
             _onDone = onDone;
             _pauseGame = pauseGame;
 
+            // Hand the audio bed over to this comic: cut the room's own music/ambient (and any
+            // pooled looping SFX) so only the comic's beat-event audio is heard. Without this a
+            // comic that plays on room entry lands straight on top of the scene music
+            // SoundManager.OnSceneLoaded started a frame earlier — RoomManager waits exactly one
+            // frame between the scene load and RoomEntered, which is what ComicPlayOnEntry fires on.
+            _restoreSceneAudioOnFinish = sequence.RestoreSceneAudioOnFinish;
+            _sceneAudioSuspended = sequence.SilenceSceneAudio;
+            if (_sceneAudioSuspended) SoundManager.SuspendSceneAudio(sequence.SceneAudioFadeOut);
+
             if (_pauseGame)
             {
                 PauseStack.Instance.Push(PauseHandle);
@@ -549,10 +560,22 @@ namespace Game.Comic
                 PlayerInputGate.Set(true);
             }
 
+            RestoreSceneAudio();
+
             var callback = _onDone;
             _onDone = null;
             _sequence = null;
             callback?.Invoke();
+        }
+
+        /// <summary>Gives the audio bed back to the scene. Idempotent via <see cref="_sceneAudioSuspended"/>,
+        /// so the OnDestroy safety net can't double-restore after a normal <see cref="EndSequence"/> —
+        /// and can't leave the game permanently silent if this object is torn down mid-comic.</summary>
+        private void RestoreSceneAudio()
+        {
+            if (!_sceneAudioSuspended) return;
+            _sceneAudioSuspended = false;
+            SoundManager.RestoreSceneAudio(_restoreSceneAudioOnFinish);
         }
 
         private void Update()
@@ -619,6 +642,7 @@ namespace Game.Comic
             }
             if (_autoToggleAction != null) { _autoToggleAction.performed -= OnAutoTogglePerformed; _autoToggleAction.Dispose(); }
             if (_deviceTracker != null) _deviceTracker.DeviceChanged -= OnSkipHintDeviceChanged;
+            RestoreSceneAudio();
             if (_instance == this) _instance = null;
         }
     }

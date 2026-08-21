@@ -247,6 +247,16 @@ public class SoundManager : MonoBehaviour
     {
         if (!TryGetSceneAudio(scene.name, out var entry)) return;
 
+        // A cutscene owns the audio right now (see SuspendSceneAudio) — starting this scene's
+        // bed would land straight on top of it, which is the exact collision that guard exists
+        // to prevent. Re-point the snapshot at the NEW scene instead of playing it, so the
+        // eventual restore brings up the room the player is actually in, not the one they left.
+        if (_sceneAudioSuspended)
+        {
+            CaptureSceneAudioIntoSnapshot(entry, entry.musicStart == MusicStartMode.OnSceneLoad);
+            return;
+        }
+
         PlayAmbient(entry.ambient, entry.ambientVolume);
 
         if (entry.musicStart == MusicStartMode.OnSceneLoad)
@@ -257,14 +267,146 @@ public class SoundManager : MonoBehaviour
     public static void PlayCurrentSceneMusic()
     {
         if (instance == null) return;
-        if (instance.TryGetSceneAudio(SceneManager.GetActiveScene().name, out var entry))
-            PlaySceneMusic(entry);
+        if (!instance.TryGetSceneAudio(SceneManager.GetActiveScene().name, out var entry)) return;
+
+        // Suspended: defer rather than drop. MusicZoneTrigger is one-shot (it sets its _fired
+        // flag either way), so silently ignoring the request would lose the scene's music for
+        // the rest of the visit.
+        if (instance._sceneAudioSuspended)
+        {
+            instance.CaptureSceneAudioIntoSnapshot(entry, true);
+            return;
+        }
+
+        PlaySceneMusic(entry);
     }
 
     private static void PlaySceneMusic(SceneAudio entry)
     {
         if (entry.musicVolume > 0f) SetMusicVolume(entry.musicVolume);
         PlayMusic(entry.music);
+    }
+
+    // ── Scene audio suspend (cutscenes) ──────────────────────────────────
+
+    /// <summary>What the scene's own audio was doing when <see cref="SuspendSceneAudio"/> captured
+    /// it, so <see cref="RestoreSceneAudio"/> can put exactly that back.
+    /// <para/>
+    /// Music *volume* is deliberately not captured on the normal suspend path: it is
+    /// user-settings-driven (<c>GameSettings.ApplyVolumes</c>), so restoring a stale value would
+    /// silently revert a volume change the player made from the pause menu during the cutscene.
+    /// <c>musicVolumeOverride</c> (&lt; 0 = leave the live volume alone) is only filled in by
+    /// <see cref="CaptureSceneAudioIntoSnapshot"/>, where a *different* scene's authored volume
+    /// genuinely does need to be applied on the way back.</summary>
+    private struct SceneAudioSnapshot
+    {
+        public AudioClip music;
+        public bool musicPlaying;
+        public float musicVolumeOverride;
+        public AudioClip ambient;
+        public bool ambientPlaying;
+        public float ambientVolume;
+    }
+
+    private SceneAudioSnapshot _suspendSnapshot;
+    private bool _sceneAudioSuspended;
+
+    /// <summary>True while a cutscene has taken ownership of the audio bed — scene-driven music
+    /// and ambient are held back until <see cref="RestoreSceneAudio"/>.</summary>
+    public static bool IsSceneAudioSuspended => instance != null && instance._sceneAudioSuspended;
+
+    /// <summary>Silences everything the *scene* owns — background music, the ambient bed, pooled
+    /// looping SFX and footsteps — so a cutscene's own audio plays against silence instead of on
+    /// top of whatever the room was already playing. Snapshots that state first;
+    /// <see cref="RestoreSceneAudio"/> puts it back.
+    /// <para/>
+    /// Idempotent: a second call while already suspended keeps the original snapshot instead of
+    /// capturing the (now silent) state and restoring silence later.
+    /// <para/>
+    /// Deliberately does NOT touch <see cref="PlaySound"/>/<see cref="StartInstance"/> — those are
+    /// what the cutscene itself plays through — nor the per-entity 3D loops started via
+    /// <see cref="StartLoopOn"/>, which live on their own GameObjects' AudioSources rather than on
+    /// this one and so are the owning entity's business, not the scene bed's.</summary>
+    /// <param name="fadeOut">Seconds to fade the music out. 0 = cut instantly, which is what you
+    /// want when the cutscene starts on room entry (the scene music is barely a frame old and a
+    /// fade would just be a second of collision).</param>
+    public static void SuspendSceneAudio(float fadeOut = 0.35f)
+    {
+        if (instance == null || instance._sceneAudioSuspended) return;
+
+        var snap = new SceneAudioSnapshot { musicVolumeOverride = -1f };
+        if (instance.musicSource != null)
+        {
+            snap.music = instance.musicSource.clip;
+            snap.musicPlaying = instance.musicSource.isPlaying;
+        }
+        if (instance._ambientSource != null)
+        {
+            snap.ambient = instance._ambientSource.clip;
+            snap.ambientPlaying = instance._ambientSource.isPlaying;
+            snap.ambientVolume = instance._ambientSource.volume;
+        }
+        instance._suspendSnapshot = snap;
+
+        // Set before stopping anything: OnSceneLoaded/PlayCurrentSceneMusic consult this flag, and
+        // a scene load can land in the same frame as the stop.
+        instance._sceneAudioSuspended = true;
+
+        if (fadeOut > 0f) instance.StopMusicWithFade(fadeOut);
+        else instance.StopMusicImmediate();
+
+        StopAmbient();
+        StopLoop();
+        StopFootstep();
+    }
+
+    /// <summary>Undoes <see cref="SuspendSceneAudio"/>. No-op unless currently suspended.</summary>
+    /// <param name="restoreMusic">False leaves whatever music the cutscene itself started running —
+    /// for a comic whose final track is meant to carry on into gameplay. The ambient bed is
+    /// restored either way; cutscenes never author one.</param>
+    /// <param name="fadeIn">Seconds to fade the scene music back in (also the crossfade out of any
+    /// track the cutscene left playing).</param>
+    public static void RestoreSceneAudio(bool restoreMusic = true, float fadeIn = 0.35f)
+    {
+        if (instance == null || !instance._sceneAudioSuspended) return;
+
+        instance._sceneAudioSuspended = false;
+        var snap = instance._suspendSnapshot;
+        instance._suspendSnapshot = default;
+
+        if (snap.ambientPlaying && snap.ambient != null)
+            PlayAmbient(snap.ambient, snap.ambientVolume);
+
+        if (!restoreMusic) return;
+
+        if (snap.musicVolumeOverride > 0f) SetMusicVolume(snap.musicVolumeOverride);
+
+        if (snap.musicPlaying && snap.music != null)
+        {
+            // Already back on the right track (nothing changed music during the cutscene) — leave it.
+            if (instance.musicSource.clip == snap.music && instance.musicSource.isPlaying) return;
+            instance.PlayMusicWithFade(snap.music, fadeIn);
+        }
+        else if (instance.musicSource.isPlaying)
+        {
+            // Nothing was playing before the cutscene, so don't let the cutscene's own last track
+            // leak out into gameplay.
+            instance.StopMusicWithFade(fadeIn);
+        }
+    }
+
+    /// <summary>Records what <paramref name="entry"/> *would* have started, in place of starting it,
+    /// while suspended. <paramref name="includeMusic"/> is false for a scene whose music waits on a
+    /// <c>MusicZoneTrigger</c> that hasn't fired yet.</summary>
+    private void CaptureSceneAudioIntoSnapshot(SceneAudio entry, bool includeMusic)
+    {
+        _suspendSnapshot.ambient = entry.ambient;
+        _suspendSnapshot.ambientVolume = entry.ambientVolume > 0f ? entry.ambientVolume : 1f;
+        _suspendSnapshot.ambientPlaying = entry.ambient != null;
+
+        _suspendSnapshot.music = includeMusic ? GetMusicClip(entry.music) : null;
+        _suspendSnapshot.musicPlaying = _suspendSnapshot.music != null;
+        _suspendSnapshot.musicVolumeOverride = includeMusic && entry.musicVolume > 0f ? entry.musicVolume : -1f;
     }
 
     /// <summary>Editor-only accessor: the authored clip data for a SoundType on *this* instance,
@@ -591,7 +733,7 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
-            instance.musicSource.Stop();
+            instance.StopMusicImmediate();
         }
     }
 
@@ -639,27 +781,46 @@ public class SoundManager : MonoBehaviour
 
     #region Private Music Methods
 
-    private void PlayMusicWithFade(AudioClip newClip)
+    /// <summary>Hard-stops music without leaving a half-faded state behind. Killing the coroutine
+    /// matters as much as the Stop(): a <c>FadeMusicCoroutine</c> left running would call Play()
+    /// again a moment later, silently resurrecting the track we just stopped. Resetting the volume
+    /// matters because a partial fade leaves <c>musicSource.volume</c> below target, which the next
+    /// non-faded Play would inherit.</summary>
+    private void StopMusicImmediate()
+    {
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = null;
+        }
+
+        musicSource.Stop();
+        musicSource.volume = musicVolume;
+    }
+
+    /// <param name="fadeDuration">Seconds, or &lt;= 0 to use the serialized <see cref="musicFadeDuration"/>.</param>
+    private void PlayMusicWithFade(AudioClip newClip, float fadeDuration = -1f)
     {
         if (musicFadeCoroutine != null)
         {
             StopCoroutine(musicFadeCoroutine);
         }
 
-        musicFadeCoroutine = StartCoroutine(FadeMusicCoroutine(newClip));
+        musicFadeCoroutine = StartCoroutine(FadeMusicCoroutine(newClip, fadeDuration > 0f ? fadeDuration : musicFadeDuration));
     }
 
-    private void StopMusicWithFade()
+    /// <param name="fadeDuration">Seconds, or &lt;= 0 to use the serialized <see cref="musicFadeDuration"/>.</param>
+    private void StopMusicWithFade(float fadeDuration = -1f)
     {
         if (musicFadeCoroutine != null)
         {
             StopCoroutine(musicFadeCoroutine);
         }
 
-        musicFadeCoroutine = StartCoroutine(FadeOutCoroutine());
+        musicFadeCoroutine = StartCoroutine(FadeOutCoroutine(fadeDuration > 0f ? fadeDuration : musicFadeDuration));
     }
 
-    private IEnumerator FadeMusicCoroutine(AudioClip newClip)
+    private IEnumerator FadeMusicCoroutine(AudioClip newClip, float fadeDuration)
     {
         // Fade out current music
         if (musicSource.isPlaying)
@@ -667,10 +828,10 @@ public class SoundManager : MonoBehaviour
             float startVolume = musicSource.volume;
             float elapsed = 0f;
 
-            while (elapsed < musicFadeDuration)
+            while (elapsed < fadeDuration)
             {
                 elapsed += Time.unscaledDeltaTime;
-                musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / musicFadeDuration);
+                musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeDuration);
                 yield return null;
             }
         }
@@ -683,10 +844,10 @@ public class SoundManager : MonoBehaviour
         float targetVolume = musicVolume;
         float fadeInElapsed = 0f;
 
-        while (fadeInElapsed < musicFadeDuration)
+        while (fadeInElapsed < fadeDuration)
         {
             fadeInElapsed += Time.unscaledDeltaTime;
-            musicSource.volume = Mathf.Lerp(0f, targetVolume, fadeInElapsed / musicFadeDuration);
+            musicSource.volume = Mathf.Lerp(0f, targetVolume, fadeInElapsed / fadeDuration);
             yield return null;
         }
 
@@ -694,15 +855,15 @@ public class SoundManager : MonoBehaviour
         musicFadeCoroutine = null;
     }
 
-    private IEnumerator FadeOutCoroutine()
+    private IEnumerator FadeOutCoroutine(float fadeDuration)
     {
         float startVolume = musicSource.volume;
         float elapsed = 0f;
 
-        while (elapsed < musicFadeDuration)
+        while (elapsed < fadeDuration)
         {
             elapsed += Time.unscaledDeltaTime;
-            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / musicFadeDuration);
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeDuration);
             yield return null;
         }
 
