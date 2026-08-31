@@ -18,14 +18,14 @@
       "hash": "4ce7dd3cc54e37e2ed6dc59cb5a047f3dccb3f50"
     },
     "com.cysharp.unitask": {
-      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#ceac8d6946b1125fe782cd171fbcb245b567dbf9",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "ceac8d6946b1125fe782cd171fbcb245b567dbf9"
     },
     "com.dbrizov.naughtyattributes": {
-      "version": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
+      "version": "https://github.com/dbrizov/NaughtyAttributes.git#b11d62b28c5fcbe242988f9f8d451deb925cf23b",
       "depth": 0,
       "source": "git",
       "dependencies": {},

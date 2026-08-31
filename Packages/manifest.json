@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
-    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#ceac8d6946b1125fe782cd171fbcb245b567dbf9",
+    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#b11d62b28c5fcbe242988f9f8d451deb925cf23b",
     "com.unity.2d.pixel-perfect": "5.1.1",
     "com.unity.cinemachine": "3.1.5",
     "com.unity.collab-proxy": "2.11.3",
