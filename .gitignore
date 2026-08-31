@@ -73,3 +73,6 @@ qa_testing_config.json
 
 # Raw audio backups created by Tools/normalize_audio.py
 _AudioBackup_raw/
+
+CLAUDE.md.generated
+.claude.backup.*
