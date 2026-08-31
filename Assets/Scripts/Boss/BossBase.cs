@@ -119,10 +119,8 @@ public abstract class BossBase : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Subtle fill — always visible in Scene view
-        Gizmos.color = new Color(1f, 0.85f, 0f, 0.07f);
-        Gizmos.DrawSphere(transform.position, detectionRadius);
-
+        // Wire only — solid DrawSphere is re-tessellated every SceneView repaint
+        // and 3 of these overlap on the boss GO (BossBase + Boss + BossAttackManager).
         Gizmos.color = new Color(1f, 0.85f, 0f, 0.35f);
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }

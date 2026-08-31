@@ -244,8 +244,6 @@ public class BossAttackManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = new Color(0.2f, 1f, 0.2f, 0.12f);
-        Gizmos.DrawSphere(transform.position, detectionRadius);
         Gizmos.color = new Color(0.2f, 1f, 0.2f, 0.5f);
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
