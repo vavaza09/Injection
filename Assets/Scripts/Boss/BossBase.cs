@@ -99,26 +99,11 @@ public abstract class BossBase : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && !_wasPlayerInRange)
-        {
-            playerTransform = other.transform;
-            _wasPlayerInRange = true;
-            OnPlayerDetected();
-            PlayerEnteredRange?.Invoke();
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && _wasPlayerInRange)
-        {
-            _wasPlayerInRange = false;
-            OnPlayerLost();
-            PlayerExitedRange?.Invoke();
-        }
-    }
+    // Detection is handled solely by PollDetection() (distance vs detectionRadius).
+    // Trigger-based enter/exit was removed: BossBase can't tell which of the boss's
+    // many trigger colliders (weak points, attack zones, junk...) the player touched,
+    // so it fired spurious PlayerExited/Entered every time the player crossed one,
+    // making the health-bar reveal and idle/aggro states thrash.
 
     public bool IsPlayerInRange(float range)
     {
