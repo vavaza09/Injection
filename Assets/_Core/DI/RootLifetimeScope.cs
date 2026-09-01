@@ -135,6 +135,9 @@ public class RootLifetimeScope : LifetimeScope
             foreach (var ehud in FindObjectsByType<Game.UI.Skills.EnergyHUD>(
                 FindObjectsInactive.Include, FindObjectsSortMode.None))
                 container.Inject(ehud);
+
+            var nameCard = FindAnyObjectByType<Game.UI.LevelNameCard>(FindObjectsInactive.Include);
+            if (nameCard != null) container.Inject(nameCard);
         });
 
         // Death-respawn coordinator (reworked for the persistent player).

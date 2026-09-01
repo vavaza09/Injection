@@ -99,26 +99,11 @@ public abstract class BossBase : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && !_wasPlayerInRange)
-        {
-            playerTransform = other.transform;
-            _wasPlayerInRange = true;
-            OnPlayerDetected();
-            PlayerEnteredRange?.Invoke();
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && _wasPlayerInRange)
-        {
-            _wasPlayerInRange = false;
-            OnPlayerLost();
-            PlayerExitedRange?.Invoke();
-        }
-    }
+    // Detection is handled solely by PollDetection() (distance vs detectionRadius).
+    // Trigger-based enter/exit was removed: BossBase can't tell which of the boss's
+    // many trigger colliders (weak points, attack zones, junk...) the player touched,
+    // so it fired spurious PlayerExited/Entered every time the player crossed one,
+    // making the health-bar reveal and idle/aggro states thrash.
 
     public bool IsPlayerInRange(float range)
     {
@@ -134,10 +119,8 @@ public abstract class BossBase : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Subtle fill — always visible in Scene view
-        Gizmos.color = new Color(1f, 0.85f, 0f, 0.07f);
-        Gizmos.DrawSphere(transform.position, detectionRadius);
-
+        // Wire only — solid DrawSphere is re-tessellated every SceneView repaint
+        // and 3 of these overlap on the boss GO (BossBase + Boss + BossAttackManager).
         Gizmos.color = new Color(1f, 0.85f, 0f, 0.35f);
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }

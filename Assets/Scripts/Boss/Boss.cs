@@ -88,8 +88,6 @@ public class Boss : BossBase
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = new Color(1f, 0.85f, 0f, 0.07f);
-        Gizmos.DrawSphere(transform.position, detectionRadius);
         Gizmos.color = new Color(1f, 0.85f, 0f, 0.35f);
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
