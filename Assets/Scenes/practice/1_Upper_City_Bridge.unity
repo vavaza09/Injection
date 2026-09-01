@@ -3743,7 +3743,7 @@ GameObject:
   - component: {fileID: 354555090}
   - component: {fileID: 354555091}
   - component: {fileID: 354555092}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: prop-map1-final_22
   m_TagString: Untagged
   m_Icon: {fileID: 0}

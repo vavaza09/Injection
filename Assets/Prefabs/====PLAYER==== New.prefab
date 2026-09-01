@@ -381,12 +381,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: empRadius
-      value: 29.1
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: empVFXPrefab
       value: 
       objectReference: {fileID: 90529768063714368, guid: 0d3fb514e3dca58499aebff545464a13, type: 3}
+    - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: trueDamageArmedColor.b
+      value: 0.9433962
+      objectReference: {fileID: 0}
+    - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: trueDamageArmedColor.g
+      value: 0.8757083
+      objectReference: {fileID: 0}
+    - target: {fileID: 1234567890123456789, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      propertyPath: trueDamageArmedColor.r
+      value: 0.493948
+      objectReference: {fileID: 0}
     - target: {fileID: 1344462908036067775, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -573,11 +585,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceForceH
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceForceV
-      value: 10
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: hitstopDuration
@@ -585,7 +597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: bounceUpwardBias
-      value: 0.5
+      value: 0.31
       objectReference: {fileID: 0}
     - target: {fileID: 7705200461922201765, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       propertyPath: weakPointShakeIntensity

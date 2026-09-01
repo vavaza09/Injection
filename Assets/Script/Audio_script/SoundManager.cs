@@ -131,6 +131,11 @@ public class SoundManager : MonoBehaviour
     private static SoundManager instance;
     private AudioSource sfxSource;
     private AudioSource musicSource;
+
+    // Last value passed to SetSFXVolume. sfxSource/_footstepSource/_loopPool get their .volume
+    // set directly there, but per-entity sources (PlaySoundOn/StartLoopOn) and the instance pool
+    // are outside this object, so they scale by this at play time instead. No mixer in this project.
+    private float _sfxVolume = 1f;
     private AudioSource _footstepSource;
     private AudioSource _ambientSource;
 
@@ -471,7 +476,7 @@ public class SoundManager : MonoBehaviour
         AudioClip[] clips = sl.Sounds;
         if (clips == null || clips.Length == 0) return;
 
-        float vol   = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        float vol   = (volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume) * instance._sfxVolume;
         float pitch = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         source.pitch = pitch;
         source.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Length)], vol);
@@ -487,7 +492,7 @@ public class SoundManager : MonoBehaviour
         if (clips == null || clips.Length == 0) return;
 
         source.clip   = clips[UnityEngine.Random.Range(0, clips.Length)];
-        source.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        source.volume = (volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume) * instance._sfxVolume;
         source.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         source.loop   = true;
 
@@ -560,6 +565,7 @@ public class SoundManager : MonoBehaviour
     {
         if (instance == null) return;
         float v = Mathf.Clamp01(volume);
+        instance._sfxVolume = v;
         if (instance.sfxSource != null) instance.sfxSource.volume = v;
         if (instance._footstepSource != null) instance._footstepSource.volume = v;
         if (instance._loopPool != null)
@@ -593,10 +599,12 @@ public class SoundManager : MonoBehaviour
         }
 
         src.clip   = clips[UnityEngine.Random.Range(0, clips.Length)];
-        src.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        src.volume = (volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume) * _sfxVolume;
         src.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         src.Play();
         _activeLoopers[key] = src;
+        // ponytail: a later SetSFXVolume clobbers this active looper's .volume to the raw slider
+        // value (loses EffectiveVolume). Pre-existing; re-scale _activeLoopers there if it matters.
     }
 
     private AudioSource GetFreeLoopSource()
@@ -649,7 +657,7 @@ public class SoundManager : MonoBehaviour
         }
 
         src.clip   = clips[UnityEngine.Random.Range(0, clips.Length)];
-        src.volume = volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume;
+        src.volume = (volumeOverride >= 0f ? volumeOverride : sl.EffectiveVolume) * instance._sfxVolume;
         src.pitch  = UnityEngine.Random.Range(sl.EffectivePitchMin, sl.EffectivePitchMax);
         src.loop   = sl.loop;
         src.Play();

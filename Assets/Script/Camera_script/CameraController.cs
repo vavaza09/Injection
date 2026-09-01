@@ -44,9 +44,9 @@ public class CameraController : MonoBehaviour
 
     [Header("Aim Lean")]
     [Tooltip("Max world-unit offset the camera leans toward the cursor while aiming.")]
-    [SerializeField] private float aimMaxOffset = 3f;
+    [SerializeField] private float aimMaxOffset = 6f;
     [Tooltip("Fraction of cursor world-distance the camera leads toward while aiming (0-1).")]
-    [SerializeField] private float aimStrength = 0.6f;
+    [SerializeField] private float aimStrength = 0.85f;
     [Tooltip("SmoothDamp time for the aim lean easing in.")]
     [SerializeField] private float aimSmoothTime = 0.2f;
     [Tooltip("SmoothDamp time for the aim lean returning to center (dash / aim release). Keep short.")]
