@@ -8,12 +8,14 @@
   <Project Path="Game.Comic.csproj" />
   <Project Path="Game.Tests.Integration.csproj" />
   <Project Path="Game.Tests.Fixtures.csproj" />
+  <Project Path="Game.Components.CameraForesight.EditModeTests.csproj" />
   <Project Path="Game.Comic.EditModeTests.csproj" />
   <Project Path="Game.Health.csproj" />
   <Project Path="Game.Rooms.EditModeTests.csproj" />
   <Project Path="Game.Persistence.csproj" />
   <Project Path="Game.Skills.EditModeTests.csproj" />
   <Project Path="Game.Persistence.EditModeTests.csproj" />
+  <Project Path="Game.Components.CameraForesight.csproj" />
   <Project Path="Core.Logging.csproj" />
   <Project Path="Game.Health.EditModeTests.csproj" />
 </Solution>
