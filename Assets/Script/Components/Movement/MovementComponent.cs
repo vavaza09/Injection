@@ -166,6 +166,10 @@ namespace Game.Components.Movement
         [SerializeField] private bool enableHangDashRefresh = true;
         private readonly DashRefreshGate _wallDashGate = new DashRefreshGate();
         private readonly DashRefreshGate _hangDashGate = new DashRefreshGate();
+        // Tracks which SwingPoint last granted a hang-dash refresh, so chaining to a
+        // DIFFERENT point re-arms the gate mid-air while re-grabbing the SAME point
+        // (without landing first) still only refreshes once.
+        private SwingPoint _lastHangDashRefreshPoint;
 
         // Drop-through state
         private Collider2D _bodyCollider;
@@ -450,6 +454,7 @@ namespace Game.Components.Movement
                     _dashHandler.RefillDash();
                     _wallDashGate.Recharge();
                     _hangDashGate.Recharge();
+                    _lastHangDashRefreshPoint = null;
                 }
             }
 
@@ -1249,6 +1254,14 @@ namespace Game.Components.Movement
             currentSwingPoint = target;
             isGrabbing = true;
 
+            // Chaining to a different SwingPoint than the one that last granted a hang-dash
+            // refresh re-arms the gate mid-air; re-grabbing the same point without landing
+            // does not, so the refresh cannot be farmed by regrabbing one anchor.
+            if (target != _lastHangDashRefreshPoint)
+            {
+                _hangDashGate.Recharge();
+            }
+
             // Start a short leap to the anchor instead of teleporting (avoids camera snap).
             // GrabStarted (slow-mo + sound) fires only when the leap reaches the anchor.
             _leapStartPos = rb.position;
@@ -1303,13 +1316,17 @@ namespace Game.Components.Movement
             float speed = grabLaunchBaseSpeed * Mathf.Lerp(grabLaunchMinMultiplier, grabLaunchMaxMultiplier, grabbedSpeedFactor);
             rb.linearVelocity = aimDir.normalized * speed;
 
+            SwingPoint launchedFrom = currentSwingPoint;
             currentSwingPoint = null;
             isGrabbing = false;
             _isLeapingToGrab = false;
             _autoGrabCooldownTimer = 0.4f;
 
             if (_hangDashGate.TryConsume(_dashHandler.CurrentDashes, _dashHandler.MaxDashes))
+            {
                 _dashHandler.ResetDash();
+                _lastHangDashRefreshPoint = launchedFrom;
+            }
 
             isJumping = true;
             isFalling = false;
