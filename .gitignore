@@ -66,6 +66,7 @@ coverage.xml
 .DS_Store
 Thumbs.db
 CLAUDE.md
+WORKFLOW.md
 .claude/
 .claude-code/
 qa_testing_config.json
