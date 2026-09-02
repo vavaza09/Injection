@@ -69,6 +69,7 @@ public class CameraController : MonoBehaviour
     private bool _aimSuppressed;
 
     private Coroutine _shakeRoutine;
+    private Coroutine _zoomRoutine;
 
     private void Awake()
     {
@@ -180,6 +181,27 @@ public class CameraController : MonoBehaviour
 
     public void SetBounds(Bounds bounds) { roomBounds = bounds; useBounds = true; }
     public void ClearBounds() => useBounds = false;
+
+    public void SetZoom(float targetOrthoSize, float duration)
+    {
+        if (_zoomRoutine != null) StopCoroutine(_zoomRoutine);
+        _zoomRoutine = StartCoroutine(ZoomRoutine(targetOrthoSize, duration));
+    }
+
+    private IEnumerator ZoomRoutine(float targetSize, float duration)
+    {
+        float start = _cam.orthographicSize;
+        float dur = Mathf.Max(0.001f, duration);
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            _cam.orthographicSize = Mathf.Lerp(start, targetSize, t / dur);
+            yield return null;
+        }
+        _cam.orthographicSize = targetSize;
+        _zoomRoutine = null;
+    }
 
     public void SetAim(bool aiming, Vector2 worldOffset)
     {
