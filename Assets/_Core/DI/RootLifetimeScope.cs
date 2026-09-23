@@ -7,6 +7,7 @@ using Game.Components.Interaction;
 using Game.Components.Movement;
 using Game.Components.Combat;
 using Game.Components.Skills;
+using Game.Components.Glide;
 using Game.Characters.Player;
 using Game.Persistence;
 using Game.Rooms;
@@ -31,6 +32,9 @@ public class RootLifetimeScope : LifetimeScope
 
     [Header("Rooms")]
     [SerializeField] private RoomCatalog roomCatalog;
+
+    [Header("Glide")]
+    [SerializeField] private GlideConfig glideConfig;
 
     protected override void Awake()
     {
@@ -94,12 +98,27 @@ public class RootLifetimeScope : LifetimeScope
             .As<IEnergyPool>()
             .As<IEnergyStore>();
 
+        // Glide: GlideModel/GlideSystem MUST be singletons shared by PlayerGlideController
+        // (mutates the model) and CompanionFollowerView (only observes it) — never construct
+        // separate instances per-consumer. Falls back to a default asset like logConfig above
+        // rather than failing the whole DI graph if unassigned.
+        if (glideConfig == null)
+        {
+            glideConfig = ScriptableObject.CreateInstance<GlideConfig>();
+            Debug.LogWarning("[RootLifetimeScope] GlideConfig not assigned: using default");
+        }
+        builder.RegisterInstance(glideConfig);
+        builder.Register<GlideModel>(Lifetime.Singleton);
+        builder.Register<GlideSystem>(Lifetime.Singleton);
+
         // Persistent Player + on-object controllers (DontDestroyOnLoad alongside this root)
         builder.RegisterComponentInHierarchy<character>();
         builder.RegisterComponentInHierarchy<Player>();
         builder.RegisterComponentInHierarchy<PlayerSkillController>()
             .As<Game.Components.Skills.ISkillReadinessProvider>();
         builder.RegisterComponentInHierarchy<PlayerEnergyCollector>();
+        builder.RegisterComponentInHierarchy<PlayerGlideController>();
+        builder.RegisterComponentInHierarchy<CompanionFollowerView>();
 
         var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
         if (energyHUD != null)

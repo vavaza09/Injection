@@ -17,6 +17,10 @@ public abstract class character : MonoBehaviour
     protected float currentHealth;
     protected bool isAlive = true;
 
+    /// <summary>Read-only external view of <see cref="isAlive"/> — for systems that aren't a
+    /// subclass of character (e.g. PlayerGlideController) but still need to gate on it.</summary>
+    public bool IsAlive => isAlive;
+
     //Unity Components
     protected Transform characterTransform;
     protected Rigidbody2D rb;

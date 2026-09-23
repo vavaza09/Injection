@@ -6,6 +6,7 @@ using Game.Rooms;
 using Game.Rooms.Objectives;
 using Game.Tutorial;
 using Game.Comic;
+using Game.Progression;
 
 /// <summary>
 /// Child scope placed once in every room scene. Auto-parents to the session
@@ -43,6 +44,7 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<ComicPlayOnEntry>(container);
             InjectAll<DoorView>(container);
             InjectAll<DoorSwitchView>(container);
+            InjectAll<AbilityUnlockTrigger>(container);
 
             // Nothing else resolves DoorCutawaySystem (it works purely via its DoorOpened
             // subscription), so force its construction here — otherwise it would never be built
