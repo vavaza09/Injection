@@ -48,6 +48,7 @@ public class SceneLifetimeScope : LifetimeScope
             // subscription), so force its construction here — otherwise it would never be built
             // and the door-open cutscene would never fire.
             container.Resolve<DoorCutawaySystem>();
+            InjectAll<CameraForesightExtension>(container);
         });
     }
 

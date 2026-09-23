@@ -3571,6 +3571,7 @@ GameObject:
   - component: {fileID: 733157193}
   - component: {fileID: 733157192}
   - component: {fileID: 733157195}
+  - component: {fileID: 733157196}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -3687,6 +3688,22 @@ MonoBehaviour:
     MaxWindowSize: 0
     Padding: 0
   m_LegacyMaxWindowSize: -2
+--- !u!114 &733157196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733157191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
+  _profile: {fileID: 11400000, guid: 685bfc7730429464ba38fa21e79cf212, type: 2}
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &764381906
 GameObject:
   m_ObjectHideFlags: 0
@@ -28679,7 +28696,6 @@ GameObject:
   - component: {fileID: 1829299623}
   - component: {fileID: 1829299622}
   - component: {fileID: 1829299625}
-  - component: {fileID: 1829299626}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -28838,31 +28854,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &1829299626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829299620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e11f4683cb301804f8c6315ff9eca514, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraManager
-  _allVirtualCameras: []
-  _playerRb: {fileID: 0}
-  cameraTarget: {fileID: 0}
-  _zoomInTime: 0.35
-  _zoomOutTime: 0.45
-  _fallVelocityThreshold: -5
-  _commitDelay: 0.1
-  _normalOffsetY: 1
-  _fallOffsetY: -1.5
-  _normalYDamping: 1
-  _fallYDamping: 0.5
-  _downTime: 0.2
-  _upTime: 0.5
 --- !u!1 &1836087043
 GameObject:
   m_ObjectHideFlags: 0

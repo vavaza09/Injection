@@ -19964,6 +19964,7 @@ GameObject:
   - component: {fileID: 733157192}
   - component: {fileID: 733157195}
   - component: {fileID: 733157196}
+  - component: {fileID: 733157197}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -20096,6 +20097,22 @@ MonoBehaviour:
   aimStrength: 0.6
   aimSmoothTime: 1.2
   aimReturnSmoothTime: 0.25
+--- !u!114 &733157197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733157191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
+  _profile: {fileID: 11400000, guid: 685bfc7730429464ba38fa21e79cf212, type: 2}
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &742790384
 GameObject:
   m_ObjectHideFlags: 0
@@ -30330,6 +30347,7 @@ GameObject:
   - component: {fileID: 1547380677}
   - component: {fileID: 1547380679}
   - component: {fileID: 1547380678}
+  - component: {fileID: 1547380681}
   m_Layer: 0
   m_Name: CinemachineCamera (1)
   m_TagString: Untagged
@@ -30446,6 +30464,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1547380681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547380676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
+  _profile: {fileID: 11400000, guid: 685bfc7730429464ba38fa21e79cf212, type: 2}
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1001 &1571273429
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -26,9 +26,13 @@ namespace Game.Camera.EditModeTests
             float biasMaxDistance = 5.5f,
             float biasMinSpeedFactor = 0.5f,
             float biasDwellTime = 0.4f,
+            float biasSmoothTime = 0.35f,
             float minOrthographicSize = 8f,
             float maxOrthographicSize = 9.5f,
             AnimationCurve zoomCurve = null,
+            float zoomMinSpeedFactor = 0.5f,
+            float zoomDwellTime = 0.3f,
+            float zoomSmoothTime = 0.3f,
             float ledgeProbeDistance = 3f,
             float ledgeMinDropHeight = 4f,
             float lookDownOffset = 2.5f,
@@ -41,10 +45,14 @@ namespace Game.Camera.EditModeTests
             SetField(profile, "_biasMaxDistance", biasMaxDistance);
             SetField(profile, "_biasMinSpeedFactor", biasMinSpeedFactor);
             SetField(profile, "_biasDwellTime", biasDwellTime);
+            SetField(profile, "_biasSmoothTime", biasSmoothTime);
 
             SetField(profile, "_minOrthographicSize", minOrthographicSize);
             SetField(profile, "_maxOrthographicSize", maxOrthographicSize);
             SetField(profile, "_zoomCurve", zoomCurve != null ? zoomCurve : AnimationCurve.Linear(0f, 0f, 1f, 1f));
+            SetField(profile, "_zoomMinSpeedFactor", zoomMinSpeedFactor);
+            SetField(profile, "_zoomDwellTime", zoomDwellTime);
+            SetField(profile, "_zoomSmoothTime", zoomSmoothTime);
 
             SetField(profile, "_ledgeProbeDistance", ledgeProbeDistance);
             SetField(profile, "_ledgeMinDropHeight", ledgeMinDropHeight);
