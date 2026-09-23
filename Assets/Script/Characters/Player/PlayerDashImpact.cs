@@ -189,18 +189,26 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                 }
 
                 // Normal dash: nearest collider determines outcome.
-                // If it's a weak point → kill; if it's armor → bounce and shield everything behind it.
-                if (ResolveIsWeakPoint(hit.collider, targetCharacter))
+                // Exposed weak point → kill. Armored weak point → crack the plate and bounce
+                // (enemy survives; plate falls off on its own after a delay). Plain body → bounce.
+                EnemyWeakPoint weakPoint = ResolveWeakPoint(hit.collider, targetCharacter);
+                if (weakPoint != null && weakPoint.WeakPointExposed)
                 {
                     _attackComponent.PerformAttack(targetCharacter, dashImpactBaseDamage);
                     ImpactLanded?.Invoke();
-                    SlowMotion.Instance.StartHitstop(hitstopTimeScale, hitstopDuration);
                     CameraShake.Shake(weakPointShakeIntensity);
                     _hitFlash?.Flash();
                     SpawnWeakPointHitVfx(hit.point);
                     SoundManager.PlaySound(SoundType.HITSTOP);
                     targetCharacter.Die();
                     StartCoroutine(DashAttackFreezeAndBounce());
+                }
+                else if (weakPoint != null && weakPoint.HasArmor)
+                {
+                    weakPoint.HitArmor();
+                    ExplosionFlashLight2D.Spawn(hit.point, intensity: 2f, outerRadius: 6f, color: Color.white);
+                    MetalSparkFX.Spawn(hit.point, hit.normal);
+                    _mc?.BounceFromDashImpact(bounceForceH, bounceForceV, bounceUpwardBias);
                 }
                 else
                 {
@@ -233,7 +241,7 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
         Destroy(fx, weakPointHitVfxLifetime);
     }
 
-    private bool ResolveIsWeakPoint(Collider2D hitCollider, character targetCharacter)
+    private EnemyWeakPoint ResolveWeakPoint(Collider2D hitCollider, character targetCharacter)
     {
         EnemyWeakPoint weakPoint = hitCollider.GetComponent<EnemyWeakPoint>();
         if (weakPoint == null)
@@ -248,9 +256,9 @@ public class PlayerDashImpact : MonoBehaviour, Game.Components.Skills.ITrueDamag
                 }
             }
         }
-        if (weakPoint == null) return false;
-        if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return false;
-        return true;
+        if (weakPoint == null) return null;
+        if (weakPoint.OwnerEnemy != null && weakPoint.OwnerEnemy != targetCharacter) return null;
+        return weakPoint;
     }
 
     private IEnumerator DashAttackFreezeAndBounce()
