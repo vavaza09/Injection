@@ -6,12 +6,14 @@ using Game.Components.Health;
 using Game.Components.Movement;
 using Game.Components.Combat;
 using Game.Components.Skills;
+using Game.Components.Glide;
 using Game.Characters.Player;
 using Game.Tutorial;
 using Game.Spawning;
 using Game.UI;
 using Game.Components.Interaction;
 using Game.Persistence;
+using Game.Progression;
 using Game.Rooms.Objectives;
 
 /// <summary>
@@ -25,6 +27,13 @@ public class DevSceneLifetimeScope : LifetimeScope
     [SerializeField] private LogConfig logConfig;
     [SerializeField] private int maxEnergy   = 3;
     [SerializeField] private int startEnergy = 0;
+
+    [Header("Glide")]
+    [SerializeField] private GlideConfig glideConfig;
+    [Tooltip("Abilities (see AbilityIds) unlocked in-memory at scene start via the same " +
+             "SaveService this scope already gives every door/objective — no special-case " +
+             "bypass, no save file written (SaveService here is InMemorySaveStorage-backed).")]
+    [SerializeField] private string[] startUnlockedAbilities;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -71,6 +80,17 @@ public class DevSceneLifetimeScope : LifetimeScope
         builder.Register<EnergyPool>(_ => new EnergyPool(maxEnergy, startEnergy), Lifetime.Singleton)
             .As<IEnergyPool>()
             .As<IEnergyStore>();
+
+        // Glide — same shared-singleton requirement as RootLifetimeScope (see its comment):
+        // PlayerGlideController and CompanionFollowerView must observe the SAME GlideModel.
+        if (glideConfig == null)
+        {
+            glideConfig = ScriptableObject.CreateInstance<GlideConfig>();
+            Debug.LogWarning("[DevSceneLifetimeScope] GlideConfig not assigned: using default");
+        }
+        builder.RegisterInstance(glideConfig);
+        builder.Register<GlideModel>(Lifetime.Singleton);
+        builder.Register<GlideSystem>(Lifetime.Singleton);
 
         // Player GO is a sibling root (not under this scope GO).
         // RegisterInstance does NOT auto-inject — use BuildCallback with container.Inject() instead
@@ -123,7 +143,26 @@ public class DevSceneLifetimeScope : LifetimeScope
                 var ec = p.GetComponent<PlayerEnergyCollector>();
                 if (ec != null) container.Inject(ec);
 
+                var glideController = p.GetComponent<PlayerGlideController>();
+                if (glideController != null) container.Inject(glideController);
+
                 container.Inject(p);
+            }
+
+            // Companion is a scene sibling (not under this scope GO, and not a child of the
+            // Player transform — see CompanionFollowerView's doc comment for why).
+            var companion = FindAnyObjectByType<CompanionFollowerView>(FindObjectsInactive.Include);
+            if (companion != null) container.Inject(companion);
+
+            foreach (var unlockTrigger in FindObjectsByType<AbilityUnlockTrigger>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None))
+                container.Inject(unlockTrigger);
+
+            if (startUnlockedAbilities != null && startUnlockedAbilities.Length > 0)
+            {
+                var saveService = container.Resolve<SaveService>();
+                foreach (var abilityId in startUnlockedAbilities)
+                    saveService.MarkAbilityUnlocked(abilityId);
             }
 
             var eb = FindAnyObjectByType<EmpBlastReceiver>(FindObjectsInactive.Include);

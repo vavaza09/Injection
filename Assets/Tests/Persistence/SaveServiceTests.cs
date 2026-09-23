@@ -146,7 +146,7 @@ namespace Game.Tests.Persistence
         // --- version migration ---
 
         [Test]
-        public void Load_MigratesV2ToCurrent_ChainsThroughV3AndV4()
+        public void Load_MigratesV2ToCurrent_ChainsThroughV3AndV4AndV5()
         {
             var v2 = new SaveData { version = 2 };
             v2.checkpoint.roomId = "room_harbor";
@@ -158,11 +158,12 @@ namespace Game.Tests.Persistence
             var result = _sut.Load();
 
             Assert.IsNotNull(result, "Migrated v2 save should not be discarded.");
-            Assert.AreEqual(4, result.version);
+            Assert.AreEqual(5, result.version);
             Assert.AreEqual("room_harbor", result.checkpoint.roomId);
             Assert.AreEqual(1, result.bossesDefeated.Count);
             Assert.IsNotNull(result.objectivesCompleted);
             Assert.IsNotNull(result.comicsSeen);
+            Assert.IsNotNull(result.abilitiesUnlocked);
         }
 
         [Test]
@@ -177,12 +178,33 @@ namespace Game.Tests.Persistence
             var result = _sut.Load();
 
             Assert.IsNotNull(result, "Migrated v3 save should not be discarded.");
-            Assert.AreEqual(4, result.version);
+            Assert.AreEqual(5, result.version);
             Assert.AreEqual("room_harbor", result.checkpoint.roomId);
             Assert.AreEqual(1, result.bossesDefeated.Count);
             Assert.AreEqual(1, result.objectivesCompleted.Count);
             Assert.IsNotNull(result.comicsSeen);
             Assert.AreEqual(0, result.comicsSeen.Count);
+        }
+
+        [Test]
+        public void Load_MigratesV4ToV5_InitialisesAbilitiesUnlocked()
+        {
+            var v4 = new SaveData { version = 4 };
+            v4.checkpoint.roomId = "room_harbor";
+            v4.bossesDefeated.Add("crab_boss");
+            v4.comicsSeen.Add("prologue");
+            v4.abilitiesUnlocked = null; // simulate a real v4 save, which predates this field
+            _storage.Write(v4);
+
+            var result = _sut.Load();
+
+            Assert.IsNotNull(result, "Migrated v4 save should not be discarded.");
+            Assert.AreEqual(5, result.version);
+            Assert.AreEqual("room_harbor", result.checkpoint.roomId);
+            Assert.AreEqual(1, result.bossesDefeated.Count);
+            Assert.AreEqual(1, result.comicsSeen.Count);
+            Assert.IsNotNull(result.abilitiesUnlocked);
+            Assert.AreEqual(0, result.abilitiesUnlocked.Count);
         }
 
         // --- comic persistence ---
@@ -230,6 +252,53 @@ namespace Game.Tests.Persistence
             Assert.AreEqual("room_harbor", data.checkpoint.roomId);
             Assert.IsTrue(data.bossesDefeated.Contains("crab_boss"));
             Assert.IsTrue(data.comicsSeen.Contains("prologue"));
+        }
+
+        // --- ability-unlock persistence ---
+
+        [Test]
+        public void MarkAbilityUnlocked_AddsId()
+        {
+            _sut.MarkAbilityUnlocked("glide");
+            Assert.IsTrue(_sut.IsAbilityUnlocked("glide"));
+        }
+
+        [Test]
+        public void MarkAbilityUnlocked_IsIdempotent()
+        {
+            _sut.MarkAbilityUnlocked("glide");
+            _sut.MarkAbilityUnlocked("glide");
+            var data = _sut.Load();
+            Assert.AreEqual(1, data.abilitiesUnlocked.Count);
+        }
+
+        [Test]
+        public void IsAbilityUnlocked_FalseWhenNotMarked()
+        {
+            Assert.IsFalse(_sut.IsAbilityUnlocked("glide"));
+        }
+
+        [Test]
+        public void MarkAbilityUnlocked_EmptyId_IsIgnored()
+        {
+            _sut.MarkAbilityUnlocked("");
+            Assert.IsFalse(_sut.HasSave());
+        }
+
+        [Test]
+        public void MarkAbilityUnlocked_PreservesExistingData()
+        {
+            var initial = new SaveData();
+            initial.checkpoint.roomId = "room_harbor";
+            initial.bossesDefeated.Add("crab_boss");
+            _sut.Save(initial);
+
+            _sut.MarkAbilityUnlocked("glide");
+            var data = _sut.Load();
+
+            Assert.AreEqual("room_harbor", data.checkpoint.roomId);
+            Assert.IsTrue(data.bossesDefeated.Contains("crab_boss"));
+            Assert.IsTrue(data.abilitiesUnlocked.Contains("glide"));
         }
 
         // --- objective persistence ---

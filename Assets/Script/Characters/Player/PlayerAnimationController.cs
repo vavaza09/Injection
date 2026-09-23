@@ -31,6 +31,7 @@ namespace Game.Characters.Player
         private readonly int _animIsKnockback;
         private readonly int _animIsDamageKnocked;
         private readonly int _animInteract;
+        private readonly int _animIsGliding;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
         private readonly bool _hasRunSpeedParameter;
@@ -40,6 +41,7 @@ namespace Game.Characters.Player
         private readonly bool _hasKnockbackParameter;
         private readonly bool _hasDamageKnockedParameter;
         private readonly bool _hasInteractParameter;
+        private readonly bool _hasGlidingParameter;
 
         // Run animation playback speed at min/max momentum
         private const float RunSpeedMultMin = 1.0f;
@@ -70,6 +72,7 @@ namespace Game.Characters.Player
             _animIsKnockback = Animator.StringToHash("IsKnockback");
             _animIsDamageKnocked = Animator.StringToHash("IsDamageKnocked");
             _animInteract = Animator.StringToHash("Interact");
+            _animIsGliding = Animator.StringToHash("IsGliding");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
             _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
@@ -79,6 +82,7 @@ namespace Game.Characters.Player
             _hasKnockbackParameter = HasTriggerParameter(_animator, "IsKnockback");
             _hasDamageKnockedParameter = HasBoolParameter(_animator, "IsDamageKnocked");
             _hasInteractParameter = HasTriggerParameter(_animator, "Interact");
+            _hasGlidingParameter = HasBoolParameter(_animator, "IsGliding");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -170,6 +174,17 @@ namespace Game.Characters.Player
             }
         }
 
+        // Driven by GlideModel.StateChanged (see PlayerGlideController), not polled here like
+        // the rest of UpdateMovementAnimation — glide is an explicit toggle, not a continuous
+        // physics read, so a one-shot push on state change is the correct shape.
+        public void SetGliding(bool isGliding)
+        {
+            if (_animator != null && _hasGlidingParameter)
+            {
+                _animator.SetBool(_animIsGliding, isGliding);
+            }
+        }
+
         public void SetDashThresholds(float upThreshold, float downThreshold)
         {
             _dashUpThreshold = upThreshold;
@@ -223,6 +238,7 @@ namespace Game.Characters.Player
                 if (_hasHangingParameter)      _animator.SetBool(_animIsHanging,        false);
                 if (_hasDashingParameter)      _animator.SetBool(_animIsDashing,        false);
                 if (_hasDashAttackingParameter)_animator.SetBool(_animIsDashAttacking,  false);
+                if (_hasGlidingParameter)      _animator.SetBool(_animIsGliding,        false);
                 _animator.SetTrigger(_animDeath);
                 _logger?.Log("Death animation played");
             }

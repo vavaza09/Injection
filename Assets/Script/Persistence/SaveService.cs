@@ -7,7 +7,7 @@ namespace Game.Persistence
         private readonly ISaveStorage _storage;
         private readonly ILogger _logger;
 
-        private const int CurrentVersion = 4;
+        private const int CurrentVersion = 5;
 
         public SaveService(ISaveStorage storage, ILogger logger)
         {
@@ -54,6 +54,12 @@ namespace Game.Persistence
             {
                 old.version = 4;
                 old.comicsSeen ??= new System.Collections.Generic.List<string>();
+            }
+
+            if (old.version == 4)
+            {
+                old.version = 5;
+                old.abilitiesUnlocked ??= new System.Collections.Generic.List<string>();
             }
 
             return old.version == CurrentVersion ? old : null;
@@ -131,6 +137,27 @@ namespace Game.Persistence
             if (string.IsNullOrEmpty(comicId)) return false;
             var data = Load();
             return data != null && data.comicsSeen.Contains(comicId);
+        }
+
+        /// <summary>Permanently unlock a player-progression ability (e.g. glide). Idempotent.</summary>
+        public void MarkAbilityUnlocked(string abilityId)
+        {
+            if (string.IsNullOrEmpty(abilityId)) return;
+
+            var data = Load() ?? new SaveData();
+            if (!data.abilitiesUnlocked.Contains(abilityId))
+            {
+                data.abilitiesUnlocked.Add(abilityId);
+                Save(data);
+                _logger?.Log($"[SaveService] Ability '{abilityId}' unlocked.");
+            }
+        }
+
+        public bool IsAbilityUnlocked(string abilityId)
+        {
+            if (string.IsNullOrEmpty(abilityId)) return false;
+            var data = Load();
+            return data != null && data.abilitiesUnlocked.Contains(abilityId);
         }
     }
 }

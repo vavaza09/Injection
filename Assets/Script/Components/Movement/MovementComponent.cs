@@ -226,10 +226,23 @@ namespace Game.Components.Movement
         // Set by PlayerSkillController while the true-damage dash is armed.
         public float DashPowerMultiplier { get; set; } = 1f;
 
+        // Set by an external system (e.g. glide) to cap fall speed. Same "plain settable
+        // property flipped by another controller" shape as DashPowerMultiplier above.
+        // +Infinity (default) means no restriction. Consulted in ApplyJumpGravity via the
+        // UpSign convention below, never a hardcoded +-y.
+        public float FallSpeedLimitOverride { get; set; } = float.PositiveInfinity;
+
+        // Pairs with FallSpeedLimitOverride: how fast (units/s^2) fall speed eases toward it.
+        // +Infinity (default) means an instant hard clamp, matching the existing maxFall clamp
+        // below when no override is set.
+        public float FallSpeedLimitEaseRate { get; set; } = float.PositiveInfinity;
+
         // Animation-facing airborne state. Derives "up" from the sign of jumpSpeed so it is
         // correct regardless of the project's vertical convention (and survives Inspector overrides).
         private float UpSign => Mathf.Sign(jumpSpeed != 0f ? jumpSpeed : -1f);
-        private bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
+        // Public: external systems (e.g. glide) need "is currently falling" using the same
+        // sign convention as everything else here, rather than reading rb.linearVelocity.y raw.
+        public bool IsFallingAlongGravity => rb != null && rb.linearVelocity.y * UpSign < 0f;
         // Wall stick is intentional: holding a direction away from the wall does NOT peel you
         // off. The only ways to leave are a wall jump or sliding all the way down to the ground.
         public bool IsWallSliding => wallEnabled && isTouchingWall && !isGrounded && !isGrabbing && !IsDashing
@@ -785,6 +798,11 @@ namespace Game.Components.Movement
                 _dashHandler.ResetDash();
         }
 
+        // Non-logging read of the grounded/coyote-time predicate, extracted so CanExecuteJump
+        // and external systems (e.g. glide, which must not intercept a Space press that would
+        // otherwise jump) can't drift apart.
+        public bool CanGroundJump => jumpGraceTimer > 0f || isGrounded;
+
         private bool CanExecuteJump()
         {
             if (!canMove || rb == null)
@@ -801,7 +819,7 @@ namespace Game.Components.Movement
                 return true;
             }
 
-            if (jumpGraceTimer <= 0f && !isGrounded)
+            if (!CanGroundJump)
             {
                 _logger?.LogWarning($"Jump BLOCKED! jumpGraceTimer: {jumpGraceTimer:F3}, isGrounded: {isGrounded}");
                 return false;
@@ -986,7 +1004,24 @@ namespace Game.Components.Movement
                 velocity.y = maxFall;
             }
 
+            ApplyFallSpeedLimitOverride(ref velocity, deltaTime);
+
             rb.linearVelocity = velocity;
+        }
+
+        // External fall-speed cap (e.g. glide). No-ops while FallSpeedLimitOverride is
+        // +Infinity (the default), so this has zero effect on existing behavior. Works through
+        // UpSign/IsFallingAlongGravity like everything else here, never a hardcoded +-y.
+        private void ApplyFallSpeedLimitOverride(ref Vector2 velocity, float deltaTime)
+        {
+            if (float.IsPositiveInfinity(FallSpeedLimitOverride)) return;
+
+            float upSign = UpSign;
+            float fallSpeed = velocity.y * -upSign; // positive magnitude while falling
+            if (fallSpeed <= FallSpeedLimitOverride) return;
+
+            float easedFallSpeed = Mathf.MoveTowards(fallSpeed, FallSpeedLimitOverride, FallSpeedLimitEaseRate * deltaTime);
+            velocity.y = -easedFallSpeed * upSign;
         }
 
         private float ResolveJumpGravityMultiplier()

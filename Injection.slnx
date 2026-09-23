@@ -2,12 +2,14 @@
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Game.Components.Movement.csproj" />
+  <Project Path="Game.Components.Glide.csproj" />
   <Project Path="Game.Rooms.Objectives.Trackers.csproj" />
   <Project Path="Game.Components.Skills.csproj" />
   <Project Path="Game.Tests.Unit.csproj" />
   <Project Path="Game.Comic.csproj" />
   <Project Path="Game.Tests.Integration.csproj" />
   <Project Path="Game.Tests.Fixtures.csproj" />
+  <Project Path="Game.Components.CameraForesight.csproj" />
   <Project Path="Game.Components.CameraForesight.EditModeTests.csproj" />
   <Project Path="Game.Comic.EditModeTests.csproj" />
   <Project Path="Game.Health.csproj" />
@@ -15,7 +17,7 @@
   <Project Path="Game.Persistence.csproj" />
   <Project Path="Game.Skills.EditModeTests.csproj" />
   <Project Path="Game.Persistence.EditModeTests.csproj" />
-  <Project Path="Game.Components.CameraForesight.csproj" />
+  <Project Path="Game.Components.Glide.EditModeTests.csproj" />
   <Project Path="Core.Logging.csproj" />
   <Project Path="Game.Health.EditModeTests.csproj" />
 </Solution>
