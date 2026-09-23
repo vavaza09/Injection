@@ -87,6 +87,12 @@ namespace Game.Characters.Player
             _actions.Player.Skill1.performed -= OnSkill1;
             _actions.Player.Skill2.performed -= OnSkill2;
 
+            // Unsubscribing OnMove above means _moveInput stops updating but keeps whatever
+            // value it last held — without this reset, a player holding a direction the instant
+            // input gets disabled (e.g. DoorSwitchView's interact lock) keeps drifting at that
+            // stale input for the whole lock, since Player.FixedUpdate() reads MoveInput
+            // unconditionally regardless of enabled state.
+            _moveInput = Vector2.zero;
             IsAimHeld = false;
             _actions.Player.Disable();
 
