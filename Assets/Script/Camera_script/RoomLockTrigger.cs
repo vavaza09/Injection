@@ -130,6 +130,11 @@ public class RoomLockTrigger : MonoBehaviour
             _cachedComposerOffset = _composer.TargetOffset;
 
         CameraManager.instance?.SuspendOffsetControl();
+        // CameraManager does not exist in any practice/ room scene, so the call above is a silent
+        // no-op there. Broadcast to the foresight extensions directly: a room lock owns the framing
+        // outright, and a broadcast reaches whichever vcam is actually live (roomVcam can resolve to
+        // the wrong one in the scenes that have more than one).
+        CameraForesightExtension.SuspendAll();
 
         if (roomAnchor != null)
         {
@@ -189,6 +194,9 @@ public class RoomLockTrigger : MonoBehaviour
             _composer.TargetOffset = _cachedComposerOffset;
 
         CameraManager.instance?.ResumeOffsetControl();
+        // Idempotent by design: RestoreCamera can genuinely run twice (OnPlayerDied, then later
+        // OpenRoom -> ReleaseCamera), so this must not be counter-based.
+        CameraForesightExtension.ResumeAll();
 
         StartZoom(_cachedOrthoSize);
     }

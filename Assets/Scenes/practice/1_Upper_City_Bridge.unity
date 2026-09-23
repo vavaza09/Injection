@@ -6011,6 +6011,7 @@ GameObject:
   - component: {fileID: 733157192}
   - component: {fileID: 733157195}
   - component: {fileID: 733157196}
+  - component: {fileID: 733157197}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -6143,6 +6144,22 @@ MonoBehaviour:
   aimStrength: 0.6
   aimSmoothTime: 1.2
   aimReturnSmoothTime: 0.25
+--- !u!114 &733157197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733157191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
+  _profile: {fileID: 11400000, guid: 7ca4b75def4757e46a049e518beaed96, type: 2}
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &738244950
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,6 +35,7 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<TutorialManager>(container);
             InjectAll<ComicTrigger>(container);
             InjectAll<ComicPlayOnEntry>(container);
+            InjectAll<CameraForesightExtension>(container);
         });
     }
 
