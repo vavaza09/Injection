@@ -10,6 +10,9 @@ using Game.Characters.Player;
 using Game.Tutorial;
 using Game.Spawning;
 using Game.UI;
+using Game.Components.Interaction;
+using Game.Persistence;
+using Game.Rooms.Objectives;
 
 /// <summary>
 /// Self-contained scope for dev/practice scenes (e.g. practice-vava).
@@ -33,6 +36,21 @@ public class DevSceneLifetimeScope : LifetimeScope
 
         builder.Register<LoggerFactory>(_ => new LoggerFactory(logConfig), Lifetime.Singleton);
         builder.Register<ISlowMotionController>(_ => SlowMotion.Instance, Lifetime.Singleton);
+
+        // Required by Player.Construct() — every scope that resolves Player must provide one.
+        builder.Register<InteractionSystem>(Lifetime.Singleton);
+
+        // Door objective system needs a SaveService, but this scope's own doc comment says
+        // "no Bootstrap, no rooms, no save" — so back it with an in-memory-only store instead of a
+        // real file. Every Play session starts with every door/objective closed, nothing written to disk.
+        builder.Register<ISaveStorage>(_ => new InMemorySaveStorage(), Lifetime.Singleton);
+        builder.Register<SaveService>(resolver => new SaveService(
+            resolver.Resolve<ISaveStorage>(),
+            resolver.Resolve<LoggerFactory>().CreateLogger("SaveService")),
+            Lifetime.Singleton);
+        builder.Register<DoorObjectiveEvents>(Lifetime.Scoped).AsSelf().As<IDoorObjectiveEvents>();
+        builder.Register<DoorObjectiveSystem>(Lifetime.Scoped);
+        builder.Register<DoorCutawaySystem>(Lifetime.Scoped);
 
         builder.Register<HealthComponent>(Lifetime.Transient);
         builder.Register<MovementComponent>(Lifetime.Transient);
@@ -121,8 +139,43 @@ public class DevSceneLifetimeScope : LifetimeScope
 
             if (p != null)
             {
-                CameraController.instance?.SetTarget(p.transform);
-                CameraManager.instance?.SetFollowTarget(p.transform);
+                // Resolve via FindAnyObjectByType, not the .instance singleton — this callback runs
+                // during THIS scope's Awake, and Unity does not guarantee this GO's Awake() runs after
+                // Main Camera's, so CameraManager.instance can still be null here even though the
+                // object already exists in the scene.
+                var cameraController = FindAnyObjectByType<CameraController>(FindObjectsInactive.Include);
+                cameraController?.SetTarget(p.transform);
+
+                var cameraManager = FindAnyObjectByType<CameraManager>(FindObjectsInactive.Include);
+                cameraManager?.SetFollowTarget(p.transform);
+
+                // Real shipping levels don't use CameraManager/CameraController at all — RoomManager
+                // sets Follow directly on the room's CinemachineCamera at runtime (RoomManager.cs).
+                // Replicate that here when this dev scene is built from a real level (no legacy
+                // manager present), so the follow vcam still gets a target with no RoomManager around.
+                if (cameraController == null && cameraManager == null)
+                {
+                    var vcams = FindObjectsByType<Unity.Cinemachine.CinemachineCamera>(
+                        FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    Unity.Cinemachine.CinemachineCamera followVcam = null;
+                    foreach (var vcam in vcams)
+                    {
+                        // Prefer the vcam with a CinemachinePositionComposer — that's the follow
+                        // camera; a fixed cutaway camera (e.g. a door's cutscene vcam) has none.
+                        if (vcam.GetComponent<Unity.Cinemachine.CinemachinePositionComposer>() != null)
+                        {
+                            followVcam = vcam;
+                            break;
+                        }
+                    }
+                    if (followVcam == null && vcams.Length > 0) followVcam = vcams[0];
+
+                    if (followVcam != null)
+                    {
+                        followVcam.Follow = p.transform;
+                        followVcam.LookAt = p.transform;
+                    }
+                }
             }
 
             var hud = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
@@ -130,6 +183,14 @@ public class DevSceneLifetimeScope : LifetimeScope
 
             var energyHUD = FindAnyObjectByType<Game.UI.Skills.EnergyHUD>(FindObjectsInactive.Include);
             if (energyHUD != null) container.Inject(energyHUD);
+
+            foreach (var doorView in FindObjectsByType<DoorView>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                container.Inject(doorView);
+            foreach (var switchView in FindObjectsByType<DoorSwitchView>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                container.Inject(switchView);
+
+            // Nothing else resolves DoorCutawaySystem — force its construction so it subscribes.
+            container.Resolve<DoorCutawaySystem>();
         });
     }
 }

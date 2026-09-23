@@ -3,6 +3,7 @@ using VContainer;
 using VContainer.Unity;
 using Core.Logging;
 using Game.Components.Health;
+using Game.Components.Interaction;
 using Game.Components.Movement;
 using Game.Components.Combat;
 using Game.Components.Skills;
@@ -67,6 +68,10 @@ public class RootLifetimeScope : LifetimeScope
         builder.Register<LoggerFactory>(_ => new LoggerFactory(logConfig), Lifetime.Singleton);
         builder.Register<ISlowMotionController>(_ => SlowMotion.Instance, Lifetime.Singleton);
         builder.Register<Game.Pause.IPauseService>(_ => Game.Pause.PauseStack.Instance, Lifetime.Singleton);
+
+        // Generic interact registry — root-scoped because the Player persists across room loads
+        // while individual interactables (door switches, ...) are scene-local.
+        builder.Register<InteractionSystem>(Lifetime.Singleton);
 
         // Plain C# gameplay components
         builder.Register<HealthComponent>(Lifetime.Transient);

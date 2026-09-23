@@ -3,6 +3,7 @@ using VContainer;
 using VContainer.Unity;
 using Game.Spawning;
 using Game.Rooms;
+using Game.Rooms.Objectives;
 using Game.Tutorial;
 using Game.Comic;
 
@@ -21,6 +22,11 @@ public class SceneLifetimeScope : LifetimeScope
         // from the scope that can see both scene-local and parent (session) registrations.
         builder.Register<EnemyFactory>(Lifetime.Scoped).As<IEnemyFactory>();
 
+        // Door objective system — scoped per room, mirrors RoomObjectiveManager's per-room lifetime.
+        builder.Register<DoorObjectiveEvents>(Lifetime.Scoped).AsSelf().As<IDoorObjectiveEvents>();
+        builder.Register<DoorObjectiveSystem>(Lifetime.Scoped);
+        builder.Register<DoorCutawaySystem>(Lifetime.Scoped);
+
         // Scene-local components that need [Inject] but aren't resolved by anything: inject
         // them explicitly after build (RegisterComponentInHierarchy only injects on resolve,
         // so a spawner/trigger that nothing depends on would otherwise never get its deps).
@@ -35,6 +41,13 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<TutorialManager>(container);
             InjectAll<ComicTrigger>(container);
             InjectAll<ComicPlayOnEntry>(container);
+            InjectAll<DoorView>(container);
+            InjectAll<DoorSwitchView>(container);
+
+            // Nothing else resolves DoorCutawaySystem (it works purely via its DoorOpened
+            // subscription), so force its construction here — otherwise it would never be built
+            // and the door-open cutscene would never fire.
+            container.Resolve<DoorCutawaySystem>();
             InjectAll<CameraForesightExtension>(container);
         });
     }

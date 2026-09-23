@@ -4,6 +4,7 @@ using Core.Logging;
 using VContainer;
 using Game.UI.Movement;
 using Game.Tutorial;
+using Game.Components.Interaction;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -32,6 +33,7 @@ public class Player : character
     private PlayerAnimationController _animationController;
     private PlayerAudioController _audioController;
     private ISlowMotionController _slowMotion;
+    private InteractionSystem _interactionSystem;
 
     [Header("Player Movement")]
     [SerializeField] private int maxJumps = 2;
@@ -111,13 +113,15 @@ public class Player : character
         PlayerInputHandler inputHandler,
         PlayerAnimationController animationController,
         PlayerAudioController audioController,
-        ISlowMotionController slowMotion)
+        ISlowMotionController slowMotion,
+        InteractionSystem interactionSystem)
     {
         _logger = loggerFactory?.CreateLogger<Player>();
         _inputHandler = inputHandler;
         _animationController = animationController;
         _audioController = audioController;
         _slowMotion = slowMotion;
+        _interactionSystem = interactionSystem;
         _logger?.Log("Player components injected via DI");
     }
 
@@ -393,6 +397,12 @@ public class Player : character
         if (_energyCollector != null && _energyCollector.TryCollectNearby())
         {
             _audioController?.PlayEnergyPickupSound();
+            return;
+        }
+
+        if (_interactionSystem != null && _interactionSystem.TryInteract(transform.position))
+        {
+            _animationController?.PlayInteractAnimation();
             return;
         }
 

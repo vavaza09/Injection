@@ -30,6 +30,7 @@ namespace Game.Characters.Player
         private readonly int _animIsDashAttacking;
         private readonly int _animIsKnockback;
         private readonly int _animIsDamageKnocked;
+        private readonly int _animInteract;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
         private readonly bool _hasRunSpeedParameter;
@@ -38,6 +39,7 @@ namespace Game.Characters.Player
         private readonly bool _hasDashAttackingParameter;
         private readonly bool _hasKnockbackParameter;
         private readonly bool _hasDamageKnockedParameter;
+        private readonly bool _hasInteractParameter;
 
         // Run animation playback speed at min/max momentum
         private const float RunSpeedMultMin = 1.0f;
@@ -67,6 +69,7 @@ namespace Game.Characters.Player
             _animIsDashAttacking = Animator.StringToHash("IsDashAttacking");
             _animIsKnockback = Animator.StringToHash("IsKnockback");
             _animIsDamageKnocked = Animator.StringToHash("IsDamageKnocked");
+            _animInteract = Animator.StringToHash("Interact");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
             _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
@@ -75,6 +78,7 @@ namespace Game.Characters.Player
             _hasDashAttackingParameter = HasBoolParameter(_animator, "IsDashAttacking");
             _hasKnockbackParameter = HasTriggerParameter(_animator, "IsKnockback");
             _hasDamageKnockedParameter = HasBoolParameter(_animator, "IsDamageKnocked");
+            _hasInteractParameter = HasTriggerParameter(_animator, "Interact");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -230,6 +234,15 @@ namespace Game.Characters.Player
             {
                 _animator.SetTrigger(_animIsKnockback);
                 _logger?.Log("Knockback animation played");
+            }
+        }
+
+        public void PlayInteractAnimation()
+        {
+            if (_animator != null && _hasInteractParameter)
+            {
+                _animator.SetTrigger(_animInteract);
+                _logger?.Log("Interact animation played");
             }
         }
     }
