@@ -79,6 +79,15 @@ public class PauseMenuController : MonoBehaviour
         _settingsOpen = false;
     }
 
+    // Lets an external sequencer (e.g. a boss intro) suspend the pause menu's own Escape
+    // binding for its duration, so Escape can drive a "skip" action instead without also
+    // popping this menu underneath it.
+    public void SetPauseInputEnabled(bool on)
+    {
+        if (_pauseAction == null) return;
+        if (on) _pauseAction.Enable(); else _pauseAction.Disable();
+    }
+
     public void QuitToTitle()
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);

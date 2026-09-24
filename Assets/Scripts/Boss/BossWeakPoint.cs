@@ -106,6 +106,25 @@ public class BossWeakPoint : MonoBehaviour
         return true;
     }
 
+    // Visual-only tell for the boss intro: light + disc glow, no collider, no UnityEvents,
+    // no _state change. Never fires while a real reveal window is open or after destruction,
+    // so it can't desync BossWeakPointManager's window bookkeeping.
+    public void SetIntroHighlight(bool on)
+    {
+        if (IsDestroyed || _state == WPState.Open) return;
+
+        if (pointLight != null)
+        {
+            pointLight.color   = openColor;
+            pointLight.enabled = on;
+        }
+        if (disc != null)
+        {
+            disc.enabled = on;
+            if (on) SetDisc(openColor);
+        }
+    }
+
     private void SetLightOff()
     {
         if (pointLight != null) pointLight.enabled = false;
