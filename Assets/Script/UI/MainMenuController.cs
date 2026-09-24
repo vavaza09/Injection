@@ -15,6 +15,8 @@ public class MainMenuController : MonoBehaviour
         newGameConfirmPanel.SetActive(false);
         continueButton.gameObject.SetActive(SaveFileLocator.Exists());
         SoundManager.PlayMusic(MusicType.MENU);
+
+        ScreenFader.Instance?.FadeIn();
     }
 
     public void OnContinue()
