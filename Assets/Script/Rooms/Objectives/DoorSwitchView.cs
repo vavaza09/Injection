@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 using Game.Components.Interaction;
+using Game.Characters.Player;
 using Game.UI;
 
 namespace Game.Rooms.Objectives
@@ -46,6 +47,7 @@ namespace Game.Rooms.Objectives
 
         private DoorObjectiveSystem _system;
         private InteractionSystem _interactionSystem;
+        private PlayerAnimationController _animationController;
         private SwitchState _state = SwitchState.Closed;
         private Coroutine _promptAnim;
 
@@ -54,10 +56,14 @@ namespace Game.Rooms.Objectives
         public SwitchState State => _state;
 
         [Inject]
-        public void Construct(DoorObjectiveSystem system, InteractionSystem interactionSystem)
+        public void Construct(
+            DoorObjectiveSystem system,
+            InteractionSystem interactionSystem,
+            PlayerAnimationController animationController)
         {
             _system = system;
             _interactionSystem = interactionSystem;
+            _animationController = animationController;
         }
 
         private void Awake()
@@ -94,6 +100,7 @@ namespace Game.Rooms.Objectives
                 animator.SetTrigger(OpeningTrigger);
 
             PlayerInputGate.Set(false);
+            _animationController?.SetInteracting(true);
 
             try
             {
@@ -101,11 +108,15 @@ namespace Game.Rooms.Objectives
             }
             catch (OperationCanceledException)
             {
-                // Destroyed mid-opening (room reload) — scene is tearing down anyway, nothing to unlock.
+                // Destroyed mid-opening (room reload) — scene is tearing down anyway, nothing to
+                // unlock, but the Player persists across the reload, so its Animator would
+                // otherwise be stuck showing the interact pose forever.
+                _animationController?.SetInteracting(false);
                 return;
             }
 
             PlayerInputGate.Set(true);
+            _animationController?.SetInteracting(false);
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
             ApplyLight(SwitchState.On);
