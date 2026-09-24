@@ -210,6 +210,50 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &27318543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 27318545}
+  - component: {fileID: 27318544}
+  m_Layer: 0
+  m_Name: PauseStack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &27318544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27318543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08c8c6ef2b7fc7a4d92090f9da0c38a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Pause.PauseStack
+--- !u!4 &27318545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27318543}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &38993198
 GameObject:
   m_ObjectHideFlags: 0
@@ -7305,6 +7349,50 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 38.3, y: -30.4, z: 0}
   m_LocalScale: {x: 199.66301, y: 10.01162, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &805850506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 805850508}
+  - component: {fileID: 805850507}
+  m_Layer: 0
+  m_Name: PauseStack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &805850507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805850506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08c8c6ef2b7fc7a4d92090f9da0c38a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Pause.PauseStack
+--- !u!4 &805850508
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805850506}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -32008,6 +32096,50 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1684273641
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1684273643}
+  - component: {fileID: 1684273642}
+  m_Layer: 0
+  m_Name: PauseStack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1684273642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684273641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08c8c6ef2b7fc7a4d92090f9da0c38a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Pause.PauseStack
+--- !u!4 &1684273643
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684273641}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1684750940
 GameObject:
   m_ObjectHideFlags: 0
@@ -33266,6 +33398,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1801266751}
   m_CullTransparentMesh: 1
+--- !u!1 &1811478190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8038575889475997298, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
+  m_PrefabInstance: {fileID: 7458707989307516224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1811524182
 GameObject:
   m_ObjectHideFlags: 0
@@ -72623,13 +72760,21 @@ PrefabInstance:
       propertyPath: lightObject
       value: 
       objectReference: {fileID: 745731741}
+    - target: {fileID: 3758892215335463454, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
+      propertyPath: batteryObject
+      value: 
+      objectReference: {fileID: 1811478190}
+    - target: {fileID: 3758892215335463454, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
+      propertyPath: openingDuration
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7606112571669847937, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
       propertyPath: m_LocalPosition.x
       value: -41.83
       objectReference: {fileID: 0}
     - target: {fileID: 7606112571669847937, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.3
+      value: -10.802
       objectReference: {fileID: 0}
     - target: {fileID: 7606112571669847937, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
       propertyPath: m_LocalPosition.z
@@ -72736,3 +72881,6 @@ SceneRoots:
   - {fileID: 7458707989307516224}
   - {fileID: 3638125533753357934}
   - {fileID: 1580064374954186924}
+  - {fileID: 1684273643}
+  - {fileID: 805850508}
+  - {fileID: 27318545}

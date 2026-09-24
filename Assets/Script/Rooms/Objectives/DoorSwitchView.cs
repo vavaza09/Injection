@@ -39,8 +39,11 @@ namespace Game.Rooms.Objectives
         [SerializeField] private Sprite openingSprite;
         [SerializeField] private Sprite onSprite;
 
+        
+
         [Header("State Light")]
         [SerializeField] private GameObject lightObject;
+        [SerializeField] private GameObject batteryObject;
 
         private static readonly int OpeningTrigger = Animator.StringToHash("Opening");
         private static readonly int OnTrigger = Animator.StringToHash("On");
@@ -48,6 +51,7 @@ namespace Game.Rooms.Objectives
         private DoorObjectiveSystem _system;
         private InteractionSystem _interactionSystem;
         private PlayerAnimationController _animationController;
+        private IDoorObjectiveEvents _doorEvents;
         private SwitchState _state = SwitchState.Closed;
         private Coroutine _promptAnim;
 
@@ -59,11 +63,14 @@ namespace Game.Rooms.Objectives
         public void Construct(
             DoorObjectiveSystem system,
             InteractionSystem interactionSystem,
-            PlayerAnimationController animationController)
+            PlayerAnimationController animationController,
+            IDoorObjectiveEvents doorEvents)
         {
             _system = system;
             _interactionSystem = interactionSystem;
             _animationController = animationController;
+            _doorEvents = doorEvents;
+            _doorEvents.DoorCutawayFinished += OnDoorCutawayFinished;
         }
 
         private void Awake()
@@ -76,6 +83,7 @@ namespace Game.Rooms.Objectives
 
             ApplySprite(SwitchState.Closed);
             ApplyLight(SwitchState.Closed);
+            ApplyBattery(SwitchState.Closed);
         }
 
         private void Start()
@@ -96,6 +104,7 @@ namespace Game.Rooms.Objectives
             HidePrompt();
             ApplySprite(SwitchState.Opening);
             ApplyLight(SwitchState.Opening);
+            ApplyBattery(SwitchState.Opening);
             if (animator != null)
                 animator.SetTrigger(OpeningTrigger);
 
@@ -120,6 +129,11 @@ namespace Game.Rooms.Objectives
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
             ApplyLight(SwitchState.On);
+            // Battery deliberately NOT turned off here — it stays lit through DoorCutawaySystem's
+            // camera cutaway and only clears in OnDoorCutawayFinished, once the camera has
+            // actually switched back. Unlike the light, it shouldn't disappear the instant the
+            // switch itself finishes, only once the player can see the door is open.
+
             if (animator != null)
                 animator.SetTrigger(OnTrigger);
 
@@ -133,6 +147,7 @@ namespace Game.Rooms.Objectives
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
             ApplyLight(SwitchState.On);
+            ApplyBattery(SwitchState.On);
             // Explicit null check, not ?., per this project's Unity-object convention — ?. bypasses
             // Unity's overridden null check and an unassigned serialized reference can still throw.
             if (animator != null)
@@ -162,6 +177,21 @@ namespace Game.Rooms.Objectives
                 lightObject.SetActive(state != SwitchState.Closed);
         }
 
+        private void ApplyBattery(SwitchState state)
+        {
+            if (batteryObject != null)
+                batteryObject.SetActive(state == SwitchState.Opening);
+        }
+
+        // Fires once DoorCutawaySystem's camera cutaway for this switch's door has actually
+        // finished (or immediately, if that door has no cutaway camera at all — see
+        // DoorCutawaySystem.OnDoorOpened) — not the instant the switch itself reaches On.
+        private void OnDoorCutawayFinished(DoorOpenedEvent e)
+        {
+            if (e.DoorId != doorId) return;
+            ApplyBattery(SwitchState.On);
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Player")) return;
@@ -179,6 +209,8 @@ namespace Game.Rooms.Objectives
         private void OnDisable()
         {
             _interactionSystem?.Unregister(this);
+            if (_doorEvents != null)
+                _doorEvents.DoorCutawayFinished -= OnDoorCutawayFinished;
         }
 
         private void ShowPrompt()
