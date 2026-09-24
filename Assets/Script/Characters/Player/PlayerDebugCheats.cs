@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer;
 using Game.Rooms;
+using Game.Persistence;
+using Game.Progression;
 
 public class PlayerDebugCheats : MonoBehaviour
 {
@@ -11,6 +14,9 @@ public class PlayerDebugCheats : MonoBehaviour
     [SerializeField] private Key invincibleKey   = Key.F4;
     [SerializeField] private Key reviveKey       = Key.F5;
     [SerializeField] private float invincibilityDuration = 5f;
+
+    [Header("Unlock Glide (F6)")]
+    [SerializeField] private Key unlockGlideKey = Key.F6;
 
     [Header("Kill Boss (F8)")]
     [SerializeField] private Key killBossKey = Key.F8;
@@ -23,6 +29,16 @@ public class PlayerDebugCheats : MonoBehaviour
 
     private Player _player;
     private RoomManager _roomManager;
+    private SaveService _saveService;
+
+    // Optional: not every scope registers SaveService for this component (only Root/DevScene
+    // inject it — see their RegisterBuildCallback). Falls back to a no-op cheat if absent,
+    // same defensive shape as every other _saveService?. call below.
+    [Inject]
+    public void Construct(SaveService saveService)
+    {
+        _saveService = saveService;
+    }
 
     private static readonly Key[] DigitKeys =
     {
@@ -56,6 +72,7 @@ public class PlayerDebugCheats : MonoBehaviour
 
         HandleWarpCheats(kb);
         HandleKillBoss(kb);
+        HandleUnlockGlide(kb);
     }
 
     private void HandleToggle(Keyboard kb)
@@ -115,5 +132,13 @@ public class PlayerDebugCheats : MonoBehaviour
         if (boss == null) return;
 
         boss.TakeDamage(int.MaxValue);
+    }
+
+    private void HandleUnlockGlide(Keyboard kb)
+    {
+        if (!kb[unlockGlideKey].wasPressedThisFrame) return;
+
+        // Permanent + idempotent, same as a real AbilityUnlockTrigger — safe to mash.
+        _saveService?.MarkAbilityUnlocked(AbilityIds.Glide);
     }
 }

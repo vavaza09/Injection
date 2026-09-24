@@ -146,6 +146,9 @@ public class DevSceneLifetimeScope : LifetimeScope
                 var glideController = p.GetComponent<PlayerGlideController>();
                 if (glideController != null) container.Inject(glideController);
 
+                var cheats = p.GetComponent<PlayerDebugCheats>();
+                if (cheats != null) container.Inject(cheats);
+
                 container.Inject(p);
             }
 

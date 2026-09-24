@@ -23,12 +23,11 @@ namespace Game.Components.Glide.EditModeTests
             Object.DestroyImmediate(_config);
         }
 
-        // Defaults describe a context where glide SHOULD be able to start: airborne, falling,
-        // no ground jump available, not doing anything else, alive. Every parameter is named and
-        // optional so a test only has to override the one fact it's exercising.
+        // Defaults describe a context where glide SHOULD be able to start: airborne, no ground
+        // jump available, not doing anything else, alive. Every parameter is named and optional
+        // so a test only has to override the one fact it's exercising.
         private static GlideContext MakeContext(
             bool isAirborne = true,
-            bool isFalling = true,
             bool canGroundJump = false,
             bool isDashing = false,
             bool isWallSliding = false,
@@ -37,7 +36,7 @@ namespace Game.Components.Glide.EditModeTests
             bool isCaptured = false,
             bool isKnocked = false,
             bool isAlive = true)
-            => new GlideContext(isAirborne, isFalling, canGroundJump, isDashing, isWallSliding,
+            => new GlideContext(isAirborne, canGroundJump, isDashing, isWallSliding,
                 isGrabbing, isStunned, isCaptured, isKnocked, isAlive);
 
         // --- CanStartGlide ---
@@ -54,11 +53,9 @@ namespace Game.Components.Glide.EditModeTests
             Assert.IsFalse(GlideSystem.CanStartGlide(MakeContext(), isUnlocked: false));
         }
 
-        [Test]
-        public void CanStartGlide_Rising_ReturnsFalse()
-        {
-            Assert.IsFalse(GlideSystem.CanStartGlide(MakeContext(isFalling: false), isUnlocked: true));
-        }
+        // No CanStartGlide_Rising_* test: glide is deliberately vertical-direction-agnostic —
+        // GlideContext doesn't even track rising vs. falling — so CanStartGlide_AllConditionsMet
+        // already covers "airborne, whichever way you're currently moving" on its own.
 
         [Test]
         public void CanStartGlide_GroundJumpAvailable_ReturnsFalse()
@@ -112,6 +109,16 @@ namespace Game.Components.Glide.EditModeTests
             Assert.IsFalse(GlideSystem.CanStartGlide(MakeContext(isAlive: false), isUnlocked: true));
         }
 
+        [Test]
+        public void CanStartGlide_ImmediatelyAfterJumpLaunch_ReturnsTrue()
+        {
+            // Regression for the explicit design change: glide no longer waits for the apex.
+            // The instant a jump launches, MovementComponent.BeginJumpWindow() zeroes the coyote
+            // timer, so CanGroundJump is already false — that's the only gate that matters here.
+            var justLaunched = MakeContext(isAirborne: true, canGroundJump: false);
+            Assert.IsTrue(GlideSystem.CanStartGlide(justLaunched, isUnlocked: true));
+        }
+
         // --- RequestToggle ---
 
         [Test]
@@ -140,7 +147,7 @@ namespace Game.Components.Glide.EditModeTests
 
             // Even a context that would never have STARTED glide (e.g. now grounded) still ends
             // it via the toggle path — toggling off is unconditional.
-            _sut.RequestToggle(MakeContext(isAirborne: false, isFalling: false, canGroundJump: true), isUnlocked: true);
+            _sut.RequestToggle(MakeContext(isAirborne: false, canGroundJump: true), isUnlocked: true);
 
             Assert.AreEqual(GlideState.Following, _model.State);
         }

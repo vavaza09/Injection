@@ -27,12 +27,18 @@ namespace Game.Components.Glide
         public float FallSpeedCapEaseRate => _config.GlideCapBrakeStrength;
 
         /// <summary>Pure predicate: can glide start from this context? Exposed static so it can
-        /// be unit-tested directly without constructing a full system/model.</summary>
+        /// be unit-tested directly without constructing a full system/model.
+        ///
+        /// Deliberately does NOT require <see cref="GlideContext.IsFalling"/> — glide can start
+        /// the instant the player is airborne (including still rising, right after a jump),
+        /// not only once they've crested the apex and started falling. The only thing that
+        /// still takes priority over glide is an available ground/coyote jump
+        /// (<see cref="GlideContext.CanGroundJump"/>), so Space still jumps instead of gliding
+        /// during that window.</summary>
         public static bool CanStartGlide(in GlideContext ctx, bool isUnlocked) =>
             isUnlocked
             && ctx.IsAlive
             && ctx.IsAirborne
-            && ctx.IsFalling
             && !ctx.CanGroundJump
             && !ctx.IsDashing
             && !ctx.IsWallSliding

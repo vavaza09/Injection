@@ -151,6 +151,9 @@ public class RootLifetimeScope : LifetimeScope
             {
                 var mc = p.GetComponent<MovementComponent>();
                 if (mc != null) container.Inject(mc);
+
+                var cheats = p.GetComponent<PlayerDebugCheats>();
+                if (cheats != null) container.Inject(cheats);
             }
 
             var hud = FindAnyObjectByType<PlayerHUD>(FindObjectsInactive.Include);
