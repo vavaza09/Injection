@@ -37,7 +37,7 @@ public class ScreenFader : MonoBehaviour
 
         var canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 9999;
+        canvas.sortingOrder = 999;
 
         canvasGO.AddComponent<CanvasScaler>();
 
@@ -71,7 +71,7 @@ public class ScreenFader : MonoBehaviour
         _group.alpha = from;
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime;
+            elapsed += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             _group.alpha = Mathf.Lerp(from, to, elapsed / duration);
             yield return null;
         }
