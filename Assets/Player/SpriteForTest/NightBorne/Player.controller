@@ -77,6 +77,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-1755411265269816465
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Glide
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: e4edfa2fe3b1c654894e566416907a6f, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &1000
 AnimatorState:
   serializedVersion: 6
@@ -432,6 +458,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 6539540030073584234}
     m_Position: {x: 495, y: 565, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -1755411265269816465}
+    m_Position: {x: 530, y: 630, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 4009}
@@ -1293,7 +1322,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Gliding
-  m_Speed: 1
+  m_Speed: 0.75
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 5073414642105729561}
@@ -1307,7 +1336,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: cee29472fa3038941b9b10157c60a012, type: 2}
+  m_Motion: {fileID: 7400000, guid: e4edfa2fe3b1c654894e566416907a6f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
