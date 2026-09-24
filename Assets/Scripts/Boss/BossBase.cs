@@ -83,7 +83,11 @@ public abstract class BossBase : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        bool inRange = Vector2.Distance(transform.position, playerTransform.position) <= detectionRadius;
+        float distance = Vector2.Distance(transform.position, playerTransform.position);
+        // Hysteresis band so hovering near the boundary can't flicker Entered/Exited
+        // back-to-back (was re-triggering the health bar's reveal animation repeatedly).
+        float threshold = _wasPlayerInRange ? detectionRadius * 1.1f : detectionRadius;
+        bool inRange = distance <= threshold;
 
         if (inRange && !_wasPlayerInRange)
         {

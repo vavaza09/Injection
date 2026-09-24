@@ -133,6 +133,14 @@ public class BossWeakPointManager : MonoBehaviour
             boss?.TakeDamage(int.MaxValue);
     }
 
+    // Visual-only tell for the boss intro — see BossWeakPoint.SetIntroHighlight.
+    public void SetIntroHighlight(bool on)
+    {
+        if (weakPoints == null) return;
+        foreach (var wp in weakPoints)
+            wp?.SetIntroHighlight(on);
+    }
+
     private int CountAlive()
     {
         int count = 0;

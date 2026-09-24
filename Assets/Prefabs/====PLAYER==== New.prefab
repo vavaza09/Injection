@@ -933,7 +933,7 @@ MonoBehaviour:
   audioFadeIn: 0.09
   audioFadeOut: 0.5
   duckMultiplier: 0.35
-  vignettePeak: 0.6
+  vignettePeak: 0.35
   vignetteFadeIn: 0.1
   vignetteFadeOut: 0.45
   volumeOverride: {fileID: 0}

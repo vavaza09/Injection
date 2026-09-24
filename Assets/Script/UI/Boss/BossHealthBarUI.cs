@@ -10,7 +10,7 @@ public class BossHealthBarUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleLabel;
 
     [SerializeField] private float nameFadeDuration  = 0.4f;
-    [SerializeField] private float fillSlideDuration = 0.5f;
+    [SerializeField] private float fillSlideDuration = 1.5f;
 
     private BossWeakPointManager _manager;
     private Coroutine            _revealRoutine;
