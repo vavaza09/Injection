@@ -105,7 +105,6 @@ namespace Game.Components.Glide
         {
             return new GlideContext(
                 isAirborne: _movementComponent.IsAirborne,
-                isFalling: _movementComponent.IsFallingAlongGravity,
                 canGroundJump: _movementComponent.CanGroundJump,
                 isDashing: _movementComponent.IsDashing,
                 isWallSliding: _movementComponent.IsWallSliding,

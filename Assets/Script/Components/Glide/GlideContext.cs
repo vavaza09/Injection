@@ -7,12 +7,10 @@ namespace Game.Components.Glide
     public readonly struct GlideContext
     {
         /// <summary>Not grounded and not already doing something else airborne (wall slide,
-        /// grab, dash) — mirrors <c>MovementComponent.IsAirborne</c>.</summary>
+        /// grab, dash) — mirrors <c>MovementComponent.IsAirborne</c>. Glide only requires this
+        /// (plus not having an available ground jump) — it does NOT require already falling, so
+        /// it can start the instant the player is airborne, including still rising after a jump.</summary>
         public readonly bool IsAirborne;
-
-        /// <summary>Moving in the direction gravity pulls, along whatever sign convention the
-        /// project uses — mirrors <c>MovementComponent.IsFallingAlongGravity</c>.</summary>
-        public readonly bool IsFalling;
 
         /// <summary>True while an ordinary ground/coyote jump is still available — glide must
         /// never intercept a Space press that would otherwise jump.</summary>
@@ -31,7 +29,6 @@ namespace Game.Components.Glide
 
         public GlideContext(
             bool isAirborne,
-            bool isFalling,
             bool canGroundJump,
             bool isDashing,
             bool isWallSliding,
@@ -42,7 +39,6 @@ namespace Game.Components.Glide
             bool isAlive)
         {
             IsAirborne = isAirborne;
-            IsFalling = isFalling;
             CanGroundJump = canGroundJump;
             IsDashing = isDashing;
             IsWallSliding = isWallSliding;
