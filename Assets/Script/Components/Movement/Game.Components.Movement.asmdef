@@ -2,7 +2,8 @@
   "name": "Game.Components.Movement",
   "references": [
     "Core.Logging",
-    "VContainer"
+    "VContainer",
+    "UniTask"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

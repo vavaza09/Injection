@@ -53,7 +53,7 @@ namespace Game.Rooms.Objectives
         public void SnapOpenImmediate()
         {
             if (doorController != null)
-                doorController.Open();
+                doorController.SnapOpen();
         }
     }
 }

@@ -76,6 +76,10 @@ namespace Game.Components.Glide
         {
             if (!_isReady) return;
 
+            // Sprite mirrors the player's current facing directly (not smoothed/lagged like
+            // position) — a gradually-flipping sprite would look broken, only the trail should lag.
+            _spriteRenderer.flipX = GetFacingSign() < 0f;
+
             _bobPhase += Time.deltaTime * bobSpeed;
             Vector2 target = TargetPosition();
             Vector2 current = transform.position;
@@ -92,11 +96,14 @@ namespace Game.Components.Glide
             transform.position = new Vector3(smoothed.x, smoothed.y, transform.position.z);
         }
 
+        // Player.cs mirrors its sprite by flipping localScale.x (positive = facing right) —
+        // mirror that same convention here rather than reading an unrelated signal.
+        private float GetFacingSign() => Mathf.Sign(
+            _player.transform.localScale.x != 0f ? _player.transform.localScale.x : 1f);
+
         private Vector2 TargetPosition()
         {
-            float facingSign = Mathf.Sign(
-                _player.transform.localScale.x != 0f ? _player.transform.localScale.x : 1f);
-            Vector2 facedOffset = new Vector2(offset.x * facingSign, offset.y);
+            Vector2 facedOffset = new Vector2(offset.x * GetFacingSign(), offset.y);
             return (Vector2)_player.transform.position + facedOffset;
         }
 

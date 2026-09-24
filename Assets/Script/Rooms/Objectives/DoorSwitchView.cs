@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 using Game.Components.Interaction;
+using Game.Characters.Player;
 using Game.UI;
 
 namespace Game.Rooms.Objectives
@@ -38,11 +39,15 @@ namespace Game.Rooms.Objectives
         [SerializeField] private Sprite openingSprite;
         [SerializeField] private Sprite onSprite;
 
+        [Header("State Light")]
+        [SerializeField] private GameObject lightObject;
+
         private static readonly int OpeningTrigger = Animator.StringToHash("Opening");
         private static readonly int OnTrigger = Animator.StringToHash("On");
 
         private DoorObjectiveSystem _system;
         private InteractionSystem _interactionSystem;
+        private PlayerAnimationController _animationController;
         private SwitchState _state = SwitchState.Closed;
         private Coroutine _promptAnim;
 
@@ -51,10 +56,14 @@ namespace Game.Rooms.Objectives
         public SwitchState State => _state;
 
         [Inject]
-        public void Construct(DoorObjectiveSystem system, InteractionSystem interactionSystem)
+        public void Construct(
+            DoorObjectiveSystem system,
+            InteractionSystem interactionSystem,
+            PlayerAnimationController animationController)
         {
             _system = system;
             _interactionSystem = interactionSystem;
+            _animationController = animationController;
         }
 
         private void Awake()
@@ -66,6 +75,7 @@ namespace Game.Rooms.Objectives
                 interactPrompt.SetActive(false);
 
             ApplySprite(SwitchState.Closed);
+            ApplyLight(SwitchState.Closed);
         }
 
         private void Start()
@@ -85,10 +95,12 @@ namespace Game.Rooms.Objectives
             _state = SwitchState.Opening;
             HidePrompt();
             ApplySprite(SwitchState.Opening);
+            ApplyLight(SwitchState.Opening);
             if (animator != null)
                 animator.SetTrigger(OpeningTrigger);
 
             PlayerInputGate.Set(false);
+            _animationController?.SetInteracting(true);
 
             try
             {
@@ -96,13 +108,18 @@ namespace Game.Rooms.Objectives
             }
             catch (OperationCanceledException)
             {
-                // Destroyed mid-opening (room reload) — scene is tearing down anyway, nothing to unlock.
+                // Destroyed mid-opening (room reload) — scene is tearing down anyway, nothing to
+                // unlock, but the Player persists across the reload, so its Animator would
+                // otherwise be stuck showing the interact pose forever.
+                _animationController?.SetInteracting(false);
                 return;
             }
 
             PlayerInputGate.Set(true);
+            _animationController?.SetInteracting(false);
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
+            ApplyLight(SwitchState.On);
             if (animator != null)
                 animator.SetTrigger(OnTrigger);
 
@@ -115,6 +132,7 @@ namespace Game.Rooms.Objectives
         {
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
+            ApplyLight(SwitchState.On);
             // Explicit null check, not ?., per this project's Unity-object convention — ?. bypasses
             // Unity's overridden null check and an unassigned serialized reference can still throw.
             if (animator != null)
@@ -135,6 +153,13 @@ namespace Game.Rooms.Objectives
 
             if (sprite != null)
                 spriteRenderer.sprite = sprite;
+        }
+
+        // Light is off only while Closed — on for both Opening and On, per design.
+        private void ApplyLight(SwitchState state)
+        {
+            if (lightObject != null)
+                lightObject.SetActive(state != SwitchState.Closed);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

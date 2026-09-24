@@ -32,6 +32,7 @@ namespace Game.Characters.Player
         private readonly int _animIsDamageKnocked;
         private readonly int _animInteract;
         private readonly int _animIsGliding;
+        private readonly int _animIsInteracting;
         private readonly bool _hasWallSlideParameter;
         private readonly bool _hasFallingParameter;
         private readonly bool _hasRunSpeedParameter;
@@ -42,6 +43,7 @@ namespace Game.Characters.Player
         private readonly bool _hasDamageKnockedParameter;
         private readonly bool _hasInteractParameter;
         private readonly bool _hasGlidingParameter;
+        private readonly bool _hasInteractingParameter;
 
         // Run animation playback speed at min/max momentum
         private const float RunSpeedMultMin = 1.0f;
@@ -73,6 +75,7 @@ namespace Game.Characters.Player
             _animIsDamageKnocked = Animator.StringToHash("IsDamageKnocked");
             _animInteract = Animator.StringToHash("Interact");
             _animIsGliding = Animator.StringToHash("IsGliding");
+            _animIsInteracting = Animator.StringToHash("IsInteracting");
             _hasWallSlideParameter = HasBoolParameter(_animator, "IsWallSliding");
             _hasFallingParameter = HasBoolParameter(_animator, "IsFalling");
             _hasRunSpeedParameter = HasFloatParameter(_animator, "RunSpeed");
@@ -83,6 +86,7 @@ namespace Game.Characters.Player
             _hasDamageKnockedParameter = HasBoolParameter(_animator, "IsDamageKnocked");
             _hasInteractParameter = HasTriggerParameter(_animator, "Interact");
             _hasGlidingParameter = HasBoolParameter(_animator, "IsGliding");
+            _hasInteractingParameter = HasBoolParameter(_animator, "IsInteracting");
 
             _logger?.Log("PlayerAnimationController initialized");
         }
@@ -185,6 +189,16 @@ namespace Game.Characters.Player
             }
         }
 
+        // Driven by DoorSwitchView (or any future interact source) for the duration of an
+        // input-locked interact, not polled here — same one-shot-on-change shape as SetGliding.
+        public void SetInteracting(bool isInteracting)
+        {
+            if (_animator != null && _hasInteractingParameter)
+            {
+                _animator.SetBool(_animIsInteracting, isInteracting);
+            }
+        }
+
         public void SetDashThresholds(float upThreshold, float downThreshold)
         {
             _dashUpThreshold = upThreshold;
@@ -239,6 +253,7 @@ namespace Game.Characters.Player
                 if (_hasDashingParameter)      _animator.SetBool(_animIsDashing,        false);
                 if (_hasDashAttackingParameter)_animator.SetBool(_animIsDashAttacking,  false);
                 if (_hasGlidingParameter)      _animator.SetBool(_animIsGliding,        false);
+                if (_hasInteractingParameter)  _animator.SetBool(_animIsInteracting,    false);
                 _animator.SetTrigger(_animDeath);
                 _logger?.Log("Death animation played");
             }
