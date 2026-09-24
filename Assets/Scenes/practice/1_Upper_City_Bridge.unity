@@ -6156,7 +6156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
-  _profile: {fileID: 11400000, guid: 7ca4b75def4757e46a049e518beaed96, type: 2}
+  _profile: {fileID: 11400000, guid: 685bfc7730429464ba38fa21e79cf212, type: 2}
   _groundMask:
     serializedVersion: 2
     m_Bits: 0

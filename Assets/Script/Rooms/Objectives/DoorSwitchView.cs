@@ -38,6 +38,9 @@ namespace Game.Rooms.Objectives
         [SerializeField] private Sprite openingSprite;
         [SerializeField] private Sprite onSprite;
 
+        [Header("State Light")]
+        [SerializeField] private GameObject lightObject;
+
         private static readonly int OpeningTrigger = Animator.StringToHash("Opening");
         private static readonly int OnTrigger = Animator.StringToHash("On");
 
@@ -66,6 +69,7 @@ namespace Game.Rooms.Objectives
                 interactPrompt.SetActive(false);
 
             ApplySprite(SwitchState.Closed);
+            ApplyLight(SwitchState.Closed);
         }
 
         private void Start()
@@ -85,6 +89,7 @@ namespace Game.Rooms.Objectives
             _state = SwitchState.Opening;
             HidePrompt();
             ApplySprite(SwitchState.Opening);
+            ApplyLight(SwitchState.Opening);
             if (animator != null)
                 animator.SetTrigger(OpeningTrigger);
 
@@ -103,6 +108,7 @@ namespace Game.Rooms.Objectives
             PlayerInputGate.Set(true);
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
+            ApplyLight(SwitchState.On);
             if (animator != null)
                 animator.SetTrigger(OnTrigger);
 
@@ -115,6 +121,7 @@ namespace Game.Rooms.Objectives
         {
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
+            ApplyLight(SwitchState.On);
             // Explicit null check, not ?., per this project's Unity-object convention — ?. bypasses
             // Unity's overridden null check and an unassigned serialized reference can still throw.
             if (animator != null)
@@ -135,6 +142,13 @@ namespace Game.Rooms.Objectives
 
             if (sprite != null)
                 spriteRenderer.sprite = sprite;
+        }
+
+        // Light is off only while Closed — on for both Opening and On, per design.
+        private void ApplyLight(SwitchState state)
+        {
+            if (lightObject != null)
+                lightObject.SetActive(state != SwitchState.Closed);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
