@@ -32,6 +32,12 @@ namespace Game.UI
         private Coroutine _routine;
         private bool _subscribed;
 
+        /// <summary>True from the moment this room's card starts its show routine until the
+        /// fade-out finishes. False (never went true) when the room has a blank displayName or
+        /// was already shown this session — lets other on-entry UI (e.g. AbilityUnlockOnEntry)
+        /// queue to appear after the card instead of overlapping it.</summary>
+        public bool IsShowing => _routine != null;
+
         [Inject]
         public void Construct(IRoomLoader roomLoader, RoomCatalog catalog)
         {

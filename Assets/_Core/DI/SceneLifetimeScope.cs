@@ -45,6 +45,7 @@ public class SceneLifetimeScope : LifetimeScope
             InjectAll<DoorView>(container);
             InjectAll<DoorSwitchView>(container);
             InjectAll<AbilityUnlockTrigger>(container);
+            InjectAll<AbilityUnlockOnEntry>(container);
 
             // Nothing else resolves DoorCutawaySystem (it works purely via its DoorOpened
             // subscription), so force its construction here — otherwise it would never be built

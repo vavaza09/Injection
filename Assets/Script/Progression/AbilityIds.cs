@@ -7,5 +7,6 @@ namespace Game.Progression
     public static class AbilityIds
     {
         public const string Glide = "glide";
+        public const string TrueDamage = "true_damage";
     }
 }

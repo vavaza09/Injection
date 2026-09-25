@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Intensity: 88.02
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 8f9626068fb10bf667798394000000008fbb99778d7af65c4de9663e39050000d1bee715
+  m_ApplyToSortingLayers: 8f9626068fb10bf667798394000000008d7af65c4de9663e39050000d1bee715
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -97,6 +97,8 @@ GameObject:
   - component: {fileID: 8040939227246634207}
   - component: {fileID: 2043014819914655121}
   - component: {fileID: 6134537842308885261}
+  - component: {fileID: 5401609231275409407}
+  - component: {fileID: 8448909632803444671}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -114,7 +116,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -21.6502, y: -8.8205, z: 0}
-  m_LocalScale: {x: 1.84, y: 0.61333334, z: 1.84}
+  m_LocalScale: {x: 2.75, y: 0.9166667, z: 2.75}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2982086758742373739}
@@ -180,8 +182,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game.Components.Movement::Game.Components.Movement.DoorController
   blockingCollider: {fileID: 8815612622616912814}
   visualRoot: {fileID: 0}
-  animator: {fileID: 0}
+  animator: {fileID: 5401609231275409407}
   startClosed: 1
+  spriteRenderer: {fileID: 6134537842308885261}
+  closedSprite: {fileID: -6724166274683653576, guid: 2222efa7374a9ac43886894f489de943, type: 3}
+  openSprite: {fileID: -3752988834786560844, guid: 2222efa7374a9ac43886894f489de943, type: 3}
+  lightObject: {fileID: 3711826418803600796}
+  openingDuration: 1
 --- !u!114 &2043014819914655121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,3 +265,71 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!95 &5401609231275409407
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6893016168118826675}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a351a61d2e469a24b8384631b29cc223, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!61 &8448909632803444671
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6893016168118826675}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.30644462, y: 1.8528101}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.3333334, y: 2.6666667}
+    newSize: {x: 1.4795494, y: 8.877296}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 1
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.2301324, y: 5.410523}
+  m_EdgeRadius: 0

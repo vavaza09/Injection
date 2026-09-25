@@ -23,6 +23,7 @@ namespace Game.Rooms.Objectives
         [SerializeField] private int cutsceneRestingPriority = 0;
 
         private DoorObjectiveSystem _system;
+        private AudioSource _openingSoundInstance;
 
         public string DoorId => doorId;
         public CinemachineCamera CutsceneCamera => cutsceneCamera;
@@ -40,12 +41,44 @@ namespace Game.Rooms.Objectives
             _system?.RegisterDoor(doorId, this);
         }
 
-        // Called by DoorObjectiveSystem on a live switch activation.
+        // Called by DoorObjectiveSystem on a live switch activation. DoorController can't play its
+        // own opening SFX (it lives in the Game.Components.Movement asmdef, which can never
+        // reference Assembly-CSharp, where SoundManager lives) — this loose Assembly-CSharp view
+        // owns the sound instead, timed off DoorController's Opened/OpeningCanceled events.
         public void Open()
         {
             // Explicit null check, not ?. — see DoorSwitchView.SetActivatedImmediate for why.
             if (doorController != null)
+            {
+                doorController.Opened += OnDoorControllerOpened;
+                doorController.OpeningCanceled += OnDoorControllerOpeningCanceled;
+                _openingSoundInstance = SoundManager.StartInstance(SoundType.DOOR_OPENING);
                 doorController.Open();
+            }
+        }
+
+        private void OnDoorControllerOpened()
+        {
+            UnsubscribeFromDoorController();
+            SoundManager.StopInstance(_openingSoundInstance);
+        }
+
+        private void OnDoorControllerOpeningCanceled()
+        {
+            UnsubscribeFromDoorController();
+            SoundManager.StopInstance(_openingSoundInstance);
+        }
+
+        private void UnsubscribeFromDoorController()
+        {
+            if (doorController == null) return;
+            doorController.Opened -= OnDoorControllerOpened;
+            doorController.OpeningCanceled -= OnDoorControllerOpeningCanceled;
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeFromDoorController();
         }
 
         // Called by DoorObjectiveSystem when this door was already persisted open on room load —

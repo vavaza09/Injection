@@ -281,6 +281,27 @@ MonoBehaviour:
     pitchMin: 0.5
     pitchMax: 0.5
     loop: 0
+  - name: GLIDE
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: DOOR_SWITCH_OPENING
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
+  - name: DOOR_OPENING
+    sounds: []
+    volume: 0
+    boostDb: 0
+    pitchMin: 0
+    pitchMax: 0
+    loop: 0
   - name: ENEMY_HURT
     sounds: []
     volume: 0

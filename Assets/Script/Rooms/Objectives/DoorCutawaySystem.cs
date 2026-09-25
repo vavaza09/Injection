@@ -23,12 +23,15 @@ namespace Game.Rooms.Objectives
         private const int CutawayPriority = 30;
 
         private readonly DoorObjectiveSystem _doorSystem;
-        private readonly IDoorObjectiveEvents _events;
+        // Concrete type, not IDoorObjectiveEvents — this system is the one that RAISES
+        // DoorCutawayFinished (DoorObjectiveSystem is the only other raiser, for DoorOpened),
+        // and RaiseDoorCutawayFinished is internal, not part of the interface.
+        private readonly DoorObjectiveEvents _events;
         private readonly Core.Logging.ILogger _logger;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         [Inject]
-        public DoorCutawaySystem(DoorObjectiveSystem doorSystem, IDoorObjectiveEvents events, LoggerFactory loggerFactory)
+        public DoorCutawaySystem(DoorObjectiveSystem doorSystem, DoorObjectiveEvents events, LoggerFactory loggerFactory)
         {
             _doorSystem = doorSystem;
             _events = events;
@@ -48,13 +51,16 @@ namespace Game.Rooms.Objectives
             if (!_doorSystem.TryGetView(e.DoorId, out var view) || view.CutsceneCamera == null)
             {
                 _logger?.LogWarning($"[DoorCutawaySystem] Door '{e.DoorId}' has no cutscene camera assigned — skipping cutaway.");
+                // No cutaway to wait for — fire the "finished" signal immediately so anything
+                // gated on it (e.g. DoorSwitchView's battery indicator) doesn't hang forever.
+                _events.RaiseDoorCutawayFinished(e);
                 return;
             }
 
-            PlayCutawayAsync(view, _cts.Token).Forget();
+            PlayCutawayAsync(view, e, _cts.Token).Forget();
         }
 
-        private async UniTaskVoid PlayCutawayAsync(DoorView view, CancellationToken token)
+        private async UniTaskVoid PlayCutawayAsync(DoorView view, DoorOpenedEvent e, CancellationToken token)
         {
             var camera = view.CutsceneCamera;
             int restingPriority = view.CutsceneRestingPriority;
@@ -103,6 +109,11 @@ namespace Game.Rooms.Objectives
 
                 if (blendOverridden)
                     brain.DefaultBlend = originalBlend;
+
+                // Fire on cancellation too (not just normal completion) — anything waiting on
+                // this (e.g. DoorSwitchView's battery indicator) must not hang forever just
+                // because the scope tore down mid-cutaway.
+                _events.RaiseDoorCutawayFinished(e);
             }
         }
 

@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1467046034247098989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4040785938130558536}
+  - component: {fileID: 2039801995296861749}
+  m_Layer: 0
+  m_Name: TutorialPromptUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4040785938130558536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467046034247098989}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2039801995296861749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467046034247098989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bce14dca6d635424f84a490dbdb9c2dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tutorial.TutorialPromptUI
+  label: {fileID: 0}
+  glyphRow: {fileID: 0}
+  deviceTracker: {fileID: 0}
+  bindings:
+  - actionKey: Forward
+    keyboardLabel: A
+    gamepadLabel: L Stick
+    keyboardSprite: {fileID: 1145220741083561907, guid: b22ec81e653148c46b365136fb5f7713, type: 3}
+    gamepadSprite: {fileID: -8016873682913189246, guid: 0bf5aeef51598ee48a019725da651d0d, type: 3}
+    sizeOverride: 0
+  - actionKey: Jump
+    keyboardLabel: Space
+    gamepadLabel: A
+    keyboardSprite: {fileID: -557078281788634498, guid: 6326f316c8adc6b459feb7d3c00ab030, type: 3}
+    gamepadSprite: {fileID: -7956427973557797689, guid: 45d07c0c343e76f478b0ba320264b686, type: 3}
+    sizeOverride: 100
+  - actionKey: Aim
+    keyboardLabel: Right Click
+    gamepadLabel: LT
+    keyboardSprite: {fileID: -3288219961904825860, guid: d1f17debe9aff154289c1f824657eaea, type: 3}
+    gamepadSprite: {fileID: -3997850089383228863, guid: 984a23d1b79be9445b9af668c91ef02a, type: 3}
+    sizeOverride: 0
+  - actionKey: Dash
+    keyboardLabel: Left Click
+    gamepadLabel: RT
+    keyboardSprite: {fileID: 316446807246356010, guid: 477be4c9ca52a014590eaed704836534, type: 3}
+    gamepadSprite: {fileID: 3336128370510153928, guid: 35e05dfa206c3764d95751f215154faa, type: 3}
+    sizeOverride: 0
+  - actionKey: Grab
+    keyboardLabel: E
+    gamepadLabel: Y
+    keyboardSprite: {fileID: 1622727937493990531, guid: a461b1ddf76bc1f49a663f7a99e052c2, type: 3}
+    gamepadSprite: {fileID: -1236389414660901761, guid: 2d67890362d758947a5530d5a3cee500, type: 3}
+    sizeOverride: 0
+  - actionKey: Skill1
+    keyboardLabel: Q
+    gamepadLabel: LB
+    keyboardSprite: {fileID: 1179216485070693450, guid: db4087dd9d1940149ae55248e4f0534f, type: 3}
+    gamepadSprite: {fileID: 2267800731179639549, guid: 47d889f0aecd32049a1736b6c527cccb, type: 3}
+    sizeOverride: 0
+  - actionKey: Skill2
+    keyboardLabel: F
+    gamepadLabel: RB
+    keyboardSprite: {fileID: -9125861541802950594, guid: ee5bb52deba6a6845a7836460a40e946, type: 3}
+    gamepadSprite: {fileID: 4249578791139060025, guid: bb0357b70cb3bfa45969ef56ed6604ab, type: 3}
+    sizeOverride: 0
+  - actionKey: backward
+    keyboardLabel: D
+    gamepadLabel: RB
+    keyboardSprite: {fileID: -8387302115945079765, guid: 0fff65debe06e5942926cad6d50f63ce, type: 3}
+    gamepadSprite: {fileID: 4249578791139060025, guid: bb0357b70cb3bfa45969ef56ed6604ab, type: 3}
+    sizeOverride: 0
+  font: {fileID: 11400000, guid: 14b013ea9acb42d4e9744cbcff4027ea, type: 2}
+  descriptionColor: {r: 1, g: 1, b: 1, a: 1}
+  successColor: {r: 0.4, g: 1, b: 0.5, a: 1}
+  fontSize: 52
+  glyphSize: 64
+  panelAnchor: {x: 0.5, y: 0}
+  panelPosition: {x: 0, y: 720}
+  bgColor: {r: 0, g: 0, b: 0, a: 0.55}
+  bgHeight: 200
