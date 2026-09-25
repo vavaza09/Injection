@@ -100,6 +100,10 @@ public enum SoundType
     TOYCAR,
     FISHTANK,
     BACKROOM_NOISE,
+
+    // Enemies — armor
+    ENEMY_ARMOR_HIT,
+    ENEMY_ARMOR_BREAK,
 }
 
 public enum MusicType
