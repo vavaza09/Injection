@@ -15,6 +15,10 @@ public class RoomLockTrigger : MonoBehaviour
         public Transform marker;
     }
 
+    [Header("Trigger")]
+    [Tooltip("Untick when another system (e.g. a boss intro) should call Lock() itself instead of this collider firing it.")]
+    [SerializeField] private bool lockOnPlayerEnter = true;
+
     [Header("Camera")]
     [Tooltip("The room's virtual camera. Auto-found if left empty.")]
     [SerializeField] private CinemachineCamera roomVcam;
@@ -73,29 +77,21 @@ public class RoomLockTrigger : MonoBehaviour
         if (_player != null) _player.Died += OnPlayerDied;
     }
 
-    private void OnEnable()
-    {
-        BossBase.Defeated += OnBossDefeated;
-    }
-
-    private void OnDisable()
-    {
-        BossBase.Defeated -= OnBossDefeated;
-    }
-
     private void OnDestroy()
     {
         if (_panProxy != null) Destroy(_panProxy.gameObject);
         if (_player != null) _player.Died -= OnPlayerDied;
     }
 
-    private void OnBossDefeated()
-    {
-        if (!_locked) return;
-        ReleaseCamera();
-    }
+    // Deliberately NOT wired to BossBase.Defeated: that event fires the instant HP hits 0,
+    // which for a boss with a BossDeathSequence is ~10 seconds before its death animation
+    // actually finishes and the boss GameObject is destroyed. Releasing the camera that early
+    // snapped it back to the player mid-explosion, while the gates (opened by WatchEnemyRoutine
+    // below, which correctly waits for real destruction) stayed sealed for the rest of the
+    // sequence. WatchEnemyRoutine is the single source of truth for "boss is actually gone" —
+    // both the camera and the gates release together, once, at the right time.
 
-    // Player death doesn't defeat the boss, so OnBossDefeated never fires — without this the
+    // Player death doesn't defeat the boss, so WatchEnemyRoutine never fires — without this the
     // camera stays locked on the room anchor through the death/respawn beat instead of
     // following the player. Restores directly (not via ReleaseCamera/_cameraReleased) so the
     // room stays logically locked and a later real boss-defeat still restores correctly.
@@ -107,10 +103,19 @@ public class RoomLockTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!lockOnPlayerEnter) return;
         if (_locked) return;
         if (_roomLoader != null && _roomLoader.IsTransitioning) return;
         if (!other.CompareTag("Player")) return;
 
+        Lock();
+    }
+
+    // Public so an external sequencer (e.g. a boss intro) can seal the room on its own cue
+    // instead of relying on this collider — set lockOnPlayerEnter false on those triggers.
+    public void Lock()
+    {
+        if (_locked) return;
         _locked = true;
 
         LockCamera();
@@ -242,8 +247,11 @@ public class RoomLockTrigger : MonoBehaviour
             }
         }
 
-        if (_spawnedWalls.Count > 0 && CameraManager.instance != null)
-            CameraManager.instance.Shake(shakeIntensity, shakeDuration);
+        // CameraShake (Cinemachine Impulse) is scene-independent and is what every other
+        // boss/player shake in the project already uses — CameraManager itself isn't present
+        // in Room_Boss (or most room scenes), so routing through it was a silent no-op there.
+        if (_spawnedWalls.Count > 0)
+            CameraShake.Shake(shakeIntensity, shakeDuration);
     }
 
     private IEnumerator WatchEnemyRoutine()
