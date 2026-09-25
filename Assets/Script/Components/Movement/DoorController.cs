@@ -28,6 +28,10 @@ namespace Game.Components.Movement
 
         private static readonly int OpenTrigger = Animator.StringToHash("Open");
         private static readonly int CloseTrigger = Animator.StringToHash("Close");
+        // NOTE: matches the current state name in Assets/Assets/Objective/Door.controller. Someone
+        // renamed the states from "Closed"/"Opening" (what this project originally created them as)
+        // to "Close"/"Open" — if you rename them again in the Animator window, update this to match.
+        private const string OpeningStateName = "Open";
 
         private DoorVisualState _state = DoorVisualState.Closed;
 
@@ -48,7 +52,15 @@ namespace Game.Components.Movement
 
         private void Start()
         {
-            if (startClosed) ApplyClosed();
+            // Guard against a Start() order race between sibling components on the same
+            // GameObject: Unity does not guarantee DoorController.Start() runs before
+            // DoorView.Start() (or vice versa), and DoorView.Start() may call SnapOpen()/Open()
+            // on this component — e.g. for a door already persisted open from a previous save —
+            // before this method gets its turn. If that already moved _state away from the
+            // default Closed, re-asserting Closed here would silently clobber it back shut the
+            // instant the scene loads. Only apply the closed state if nothing already opened it.
+            if (startClosed && _state == DoorVisualState.Closed)
+                ApplyClosed();
 
             // The door cutaway (DoorCutawaySystem) pauses the game (Time.timeScale = 0) for the
             // whole reveal — that's the point, the player is frozen specifically to watch this door
@@ -114,6 +126,16 @@ namespace Game.Components.Movement
             if (blockingCollider != null) blockingCollider.enabled = false;
             ApplySprite(openSprite);
             ApplyLight(true);
+
+            // Force the Animator to the end of the "Opening" clip too, not just the SpriteRenderer
+            // directly. Without this, SnapOpen() (which never triggers a real transition) leaves the
+            // Animator parked on its default "Closed" state — and if that state's "Write Defaults" is
+            // on (Unity's default), the Animator resets m_Sprite back to its recorded default every
+            // frame, silently overwriting the ApplySprite() call above the instant it runs. Harmless
+            // to also call this after the live Open() path settles — the Animator is normally already
+            // sitting there naturally by then, so this just re-asserts the same frame.
+            if (animator != null)
+                animator.Play(OpeningStateName, 0, 1f);
         }
 
         private void ApplyClosed()

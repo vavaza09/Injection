@@ -11,7 +11,14 @@ public class MainMenuController : MonoBehaviour
     // Hidden on WebGL: Application.Quit() is a no-op inside a browser tab.
     [SerializeField] private GameObject quitButton;
 
-    private readonly ISaveStorage _saveStorage = SaveStorageFactory.CreateDefault();
+    // Created in Awake, not a field initializer: JsonFileSaveStorage reads
+    // Application.persistentDataPath, which Unity forbids during MonoBehaviour construction.
+    private ISaveStorage _saveStorage;
+
+    private void Awake()
+    {
+        _saveStorage = SaveStorageFactory.CreateDefault();
+    }
 
     private void Start()
     {

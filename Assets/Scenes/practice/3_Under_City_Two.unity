@@ -14341,6 +14341,10 @@ PrefabInstance:
       value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 8040939227246634207, guid: dc66e44b30229aa4d956dd0b634a5723, type: 3}
+      propertyPath: startClosed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8040939227246634207, guid: dc66e44b30229aa4d956dd0b634a5723, type: 3}
       propertyPath: openingDuration
       value: 1
       objectReference: {fileID: 0}
@@ -21276,7 +21280,7 @@ Transform:
   m_GameObject: {fileID: 1829299620}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -39.867924, y: -110.799995, z: -10}
+  m_LocalPosition: {x: -39.845684, y: -110.799995, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -72744,7 +72748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7606112571669847937, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 289.28323
+      value: 274.4
       objectReference: {fileID: 0}
     - target: {fileID: 7606112571669847937, guid: 007ce2e20e739f94587d7b3c4c438300, type: 3}
       propertyPath: m_LocalPosition.y
