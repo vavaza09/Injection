@@ -11,6 +11,8 @@ public class MainMenuController : MonoBehaviour
     // Hidden on WebGL: Application.Quit() is a no-op inside a browser tab.
     [SerializeField] private GameObject quitButton;
 
+    private readonly ISaveStorage _saveStorage = SaveStorageFactory.CreateDefault();
+
     private void Start()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -21,7 +23,7 @@ public class MainMenuController : MonoBehaviour
 #endif
         settingsPanel.SetActive(false);
         newGameConfirmPanel.SetActive(false);
-        continueButton.gameObject.SetActive(SaveFileLocator.Exists());
+        continueButton.gameObject.SetActive(_saveStorage.Exists());
         SoundManager.PlayMusic(MusicType.MENU);
 
         ScreenFader.Instance?.FadeIn();
@@ -36,7 +38,7 @@ public class MainMenuController : MonoBehaviour
     public void OnNewGame()
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
-        if (SaveFileLocator.Exists())
+        if (_saveStorage.Exists())
             newGameConfirmPanel.SetActive(true);
         else
             StartFreshGame();
@@ -45,7 +47,7 @@ public class MainMenuController : MonoBehaviour
     public void ConfirmNewGame()
     {
         SoundManager.PlaySound(SoundType.UI_CLICK);
-        SaveFileLocator.Delete();
+        _saveStorage.Clear();
         StartFreshGame();
     }
 
