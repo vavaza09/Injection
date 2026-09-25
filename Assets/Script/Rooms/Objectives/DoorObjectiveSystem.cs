@@ -57,7 +57,11 @@ namespace Game.Rooms.Objectives
             if (entry.IsOpen) return;
 
             entry.IsOpen = true;
-            entry.View.Open();
+            // Not entry.View.Open() here — DoorCutawaySystem calls that itself, timed to start only
+            // once its camera fade-in actually reveals the door (or immediately, if this door has no
+            // cutaway camera at all). Opening it here instead would start the door's own animation at
+            // the exact same moment the cutaway's fade-out begins, so by the time the screen fades
+            // back in the door would already be mid-way through or fully open off-screen.
             _saveService?.MarkObjectiveComplete(doorId);
             _events.RaiseDoorOpened(new DoorOpenedEvent(doorId));
         }
