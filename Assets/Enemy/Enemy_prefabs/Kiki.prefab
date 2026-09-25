@@ -152,7 +152,6 @@ MonoBehaviour:
   stunTintColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   stunBlinkInterval: 0.12
   stunVfxPrefab: {fileID: 0}
-  deathSoundDelay: 0.5
   patrolRadius: 5
   floatSpeed: 2.5
   chaseSpeedMultiplier: 1.6
@@ -171,6 +170,17 @@ MonoBehaviour:
   trailEndWidth: 0.05
   trailTime: 0.25
   invertFacing: 1
+  startDormant: 0
+  dormantFreezeFrame: 3
+  dormantTotalFrames: 5
+  dropDistance: 2.5
+  dropDuration: 0.5
+  dropCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _sfxSource: {fileID: 0}
   knockbackForce: 10
   knockbackUpward: 0.5
@@ -459,8 +469,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.098792076, y: 0.05137825}
-  m_Radius: 0.6475563
+  m_Offset: {x: 0.10475159, y: 0.05137825}
+  m_Radius: 0.76670265
 --- !u!114 &1951961934626976865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +486,17 @@ MonoBehaviour:
   ownerEnemy: {fileID: 2181151058672896822}
   weakPointColliders:
   - {fileID: 1618289537991685747}
+  armorRenderer: {fileID: 0}
+  armorDamagedSprite: {fileID: 0}
+  armorFallDelay: 1.5
+  armorWhiteFlashDuration: 0.15
+  armorFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  armorFlashMaterial: {fileID: 0}
+  fallGravityScale: 1.5
+  fallLaunchForce: 3
+  fallSpin: 180
+  fallLifetime: 2.2
+  fallFadeDuration: 0.8
 --- !u!1 &4518119797810744639
 GameObject:
   m_ObjectHideFlags: 0

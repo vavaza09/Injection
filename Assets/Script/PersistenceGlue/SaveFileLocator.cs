@@ -1,20 +1,8 @@
-using System.IO;
-using UnityEngine;
-
 namespace Game.Persistence
 {
     public static class SaveFileLocator
     {
+        // File name on desktop, localStorage key on WebGL — see SaveStorageFactory.
         public const string FileName = "save.json";
-
-        public static string FullPath => Path.Combine(Application.persistentDataPath, FileName);
-
-        public static bool Exists() => File.Exists(FullPath);
-
-        public static void Delete()
-        {
-            if (File.Exists(FullPath))
-                File.Delete(FullPath);
-        }
     }
 }

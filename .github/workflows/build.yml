@@ -2,6 +2,11 @@ name: Build — Injection
 
 on:
   workflow_dispatch:
+    inputs:
+      development:
+        description: 'WebGL Development build (diagnostics overlay + readable function names for Chrome DevTools profiling)'
+        type: boolean
+        default: false
   push:
     tags: [ 'v*' ]
 
@@ -49,6 +54,10 @@ jobs:
           unityVersion: 6000.3.8f1
           targetPlatform: ${{ matrix.targetPlatform }}
           buildName: BlueSteam
+          # WebGL uses CiBuild so Code Optimization is forced to Runtime Speed (LTO) — it is an
+          # EditorUserBuildSettings value stored in Library/, which CI never gets from the repo.
+          buildMethod: ${{ matrix.targetPlatform == 'WebGL' && 'CiBuild.BuildWebGL' || '' }}
+          customParameters: ${{ matrix.targetPlatform == 'WebGL' && inputs.development && '-devBuild' || '' }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
