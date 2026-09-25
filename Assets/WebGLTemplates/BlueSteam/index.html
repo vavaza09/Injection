@@ -9,11 +9,11 @@
       /*
         Blue Steam WebGL template.
 
-        The canvas always fills the whole browser viewport — no fixed 960x600 box, no footer,
-        no margins. Fullscreen is the browser's own F11: the viewport grows, the canvas grows
-        with it through CSS, and Unity's default matchWebGLToCanvasSize keeps the render
-        backbuffer in sync. The game itself never calls Screen.fullScreen / SetResolution on
-        WebGL (GameSettings.SupportsDisplaySettings).
+        The canvas is the largest 16:9 box that fits the browser viewport — no fixed 960x600 box,
+        no footer, no margins. Fullscreen is the browser's own F11: the viewport grows and the
+        canvas grows with it through CSS, while the render backbuffer stays at 1920x1080. The game
+        itself never calls Screen.fullScreen / SetResolution on WebGL
+        (GameSettings.SupportsDisplaySettings).
       */
       html, body {
         margin: 0;
@@ -24,12 +24,19 @@
         overflow: hidden;
         background: {{{ BACKGROUND_COLOR }}};
       }
+      /*
+        Fixed 1920x1080 backbuffer (same as the Standalone build), scaled by CSS to the largest
+        16:9 box that fits the window. Rendering at window size made the frame much smaller than
+        1080p on typical browser/itch viewports, so hi-res sprites without mipmaps were minified
+        >2x and aliased badly; downscaling a full 1080p frame instead acts as supersampling.
+      */
       #unity-canvas {
         position: fixed;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(100vw, calc(100vh * 16 / 9));
+        height: min(100vh, calc(100vw * 9 / 16));
         display: block;
         outline: none;
         background: {{{ BACKGROUND_COLOR }}};
@@ -68,17 +75,12 @@
     <div id="unity-loading"><div id="unity-progress"></div></div>
     <div id="unity-warning"></div>
     <script>
-      // Render-resolution budget. On a high-DPI display the browser reports devicePixelRatio
-      // 1.25–2, and Unity multiplies the canvas CSS size by it — a 2560-wide viewport at DPR 1.5
-      // would render 3840 pixels wide every frame, which is what makes fullscreen stutter on
-      // laptops/4K screens. Cap the backbuffer width at MAX_RENDER_WIDTH; the browser upscales
-      // the rest. Raise it if the target machines can afford it.
-      var MAX_RENDER_WIDTH = 1920;
-      var screenCssWidth = Math.max(window.screen.width || 0, window.innerWidth || 0, 1);
-      var renderDpr = Math.min(window.devicePixelRatio || 1, MAX_RENDER_WIDTH / screenCssWidth);
-      renderDpr = Math.max(renderDpr, 0.5);
+      var RENDER_WIDTH = 1920;
+      var RENDER_HEIGHT = 1080;
 
       var canvas = document.querySelector("#unity-canvas");
+      canvas.width = RENDER_WIDTH;
+      canvas.height = RENDER_HEIGHT;
       var loadingBar = document.querySelector("#unity-loading");
       var progressBar = document.querySelector("#unity-progress");
       var warningBanner = document.querySelector("#unity-warning");
@@ -127,7 +129,8 @@
         productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
         productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
         showBanner: unityShowBanner,
-        devicePixelRatio: renderDpr,
+        // Keep the backbuffer at RENDER_WIDTH x RENDER_HEIGHT instead of following the canvas CSS size.
+        matchWebGLToCanvasSize: false,
       };
 
       // Keyboard input only reaches Unity while the canvas has focus (it is tabindex=-1).
