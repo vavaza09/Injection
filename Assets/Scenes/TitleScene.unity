@@ -3243,7 +3243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaabba416573110468d9aa2f9304d016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButtonHover
-  target: {fileID: 1163864862}
+  target: {fileID: 2083622218}
   hoverScale: 1.12
   lerpSpeed: 10
   revealOnHover:
@@ -3299,18 +3299,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3821789262082132790}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Stop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3881,6 +3869,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: musicVolume
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: musicList.Array.data[0].music
+      value: 
+      objectReference: {fileID: 8300000, guid: c893a20a9312a3f4db7842533154030f, type: 3}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[73].volume
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[74].volume
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[73].pitchMax
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[73].pitchMin
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[74].pitchMax
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[74].pitchMin
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: 'soundList.Array.data[73].sounds.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: 'soundList.Array.data[74].sounds.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9645,7 +9673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaabba416573110468d9aa2f9304d016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButtonHover
-  target: {fileID: 4005065319553459108}
+  target: {fileID: 3110713401583823330}
   hoverScale: 1.12
   lerpSpeed: 10
   revealOnHover:

@@ -177,7 +177,9 @@ public class BossIntroSequence : MonoBehaviour
             var hand = handIKTargets[i];
             if (hand == null) continue;
 
+            SoundManager.PlaySound(SoundType.BOSS_CLAW_ANTICIPATION);
             yield return LerpWorldPosition(hand, hand.position, _authoredHandWorldPos[i], handRiseDuration);
+            SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
             SpawnHandImpact(_authoredHandWorldPos[i]);
             yield return new WaitForSeconds(betweenHands);
         }
@@ -256,15 +258,19 @@ public class BossIntroSequence : MonoBehaviour
 
     private void RestoreAttacks()
     {
-        if (_attackManager != null) _attackManager.enabled = _attackManagerWasEnabled;
-        if (_claw          != null) _claw.enabled          = _clawWasEnabled;
-        if (_hammer        != null) _hammer.enabled        = _hammerWasEnabled;
-        if (_gas           != null) _gas.enabled            = _gasWasEnabled;
-        if (_junk          != null) _junk.enabled           = _junkWasEnabled;
+        // _attackManager is deliberately left out here — it's re-enabled in FinishIntro(),
+        // after the skip fade-in. Enabling it here would let it start attacking the same
+        // frame the arms are repinned, before BossClawAttack/BossHammerAttack's Start() has
+        // captured idle, yanking the arm off pose right as the screen clears.
+        if (_claw   != null) _claw.enabled   = _clawWasEnabled;
+        if (_hammer != null) _hammer.enabled = _hammerWasEnabled;
+        if (_gas    != null) _gas.enabled    = _gasWasEnabled;
+        if (_junk   != null) _junk.enabled   = _junkWasEnabled;
     }
 
     private void FinishIntro()
     {
+        if (_attackManager != null) _attackManager.enabled = _attackManagerWasEnabled;
         _running = false;
         PlayerInputGate.Set(true);
         _pauseMenu?.SetPauseInputEnabled(true);
