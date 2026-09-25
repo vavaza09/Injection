@@ -783,6 +783,9 @@ MonoBehaviour:
   sfxPercent: {fileID: 1829287935319451914}
   resolutionDropdown: {fileID: 3798171565341024129}
   fullscreenToggle: {fileID: 7251018756588555954}
+  resolutionLabel: {fileID: 8216654639867335676}
+  fullscreenLabel: {fileID: 1783465306695137645}
+  webFullscreenHint: PRESS F11 FOR FULLSCREEN
 --- !u!1 &1950678484748691092
 GameObject:
   m_ObjectHideFlags: 0
