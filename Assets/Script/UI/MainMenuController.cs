@@ -8,9 +8,17 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private Button continueButton;
     [SerializeField] private GameObject newGameConfirmPanel;
+    // Hidden on WebGL: Application.Quit() is a no-op inside a browser tab.
+    [SerializeField] private GameObject quitButton;
 
     private void Start()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (quitButton != null)
+        {
+            quitButton.SetActive(false);
+        }
+#endif
         settingsPanel.SetActive(false);
         newGameConfirmPanel.SetActive(false);
         continueButton.gameObject.SetActive(SaveFileLocator.Exists());
