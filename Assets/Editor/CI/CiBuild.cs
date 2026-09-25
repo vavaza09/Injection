@@ -11,7 +11,8 @@ using UnityEngine;
 // ProjectSettings, so a CI checkout never sees the value picked in the Editor's Build Profiles window.
 public static class CiBuild
 {
-    private const string WEBGL_CODE_OPTIMIZATION = "RuntimeSpeedLTO";
+    // Not RuntimeSpeedLTO: LTO made the release wasm link run 40+ minutes on a 4-core GitHub runner.
+    private const string WEBGL_CODE_OPTIMIZATION = "RuntimeSpeed";
 
     public static void BuildWebGL()
     {
