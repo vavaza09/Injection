@@ -7786,7 +7786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f8b38ab711b8f646b6fc41415b1baaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraForesightExtension
-  _profile: {fileID: 11400000, guid: 580eb2bd58c4e42459c2e7d2664ad4ca, type: 2}
+  _profile: {fileID: 11400000, guid: 685bfc7730429464ba38fa21e79cf212, type: 2}
   _groundMask:
     serializedVersion: 2
     m_Bits: 0
@@ -15358,6 +15358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747713f608514f34285d208df8934cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockOnPlayerEnter: 1
   roomVcam: {fileID: 0}
   roomAnchor: {fileID: 1508334458}
   _roomOrthoSize: 7

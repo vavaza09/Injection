@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <title>{{{ PRODUCT_NAME }}}</title>
+    <style>
+      /*
+        Blue Steam WebGL template.
+
+        The canvas always fills the whole browser viewport — no fixed 960x600 box, no footer,
+        no margins. Fullscreen is the browser's own F11: the viewport grows, the canvas grows
+        with it through CSS, and Unity's default matchWebGLToCanvasSize keeps the render
+        backbuffer in sync. The game itself never calls Screen.fullScreen / SetResolution on
+        WebGL (GameSettings.SupportsDisplaySettings).
+      */
+      html, body {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: {{{ BACKGROUND_COLOR }}};
+      }
+      #unity-canvas {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: block;
+        outline: none;
+        background: {{{ BACKGROUND_COLOR }}};
+      }
+      #unity-loading {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 240px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.15);
+      }
+      #unity-progress {
+        width: 0%;
+        height: 100%;
+        background: #ffffff;
+      }
+      #unity-warning {
+        position: fixed;
+        left: 50%;
+        top: 5%;
+        transform: translateX(-50%);
+        max-width: 90vw;
+        font: 14px sans-serif;
+        display: none;
+      }
+      #unity-warning div {
+        padding: 10px;
+        margin-bottom: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="unity-loading"><div id="unity-progress"></div></div>
+    <div id="unity-warning"></div>
+    <script>
+      // Render-resolution budget. On a high-DPI display the browser reports devicePixelRatio
+      // 1.25–2, and Unity multiplies the canvas CSS size by it — a 2560-wide viewport at DPR 1.5
+      // would render 3840 pixels wide every frame, which is what makes fullscreen stutter on
+      // laptops/4K screens. Cap the backbuffer width at MAX_RENDER_WIDTH; the browser upscales
+      // the rest. Raise it if the target machines can afford it.
+      var MAX_RENDER_WIDTH = 1920;
+      var screenCssWidth = Math.max(window.screen.width || 0, window.innerWidth || 0, 1);
+      var renderDpr = Math.min(window.devicePixelRatio || 1, MAX_RENDER_WIDTH / screenCssWidth);
+      renderDpr = Math.max(renderDpr, 0.5);
+
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading");
+      var progressBar = document.querySelector("#unity-progress");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or a permanent error
+      // message on top of the canvas if type=='error'.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') {
+          div.style = 'background: red; color: white;';
+        } else {
+          if (type == 'warning') {
+            div.style = 'background: yellow; color: black;';
+          }
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_THREADS
+        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}",
+#endif
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+        showBanner: unityShowBanner,
+        devicePixelRatio: renderDpr,
+      };
+
+      // Keyboard input only reaches Unity while the canvas has focus (it is tabindex=-1).
+      canvas.addEventListener("pointerdown", function() { canvas.focus(); });
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = function() {
+        createUnityInstance(canvas, config, function(progress) {
+          progressBar.style.width = 100 * progress + "%";
+        }).then(function(unityInstance) {
+          loadingBar.style.display = "none";
+          canvas.focus();
+        }).catch(function(message) {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>

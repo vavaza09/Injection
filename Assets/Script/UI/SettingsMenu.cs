@@ -12,16 +12,29 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private Toggle fullscreenToggle;
 
+    // WebGL only: the browser owns resolution/fullscreen, so the resolution row and the
+    // fullscreen toggle are hidden and the fullscreen label is reused as an F11 hint.
+    [SerializeField] private GameObject resolutionLabel;
+    [SerializeField] private TMP_Text fullscreenLabel;
+    [SerializeField] private string webFullscreenHint = "PRESS F11 FOR FULLSCREEN";
+
     private Resolution[] _resolutions;
     private bool _initializing;
 
     private void OnEnable()
     {
         _initializing = true;
-        BuildResolutions();
+        if (GameSettings.SupportsDisplaySettings)
+        {
+            BuildResolutions();
+            fullscreenToggle.isOn = GameSettings.Fullscreen;
+        }
+        else
+        {
+            ApplyBrowserDisplayLayout();
+        }
         musicSlider.value = GameSettings.MusicVolume;
         sfxSlider.value = GameSettings.SFXVolume;
-        fullscreenToggle.isOn = GameSettings.Fullscreen;
         UpdateMusicLabel(musicSlider.value);
         UpdateSFXLabel(sfxSlider.value);
         _initializing = false;
@@ -33,6 +46,20 @@ public class SettingsMenu : MonoBehaviour
         sfxSlider.onValueChanged.AddListener(OnSFXChanged);
         resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
+    }
+
+    private void ApplyBrowserDisplayLayout()
+    {
+        resolutionDropdown.gameObject.SetActive(false);
+        fullscreenToggle.gameObject.SetActive(false);
+        if (resolutionLabel != null)
+        {
+            resolutionLabel.SetActive(false);
+        }
+        if (fullscreenLabel != null)
+        {
+            fullscreenLabel.text = webFullscreenHint;
+        }
     }
 
     private void BuildResolutions()
@@ -86,7 +113,8 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnResolutionChanged(int idx)
     {
-        if (_initializing || _resolutions == null || idx >= _resolutions.Length) return;
+        if (_initializing || !GameSettings.SupportsDisplaySettings
+            || _resolutions == null || idx >= _resolutions.Length) return;
         GameSettings.ResolutionIndex = idx;
         var r = _resolutions[idx];
         Screen.SetResolution(r.width, r.height, GameSettings.Fullscreen);
@@ -94,7 +122,7 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnFullscreenChanged(bool isOn)
     {
-        if (_initializing) return;
+        if (_initializing || !GameSettings.SupportsDisplaySettings) return;
         GameSettings.Fullscreen = isOn;
         Screen.fullScreen = isOn;
     }
