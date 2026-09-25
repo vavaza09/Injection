@@ -99,6 +99,7 @@ public class EnemyWeakPoint : MonoBehaviour
     {
         if (_armorState != ArmorState.Intact) return;
         _armorState = ArmorState.Breaking;
+        SoundManager.PlaySound(SoundType.ENEMY_ARMOR_HIT);
         StartCoroutine(BreakSequence());
     }
 
@@ -132,6 +133,8 @@ public class EnemyWeakPoint : MonoBehaviour
 
     private void DetachAndFall()
     {
+        SoundManager.PlaySound(SoundType.ENEMY_ARMOR_BREAK);
+
         GameObject plate = new GameObject("_ArmorPlate");
         plate.transform.SetPositionAndRotation(armorRenderer.transform.position, armorRenderer.transform.rotation);
         plate.transform.localScale = armorRenderer.transform.lossyScale;
