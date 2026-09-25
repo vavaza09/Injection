@@ -3878,6 +3878,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: c893a20a9312a3f4db7842533154030f, type: 3}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[42].volume
+      value: 0.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: soundList.Array.data[43].volume
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: soundList.Array.data[73].volume
       value: 0.6
       objectReference: {fileID: 0}
@@ -3900,6 +3908,34 @@ PrefabInstance:
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: soundList.Array.data[74].pitchMin
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[1].musicVolume
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[2].musicVolume
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[3].musicVolume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[5].musicVolume
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[1].ambientVolume
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[3].ambientVolume
+      value: 0.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
+      propertyPath: sceneAudio.Array.data[5].ambientVolume
+      value: 0.23
       objectReference: {fileID: 0}
     - target: {fileID: 7449680439906938917, guid: 66d3b9c244ef6a342be2050d51f67884, type: 3}
       propertyPath: 'soundList.Array.data[73].sounds.Array.data[0]'

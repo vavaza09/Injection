@@ -155,7 +155,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 36a32e23dcee08943beb16024a30e0ff, type: 3}
     - {fileID: 8300000, guid: 120fa56a6a41deb47b1454022926b663, type: 3}
-    volume: 0.6
+    volume: 0.29
     boostDb: 0
     pitchMin: 0
     pitchMax: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
   - name: JUMP
     sounds:
     - {fileID: 8300000, guid: 8faa4f0e64c2bf74dbdb6a4c680103e9, type: 3}
-    volume: 0.3
+    volume: 0.27
     boostDb: 3.3
     pitchMin: 0.77
     pitchMax: 1.04
@@ -176,7 +176,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4ea10d8fe3d1d454a838ba6b885f54a7, type: 3}
     - {fileID: 8300000, guid: ed435233539fef440857798b1857c99b, type: 3}
     - {fileID: 8300000, guid: 5f970a3ef6ceabb45bece43016a1773d, type: 3}
-    volume: 0.25
+    volume: 0.28
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.603
@@ -211,7 +211,7 @@ MonoBehaviour:
   - name: HITSTOP
     sounds:
     - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
-    volume: 0.75
+    volume: 0.71
     boostDb: 0
     pitchMin: 0.549
     pitchMax: 0.668
@@ -306,7 +306,7 @@ MonoBehaviour:
   - name: KIKI_ATTACK_WINDUP
     sounds:
     - {fileID: 8300000, guid: 552610755c560344a9c3fab9333d6278, type: 3}
-    volume: 0.6
+    volume: 1.21
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.716
@@ -314,7 +314,7 @@ MonoBehaviour:
   - name: KIKI_ATTACK_DASH
     sounds:
     - {fileID: 8300000, guid: f44e03b1a7de683459f285594c1c1026, type: 3}
-    volume: 0.7
+    volume: 0.8
     boostDb: 0
     pitchMin: 0.688
     pitchMax: 0.907
@@ -330,7 +330,7 @@ MonoBehaviour:
   - name: TANK_MOTOR
     sounds:
     - {fileID: 8300000, guid: 0c5ce44838b52f64dbeb8ad428cc9da7, type: 3}
-    volume: 0.34
+    volume: 0.91
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.6
@@ -338,7 +338,7 @@ MonoBehaviour:
   - name: TANK_FOOTSTEP
     sounds:
     - {fileID: 8300000, guid: 35968d5bd9539e0439f5b92652320f5d, type: 3}
-    volume: 0.7
+    volume: 1.1
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.5
@@ -369,7 +369,7 @@ MonoBehaviour:
   - name: FURNACE_IDLE_CRACKLE
     sounds:
     - {fileID: 8300000, guid: 99ff0c3106c9e5e4f8ccf5ecf9917313, type: 3}
-    volume: 0.7
+    volume: 1
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.5
@@ -400,7 +400,7 @@ MonoBehaviour:
   - name: FURNACE_MORTAR_DESCENDING
     sounds:
     - {fileID: 8300000, guid: c8f40526892857f498ed80832c42a692, type: 3}
-    volume: 0.32
+    volume: 0.33
     boostDb: 0
     pitchMin: 0.63
     pitchMax: 0.664
@@ -423,7 +423,7 @@ MonoBehaviour:
   - name: STOMPER_WALK_SCUTTLE
     sounds:
     - {fileID: 8300000, guid: 9f9c1e45259dd9249ab3da3c84418cde, type: 3}
-    volume: 0.5
+    volume: 0.74
     boostDb: 0
     pitchMin: 0.572
     pitchMax: 0.918
@@ -431,7 +431,7 @@ MonoBehaviour:
   - name: STOMPER_JUMP
     sounds:
     - {fileID: 8300000, guid: e856e55aa7d4bd34f96d94e516b0f455, type: 3}
-    volume: 0.6
+    volume: 0.62
     boostDb: 0
     pitchMin: 0.739
     pitchMax: 0.959
@@ -477,31 +477,31 @@ MonoBehaviour:
   - name: BOSS_CLAW_ANTICIPATION
     sounds:
     - {fileID: 8300000, guid: 6f4059b2f942ecb4c813a206711dc91e, type: 3}
-    volume: 0.7
-    boostDb: 0
+    volume: 1.195
+    boostDb: 1.1
     pitchMin: 0.5
     pitchMax: 0.976
     loop: 0
   - name: BOSS_CLAW_STRIKE
     sounds:
     - {fileID: 8300000, guid: 33d90a6c699c8e0429e02015e362f6bb, type: 3}
-    volume: 0.7
-    boostDb: 0
+    volume: 1.182
+    boostDb: 1.2
     pitchMin: 0.5
     pitchMax: 0.704
     loop: 0
   - name: BOSS_CLAW_IMPACT
     sounds:
     - {fileID: 8300000, guid: 971b5f933fc90a047b2c7c7359495454, type: 3}
-    volume: 0.75
-    boostDb: 0
+    volume: 1.203
+    boostDb: 1
     pitchMin: 0.532
     pitchMax: 0.866
     loop: 0
   - name: BOSS_CLAW_RETRACT
     sounds:
     - {fileID: 8300000, guid: 8974ffbc4249f0040bb478bacd9914cf, type: 3}
-    volume: 0.6
+    volume: 1
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.5
@@ -509,31 +509,31 @@ MonoBehaviour:
   - name: BOSS_HAMMER_WINDUP
     sounds:
     - {fileID: 8300000, guid: 2530602a90da81c4baaa677e391d8465, type: 3}
-    volume: 0.65
-    boostDb: 0
+    volume: 1.182
+    boostDb: 1.2
     pitchMin: 0.5
     pitchMax: 0.768
     loop: 0
   - name: BOSS_HAMMER_SWING
     sounds:
     - {fileID: 8300000, guid: 41f6936a6e78be043b87d9c621b2a275, type: 3}
-    volume: 0.75
-    boostDb: 0
+    volume: 0.955
+    boostDb: 0.4
     pitchMin: 0.555
     pitchMax: 0.785
     loop: 0
   - name: BOSS_HAMMER_IMPACT
     sounds:
     - {fileID: 8300000, guid: 8b7a40b5c5022194ea66daf64efcbbdc, type: 3}
-    volume: 0.75
-    boostDb: 0
+    volume: 1.203
+    boostDb: 1
     pitchMin: 0.584
     pitchMax: 0.843
     loop: 0
   - name: BOSS_HAMMER_RECOVER
     sounds:
     - {fileID: 8300000, guid: f64896baedde3b647bc207a78966c521, type: 3}
-    volume: 0.813
+    volume: 1
     boostDb: 0
     pitchMin: 0.5
     pitchMax: 0.633
@@ -557,7 +557,7 @@ MonoBehaviour:
   - name: BOSS_WEAKPOINT_REVEAL
     sounds:
     - {fileID: 8300000, guid: 7749fe6ad91e4d947b692717931e0ab3, type: 3}
-    volume: 1.4
+    volume: 1.35
     boostDb: 0
     pitchMin: 0.664
     pitchMax: 0.724
