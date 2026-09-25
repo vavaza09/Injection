@@ -55,6 +55,7 @@ namespace Game.Rooms.Objectives
         private SwitchState _state = SwitchState.Closed;
         private Coroutine _promptAnim;
         private AudioSource _openingSoundInstance;
+        private Vector3 _promptTargetScale = Vector3.one;
 
         public Transform InteractTransform => transform;
         public float InteractRange => interactRange;
@@ -80,7 +81,10 @@ namespace Game.Rooms.Objectives
             col.isTrigger = true;
 
             if (interactPrompt != null)
+            {
+                _promptTargetScale = interactPrompt.transform.localScale;
                 interactPrompt.SetActive(false);
+            }
 
             ApplySprite(SwitchState.Closed);
             ApplyLight(SwitchState.Closed);
@@ -235,8 +239,8 @@ namespace Game.Rooms.Objectives
         {
             if (show) interactPrompt.SetActive(true);
             var t = interactPrompt.transform;
-            Vector3 from = show ? Vector3.zero : Vector3.one;
-            Vector3 to = show ? Vector3.one : Vector3.zero;
+            Vector3 from = show ? Vector3.zero : _promptTargetScale;
+            Vector3 to = show ? _promptTargetScale : Vector3.zero;
             float elapsed = 0f;
             const float dur = 0.15f;
             while (elapsed < dur)
