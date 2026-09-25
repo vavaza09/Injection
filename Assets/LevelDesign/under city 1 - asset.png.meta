@@ -1,0 +1,647 @@
+fileFormatVersion: 2
+guid: 8ca2d668e3378284e8bcd687c7589b24
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7551959738722726611
+    second: under city 1 - asset_0
+  - first:
+      213: 4788119618399940784
+    second: under city 1 - asset_1
+  - first:
+      213: 7809822088759776521
+    second: under city 1 - asset_2
+  - first:
+      213: 8352428067462877880
+    second: under city 1 - asset_3
+  - first:
+      213: -755312112036988339
+    second: under city 1 - asset_4
+  - first:
+      213: 8863899587175001937
+    second: under city 1 - asset_5
+  - first:
+      213: -8034652037108011993
+    second: under city 1 - asset_6
+  - first:
+      213: -5984746753687808167
+    second: under city 1 - asset_7
+  - first:
+      213: -6431496155172330493
+    second: under city 1 - asset_8
+  - first:
+      213: -1862917699321362201
+    second: under city 1 - asset_9
+  - first:
+      213: 9158311531743728015
+    second: under city 1 - asset_10
+  - first:
+      213: -8706394262419208294
+    second: under city 1 - asset_11
+  - first:
+      213: 3260078403154584965
+    second: under city 1 - asset_12
+  - first:
+      213: 1423783389127822810
+    second: under city 1 - asset_13
+  - first:
+      213: -4308395080991911905
+    second: under city 1 - asset_14
+  - first:
+      213: -6521262821101502807
+    second: under city 1 - asset_15
+  - first:
+      213: 6151908819489397365
+    second: under city 1 - asset_16
+  - first:
+      213: 178624608036864490
+    second: under city 1 - asset_17
+  - first:
+      213: 1964505306461818463
+    second: under city 1 - asset_18
+  - first:
+      213: 2555385820194661996
+    second: under city 1 - asset_19
+  - first:
+      213: -8058950528811742581
+    second: under city 1 - asset_20
+  - first:
+      213: 318291292764369869
+    second: under city 1 - asset_21
+  - first:
+      213: -8074240997958274885
+    second: under city 1 - asset_22
+  - first:
+      213: 2800906581631718932
+    second: under city 1 - asset_23
+  - first:
+      213: 7721024487280621738
+    second: under city 1 - asset_24
+  - first:
+      213: 2783681400061398877
+    second: under city 1 - asset_25
+  - first:
+      213: -5967555936783732107
+    second: under city 1 - asset_26
+  - first:
+      213: 1043694763469215037
+    second: under city 1 - asset_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 48
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: under city 1 - asset_0
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 8006
+        width: 2005
+        height: 2035
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d2be90de53fdc860800000000000000
+      internalID: 7551959738722726611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_1
+      rect:
+        serializedVersion: 2
+        x: 7640
+        y: 9998
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b0bec4ac61d27240800000000000000
+      internalID: 4788119618399940784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_2
+      rect:
+        serializedVersion: 2
+        x: 7643
+        y: 10007
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 905968fbfcf026c60800000000000000
+      internalID: 7809822088759776521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_3
+      rect:
+        serializedVersion: 2
+        x: 2221
+        y: 7991
+        width: 1955
+        height: 1751
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b290250319c9e370800000000000000
+      internalID: 8352428067462877880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_4
+      rect:
+        serializedVersion: 2
+        x: 4565
+        y: 8051
+        width: 1067
+        height: 1713
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4a3c7bc2a79485f0800000000000000
+      internalID: -755312112036988339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_5
+      rect:
+        serializedVersion: 2
+        x: 6131
+        y: 8029
+        width: 1782
+        height: 1977
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15f2c4a26b5e20b70800000000000000
+      internalID: 8863899587175001937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_6
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 5102
+        width: 3324
+        height: 2600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72cee4aaa8e2f7090800000000000000
+      internalID: -8034652037108011993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_7
+      rect:
+        serializedVersion: 2
+        x: 3654
+        y: 5101
+        width: 355
+        height: 1034
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95714cb3988e1fca0800000000000000
+      internalID: -5984746753687808167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_8
+      rect:
+        serializedVersion: 2
+        x: 4112
+        y: 5068
+        width: 85
+        height: 333
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 304a9a8825cbeb6a0800000000000000
+      internalID: -6431496155172330493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_9
+      rect:
+        serializedVersion: 2
+        x: 4265
+        y: 5072
+        width: 179
+        height: 300
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e8892ef8369526e0800000000000000
+      internalID: -1862917699321362201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_10
+      rect:
+        serializedVersion: 2
+        x: 4461
+        y: 5068
+        width: 422
+        height: 1110
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f81d2f7b0dbd81f70800000000000000
+      internalID: 9158311531743728015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_11
+      rect:
+        serializedVersion: 2
+        x: 6042
+        y: 5116
+        width: 4780
+        height: 2618
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a97010afb8cac2780800000000000000
+      internalID: -8706394262419208294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_14
+      rect:
+        serializedVersion: 2
+        x: 3524
+        y: 2804
+        width: 1900
+        height: 1928
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f10df6d20818534c0800000000000000
+      internalID: -4308395080991911905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_20
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 2799
+        width: 2083
+        height: 1894
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8acab3313bd82090800000000000000
+      internalID: -8058950528811742581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_21
+      rect:
+        serializedVersion: 2
+        x: 2604
+        y: 2836
+        width: 532
+        height: 1304
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc3f1509e3cca6400800000000000000
+      internalID: 318291292764369869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_22
+      rect:
+        serializedVersion: 2
+        x: 5535
+        y: 2790
+        width: 1851
+        height: 1658
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb03dcd679882ff80800000000000000
+      internalID: -8074240997958274885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_23
+      rect:
+        serializedVersion: 2
+        x: 7754
+        y: 2846
+        width: 1011
+        height: 1623
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 416563732b1ded620800000000000000
+      internalID: 2800906581631718932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_26
+      rect:
+        serializedVersion: 2
+        x: 9243
+        y: 2826
+        width: 1682
+        height: 1872
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5727bb23e7bfe2da0800000000000000
+      internalID: -5967555936783732107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: under city 1 - asset_27
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 196
+        width: 10726
+        height: 2486
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d35948e8bd2fb7e00800000000000000
+      internalID: 1043694763469215037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 18102db752684b9428b73f67cd7623de
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      under city 1 - asset_0: 7551959738722726611
+      under city 1 - asset_1: 4788119618399940784
+      under city 1 - asset_10: 9158311531743728015
+      under city 1 - asset_11: -8706394262419208294
+      under city 1 - asset_12: 3260078403154584965
+      under city 1 - asset_13: 1423783389127822810
+      under city 1 - asset_14: -4308395080991911905
+      under city 1 - asset_15: -6521262821101502807
+      under city 1 - asset_16: 6151908819489397365
+      under city 1 - asset_17: 178624608036864490
+      under city 1 - asset_18: 1964505306461818463
+      under city 1 - asset_19: 2555385820194661996
+      under city 1 - asset_2: 7809822088759776521
+      under city 1 - asset_20: -8058950528811742581
+      under city 1 - asset_21: 318291292764369869
+      under city 1 - asset_22: -8074240997958274885
+      under city 1 - asset_23: 2800906581631718932
+      under city 1 - asset_24: 7721024487280621738
+      under city 1 - asset_25: 2783681400061398877
+      under city 1 - asset_26: -5967555936783732107
+      under city 1 - asset_27: 1043694763469215037
+      under city 1 - asset_3: 8352428067462877880
+      under city 1 - asset_4: -755312112036988339
+      under city 1 - asset_5: 8863899587175001937
+      under city 1 - asset_6: -8034652037108011993
+      under city 1 - asset_7: -5984746753687808167
+      under city 1 - asset_8: -6431496155172330493
+      under city 1 - asset_9: -1862917699321362201
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -210,7 +210,7 @@ MonoBehaviour:
     loop: 0
   - name: HITSTOP
     sounds:
-    - {fileID: 8300000, guid: 85bfc1de72be6d04690cae46fbfcd832, type: 3}
+    - {fileID: 8300000, guid: 1c87aa6ca0d55fd479043febdf9fcb39, type: 3}
     volume: 0.71
     boostDb: 0
     pitchMin: 0.549
@@ -289,15 +289,17 @@ MonoBehaviour:
     pitchMax: 0
     loop: 0
   - name: DOOR_SWITCH_OPENING
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: f614a3bd9174e234594ce4f18fa859b8, type: 3}
+    volume: 1.1
     boostDb: 0
     pitchMin: 0
     pitchMax: 0
     loop: 0
   - name: DOOR_OPENING
-    sounds: []
-    volume: 0
+    sounds:
+    - {fileID: 8300000, guid: f40d3c25f17c2f446b1c0abbde923a91, type: 3}
+    volume: 1.03
     boostDb: 0
     pitchMin: 0
     pitchMax: 0
@@ -803,13 +805,13 @@ MonoBehaviour:
     musicVolume: 0.11
     musicStart: 0
     ambient: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
-    ambientVolume: 0.21
+    ambientVolume: 0.07
   - sceneName: 3_Under_City_Two
     music: 1
     musicVolume: 0.11
     musicStart: 1
     ambient: {fileID: 0}
-    ambientVolume: 0.073
+    ambientVolume: 0.05
   - sceneName: Room_Boss
     music: 2
     musicVolume: 0.3
@@ -827,7 +829,7 @@ MonoBehaviour:
     musicVolume: 0.08
     musicStart: 0
     ambient: {fileID: 8300000, guid: 80380d1ae5038b149a0947060c135453, type: 3}
-    ambientVolume: 0.23
+    ambientVolume: 0.19
 --- !u!82 &8778517580754884786
 AudioSource:
   m_ObjectHideFlags: 0
