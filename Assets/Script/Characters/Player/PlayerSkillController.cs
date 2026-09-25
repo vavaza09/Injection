@@ -3,6 +3,8 @@ using VContainer;
 using Game.Characters.Player;
 using Game.Components.Skills;
 using Game.Tutorial;
+using Game.Persistence;
+using Game.Progression;
 
 public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkillReadinessProvider
 {
@@ -30,6 +32,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     private PlayerSkillEvents    _bus;
     private IEnergyPool          _energyPool;
     private PlayerAudioController _audioController;
+    private SaveService _saveService;
 
     private EmpBlastSkill      _empSkill;
     private TrueDamageDashSkill _trueDashSkill;
@@ -50,13 +53,15 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
         PlayerInputHandler inputHandler,
         IPlayerSkillEvents skillEvents,
         IEnergyPool energyPool,
-        PlayerAudioController audioController)
+        PlayerAudioController audioController,
+        SaveService saveService)
     {
         _logger          = loggerFactory?.CreateLogger<PlayerSkillController>();
         _inputHandler    = inputHandler;
         _bus             = (PlayerSkillEvents)skillEvents;
         _energyPool      = energyPool;
         _audioController = audioController;
+        _saveService     = saveService;
     }
 
     private void Awake()
@@ -160,8 +165,20 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
     private void UseTrueDamage()
     {
         if (!IsPlayerAlive()) return;
-        if (_player != null && !_player.IsAbilityUnlocked(TutorialAbilities.Skill2)) return;
+        if (!IsTrueDamageUnlocked()) return;
         _trueDashSkill?.Activate();
+    }
+
+    // Two independent gates: the tutorial's temporary per-run gate (Player.IsAbilityUnlocked,
+    // TutorialAbilities.Skill2 — off by default, so it's a no-op outside the tutorial) and the
+    // permanent save-backed unlock (SaveService, AbilityIds.TrueDamage — same pattern as Glide
+    // in PlayerGlideController). Both must pass. No SaveService injected = treat as locked,
+    // same defensive default as PlayerGlideController.OnJumpPressed.
+    private bool IsTrueDamageUnlocked()
+    {
+        bool tutorialGate = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill2);
+        bool permanentUnlock = _saveService != null && _saveService.IsAbilityUnlocked(AbilityIds.TrueDamage);
+        return tutorialGate && permanentUnlock;
     }
 
     // ── Visual Feedback ────────────────────────────────────────
@@ -244,7 +261,7 @@ public class PlayerSkillController : MonoBehaviour, Game.Components.Skills.ISkil
             }
             case Game.Components.Skills.SkillId.TrueDamage:
             {
-                bool unlocked = _player == null || _player.IsAbilityUnlocked(TutorialAbilities.Skill2);
+                bool unlocked = IsTrueDamageUnlocked();
                 bool canCast  = _trueDashSkill != null && _trueDashSkill.CanActivate && unlocked;
                 float remaining = _trueDashSkill?.CooldownRemaining ?? 0f;
                 return new Game.Components.Skills.SkillReadout(unlocked, canCast, remaining, trueDamageCooldown);

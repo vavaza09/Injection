@@ -36,6 +36,7 @@ namespace Game.Components.Glide
         // press time — see the "Fixed after critic review" note on the same-frame grab-launch
         // race in the feature brief for why this ordering matters.
         private GlideContext _lastFrameContext;
+        private AudioSource _glideSoundInstance;
 
         [Inject]
         public void Construct(
@@ -75,6 +76,10 @@ namespace Game.Components.Glide
                 _inputHandler.OnJumpPressed -= OnJumpPressed;
             if (_model != null)
                 _model.StateChanged -= OnGlideStateChanged;
+
+            // Defensive: if destroyed mid-glide without going through a normal Tick-driven end
+            // reason first (e.g. abrupt scene teardown), don't leave the loop playing forever.
+            SoundManager.StopInstance(_glideSoundInstance);
         }
 
         private void Update()
@@ -98,7 +103,17 @@ namespace Game.Components.Glide
 
         private void OnGlideStateChanged(GlideState state, GlideEndReason reason)
         {
-            _animationController?.SetGliding(state == GlideState.Gliding);
+            bool isGliding = state == GlideState.Gliding;
+            _animationController?.SetGliding(isGliding);
+
+            if (isGliding)
+            {
+                _glideSoundInstance = SoundManager.StartInstance(SoundType.GLIDE);
+            }
+            else
+            {
+                SoundManager.StopInstance(_glideSoundInstance);
+            }
         }
 
         private GlideContext BuildContext()

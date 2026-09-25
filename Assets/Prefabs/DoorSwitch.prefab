@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Intensity: 88.02
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 8f9626068fb10bf667798394000000008fbb99778d7af65c4de9663e39050000d1bee715
+  m_ApplyToSortingLayers: 8f9626068fb10bf667798394000000008d7af65c4de9663e39050000d1bee715
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -113,8 +113,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -45, y: -9.3, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 214959372162372827}
   - {fileID: 3377535308624763867}
@@ -171,14 +171,15 @@ MonoBehaviour:
   switchId: switch_1
   doorId: door_1
   interactRange: 1.5
-  openingDuration: 1
+  openingDuration: 2
   interactPrompt: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 5135761747521904582}
   closedSprite: {fileID: 7556949355335079322, guid: 821934809317a5242b6f098a99746c6d, type: 3}
   openingSprite: {fileID: 7556949355335079322, guid: 821934809317a5242b6f098a99746c6d, type: 3}
   onSprite: {fileID: 7556949355335079322, guid: 821934809317a5242b6f098a99746c6d, type: 3}
-  lightObject: {fileID: 0}
+  lightObject: {fileID: 5264319664461672218}
+  batteryObject: {fileID: 8038575889475997298}
 --- !u!212 &5135761747521904582
 SpriteRenderer:
   serializedVersion: 2

@@ -15,7 +15,11 @@ public class ScreenFader : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            // Destroy only this duplicate component, never the host GameObject: in
+            // Bootstrap.unity ScreenFader is co-hosted on the RootLifetimeScope GO, so
+            // Destroy(gameObject) here wipes the whole session root (Player, RoomManager,
+            // SaveBootstrapper) whenever TitleScene's own ScreenFader got there first.
+            Destroy(this);
             return;
         }
 

@@ -18,6 +18,9 @@ public class PlayerDebugCheats : MonoBehaviour
     [Header("Unlock Glide (F6)")]
     [SerializeField] private Key unlockGlideKey = Key.F6;
 
+    [Header("Unlock True Damage (F7)")]
+    [SerializeField] private Key unlockTrueDamageKey = Key.F7;
+
     [Header("Kill Boss (F8)")]
     [SerializeField] private Key killBossKey = Key.F8;
 
@@ -73,6 +76,7 @@ public class PlayerDebugCheats : MonoBehaviour
         HandleWarpCheats(kb);
         HandleKillBoss(kb);
         HandleUnlockGlide(kb);
+        HandleUnlockTrueDamage(kb);
     }
 
     private void HandleToggle(Keyboard kb)
@@ -140,5 +144,13 @@ public class PlayerDebugCheats : MonoBehaviour
 
         // Permanent + idempotent, same as a real AbilityUnlockTrigger — safe to mash.
         _saveService?.MarkAbilityUnlocked(AbilityIds.Glide);
+    }
+
+    private void HandleUnlockTrueDamage(Keyboard kb)
+    {
+        if (!kb[unlockTrueDamageKey].wasPressedThisFrame) return;
+
+        // Permanent + idempotent, same as a real AbilityUnlockTrigger — safe to mash.
+        _saveService?.MarkAbilityUnlocked(AbilityIds.TrueDamage);
     }
 }

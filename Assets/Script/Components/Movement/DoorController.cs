@@ -33,6 +33,19 @@ namespace Game.Components.Movement
 
         public DoorVisualState State => _state;
 
+        // DoorController lives in the Game.Components.Movement asmdef, which (like every custom
+        // asmdef) can never reference Assembly-CSharp — where SoundManager lives loose — so it
+        // can't play its own opening SFX. These events let a loose Assembly-CSharp caller
+        // (DoorView) own that instead, mirroring MovementComponent.Jumped/WallJumped/GrabStarted's
+        // exact same shape for the identical reason.
+        /// <summary>Raised once the door has actually settled open (end of the timed opening
+        /// beat) — NOT raised by <see cref="SnapOpen"/>, which has no beat to signal the end of.</summary>
+        public event Action Opened;
+        /// <summary>Raised if the opening beat was cancelled instead of completing (room
+        /// reload/destroy mid-opening) — a caller that started something for the duration of the
+        /// opening beat (e.g. a looping SFX) must stop it here too, not only on <see cref="Opened"/>.</summary>
+        public event Action OpeningCanceled;
+
         private void Start()
         {
             if (startClosed) ApplyClosed();
@@ -73,10 +86,12 @@ namespace Game.Components.Movement
             catch (OperationCanceledException)
             {
                 // Destroyed mid-opening (room reload) — scene is tearing down anyway.
+                OpeningCanceled?.Invoke();
                 return;
             }
 
             SettleOpen();
+            Opened?.Invoke();
         }
 
         // Instant open: skips the Opening beat entirely — used when a door was already persisted

@@ -23,6 +23,11 @@ public enum SoundType
     TRUEDAMAGE_CONSUME,
     SLOWMO,
     WALLSLIDE,
+    GLIDE,
+
+    // Doors / switches
+    DOOR_SWITCH_OPENING,
+    DOOR_OPENING,
 
     // Enemies — shared
     ENEMY_HURT,
@@ -900,44 +905,81 @@ public class SoundManager : MonoBehaviour
     /// (the Comic Editor, via <see cref="GetSoundListEntryEditorOnly"/>).</summary>
     public bool SyncListsToEnumsEditorOnly()
     {
-        bool changed = false;
+        bool soundChanged = ResyncByName(ref soundList, Enum.GetNames(typeof(SoundType)));
+        bool musicChanged = ResyncByName(ref musicList, Enum.GetNames(typeof(MusicType)));
+        return soundChanged || musicChanged;
+    }
 
-        string[] soundNames = Enum.GetNames(typeof(SoundType));
-        if (soundList == null || soundList.Length != soundNames.Length)
+    /// <summary>Rebuilds <paramref name="list"/> to match <paramref name="enumNames"/> by matching each
+    /// entry's own <c>Name</c> label, not its raw array index. The previous index-based version
+    /// (<c>if (list[i].name == enumNames[i]) continue; list[i].name = enumNames[i];</c>) silently
+    /// corrupted every downstream entry the moment a new enum value was inserted anywhere but the very
+    /// end: <c>Array.Resize</c> only grows the tail, so an entry's clip/volume/pitch data stayed at its
+    /// old physical slot while its <c>name</c> label got overwritten to whatever enum value now landed
+    /// on that index — e.g. inserting <c>GLIDE</c>/<c>DOOR_SWITCH_OPENING</c>/<c>DOOR_OPENING</c> before
+    /// "Enemies — shared" relabeled every Kiki/Tank/Furnace/Stomper/Boss/UI entry to the wrong
+    /// SoundType while their real clips stayed put, with no error or warning. Matching by name instead
+    /// means an entry's data follows its label wherever the enum reorders it; new enum values with no
+    /// existing match get a fresh default entry; removed enum values are dropped. Returns true only if
+    /// the array actually changed, so callers can skip dirtying the asset.</summary>
+    private static bool ResyncByName<T>(ref T[] list, string[] enumNames) where T : struct, INamedSoundEntry
+    {
+        if (list != null && list.Length == enumNames.Length)
         {
-            Array.Resize(ref soundList, soundNames.Length);
-            changed = true;
-        }
-        for (int i = 0; i < soundList.Length; i++)
-        {
-            if (soundList[i].name == soundNames[i]) continue;
-            soundList[i].name = soundNames[i];
-            changed = true;
-        }
-
-        string[] musicNames = Enum.GetNames(typeof(MusicType));
-        if (musicList == null || musicList.Length != musicNames.Length)
-        {
-            Array.Resize(ref musicList, musicNames.Length);
-            changed = true;
-        }
-        for (int i = 0; i < musicList.Length; i++)
-        {
-            if (musicList[i].name == musicNames[i]) continue;
-            musicList[i].name = musicNames[i];
-            changed = true;
+            bool aligned = true;
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (list[i].Name != enumNames[i]) { aligned = false; break; }
+            }
+            if (aligned) return false;
         }
 
-        return changed;
+        var byName = new Dictionary<string, T>();
+        if (list != null)
+        {
+            for (int i = 0; i < list.Length; i++)
+            {
+                string entryName = list[i].Name;
+                if (!string.IsNullOrEmpty(entryName) && !byName.ContainsKey(entryName))
+                    byName[entryName] = list[i];
+            }
+        }
+
+        var result = new T[enumNames.Length];
+        for (int i = 0; i < enumNames.Length; i++)
+        {
+            if (byName.TryGetValue(enumNames[i], out T existing))
+            {
+                result[i] = existing;
+            }
+            else
+            {
+                T fresh = default;
+                fresh.Name = enumNames[i];
+                result[i] = fresh;
+            }
+        }
+
+        list = result;
+        return true;
     }
 #endif
 
     #endregion
 }
 
-[Serializable]
-public struct SoundList
+/// <summary>Lets <c>SoundManager.ResyncByName</c> read/write the display-name label generically across
+/// <see cref="SoundList"/>/<see cref="MusicList"/> without knowing which struct it's holding.</summary>
+public interface INamedSoundEntry
 {
+    string Name { get; set; }
+}
+
+[Serializable]
+public struct SoundList : INamedSoundEntry
+{
+    string INamedSoundEntry.Name { get => name; set => name = value; }
+
     public AudioClip[] Sounds => sounds;
 
     // Helpers that return safe defaults when fields are left at 0 (newly added enum entries)
@@ -989,8 +1031,10 @@ public struct SceneAudio
 }
 
 [Serializable]
-public struct MusicList
+public struct MusicList : INamedSoundEntry
 {
+    string INamedSoundEntry.Name { get => name; set => name = value; }
+
     public AudioClip Music { get => music; }
     [SerializeField] public string name;
     [SerializeField] private AudioClip music;

@@ -54,6 +54,7 @@ namespace Game.Rooms.Objectives
         private IDoorObjectiveEvents _doorEvents;
         private SwitchState _state = SwitchState.Closed;
         private Coroutine _promptAnim;
+        private AudioSource _openingSoundInstance;
 
         public Transform InteractTransform => transform;
         public float InteractRange => interactRange;
@@ -110,6 +111,7 @@ namespace Game.Rooms.Objectives
 
             PlayerInputGate.Set(false);
             _animationController?.SetInteracting(true);
+            _openingSoundInstance = SoundManager.StartInstance(SoundType.DOOR_SWITCH_OPENING);
 
             try
             {
@@ -121,11 +123,13 @@ namespace Game.Rooms.Objectives
                 // unlock, but the Player persists across the reload, so its Animator would
                 // otherwise be stuck showing the interact pose forever.
                 _animationController?.SetInteracting(false);
+                SoundManager.StopInstance(_openingSoundInstance);
                 return;
             }
 
             PlayerInputGate.Set(true);
             _animationController?.SetInteracting(false);
+            SoundManager.StopInstance(_openingSoundInstance);
             _state = SwitchState.On;
             ApplySprite(SwitchState.On);
             ApplyLight(SwitchState.On);
