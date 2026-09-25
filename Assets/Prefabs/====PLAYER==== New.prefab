@@ -239,6 +239,55 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6479581481751242822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2702059718020836786}
+  - component: {fileID: 8006030438914711225}
+  m_Layer: 0
+  m_Name: TakeDmg
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2702059718020836786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6479581481751242822}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2159.9998, y: 0, z: 0}
+  m_LocalScale: {x: 108, y: 108, z: 108}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5518337554278092859}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8006030438914711225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6479581481751242822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 100
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 84489214458b4da42abffbe226ee1102, type: 2}
 --- !u!1 &8745690225335262831
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +814,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5517287351408820096, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3574364252656133180}
+    - targetCorrespondingSourceObject: {fileID: 5517287351408820096, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2702059718020836786}
     - targetCorrespondingSourceObject: {fileID: 506056908665171857, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 823768447247259356}
@@ -784,6 +836,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7294418023718602059}
+    - targetCorrespondingSourceObject: {fileID: 6109858379891773928, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6633579925808164837}
     - targetCorrespondingSourceObject: {fileID: 298528245570665569, guid: 6a399a475cb1cb54986b2a6bae2327a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1436469220477857360}
@@ -933,10 +988,10 @@ MonoBehaviour:
   audioFadeIn: 0.09
   audioFadeOut: 0.5
   duckMultiplier: 0.35
-  vignettePeak: 0.35
+  vignettePeak: 0.51
   vignetteFadeIn: 0.1
   vignetteFadeOut: 0.45
-  volumeOverride: {fileID: 0}
+  volumeOverride: {fileID: 8006030438914711225}
 --- !u!114 &7294418023718602059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -952,3 +1007,15 @@ MonoBehaviour:
   aimVolume: {fileID: 1408319955254991565}
   weightMax: 1
   fadeTime: 0.15
+--- !u!114 &6633579925808164837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111057636079140435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e72dd10a44b0d941ab88d7c8e00fc7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Components.Glide.PlayerGlideController

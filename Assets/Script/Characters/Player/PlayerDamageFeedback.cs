@@ -86,7 +86,10 @@ public class PlayerDamageFeedback : MonoBehaviour
         foreach (var v in volumes)
         {
             if (v == aimVolume) continue;
-            if (!v.isGlobal || v.priority <= bestPriority) continue;
+            // weight <= 0 means the volume never blends into the render — a disabled/leftover
+            // Volume (e.g. a stray high-priority one) would otherwise win the search by priority
+            // alone and get animated for nothing, while the real on-screen vignette never moves.
+            if (!v.isGlobal || v.weight <= 0f || v.priority <= bestPriority) continue;
             // Use instanced profile — never sharedProfile (mutates the asset on disk).
             if (!v.profile.TryGet<Vignette>(out var vig)) continue;
             bestPriority   = v.priority;
@@ -155,6 +158,17 @@ public class PlayerDamageFeedback : MonoBehaviour
 
     private void ApplyVignette(float p)
     {
+        // A dedicated volume (volumeOverride — the player's own TakeDmg volume) idles at
+        // weight 0 and its profile already holds the full-strength look, so the weight is
+        // what gets faded in. Same pattern as PlayerAimFeedback. Writing intensity instead
+        // does nothing, because a weight-0 volume never blends into the render.
+        if (volumeOverride != null)
+        {
+            volumeOverride.weight = Mathf.Clamp01(p);
+            return;
+        }
+
+        // Auto-found room volume: already at weight 1, so intensity is the lever.
         if (!_vignetteReady || _vignette == null) return;
         _vignette.intensity.value = Mathf.Lerp(_vignetteBase, vignettePeak, p);
     }
@@ -164,7 +178,8 @@ public class PlayerDamageFeedback : MonoBehaviour
         if (_lowPass != null) _lowPass.cutoffFrequency = normalCutoff;
         SoundManager.SetMusicVolume(savedMusic);
         SoundManager.SetSFXVolume(savedSFX);
-        if (_vignetteReady && _vignette != null)
+        if (volumeOverride != null) volumeOverride.weight = 0f;
+        else if (_vignetteReady && _vignette != null)
             _vignette.intensity.value = _vignetteBase;
     }
 
