@@ -5,16 +5,22 @@ using Unity.Cinemachine;
 using UnityEngine;
 using VContainer;
 using Core.Logging;
-using Game.Pause;
 using Game.UI;
 
 namespace Game.Rooms.Objectives
 {
     /// <summary>
     /// Subscribes to DoorObjectiveEvents and plays the fade-to-black / cut-to-door / hold /
-    /// fade-to-black / cut-back sequence: freezes the player (PauseStack + PlayerInputGate, same
-    /// idiom as ComicPlayer) while ScreenFader hides the hard Cinemachine priority swap to/from the
-    /// door's own scene-authored cutscene camera. Scoped per room; disposed with the scope.
+    /// fade-to-black / cut-back sequence: locks player input (PlayerInputGate) while ScreenFader
+    /// hides the hard Cinemachine priority swap to/from the door's own scene-authored cutscene
+    /// camera. Deliberately does NOT touch Time.timeScale/PauseStack — the rest of the world (the
+    /// door's own opening Animator, enemies, everything) keeps running at normal speed through the
+    /// cutaway; only the player's own input is gated. An earlier version paused the whole game here,
+    /// which meant the door's Animator (and everything else timing-sensitive) had to be specially
+    /// forced onto unscaled time to keep animating at all — that dance was a real source of visible
+    /// stutter (real time and "unscaled time under a paused Animator" don't always agree frame to
+    /// frame), so it was simpler and smoother to just not pause in the first place. Scoped per room;
+    /// disposed with the scope.
     /// </summary>
     public sealed class DoorCutawaySystem : IDisposable
     {
@@ -48,11 +54,20 @@ namespace Game.Rooms.Objectives
 
         private void OnDoorOpened(DoorOpenedEvent e)
         {
-            if (!_doorSystem.TryGetView(e.DoorId, out var view) || view.CutsceneCamera == null)
+            if (!_doorSystem.TryGetView(e.DoorId, out var view))
             {
-                _logger?.LogWarning($"[DoorCutawaySystem] Door '{e.DoorId}' has no cutscene camera assigned — skipping cutaway.");
-                // No cutaway to wait for — fire the "finished" signal immediately so anything
-                // gated on it (e.g. DoorSwitchView's battery indicator) doesn't hang forever.
+                _logger?.LogWarning($"[DoorCutawaySystem] Door '{e.DoorId}' not found — cannot open it.");
+                _events.RaiseDoorCutawayFinished(e);
+                return;
+            }
+
+            if (view.CutsceneCamera == null)
+            {
+                _logger?.LogWarning($"[DoorCutawaySystem] Door '{e.DoorId}' has no cutscene camera assigned — opening immediately, no cutaway.");
+                // No cutaway to time the reveal against — just open it now. Still fire the
+                // "finished" signal immediately so anything gated on it (e.g. DoorSwitchView's
+                // battery indicator) doesn't hang forever.
+                view.Open();
                 _events.RaiseDoorCutawayFinished(e);
                 return;
             }
@@ -82,7 +97,6 @@ namespace Game.Rooms.Objectives
                 blendOverridden = true;
             }
 
-            PauseStack.Instance.Push("doorCutaway");
             PlayerInputGate.Set(false);
 
             try
@@ -91,7 +105,14 @@ namespace Game.Rooms.Objectives
                 camera.Priority = CutawayPriority;
                 await FadeInAsync(token);
 
-                await UniTask.Delay(TimeSpan.FromSeconds(view.CutsceneHoldDuration), ignoreTimeScale: true, cancellationToken: token);
+                // Only now does the player actually see the door — start its own opening animation
+                // here, not the instant the switch finished (that was the bug: starting it back in
+                // DoorObjectiveSystem.ActivateSwitch meant it ran the whole time the screen was
+                // black during fade-out/swap/fade-in, so by the time it was visible the door was
+                // already mid-open or fully open).
+                view.Open();
+
+                await UniTask.Delay(TimeSpan.FromSeconds(view.CutsceneHoldDuration), cancellationToken: token);
 
                 await FadeOutAsync(token);
                 camera.Priority = restingPriority;
@@ -105,7 +126,6 @@ namespace Game.Rooms.Objectives
             finally
             {
                 PlayerInputGate.Set(true);
-                PauseStack.Instance.Release("doorCutaway");
 
                 if (blendOverridden)
                     brain.DefaultBlend = originalBlend;

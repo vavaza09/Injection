@@ -61,14 +61,6 @@ namespace Game.Components.Movement
             // instant the scene loads. Only apply the closed state if nothing already opened it.
             if (startClosed && _state == DoorVisualState.Closed)
                 ApplyClosed();
-
-            // The door cutaway (DoorCutawaySystem) pauses the game (Time.timeScale = 0) for the
-            // whole reveal — that's the point, the player is frozen specifically to watch this door
-            // open. An Animator's default UpdateMode reads scaled Time.deltaTime, so without this it
-            // would freeze on frame 0 for the entire cutaway and only actually animate afterward,
-            // once nobody is watching. See the matching ignoreTimeScale on the UniTask.Delay below.
-            if (animator != null)
-                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         }
 
         // Animated open: Closed -> Opening (light on, plays the Open animator trigger) -> Open
@@ -91,9 +83,7 @@ namespace Game.Components.Movement
 
             try
             {
-                // ignoreTimeScale: true — see the comment on Start()'s AnimatorUpdateMode line; this
-                // delay must keep progressing through the cutaway's Time.timeScale = 0 window too.
-                await UniTask.Delay(TimeSpan.FromSeconds(openingDuration), ignoreTimeScale: true, cancellationToken: token);
+                await UniTask.Delay(TimeSpan.FromSeconds(openingDuration), cancellationToken: token);
             }
             catch (OperationCanceledException)
             {
