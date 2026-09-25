@@ -33,6 +33,23 @@ public class BossIntroSequence : MonoBehaviour
     [SerializeField] private float preHandDelay = 1f;
     [SerializeField] private float handRiseDuration = 0.8f;
     [SerializeField] private float betweenHands = 0.5f;
+
+    [Header("Hammer Climb")]
+    [Tooltip("Which handIKTargets entry is the hammer arm — it raises up and over the ledge, then " +
+             "slams down onto it instead of reaching up like a claw. -1 makes every hand use the claw motion.")]
+    [SerializeField] private int hammerHandIndex = 1;
+    [Tooltip("Apex the hammer raises to, relative to its ledge position. The horizontal offset gives the " +
+             "arm real angular swing (so the slam reads at full IK reach) and arcs the hammer in from the side.")]
+    [SerializeField] private Vector2 hammerApexOffset = new Vector2(3.35f, 10f);
+    [SerializeField] private float hammerRaiseDuration = 0.9f;
+    [SerializeField] private float hammerSmashDuration = 0.18f;
+    [Tooltip("How much higher than the authored ledge spot the hammer stays planted for the rest of the " +
+             "intro (body rise + reveal) — intro-only flourish, eased back to the real spot below.")]
+    [SerializeField] private float hammerLedgeHoldOffset = 2.5f;
+    [Tooltip("How long the hammer takes to ease back down to its real authored spot right before " +
+             "BossHammerAttack re-enables — that component captures whatever position it's at as its " +
+             "permanent idle/attack anchor, so it must land exactly on the authored spot, unchanged.")]
+    [SerializeField] private float hammerSettleDuration = 0.4f;
     [SerializeField] private float bodyRiseDuration = 1.5f;
     [SerializeField] private float weakPointShowDuration = 1.2f;
     [SerializeField] private float healthBarHoldDuration = 1.5f;
@@ -162,10 +179,12 @@ public class BossIntroSequence : MonoBehaviour
     private IEnumerator IntroRoutine()
     {
         roomLock?.Lock();
-        // Reuses Room_Boss's own SceneAudio entry (clip + authored volume) — a bare
-        // PlayMusic(MusicType.BOSS) would crossfade in at whatever volume was last set
-        // elsewhere (e.g. the title screen's near-zero), landing inaudible.
-        SoundManager.PlayCurrentSceneMusic();
+        // Mute the room's ambient bed (and any music) for the silent, rumble-only opening beat.
+        // Starting boss music here instead used to race the ambient bed's own fade-in from room
+        // entry — two PlayMusicWithFade coroutines stomping each other produced an audible
+        // "song starts, cuts after ~1.5s" glitch. RestoreSceneAudio() undoes this once the
+        // sequence reaches its reveal beat below.
+        SoundManager.SuspendSceneAudio(0f);
         CameraShake.Shake(preShakeIntensity, preHandDelay);
 
         yield return new WaitForSeconds(preHandDelay);
@@ -177,8 +196,17 @@ public class BossIntroSequence : MonoBehaviour
             var hand = handIKTargets[i];
             if (hand == null) continue;
 
-            yield return LerpWorldPosition(hand, hand.position, _authoredHandWorldPos[i], handRiseDuration);
-            SpawnHandImpact(_authoredHandWorldPos[i]);
+            if (i == hammerHandIndex)
+            {
+                yield return HammerSmashClimb(hand, _authoredHandWorldPos[i]);
+            }
+            else
+            {
+                SoundManager.PlaySound(SoundType.BOSS_CLAW_ANTICIPATION);
+                yield return LerpWorldPosition(hand, hand.position, _authoredHandWorldPos[i], handRiseDuration);
+                SoundManager.PlaySound(SoundType.BOSS_CLAW_IMPACT);
+                SpawnHandImpact(_authoredHandWorldPos[i]);
+            }
             yield return new WaitForSeconds(betweenHands);
         }
 
@@ -191,14 +219,19 @@ public class BossIntroSequence : MonoBehaviour
             t += Time.deltaTime;
             float k = Mathf.Clamp01(t / bodyRiseDuration);
             bossRoot.position = Vector3.Lerp(startRootPos, _authoredRootWorldPos, k);
-            RepinHands();
+            RepinHandsHeld();
             yield return null;
         }
         bossRoot.position = _authoredRootWorldPos;
-        RepinHands();
+        RepinHandsHeld();
 
         _weakPoints?.SetIntroHighlight(true);
         SoundManager.PlaySound(SoundType.BOSS_WEAKPOINT_REVEAL);
+        // Reuses Room_Boss's own SceneAudio entry (clip + authored volume) — a bare
+        // PlayMusic(MusicType.BOSS) would crossfade in at whatever volume was last set
+        // elsewhere (e.g. the title screen's near-zero), landing inaudible.
+        SoundManager.RestoreSceneAudio();
+        SoundManager.PlayCurrentSceneMusic();
         yield return new WaitForSeconds(weakPointShowDuration);
 
         // Re-enable Boss so PollDetection() fires PlayerEnteredRange next frame — the health
@@ -208,6 +241,16 @@ public class BossIntroSequence : MonoBehaviour
 
         yield return new WaitForSeconds(healthBarHoldDuration);
         _weakPoints?.SetIntroHighlight(false);
+
+        // Ease the hammer down from its held-high intro pose to its real authored spot before
+        // BossHammerAttack re-enables — its Start() captures whatever position this Transform is
+        // at as the permanent idle/attack anchor for the rest of the fight.
+        if (hammerHandIndex >= 0 && hammerHandIndex < handIKTargets.Length && handIKTargets[hammerHandIndex] != null)
+        {
+            Transform hammerHand = handIKTargets[hammerHandIndex];
+            yield return LerpWorldPosition(hammerHand, hammerHand.position,
+                _authoredHandWorldPos[hammerHandIndex], hammerSettleDuration);
+        }
 
         RestoreAttacks();
         FinishIntro();
@@ -219,6 +262,20 @@ public class BossIntroSequence : MonoBehaviour
             if (handIKTargets[i] != null)
                 handIKTargets[i].position = _authoredHandWorldPos[i];
     }
+
+    // Same as RepinHands, but keeps the hammer at its held-high intro pose instead of its real
+    // authored spot — used while the body rises and during the reveal hold, before the hammer
+    // eases back down to the real spot ahead of RestoreAttacks().
+    private void RepinHandsHeld()
+    {
+        for (int i = 0; i < handIKTargets.Length; i++)
+        {
+            if (handIKTargets[i] == null) continue;
+            handIKTargets[i].position = i == hammerHandIndex ? HammerHeldPos(i) : _authoredHandWorldPos[i];
+        }
+    }
+
+    private Vector3 HammerHeldPos(int i) => _authoredHandWorldPos[i] + new Vector3(0f, hammerLedgeHoldOffset, 0f);
 
     private void SpawnHandImpact(Vector3 worldPos)
     {
@@ -242,6 +299,48 @@ public class BossIntroSequence : MonoBehaviour
         t.position = to;
     }
 
+    // Hammer arm climbs by raising up and over the ledge, then smashing down and planting higher
+    // than its real authored spot for the rest of the intro (see hammerLedgeHoldOffset) —
+    // matches BossHammerAttack's swing feel instead of reaching up and sticking like the claw.
+    private IEnumerator HammerSmashClimb(Transform hand, Vector3 ledgePos)
+    {
+        float xDir = bossRoot.lossyScale.x >= 0f ? 1f : -1f;
+        Vector3 apex = ledgePos + new Vector3(hammerApexOffset.x * xDir, hammerApexOffset.y, 0f);
+        Vector3 heldPos = HammerHeldPos(hammerHandIndex);
+
+        SoundManager.PlaySound(SoundType.BOSS_HAMMER_WINDUP);
+        yield return LerpWorldPosition(hand, hand.position, apex, hammerRaiseDuration);
+
+        SoundManager.PlaySound(SoundType.BOSS_HAMMER_SWING);
+        yield return SmashDown(hand, apex, heldPos, hammerSmashDuration);
+
+        SoundManager.PlaySound(SoundType.BOSS_HAMMER_IMPACT);
+        SpawnHandImpact(heldPos);
+    }
+
+    // Arcs from the apex back in over the ledge, then slams straight down — same bezier
+    // pattern as BossHammerAttack's swing, with an ease-in so the slam reads as a smash.
+    private static IEnumerator SmashDown(Transform t, Vector3 from, Vector3 to, float duration)
+    {
+        Vector3 control = new Vector3(to.x, from.y, from.z);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float k = Mathf.Clamp01(elapsed / duration);
+            k *= k;
+            t.position = QuadraticBezier(from, control, to, k);
+            yield return null;
+        }
+        t.position = to;
+    }
+
+    private static Vector3 QuadraticBezier(Vector3 a, Vector3 control, Vector3 b, float t)
+    {
+        float u = 1f - t;
+        return u * u * a + 2f * u * t * control + t * t * b;
+    }
+
     // Used by the skip path — jumps straight to the pose the full sequence ends at.
     private void SnapToFightReady()
     {
@@ -252,19 +351,28 @@ public class BossIntroSequence : MonoBehaviour
         if (_boss     != null) _boss.enabled     = _bossWasEnabled;
         if (_idleAnim != null) _idleAnim.enabled = _idleAnimWasEnabled;
         RestoreAttacks();
+
+        // Skip landed before the reveal beat that normally undoes SuspendSceneAudio() — do it
+        // here instead, or the ambient bed (and all future scene music) stays muted forever.
+        SoundManager.RestoreSceneAudio();
+        SoundManager.PlayCurrentSceneMusic();
     }
 
     private void RestoreAttacks()
     {
-        if (_attackManager != null) _attackManager.enabled = _attackManagerWasEnabled;
-        if (_claw          != null) _claw.enabled          = _clawWasEnabled;
-        if (_hammer        != null) _hammer.enabled        = _hammerWasEnabled;
-        if (_gas           != null) _gas.enabled            = _gasWasEnabled;
-        if (_junk          != null) _junk.enabled           = _junkWasEnabled;
+        // _attackManager is deliberately left out here — it's re-enabled in FinishIntro(),
+        // after the skip fade-in. Enabling it here would let it start attacking the same
+        // frame the arms are repinned, before BossClawAttack/BossHammerAttack's Start() has
+        // captured idle, yanking the arm off pose right as the screen clears.
+        if (_claw   != null) _claw.enabled   = _clawWasEnabled;
+        if (_hammer != null) _hammer.enabled = _hammerWasEnabled;
+        if (_gas    != null) _gas.enabled    = _gasWasEnabled;
+        if (_junk   != null) _junk.enabled   = _junkWasEnabled;
     }
 
     private void FinishIntro()
     {
+        if (_attackManager != null) _attackManager.enabled = _attackManagerWasEnabled;
         _running = false;
         PlayerInputGate.Set(true);
         _pauseMenu?.SetPauseInputEnabled(true);
@@ -283,11 +391,13 @@ public class BossIntroSequence : MonoBehaviour
     private void OnDestroy()
     {
         // A mid-intro Room_Boss reload (e.g. death) destroys this GameObject without the
-        // coroutine's tail ever running — don't strand the persistent player input-locked.
+        // coroutine's tail ever running — don't strand the persistent player input-locked,
+        // and don't leave the scene's ambient bed muted for whatever loads next.
         if (_running)
         {
             PlayerInputGate.Set(true);
             _pauseMenu?.SetPauseInputEnabled(true);
+            SoundManager.RestoreSceneAudio();
         }
         DisposeSkip();
     }
