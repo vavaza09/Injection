@@ -1,3 +1,4 @@
+using System.Globalization;
 using UnityEngine;
 
 public static class GameSettings
@@ -32,27 +33,27 @@ public static class GameSettings
 
     public static float MusicVolume
     {
-        get => PlayerPrefs.GetFloat(KEY_MUSIC, 0.5f);
-        set { PlayerPrefs.SetFloat(KEY_MUSIC, Mathf.Clamp01(value)); PlayerPrefs.Save(); }
+        get => GetFloat(KEY_MUSIC, 0.5f);
+        set => SetFloat(KEY_MUSIC, Mathf.Clamp01(value));
     }
 
     public static float SFXVolume
     {
-        get => PlayerPrefs.GetFloat(KEY_SFX, 1f);
-        set { PlayerPrefs.SetFloat(KEY_SFX, Mathf.Clamp01(value)); PlayerPrefs.Save(); }
+        get => GetFloat(KEY_SFX, 1f);
+        set => SetFloat(KEY_SFX, Mathf.Clamp01(value));
     }
 
     // Default ON for desktop builds, OFF where the platform owns fullscreen (WebGL).
     public static bool Fullscreen
     {
-        get => PlayerPrefs.GetInt(KEY_FULLSCREEN, SupportsDisplaySettings ? 1 : 0) == 1;
-        set { PlayerPrefs.SetInt(KEY_FULLSCREEN, value ? 1 : 0); PlayerPrefs.Save(); }
+        get => GetInt(KEY_FULLSCREEN, SupportsDisplaySettings ? 1 : 0) == 1;
+        set => SetInt(KEY_FULLSCREEN, value ? 1 : 0);
     }
 
     public static int ResolutionIndex
     {
-        get => PlayerPrefs.GetInt(KEY_RESOLUTION, -1);
-        set { PlayerPrefs.SetInt(KEY_RESOLUTION, value); PlayerPrefs.Save(); }
+        get => GetInt(KEY_RESOLUTION, -1);
+        set => SetInt(KEY_RESOLUTION, value);
     }
 
     public static void ApplyVolumes()
@@ -91,4 +92,50 @@ public static class GameSettings
 
     // Convenience overload for callers that don't already hold the list.
     public static void ApplyResolution() => ApplyResolution(Screen.resolutions);
+
+    // WebGL keeps settings in localStorage for the same reason as the save (BrowserSaveStorage):
+    // PlayerPrefs live in URL-keyed IndexedDB there and are lost on every itch.io re-upload.
+    private static float GetFloat(string key, float defaultValue)
+    {
+        if (!BrowserStorage.IsAvailable)
+        {
+            return PlayerPrefs.GetFloat(key, defaultValue);
+        }
+        return float.TryParse(BrowserStorage.Get(key), NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
+            ? value
+            : defaultValue;
+    }
+
+    private static void SetFloat(string key, float value)
+    {
+        if (!BrowserStorage.IsAvailable)
+        {
+            PlayerPrefs.SetFloat(key, value);
+            PlayerPrefs.Save();
+            return;
+        }
+        BrowserStorage.Set(key, value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    private static int GetInt(string key, int defaultValue)
+    {
+        if (!BrowserStorage.IsAvailable)
+        {
+            return PlayerPrefs.GetInt(key, defaultValue);
+        }
+        return int.TryParse(BrowserStorage.Get(key), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            ? value
+            : defaultValue;
+    }
+
+    private static void SetInt(string key, int value)
+    {
+        if (!BrowserStorage.IsAvailable)
+        {
+            PlayerPrefs.SetInt(key, value);
+            PlayerPrefs.Save();
+            return;
+        }
+        BrowserStorage.Set(key, value.ToString(CultureInfo.InvariantCulture));
+    }
 }
